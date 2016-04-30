@@ -91,7 +91,7 @@ class Offer(models.Model):
 
 	def get_all(self):
 		pass
-		return __class__.objects.all()
+		return self.__class__.objects.all()
 
 	def get_by_location(self, location='bengaluru', count=20):
 		pass
