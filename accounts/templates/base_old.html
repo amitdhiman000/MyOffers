@@ -1,0 +1,32 @@
+
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>{{ title }} | MyOffers</title>
+
+		<style>
+			#cont { width:980px; margin:0px auto; }
+			.inputBox { width:250px; height:25Px; border:2px solid #333; }
+			.buttons { width:80px; height:27px; }
+		</style>
+
+		<!-- styles -->
+		{% block style %}
+
+		{% endblock %}
+
+		<!-- scripts -->
+		{% block script %}
+
+		{% endblock %}
+	</head>
+
+	<body>
+		<div id="cont">
+			{% block content %} 
+
+			{% endblock %}
+		</div>
+	</body>
+</html>

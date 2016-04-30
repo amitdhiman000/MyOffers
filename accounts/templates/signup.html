@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="content" >
+	<div class="content_title">
+		<h3>Signup Here : </h3>
+	</div>
+	<div class="content_body" >
+		{% if form.errors %}
+			<p style="color:red;" >Please fill the details!!</p>
+		{% endif %}
+		<form action="/accounts/register/" method="POST" >
+			{% csrf_token %}
+			<table class="form_table" >
+				<tr><td>User Type : </td><td>Consumer : <input type="radio" name="user_type" value="Consumer" checked="checked" />
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				Vendor : <input type="radio" name="user_type" value="Vendor" />
+				</td></tr>
+				
+				<tr><td>Full Name* : </td><td><input type="text" name="name" class="inputBox" value="{{form_values.name}}" />
+				</td><td><p class="errors"> {{ form_errors.name }}</p></td>
+				</tr>
+				<tr><td>Email* : </td><td><input type="text" name="email" class="inputBox" value="{{form_values.email}}"/></td>
+				<td><p class="errors"> {{ form_errors.email }}</p></td></tr>
+
+				<tr><td>Password* : </td><td><input type="password" name="pass1" class="inputBox" />
+				<td><p class="errors"> {{ form_errors.pass1 }}</p></td></td></tr>
+				
+				<tr><td>Confirm Password* : </td><td><input type="password" name="pass2" class="inputBox" />
+				</td><td><p class="errors"> {{ form_errors.pass2 }}</p></td></tr>
+				
+				<tr><td></td><td>
+				<input type="submit" name="login" value="Signup" class="buttons" />
+				<input type="reset" name="clear" value="Clear" class="buttons" />
+				</td></tr>
+			</table>
+		</form>
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<img src="{% static "res/images/user.jpg" %}" />
+<h1>Hi {{ user.name }}! </h1>
+<h2>Welcome to MyOffers store</h2>
+{% endblock %}

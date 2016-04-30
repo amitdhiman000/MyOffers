@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+	<div class="content" >
+		<div class="content_title">
+			<h3>Login Here : </h3>
+		</div>	
+		<div class="content_body" >
+			{% if form_errors %}
+				<p style="color:red;" >{{form_errors.user}}</p>
+			{% endif %}
+			<form action="/accounts/auth/" method="POST">
+				{% csrf_token %}
+				<table class="form_table">
+					<tr><td>Username : </td><td><input type="text" name="user" class="inputBox" /></td></tr>
+					<tr><td>Password : </td><td><input type="password" name="pass" class="inputBox" /></td></tr>
+
+					<tr><td></td>
+					<td><input type="submit" name="login" value="Login" class="buttons" />
+					<input type="reset" name="clear" value="Clear" class="buttons" />
+					</td></tr>
+				</table>
+			</form>
+		</div>
+	</div>
+{% endblock %}
