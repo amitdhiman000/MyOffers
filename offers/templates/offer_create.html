@@ -7,7 +7,7 @@
 			<h3>Create Offer : </h3>
 		</div>	
 		<div class="content_body" >
-			<form action="/offer/create/submit/" method="POST">
+			<form action="/offer/create/submit/" method="POST" enctype="multipart/form-data">
 				{% csrf_token %}
 				<table class="form_table">
 					<tr><td>Product Name : </td><td><input type="text" name="product_name" value="{{form_values.product_name}}" class="inputBox" />
@@ -21,6 +21,9 @@
 					</td></tr>
 					<tr><td>Expire Date : </td><td><input type="text" name="expire_date" value="{{form_values.expire_date}}" class="inputBox" />
 					<td><p class="errors">{{form_errors.expire_date}}</p></td>
+					</td></tr>
+					<tr><td>Image : </td><td><input type="file" name="image" class="inputBox" />
+					<td><p class="errors">{{form_errors.image}}</p></td>
 					</td></tr>
 					<tr><td>Location : </td><td><input type="discount" name="location" value="{{form_values.location}}" class="inputBox" />
 					<td><p class="errors">{{form_errors.location}}</p></td>

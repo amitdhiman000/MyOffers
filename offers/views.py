@@ -34,7 +34,8 @@ def offer_create_submit(request):
 	c = {'title':'Added Successfully'}
 
 	if request.method == 'POST':
-		offer_c = OfferControl(request.POST)
+		image = request.FILES['image']
+		offer_c = OfferControl(request.POST, request.FILES)
 		if offer_c.validate():
 			offer_c.register()
 			return render(request, 'offer_added.html', c)

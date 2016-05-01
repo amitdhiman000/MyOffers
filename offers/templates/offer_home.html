@@ -3,9 +3,9 @@
 {% load staticfiles %}
 
 {% block content %}
-{% for offer in offers_list %}
+{% for offer in offers_list  %}
 <style type="text/css">
-	.offer_box { width:200px; height:200px; padding:5px; border:1px solid #666; }
+	.offer_box { width:200px; height:200px; padding:5px; border:1px solid #666; float:left; margin:5px 0px 0px 5px;}
 	.offer_image { width: 90%; height: 150px; }
 	.offer_desc { width:90%; height: 20px; }
 	.offer_details { width: 90%; height: 20px; display: none; }
@@ -13,12 +13,14 @@
 
 <div class="offer_box" >
 	<div class="offer_image">
-		<img src="{% static 'res/images/offers/del_pc_1.jpg' %}" width="180"
+	{% with 'res/images/offers/'|add:offer.image_name as image_path %}
+		<img src="{% static image_path %}" width="180"
 								height="150" />
+	{% endwith %}
 	</div>
 	<div class="offer_desc">
-		Name : {{offer.product_name}} <br />
-		Discount : {{offer.discount}} <br />
+		{{offer.product_name}} <br />
+		{{offer.discount}}% Off <br />
 	</div>
 	<div class="offer_details">
 		Starting On : {{offer.start_date}} <br />
@@ -26,6 +28,7 @@
 		Hurry up 7 Days to go<br />
 	</div>
 </div>
+
 {% endfor %}
 
 {% endblock %}

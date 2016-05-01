@@ -76,6 +76,7 @@ class Offer(models.Model):
 	expire_date = models.DateTimeField(blank=True)
 	create_time = models.DateTimeField(auto_now_add=True, auto_now=False, blank=False, null=True)
 	description = models.TextField()
+	image_name = models.CharField(max_length=500, blank=True)
 #	location = models.ForeignKey(Location)
 
 	class Meta:

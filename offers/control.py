@@ -1,11 +1,17 @@
 from datetime import datetime
 from .models import Offer
+from django.conf import settings
 
 # Create your tests here.
 
+def handle_uploaded_file(image_file, file_name='file'):
+    with open(settings.STATIC_DIR+'/images/offers/'+file_name, 'wb+') as destination:
+        for chunk in image_file.chunks():
+            destination.write(chunk)
+
 class OfferControl(object):
 
-	def __init__(self, post=None):
+	def __init__(self, post=None, files=None):
 		if post is None:
 			raise ValueError("post data is None")
 		else:
@@ -13,6 +19,7 @@ class OfferControl(object):
 			self.values = {}
 			self.errors = {}
 			self.offer = Offer()
+			self.image = files.get('image', None)
 			self.offer.product_name = post.get('product_name', '').strip(' \t\n\r')
 			self.offer.discount = post.get('discount', '').strip(' \t\n\r')
 			date_str1 = post.get('start_date', '').strip(' \t\n\r')
@@ -49,12 +56,32 @@ class OfferControl(object):
 			valid = False
 			self.errors['expire_date'] = '*Expire date cannot be before today'
 
+		if self.image is None:
+			valid = False
+			self.errors['image'] = '*Image is Required'
+		else:
+			if self.image.size > 100*1024:
+				valid = False
+				self.errors['image'] = '*Image size should be less than 100KB'
+			else:
+				splited = self.image.content_type.rsplit('/')
+				ext = splited[len(splited) - 1]
+				self.image.ext = ext
+				if splited[0] != 'image':
+					valid = False
+					self.errors['image'] = '*Not an image file'
+
 		self.valid = valid
 		return valid
 
 	def register(self):
 		if self.valid:
-			self.offer.register()
+			print('ext : '+self.image.ext)
+			self.offer.save()
+			self.offer.image_name = str(self.offer.id)+'.'+self.image.ext
+			print('image_name : '+self.offer.image_name)
+			handle_uploaded_file(self.image, self.offer.image_name)
+			self.offer.save(update_fields=['image_name'])
 			return self.offer
 		else:
 			return None
