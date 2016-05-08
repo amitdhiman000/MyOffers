@@ -15,74 +15,74 @@ class OfferControl(object):
 		if post is None:
 			raise ValueError("post data is None")
 		else:
-			self.valid = False
-			self.values = {}
-			self.errors = {}
-			self.offer = Offer()
-			self.image = files.get('image', None)
-			self.offer.product_name = post.get('product_name', '').strip(' \t\n\r')
-			self.offer.discount = post.get('discount', '').strip(' \t\n\r')
+			self.m_valid = False
+			self.m_values = {}
+			self.m_errors = {}
+			self.m_offer = Offer()
+			self.m_image = files.get('image', None)
+			self.m_offer.product_name = post.get('product_name', '').strip(' \t\n\r')
+			self.m_offer.discount = post.get('discount', '').strip(' \t\n\r')
 			date_str1 = post.get('start_date', '').strip(' \t\n\r')
-			self.offer.start_date = datetime.strptime(date_str1, "%d-%m-%Y")
+			self.m_offer.start_date = datetime.strptime(date_str1, "%d-%m-%Y")
 			date_str2 = post.get('expire_date', '').strip(' \t\n\r')
-			self.offer.expire_date = datetime.strptime(date_str2, "%d-%m-%Y")
+			self.m_offer.expire_date = datetime.strptime(date_str2, "%d-%m-%Y")
 
-			self.values['product_name'] = self.offer.product_name
-			self.values['discount'] = self.offer.discount
-			self.values['start_date'] = date_str1
-			self.values['expire_date'] = date_str2
+			self.m_values['product_name'] = self.m_offer.product_name
+			self.m_values['discount'] = self.m_offer.discount
+			self.m_values['start_date'] = date_str1
+			self.m_values['expire_date'] = date_str2
 
 	def get_errors(self):
-		return self.errors
+		return self.m_errors
 
 	def get_values(self):
-		return self.values
+		return self.m_values
 
 	def validate(self):
 		valid = True
-		if self.offer.product_name == '':
+		if self.m_offer.product_name == '':
 			valid = False
-			self.errors['product_name'] = '*product name cannot be empty'
+			self.m_errors['product_name'] = '*product name cannot be empty'
 
-		if self.offer.discount == '':
+		if self.m_offer.discount == '':
 			valid = False
-			self.errors['discount'] = '*Discount cannot be empty'
+			self.m_errors['discount'] = '*Discount cannot be empty'
 
-		if self.offer.start_date < datetime.now():
+		if self.m_offer.start_date < datetime.now():
 			valid = False
-			self.errors['start_date'] = '*Start date cannot be before today'
+			self.m_errors['start_date'] = '*Start date cannot be before today'
 
-		if self.offer.expire_date < datetime.now():
+		if self.m_offer.expire_date < datetime.now():
 			valid = False
-			self.errors['expire_date'] = '*Expire date cannot be before today'
+			self.m_errors['expire_date'] = '*Expire date cannot be before today'
 
-		if self.image is None:
+		if self.m_image is None:
 			valid = False
-			self.errors['image'] = '*Image is Required'
+			self.m_errors['image'] = '*Image is Required'
 		else:
-			if self.image.size > 100*1024:
+			if self.m_image.size > 100*1024:
 				valid = False
-				self.errors['image'] = '*Image size should be less than 100KB'
+				self.m_errors['image'] = '*Image size should be less than 100KB'
 			else:
-				splited = self.image.content_type.rsplit('/')
+				splited = self.m_image.content_type.rsplit('/')
 				ext = splited[len(splited) - 1]
-				self.image.ext = ext
+				self.m_image.ext = ext
 				if splited[0] != 'image':
 					valid = False
-					self.errors['image'] = '*Not an image file'
+					self.m_errors['image'] = '*Not an image file'
 
-		self.valid = valid
+		self.m_valid = valid
 		return valid
 
 	def register(self):
-		if self.valid:
-			print('ext : '+self.image.ext)
-			self.offer.save()
-			self.offer.image_name = str(self.offer.id)+'.'+self.image.ext
-			print('image_name : '+self.offer.image_name)
-			handle_uploaded_file(self.image, self.offer.image_name)
-			self.offer.save(update_fields=['image_name'])
-			return self.offer
+		if self.m_valid:
+			print('ext : '+self.m_image.ext)
+			self.m_offer.save()
+			self.m_offer.image_name = str(self.m_offer.id)+'.'+self.m_image.ext
+			print('image_name : '+self.m_offer.image_name)
+			handle_uploaded_file(self.m_image, self.m_offer.image_name)
+			self.m_offer.save(update_fields=['image_name'])
+			return self.m_offer
 		else:
 			return None
 
