@@ -49,6 +49,7 @@ def login(request, user):
 	request.session[USER_TYPE_KEY] = type(user).__name__
 	print('class name : '+  type(user).__name__)
 	request.session[USER_AUTH_KEY] = True
+	request.session.set_expiry(60*5) # 5 minutes session timeout
 
 
 def logout(request):

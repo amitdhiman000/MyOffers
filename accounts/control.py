@@ -1,4 +1,3 @@
-
 import re
 from .models import Consumer, Vendor
 

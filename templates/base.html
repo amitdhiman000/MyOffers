@@ -8,57 +8,59 @@
 		<meta charset="utf-8" />
 		<!--<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />-->
 
-		<!--[if IE]>
-		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-		<![endif]-->
+		<style>
+			* { margin: 0px; padding: 0px; border: 0px; }
+			a { text-decoration: none; color: #CEC; }
+			.clear { clear: both; text-indent: -9999px; }
+			.cf { *zoom: 1;  clear: both;}
+			.cf:before, .cf:after { content: " "; display: block; }
+			a:hover {color: #FFF;}
+			body { font-family: Arial,sans-serif,Verdana; font-size: 13px; }
+			#header_bg { width:100%; height:70px; background: #414141; color:#FEF; }
+			#header_content { width: 70%; height:inherit; margin: 0px auto;}
+			#company_info { width: 70%; height: inherit; float: left}
+			#logo { width: inherit; height: 50px; padding: 5px; }
+			#user_status { width: 20%; padding: 5px; margin-top:5px; float:right; }
+
+			#container { position: relative; width: 70%; margin: 0px auto; margin-top: 10px; margin-bottom: 40px; clear: both; }
+			#container a { color:#000; }
+			#container a:hover { color:#222; }
+			#nav_bar { width: 100%; margin: 0px auto; background: #f3f3f3; border: 1px solid #e7e7e7; overflow: hidden; }
+			#nav_bar ul { list-style: none;  }
+			#nav_bar li { float: left; }
+			#nav_bar a { display: block; text-align: center; padding: 10px 20px; color: #555; }
+			#nav_bar a:hover { background: #d3d3d3; }
+
+			#body_content { position: relative; width: 100%; margin: 0px auto; margin-top: 10px; border: 1px solid #999; }
+
+			.form_table { border-spacing: 8px 2px; }
+			.form_table td { padding: 5px; }
+			.form_table tr td:first-child { text-align: right; }
+			p.errors { color:red; font-weight: bold; }
+
+			input[type=radio]:checked { margin-left: 11px; background: #414141; }
+			.inputBox { width: 250px; height: 25Px; border:1px solid #333; }
+			.buttons { width: 100px; height: 27px; background: #414141; color: #FEF; cursor: pointer; }
+			.buttons:hover { background: #515151; }
+
+			.content { margin-top: 0px; }
+			.content_title { background: #414141; padding: 5px; color:#FEF; }
+			.content_body { padding: 5px; }
+
+			#footer_bg { position: fixed; left: 0; bottom: 0; width: 100%; margin-top: 30px; height: 30px; line-height: 30px; background: #414141; color: #FEF; }
+			#footer_content { position: relative; width: 70%; height: inherit; margin: 0px auto; text-align: center; }
+			#footer_content span { display: inline-block;  vertical-align: middle; }
+
+		</style>
+
+		<!-- jquery min -->
+		<script type="text/javascript" src="{% static 'res/js/jquery2.2.2.min.js' %}" >
+		</script>
 
 		<!-- scripts -->
 		{% block script %}
 
 		{% endblock %}
-
-		<style>
-			* { margin:0px; padding:0px; border:0px; }
-			a { text-decoration: none; color: #CEC; }
-			a:hover {color: #FFF;}
-			body { font-family: Arial Black,sans-serif; font-size: 13px; }
-			#header_bg { width:100%; height:70px; background: #414141; color:#FEF; }
-			#header_content { width:70%; height:inherit; margin:0px auto;}
-			#company_info { width:70%; height: inherit; float: left}
-			#logo { width:inherit; height: 50; padding: 5px; }
-			#user_status { width:25%; height: inherit; padding:5px;margin-top:5px; float:right; }
-
-			#nav_bar { width:70%; margin:5px auto; background: #f3f3f3; 
-				border: 1px solid #e7e7e7; overflow: hidden; }
-			#nav_bar ul { list-style: none;  }
-			#nav_bar li { float:left; }
-			#nav_bar a { display: block; text-align: center; padding: 10px 20px; color: #555; }
-			#nav_bar a:hover { background: #d3d3d3; }
-
-			#container { width:70%; margin:0px auto; }
-			#container a { color:#000; }
-			#container a:hover { color:#222; }
-
-			.form_table { border-spacing: 8px 2px; }
-			.form_table td {padding: 5px; }
-			.form_table tr td:first-child { text-align: right; }
-			p.errors { color:red; font-weight: bold; }
-
-			.inputBox { width:250px; height:25Px; border:1px solid #333; }
-			.buttons { width:100px; height:27px; background: #414141; color: #FEF; cursor:pointer; }
-			.buttons:hover { background: #515151; }
-
-			.content { margin-top: 10px; }
-			.content_title { background: #414141; padding: 5px; color:#FEF; }
-			.content_body { padding: 5px; }
-
-			#footer_bg { position: absolute; bottom:0; left:0; width:100%; height:30px; line-height: 30px; background:#414141; color:#FEF;  }
-			#footer_content { width: 70%; height: inherit; margin: 0px auto; text-align: center; }
-			#footer_content span { display: inline-block;  vertical-align: middle;  }
-
-			input[type=radio]:checked { margin-left: 11px; background: #414141; }
-
-		</style>
 
 		<!-- styles -->
 		{% block style %}
@@ -91,17 +93,19 @@
 				</div>
 			</div>
 		</header>
-		<nav id ="nav_bar">
-			<ul>
-				<li><a href="/">Home</a></li>
-				<li><a href="/offer/">Offers</a></li>
-				<li><a href="/offer/create/">Create Offer</a></li>
-			</ul>			
-		</nav>
 		<div id="container">
-			{% block content %} 
+			<nav id ="nav_bar">
+				<ul>
+					<li><a href="/">Home</a></li>
+					<li><a href="/offer/">Offers</a></li>
+					<li><a href="/offer/create/">Create Offer</a></li>
+				</ul>
+			</nav>
+			<div id="body_content" class="cf">
+			{% block content %}
 
 			{% endblock %}
+			</div>
 		</div>
 		<footer>
 			<div id="footer_bg">
@@ -112,3 +116,7 @@
 		</footer>
 	</body>
 </html>
+
+<!--[if IE]>
+	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
