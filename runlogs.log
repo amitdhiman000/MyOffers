@@ -1,0 +1,14 @@
+[2016-06-19 21:34:38 +0530] [6872] [INFO] Starting gunicorn 19.6.0
+[2016-06-19 21:34:38 +0530] [6872] [INFO] Listening at: http://0.0.0.0:5000 (6872)
+[2016-06-19 21:34:38 +0530] [6872] [INFO] Using worker: sync
+[2016-06-19 21:34:38 +0530] [6875] [INFO] Booting worker with pid: 6875
+[2016-06-19 21:34:38 +0530] [6875] [INFO] Worker exiting (pid: 6875)
+[2016-06-19 21:34:38 +0530] [6872] [INFO] Shutting down: Master
+[2016-06-19 21:34:38 +0530] [6872] [INFO] Reason: App failed to load.
+[2016-06-19 21:36:10 +0530] [6945] [INFO] Starting gunicorn 19.6.0
+[2016-06-19 21:36:10 +0530] [6945] [INFO] Listening at: http://0.0.0.0:5000 (6945)
+[2016-06-19 21:36:10 +0530] [6945] [INFO] Using worker: sync
+[2016-06-19 21:36:10 +0530] [6948] [INFO] Booting worker with pid: 6948
+[2016-06-19 21:38:18 +0530] [6945] [INFO] Handling signal: int
+[2016-06-19 16:08:18 +0000] [6948] [INFO] Worker exiting (pid: 6948)
+[2016-06-19 21:38:18 +0530] [6945] [INFO] Shutting down: Master
