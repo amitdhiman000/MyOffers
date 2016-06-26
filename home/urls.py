@@ -19,5 +19,6 @@ from . import views
 
 urlpatterns = [
 	url(r'^$', views.home_page, name='home'),
+	url(r'^profile/$', views.profile, name='profile'),
 	url(r'^invalid-request/$', views.invalid_request_view, name='invalid'),
 ]

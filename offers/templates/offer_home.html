@@ -42,8 +42,8 @@
 <div class="offer_box" >
 	<div class="offer_block">
 		<div class="offer_image">
-		{% with 'res/images/offers/'|add:offer.image_name as image_path %}
-			<img src="{% static image_path %}" alt="{{offer.product_name}} | {{offer.discount}}% Off" title="{{offer.product_name}} | {{offer.discount}}% Off" />
+		{% with '/media/images/offers/'|add:offer.image_name as image_path %}
+			<img src="{{image_path}}" alt="{{offer.product_name}} | {{offer.discount}}% Off" title="{{offer.product_name}} | {{offer.discount}}% Off" />
 		{% endwith %}
 		</div>
 		<div class="offer_desc">

@@ -1,6 +1,10 @@
-from .models import Consumer, Vendor, AnonymousUser
+from functools import wraps
 
+from .models import Consumer, Vendor, AnonymousUser
+from django.http import HttpResponse, HttpResponseRedirect
 from django.core.exceptions import ObjectDoesNotExist
+from django.conf import settings
+
 
 USER_UID_KEY = '_user_uid'
 USER_NAME_KEY = '_user_name'
@@ -56,3 +60,16 @@ def logout(request):
 	request.session.flush()
 	request.user = AnonymousUser()
 	#request._cached_user = request.user
+
+
+## Decorator function for chekcing the login status and redirect to login page
+##
+def login_required(funct):
+	#@warps(funct)
+	def decorator(request, *args, **kwargs):
+		print(request)
+		if request.user.is_loggedin() == False:
+			return HttpResponseRedirect(settings.ACCOUNT_LOGIN_URL)
+		else:
+			return funct(request, *args, **kwargs)
+	return decorator;

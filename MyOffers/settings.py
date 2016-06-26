@@ -144,3 +144,13 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static', 'media_root')
+
+# some custom settings
+#
+#
+ACCOUNT_LOGIN_URL = '/accounts/login/'
+ACCOUNT_LOGOUT_URL = '/accounts/logout/'
+ACCOUNT_SETTING_URL = '/accounts/settings/'
+
+USER_PROFILE_URL = '/home/profile/'
+INVALID_REQUEST_URL = '/home/invalid-request'

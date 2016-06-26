@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 #from django.contrib import auth
@@ -48,35 +49,18 @@ def auth1(request):
 			pprint(vars(user))
 			auth.login(request, user)
 			#request.session.set_expiry(10)
-			return HttpResponseRedirect('/accounts/loggedin')
+			return HttpResponseRedirect(settings.USER_PROFILE_URL)
 		else:
 			form_errors = {'user':'*Username or password is wrong!!'}
 			form_values = {'user':request.POST.get('user', '')}
 			request.session['form_errors'] = form_errors
 			request.session['form_values'] = form_values
-			return HttpResponseRedirect('/accounts/login')
-	else:
+			return HttpResponseRedirect(settings.ACCOUNT_LOGIN_URL)
 		return HttpResponse('Invalid request!!')
-
-
-def loggedin(request):
-	c = {'title':'Profile'}
-	return render(request, 'profile.html', c)
-
-
-def profile(request):
-	return loggedin(request)
-
-
-def invalid(request):
-	c = {'title': 'Invalid'};
-#	return HttpResponse ('This is Invalid Request')
-	return render(request, 'invalid.html', c)
-
 
 def logout(request):
 	auth.logout(request)
-	return HttpResponseRedirect('/')
+	return HttpResponseRedirect(settings.ACCOUNT_LOGIN_URL)
 
 #functions for registration
 def signup(request):
@@ -109,4 +93,20 @@ def register(request):
 				request.session['form_errors'] = control.get_errors()
 				request.session['form_values'] = control.get_values()
 				return HttpResponseRedirect('/accounts/signup')
-	return HttpResponseRedirect('/accounts/invalid')
+	return HttpResponseRedirect(settings.INVALID_REQUEST_URL)
+
+
+
+def loggedin(request):
+	return profile(request)
+
+
+def profile(request):
+	c = {'title':'Profile'}
+	return render(request, 'profile.html', c)
+
+
+def invalid(request):
+	c = {'title': 'Invalid'};
+#	return HttpResponse ('This is Invalid Request')
+	return render(request, 'invalid.html', c)

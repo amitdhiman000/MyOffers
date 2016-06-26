@@ -1,6 +1,24 @@
 {% extends 'base.html' %}
 
+{% block style %}
+<style type="text/css" >
+#mid-box { width:100%; }
+#mid-left { float: left; max-width: 50%; border: 1px #333 dotted; }
+#mid-right { float: right; border: 1px #333 dotted; margin-left: 10px; }
+</style>
+{% endblock %}
+
+
 {% block content %}
-<h1>Welcome to Myoffers</h1>
-<h2>Find all your nearby offers and good deals here.</h2>
+<div id="mid-box" >
+	<div id="mid-left" >
+		<h2>Welcome to Myoffers</h2>
+		<h4>Find all your nearby offers and good deals here.</h4>
+	</div>
+	<div id="mid-right" >
+		<h3>Get your best deals here</h3>
+		<p>see your offers here. you can get good deals from near by locations.
+		</p>
+	</div>
+</div>
 {% endblock %}

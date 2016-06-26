@@ -16,14 +16,18 @@ Including another URLconf
 
 from django.conf import settings
 from django.conf.urls.static import static
+#from django.conf.urls.media import media
 from django.conf.urls import url, include
 from django.contrib import admin
-#import accounts.views
+import accounts.views
 import home.views
+import offers.views
 
 urlpatterns = [
-	url(r'^$', home.views.home_page, name='home_page'),
+	url(r'^$', offers.views.offer_home, name='offer_home'),
     url(r'^home/', include('home.urls')),
+    url(r'^aboutus/$', home.views.aboutus, name='aboutus'),
+    url(r'^contacts/$', home.views.contacts, name='contacts'),
 	url(r'^accounts/', include('accounts.urls')),
 	url(r'^offer/', include('offers.urls')),
 #    url(r'^admin/', admin.site.urls),

@@ -5,7 +5,7 @@ from django.conf import settings
 # Create your tests here.
 
 def handle_uploaded_file(image_file, file_name='file'):
-    with open(settings.STATIC_DIR+'/images/offers/'+file_name, 'wb+') as destination:
+    with open(settings.STATIC_DIR+'/media_root/images/offers/'+file_name, 'wb+') as destination:
         for chunk in image_file.chunks():
             destination.write(chunk)
 
