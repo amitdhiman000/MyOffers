@@ -23,17 +23,22 @@
 
 	function toggleDetails(event)
 	{
-		if ($(this).text().match("v")) {
+		if ($(this).text().match("[+]")) {
 			console.log("Expand");
-			$(this).text('^');
+			$(this).text('[-]');
 			$(this).parentsUntil("div.offer_box").next().css({"display":"block"});
 		} else {
 			console.log("Contract");
-			$(this).text('v');
+			$(this).text('[+]');
 			$(this).parentsUntil("div.offer_box").next().css({"display":"none"});
 		}
 	}
 </script>
+{% endblock %}
+
+
+{% block leftpan %}
+
 {% endblock %}
 
 {% block content %}
@@ -52,7 +57,7 @@
 				{{offer.discount}}% Off
 			</div>
 			<div class="offer_desc2">
-				<a>v</a>
+				<a>[+]</a>
 			</div>
 		</div>
 		<div class="clear" ></div>

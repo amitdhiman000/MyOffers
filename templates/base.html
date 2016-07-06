@@ -9,8 +9,11 @@
 		<!--<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />-->
 
 		<style>
-			* { margin: 0px; padding: 0px; border: 0px; }
-			a { text-decoration: none; color: #CEC; }
+			* { margin: 0px; padding: 0px; border: 0px; box-sizing: border-box; }
+			a { text-decoration: none; color: #444; }
+			a:hover {color: #FFF; color: #555; }
+			body { font-family: Arial,sans-serif,Verdana; font-size: 13px; color:#555; }
+
 			.clear { clear: both; text-indent: -9999px; }
 			.cf { clear: both; display: inline-block; }
 			.cf:before .cf:after { content: " "; display: block; visibility: hidden; height: 0; line-height: 0; }
@@ -20,24 +23,38 @@
 			.text3 { font-size: 17px; font-family:"Helvetica"; color: #444; }
 			.text4 { font-size: 15px; font-family:"Helvetica"; color: #444; }
 			.hline { border-bottom: 1px dotted #222; width: 100%; margin: 0px auto;}
-			a:hover {color: #FFF;}
-			body { font-family: Arial,sans-serif,Verdana; font-size: 13px; }
-			#header_bg { width:100%; height:70px; background: #414141; color:#FEF; }
-			#header_content { width: 70%; height:inherit; margin: 0px auto;}
-			#company_info { width: 70%; height: inherit; float: left}
-			#logo { width: inherit; height: 50px; padding: 5px; }
-			#user_status { width: 20%; padding: 5px; margin-top:5px; float:right; }
 
-			#container { position: relative; width: 70%; margin: 0px auto; margin-top: 10px; margin-bottom: 40px; clear: both; }
-			#container a { color:#000; }
-			#container a:hover { color:#222; }
-			#nav_bar { width: 100%; margin: 0px auto; background: #f3f3f3; border: 1px solid #e7e7e7; overflow: hidden; }
+			#header_bg { width:100%; height:70px; background: #FEF; border-bottom: 1px solid #222;}
+			#header_content { width: 75%; margin: 0px auto;}
+			#company_info { width: 15%; height: inherit; float: left; }
+			#logo { width: inherit; height: 50px; padding: 5px; }
+			#search_pan { width: 60%; float: left; margin: 5px 2%; vertical-align: top;  }
+			#search_box { width:75%; height:30px;  border: 1px solid #AAA; }
+			#search_box:focus { border: 1px solid #222;  }
+			#search_button { width: 20%; height: 32px; color: #FEF; background: #555; border: 1px solid #222; }
+			#user_status { width: 15%; padding: 5px; margin: 5px; 1%; float: right; }
+
+			#nav_bar { width: 75%; margin: 0px auto; background: #f3f3f3; border: 1px solid #e7e7e7; overflow: hidden; }
 			#nav_bar ul { list-style: none;  }
 			#nav_bar li { float: left; }
 			#nav_bar a { display: block; text-align: center; padding: 10px 20px; color: #555; }
 			#nav_bar a:hover { background: #d3d3d3; }
 
-			#body_content { position: relative; width: 100%; margin: 0px auto; margin-top: 10px; }
+			#big-menu { position: absolute; left: 12.5%; display: none; width: 75%; min-height: 300px; background: #EEE;
+			 opacity: 0.95; filter: alpha(opacity=95); border: 1px solid #AAA; z-index: 3; }
+			#big-menu-inner { margin: 5px 2%; }
+			.big-menu-cols { float: left; width: 18%; margin-right: 2%;  border-right: 1px solid #AAA; }
+			.big-menu-cols:last-child { margin-right: 0; border-right: none; }
+			.menu-title { text-indent: 5%; /*text-align: center;*/ }
+			.menu-list { list-style: none; }
+			.menu-list li a { display: block; padding: 5px 10px; color: #555; }
+			.menu-list li a:hover { color: #222; }
+
+
+			#container { position: relative; width: 100%; margin: 0px auto; margin-top: 15px; margin-bottom: 40px; clear: both; min-height: 450px;}
+			#body_leftpan { float: left; width: 12.5%; }
+
+			#body_content { position: relative; width: 75%; margin: 0px auto; }
 
 			.form_table { border-spacing: 8px 2px; }
 			.form_table td { padding: 5px; }
@@ -56,7 +73,7 @@
 			.content_title { background: #414141; padding: 5px; color:#FEF; }
 			.content_body { padding: 5px; }
 
-			#footer_bg { position: fixed; left: 0; bottom: 0; width: 100%; margin-top: 30px; height: 30px; line-height: 30px; background: #414141; color: #FEF; }
+			#footer_bg { position: relative; left: 0; bottom: 0; width: 100%; margin-top: 30px; height: 30px; line-height: 30px; background: #414141; color: #FEF; }
 			#footer_content { position: relative; width: 70%; height: inherit; margin: 0px auto; text-align: center; }
 			#footer_content span { display: inline-block;  vertical-align: middle; }
 
@@ -64,6 +81,13 @@
 
 		<!-- jquery min -->
 		<script type="text/javascript" src="{% static 'js/jquery2.2.2.min.js' %}" >
+		</script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#nav_bar ul li:first-child").on('click' , function(event) { event.stopPropagation(); $('#big-menu').fadeToggle(100); });
+				//$("#big-menu").on('click', function(event) { event.stopPropagation(); });
+				$(document).on('click', function() { $('#big-menu').fadeOut(100); });
+			});
 		</script>
 
 		<!-- scripts -->
@@ -87,6 +111,12 @@
 						</div>
 						<!--<h5>MyOffers</h5>-->
 					</div>
+					<div id ="search_pan">
+						<form method="POST" action="/offer/search/">
+							<input type="text" name="search_box" id="search_box" />
+							<input type="submit" name="submit" id="search_button" value="Search" />
+						</form>
+					</div>
 					<div id="user_status" >
 						{% if user.is_loggedin %}
 							<a href="/accounts/profile/">Hi {{ user.name }}!</a>
@@ -101,15 +131,74 @@
 				</div>
 			</div>
 		</header>
+		<nav id ="nav_bar">
+			<ul>
+				<li><a href="#">[+] Catagories</a></li>
+				<li><a href="/">Home</a></li>
+				<li><a href="/offer/">Offers</a></li>
+				<li><a href="/aboutus/">About us</a></li>
+				<li><a href="/contacts/">Contacts</a></li>
+			</ul>
+		</nav>
+
+		<div id="big-menu">
+			<!-- hidden menu -->
+			<div id="big-menu-inner">
+				<div class="big-menu-cols">
+					<h3 class="menu-title" >Electronics</h3>
+					<ul class="menu-list" >
+						<li><a href="#">Mobiles</a></li>
+						<li><a href="#">Computers</a></li>
+						<li><a href="#">TV & Refrigators</a></li>
+						<li><a href="#">Accessories</a></li>
+						<li><a href="#">Others</a></li>
+					</ul>
+				</div>
+				<div class="big-menu-cols">
+					<h3 class="menu-title" >Food</h3>
+					<ul class="menu-list" >
+						<li><a href="#">Home Delivery</a></li>
+						<li><a href="#">Dine Out</a></li>
+						<li><a href="#">Party Offers</a></li>
+						<li><a href="#">Others</a></li>
+					</ul>
+				</div>
+				<div class="big-menu-cols">
+					<h3 class="menu-title" >Clothing</h3>
+					<ul class="menu-list" >
+						<li><a href="#">Men</a></li>
+						<li><a href="#">Women</a></li>
+						<li><a href="#">Shoes</a></li>
+						<li><a href="#">Others</a></li>
+					</ul>
+				</div>
+				<div class="big-menu-cols">
+					<h3 class="menu-title" >Sports</h3>
+					<ul class="menu-list" >
+						<li><a href="#">Shoes</a></li>
+						<li><a href="#">Sports Kits</a></li>
+						<li><a href="#">Sports Items</a></li>
+						<li><a href="#">Others</a></li>
+					</ul>
+				</div>
+				<div class="big-menu-cols">
+					<h3 class="menu-title" >Others</h3>
+					<ul class="menu-list" >
+						<li><a href="#">Empty</a></li>
+						<li><a href="#">Empty</a></li>
+						<li><a href="#">Empty</a></li>
+						<li><a href="#">Empty</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
 		<div id="container">
-			<nav id ="nav_bar">
-				<ul>
-					<li><a href="/">Home</a></li>
-					<li><a href="/offer/">Offers</a></li>
-					<li><a href="/aboutus/">About us</a></li>
-					<li><a href="/contacts/">Contacts</a></li>
-				</ul>
-			</nav>
+			<div id="body_leftpan">
+			&nbsp;
+			{% block leftpan %}
+			{% endblock %}
+			</div>
 			<div id="body_content" class="cf">
 			{% block content %}
 
