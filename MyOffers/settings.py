@@ -23,57 +23,59 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '!#byfsfle(0g6q^+s12bjtw_2b+jjzxt9@)suhw7rggmu5x-ce'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # don't set this, POST request don't append slash by default
 #APPEND_SLASH=False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    #'django.contrib.admin',
-    #'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'accounts',
-    'home',
-    'offers',
+	#'django.contrib.admin',
+	#'django.contrib.auth',
+	'django.contrib.contenttypes',
+	'django.contrib.sessions',
+	'django.contrib.messages',
+	'django.contrib.staticfiles',
+	'ajax',
+	'home',
+	'user',
+	'error',
+	'offer',
 ]
 
 MIDDLEWARE_CLASSES = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    #'django.contrib.auth.middleware.AuthenticationMiddleware',
-    #'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-    'accounts.middleware.AuthMiddleware', # custom middleware
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'django.middleware.security.SecurityMiddleware',
+	'django.contrib.sessions.middleware.SessionMiddleware',
+	'django.middleware.common.CommonMiddleware',
+	'django.middleware.csrf.CsrfViewMiddleware',
+	#'django.contrib.auth.middleware.AuthenticationMiddleware',
+	#'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+	'user.middleware.AuthMiddleware', # custom middleware
+	'django.contrib.messages.middleware.MessageMiddleware',
+	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 ROOT_URLCONF = 'MyOffers.urls'
 
 TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates', 'accounts/templates', 'offers/templates'],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                #'django.contrib.auth.context_processors.auth',
-                'accounts.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
+	{
+		'BACKEND': 'django.template.backends.django.DjangoTemplates',
+		'DIRS': ['templates'],
+		'APP_DIRS': True,
+		'OPTIONS': {
+			'context_processors': [
+				'django.template.context_processors.debug',
+				'django.template.context_processors.request',
+				#'django.contrib.auth.context_processors.auth',
+				'user.context_processors.auth',
+				'django.contrib.messages.context_processors.messages',
+			],
+		},
+	},
 ]
 
 WSGI_APPLICATION = 'MyOffers.wsgi.application'
@@ -83,11 +85,11 @@ WSGI_APPLICATION = 'MyOffers.wsgi.application'
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        'NAME': os.path.join(BASE_DIR, 'devel.sqlite3')
-    }
+	'default': {
+		'ENGINE': 'django.db.backends.sqlite3',
+		#'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+		'NAME': os.path.join(BASE_DIR, 'devel.sqlite3')
+	}
 }
 
 
@@ -95,18 +97,18 @@ DATABASES = {
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+	{
+		'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+	},
+	{
+		'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+	},
+	{
+		'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+	},
+	{
+		'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+	},
 ]
 
 
@@ -129,11 +131,35 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
-
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [
-    ('res', os.path.join(BASE_DIR, 'static')),
-]
+if DEBUG:
+	STATIC_ROOT = os.path.join(BASE_DIR, 'static', 'static_root')
+	#STATIC_DIR = os.path.join(BASE_DIR, 'static', 'static_dirs')
+	STATICFILES_DIRS = [
+	    os.path.join(BASE_DIR, 'static', 'static_dirs'),
+	    # '/var/www/static_files/'
+	]
+else:
+	STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+	STATICFILES_DIRS = [
+	    os.path.join(BASE_DIR, 'static', 'static_dirs'),
+	    # '/var/www/static_files/'
+	]
+
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static', 'media_root')
+# some custom settings
+# public pages
+HOME_PAGE_URL = '/'
+# error urls
+ERROR_INVALID_REQUEST_URL = '/error/invalid-request/'
+ERROR_UNDER_CONSTRUCTION_URL = '/error/under-construction/'
+# user pages
+USER_LOGIN_URL = '/user/signin/'
+USER_SIGNUP_URL = '/user/signup/'
+USER_SIGNUP_SUCCESS_URL = '/user/signup-success/'
+USER_LOGOUT_URL = '/user/signout/'
+USER_SETTING_URL = '/user/settings/'
+USER_PROFILE_URL = '/user/profile/'
