@@ -1,13 +1,32 @@
 from django.shortcuts import render
 
+##
+from common import login_required
+import device
+
 # Create your views here.
 
-
 def home_page(request):
-	c = {'title': 'Home'}
-	return render(request, 'home.html', c)
+	data = {'title': 'Home'}
+	file = device.get_template(request, 'home.html')
+	return render(request, file, data)
 
-def invalid_request_view(request):
-	c = {'title': 'Invalid request'}
-	return render(request, 'invalid.html', c)
+@login_required
+def profile(request):
+	data = {'title' : 'Profile'}
+	file = device.get_template(request, 'user_profile.html')
+	return render(request, file, data)
+
+
+def aboutus(request):
+	data = {'title' : 'About us'}
+	file = device.get_template(request, 'home_aboutus.html')
+	return render(request, file, data)
+
+
+def contacts(request):
+	data = {'title' : 'Contacts'}
+	file = device.get_template(request, 'home_contacts.html')
+	return render(request, file, data)
+
 

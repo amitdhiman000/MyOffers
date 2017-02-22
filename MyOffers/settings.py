@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '!#byfsfle(0g6q^+s12bjtw_2b+jjzxt9@)suhw7rggmu5x-ce'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # don't set this, POST request don't append slash by default
 #APPEND_SLASH=False
@@ -133,19 +133,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 STATIC_URL = '/static/'
 
-if DEBUG:
-	STATIC_ROOT = os.path.join(BASE_DIR, 'static', 'static_root')
-	#STATIC_DIR = os.path.join(BASE_DIR, 'static', 'static_dirs')
-	STATICFILES_DIRS = [
-	    os.path.join(BASE_DIR, 'static', 'static_dirs'),
-	    # '/var/www/static_files/'
-	]
-else:
-	STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-	STATICFILES_DIRS = [
-	    os.path.join(BASE_DIR, 'static', 'static_dirs'),
-	    # '/var/www/static_files/'
-	]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static', 'static_root')
+#STATIC_DIR = os.path.join(BASE_DIR, 'static', 'static_dirs')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static', 'static_dirs'),
+    # '/var/www/static_files/'
+]
 
 MEDIA_URL = '/media/'
 
