@@ -1,0 +1,48 @@
+{% extends './base.html' %}
+
+{% block content %}
+<div data-role="page" id="adminindexpage" data-dom-cache="false" >
+	<style>
+		.topic-item { float: left; padding: 0.5em 0.9em; border-radius: 4px; margin: 5px; }
+		.topic-item-f { background: #38C; color: #FFF; border: 1px solid #38C; }
+		.topic-item-uf { background: #F9F9F9; color: #333; border: 1px solid #DDD; }
+	</style>
+	{% include './header.html' %}
+	<div data-role="main" class="ui-content dais-ui-content">
+		<div class="ui-bar ui-bar-a ui-corner-all" style="margin-top: 5px;">
+			<strong>Topics <strong>
+		</div>
+  		<div class="ui-body ui-body-a ui-corner-all">
+  			{% for topic in topics %}
+  				<div class="topic-item topic-item-f" > {{topic.name}} </div>
+  				<div class="topic-item topic-item-uf" > {{topic.name}} </div>
+  			{% endfor %}
+  		</div>
+	</div>
+
+	<div style="position:absolute; bottom: 10%; right: 7%;" >
+		<a href="#new_topic" data-rel="popup" data-role="none" data-position-to="window" >
+			<button class="dais-fab" data-role="none" >+</button>
+		</a>
+	</div>
+
+	<div data-role="popup" id="new_topic" data-overlay-theme="a" class="ui-corner-all" data-transition="pop" >
+	    <form action="/daisadmin/topic-create/" method="POST" >
+	        <div class="ui-content" style="padding:0px 0px;" >
+	            <div class="ui-corner-all custom-corners">
+					<div class="ui-bar ui-bar-a">
+						<strong>Add topic </strong>
+					</div>
+			  		<div class="ui-body ui-body-a">
+			  			{% csrf_token %}
+			            <input type="text" name="topic_name" value="" placeholder="Title" data-theme="a">
+			            <input type="text" name="topic_desc" value="" placeholder="Description" data-theme="a">
+			            <button type="submit" class="submit ui-btn ui-corner-all ui-btn-icon-left ui-icon-check" onclick="(function() { console.log('close popup'); setTimeout(function(){ $('#new_topic').popup('close');},1); })()">Add</button>
+					</div>
+				</div>
+	        </div>
+	    </form>
+	</div>
+	{% include './footer.html' %}
+</div>
+{% endblock %}

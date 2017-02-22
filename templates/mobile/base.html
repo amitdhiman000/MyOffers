@@ -1,0 +1,78 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<title>{{ title }} | Dais</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/> 
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+		<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.mobile-1.4.5.min.css' %}" />
+		<link rel="stylesheet" type="text/css" href="{% static 'css/app-widgets.css' %}" />
+		<script type="text/javascript" src="{% static 'js/jquery-1.9.1.min.js' %}" ></script>
+		<script type="text/javascript" src="{% static 'js/jquery.mobile-1.4.5.min.js' %}" ></script>
+		<script type="text/javascript" src="{% static 'js/app-mobile.js' %}" ></script>
+		<script type="text/javascript" src="{% static 'js/app-widgets.js' %}" ></script>
+
+		<script type="text/javascript">
+			$(document).on("mobileinit", function() {
+				console.log('+mobileinit');
+				$.mobile.ignoreContentEnabled = true;
+				$(document).on("swipeleft",function(event) {
+					console.log('+swipeleft');
+					if(event.handled !== true) { // This will prevent event triggering more then once
+						var nextpage = $.mobile.activePage.next('[data-role="page"]');
+						// swipe using id of next page if exists
+						if (nextpage.length > 0) {
+							$.mobile.changePage(nextpage, {transition: "slide", reverse: false}, true, true);
+						}
+						event.handled = true;
+					}
+					return false;
+				});
+
+				$(document).on("swiperight",function(event){
+					console.log('+swiperight');
+					if(event.handled !== true) { // This will prevent event triggering more then once
+						var prevpage = $(this).prev('[data-role="page"]');
+						if (prevpage.length > 0) {
+							$.mobile.changePage(prevpage, {transition: "slide", reverse: true}, true, true);
+						}
+						event.handled = true;
+					}
+					return false;
+				});
+			});
+		</script>
+		<!-- scripts -->
+		{% block script %}
+		{% endblock %}
+		<style type="text/css">
+			.toast { display: none; min-width: 30%; max-width: 80%;	height: auto; position: fixed; left:50%; margin-left:-20%; bottom:10%; background-color: #e9e9e9; color: #111; font-family: Calibri; 	font-size: 1.0em; padding:0.9em; text-align:center;
+				border-radius: 2px;
+				-webkit-box-shadow: 0px 0px 24px -1px rgba(56, 56, 56, 1);
+				-moz-box-shadow: 0px 0px 24px -1px rgba(56, 56, 56, 1);
+				box-shadow: 0px 0px 24px -1px rgba(56, 56, 56, 1);
+			}
+			.form-table tr td:first-child { text-align: right; }
+			.h-bar-dotted { border-bottom: 1px dotted #ccc; height: 1px; }
+			.h-bar-solid { border-bottom: 1px solid #ccc; height: 1px; }
+			.ui-page { background: #f9f9f9; color: #555;  }
+			.ui-content { padding: 0.1em; }
+			.dais-ui-content .ui-content, .dais-ui-content { padding: 0.4em; }
+			.ui-bar-c { border: 1px solid #DDD; padding: 0.6em 0.8em; background: #e9e9e9; }
+			.dais-shadow { margin-top: 0.5em; padding: 0.2em; border: 1px solid #ccc; box-shadow: 0px 4px 8px #777;background: #fff; }
+			.dais-shadow:before { position: absolute; content: ""; transform: rotate(3deg); }
+			.dais-shadow:after { transform: rotate(-3deg); }
+		</style>
+		<!-- styles -->
+		{% block style %}
+		{% endblock %}
+	</head>
+
+	<body>
+		{% block content %}
+		{% endblock content %}
+	</body>
+</html>

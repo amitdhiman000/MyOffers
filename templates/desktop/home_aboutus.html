@@ -1,0 +1,74 @@
+{% extends './base.html' %}
+
+{% load staticfiles %}
+
+{% block style %}
+<style type="text/css" >
+#mid-box { width:100%; }
+#mid-1 { margin: 0px auto; text-align: center; }
+#mid-2 { margin: 10px auto; width: 90%; }
+#mid-3 { margin: 0px auto; }
+.mid-3-ibox { float: left; margin-left: 4%; width: 27%; }
+.mid-3-title {  }
+.mid-3-title .title-image { margin: 1px 5px; float:left; }
+.mid-3-title .title-text { margin: 1px 5px; float:left; line-height: 32px;  }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div id="mid-box" >
+	<div id="mid-1" >
+		<span class="text1" >A LITTLE BIT <strong>ABOUT US</strong></h2>
+	</div>
+	<div class="hline"></div>
+	<div id="mid-2" class="text4" >
+		<p>We keep in touh with all the dealers and vendors in market to give you best deals.
+		</p>
+	</div>
+	<div id="mid-3" class="cf" >
+		<div id="mid-3-1" class="mid-3-ibox">
+			<div class="mid-3-title" >
+				<div class="title-image" >
+					<img src="{% static 'images/icons32/people32.jpg' %}" />
+				</div>
+				<div class="title-text text2" >
+					<strong> WHO ARE WE ? </strong>
+				</div>
+				<div class="clear"> </div>
+			</div>
+			<p class="text4" >
+				 We are a team of web developers who are driven by passion and urge to create something that our customers love.
+			</p>
+		</div>
+		<div id="mid-3-2" class="mid-3-ibox">
+			<div class="mid-3-title" >
+				<div class="title-image" >
+					<img src="{% static 'images/icons32/tools32.jpg' %}" />
+				</div>
+				<div class="title-text text2" >
+					<strong> WHAT WE DO ? </strong>
+				</div>
+				<div class="clear"> </div>
+			</div>
+			<p class="text4">
+				We build user friendly powerful and easy to use interfaces. Which helps a million of users to get what they want.
+			</p>
+		</div>
+		<div id="mid-3-3" class="mid-3-ibox">
+		<div class="mid-3-title" >
+				<div class="title-image" >
+					<img src="{% static 'images/icons32/clock32.jpg' %}" />
+				</div>
+				<div class="title-text text2" >
+					<strong> SINCE WHEN ? </strong>
+				</div>
+				<div class="clear"> </div>
+			</div>
+			<p class="text4">
+				We are in the market since Jan 2014, and continusely improving the interfaces which helps the customers.
+			</p>
+		</div>
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends './base.html' %}
+
+{% load staticfiles %}
+
+{% block style %}
+<style type="text/css" >
+#mid-box { width:100%; }
+#mid-1 { margin: 5px auto; text-align: center; }
+#mid-2 { margin: 10px auto; width: 90%;  text-align: center; }
+#mid-3 { margin: 10px auto; }
+#mid-3-left { float: left; }
+#mid-3-right { margin-left: 20px; float: left; }
+textarea { border: 1px solid #333; width: 250px; height: 100px; resize: none; }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div id="mid-box" >
+	<div id="mid-1" >
+		<span class="text1" >GET IN TOUCH <strong>WITH US</strong></h2>
+	</div>
+	<div class="hline"></div>
+
+	<div id="mid-3">
+		<div id="mid-3-left" >
+			<form action="/contacts/" method="POST">
+				{% csrf_token %}
+				<table class="form_table">
+					<tr><td>Name : </td><td><input type="text" name="user" class="inputBox" /></td></tr>
+					<tr><td>Email : </td><td><input type="text" name="email" class="inputBox" /></td></tr>
+					<tr><td>Phone : </td><td><input type="text" name="phone" class="inputBox" /></td></tr>
+					<tr><td>Message : </td><td><textarea></textarea></td></tr>
+					<tr><td></td>
+					<td><input type="submit" name="login" value="Send" class="buttons-long" />
+					</td></tr>
+				</table>
+			</form>
+		</div>
+		<div id="mid-3-right">
+			<div class="text2" style="margin: 3px 0px;">
+				GOT A QUESTION? <strong>TALK WITH US DIRECT.</strong>
+			</div>
+			<div class="text3" >
+				<p style="font-size:30px;" > <strong>Call.</strong> <a href="callto:0123456789" > 0123 456 789</a></p>
+				<p> <strong>Email.</strong> <a href="mailto:hello@myoffers.com">hello@myoffers.com</a> </p>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

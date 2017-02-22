@@ -1,0 +1,26 @@
+{% extends './base.html' %}
+{% load staticfiles %}
+{% block content %}
+<div data-role="page" {{dataurl|safe}} id="profilepage" data-dom-cache="false" >
+	<style>
+	.ui-bar-c { border: 1px solid #DDD; padding: 0.6em 0.8em; background: #E9E9E9; }
+	</style>
+
+	{% include './header.html' %}
+	<div class="ui-content" data-role="main">
+		<div class="ui-corner-all custom-corners" style="margin-top:1.0em;">
+			<!--<div class="ui-bar ui-bar-c" >-->
+			<div class="ui-bar ui-bar-a">
+				<strong>Under construction</strong>
+			</div>
+	  		<div class="ui-body ui-body-a">
+				<p>
+					Page is under construction
+				</p>
+			</div>
+		</div>
+	</div>
+	{% include './footer.html' %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends './base.html' %}
+
+{% block styles %}
+{% endblock %}
+
+
+{% block content %}
+<div data-role="page" id="topicspage" data-dom-cache="false" >
+	{% include './header.html' %}
+	{% include './post_topics_nav.html' %}
+	<div data-role="main" class="ui-content">
+		<div class="ui-bar ui-bar-a ui-corner-all custom-corners">
+			<strong>Topics </strong>
+		</div>
+	</div>
+
+	{% include './footer.html' %}
+</div>
+{% endblock %}

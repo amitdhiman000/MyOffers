@@ -1,0 +1,126 @@
+{% extends './base.html' %}
+{% load staticfiles %}
+
+{% block pagemenu %}
+{% include './post_topics_nav.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="ui-page" >
+	<style type="text/css" >
+		.poll-div { margin: 1.2em auto; padding: 1.0em; padding-top: 0.5em; border: 1px solid #ddd; border-radius: 3px; }
+		.poll-div input[type="radio"] { display: none; }
+		.poll-div input[type="radio"] + label { background: #f9f9f9; color: #666; padding: 0.5em 1.5em; border: 1px solid #38c; border-radius: 4px; cursor: pointer; }
+		.poll-div input[type="radio"] + label:hover { background: #38f; color: #fff; }
+		.poll-div input[type="radio"]:checked + label { background:#38c; color: #fff; border: 1px solid #38d; }
+		.poll-response { margin-top: 0.3em; padding: 1.0em 0em; }
+		.piechart-div { display: none; border: 1px solid #ccc; }
+	</style>
+
+	<div class="ui-bar-tbb">
+		<strong>Polls</strong>
+	</div>
+	{% if polls|length == 0 %}
+	<div class="ui-body">
+		<p>No polls</p>
+	</div>
+	{% else %}
+	{% for poll in polls %}
+	<div class="ui-body ui-body-tb">
+		<div class="poll-div" poll-id="{{poll.pk}}" >
+			<div class="ui-bar-tbb" >
+				<strong>{{poll.title}}</strong>
+			</div>
+			<div class="poll-body" >
+				<p>{{poll.text}}</p>
+				{% if poll.user_response != -9 %}
+				<div class="poll-response" >
+					<form action="/post/poll-response/" method="POST" >
+						<input name="poll" id="poll-choice-yes" value="1" type="radio" onchange="pollResponse(this)" {% if poll.user_response  == 1 %}checked{%endif%} />
+						<label for="poll-choice-yes">Yes</label>
+						<input name="poll" id="poll-choice-no" value="-1" type="radio" onchange="pollResponse(this)" {% if poll.user_response  == -1 %}checked{%endif%} />
+						<label for="poll-choice-no">No</label>
+						<input name="poll" id="poll-choice-notsure" value="0" type="radio" onchange="pollResponse(this)" {% if poll.user_response  == 0 %}checked{%endif%} />
+						<label for="poll-choice-notsure">Not Sure</label>
+					</form>
+				</div>
+				{% endif %}
+			</div>
+			<a href="javascript:void(0)" onclick="showPollResults(this)" >Poll Result</a>
+			<div class="piechart-div" yes="{{poll.yes}}" no="{{poll.no}}" not-sure="{{poll.not_sure}}" ></div>
+		</div>
+	</div>
+	{% endfor %}
+	{% endif %}
+	<script type="text/javascript" src="{% static 'js/google/loader.js' %}" ></script>
+	<script type="text/javascript">
+		google.charts.load('current', {'packages':['corechart']});
+		//google.charts.setOnLoadCallback(drawChart);
+		function drawChart(pc) {
+			var yes = parseInt(pc.attr('yes'));
+			var no = parseInt(pc.attr('no'));
+			var not_sure = parseInt(pc.attr('not-sure'));
+			console.log('yes : '+yes+ ' no : '+no+' not sure :'+not_sure);
+			if(yes == 0 && no == 0 && not_sure == 0) { not_sure= 1; }
+			var data = google.visualization.arrayToDataTable([
+					['Task', 'Votes'],
+					['Yes',     yes],
+					['No',      no],
+					['Not sure',  not_sure],
+				]);
+
+			var options = {
+				//title: 'Poll Result',
+				//legend: 'labeled',
+				legend:{ position: 'left', alignment: 'center' },
+				chartArea: { left:20, top:10 , width: 190, height: 150},
+				width: 300,
+				height: 160,
+				pieStartAngle: 100,
+				pieSliceText: 'label',
+				pieHole: 0.2,
+				//is3D: true,
+			};
+
+			var chart = new google.visualization.PieChart(pc.get(0));
+			chart.draw(data, options);
+		}
+
+		function showPollResults(pLink) {
+			console.log('+showPollResults');
+			var pc = $(pLink).next('.piechart-div');
+			drawChart(pc);
+			if (pc.is(":visible")) {
+				pc.hide();
+			} else {
+				pc.show();
+				//pc.focus();
+				//pc.on('focusout', function() { console.log('focusout'); $(this).hide(); });
+			}
+		}
+
+		function pollResponse(elem) {
+			var jqElm = $(elem);
+			if(jqElm.is(':checked')) {
+				var pollDiv = jqElm.parents('.poll-div');
+				var pollId = parseInt(pollDiv.attr('poll-id'));
+				console.log('pollId : '+pollId);
+				data = { 'poll_id': pollId, 'poll_response': jqElm.val() };
+				postRequest('/post/poll-response/', data, (status, result) => {
+					if(status === true) {
+						var pc = pollDiv.find('.piechart-div');
+						var pr = pollDiv.find('.poll-response');
+						console.log("exist : "+pc.exists());
+						drawChart(pc);
+						pc.show();
+						pr.hide();
+					} else {
+						console.log('Fail to send response');
+						jqElm.prop('checked', false);
+					}
+				});
+			}
+		}
+	</script>
+</div>
+{% endblock %}

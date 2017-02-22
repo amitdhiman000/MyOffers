@@ -1,0 +1,25 @@
+{% extends './base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="ui-page" >
+	<div class="ui-bar-tbb">
+		<h3>Sign In</h3>
+	</div>	
+	<div class="ui-body" >
+		{% if form_errors %}
+			<p style="color:red;" >{{form_errors.user}}</p>
+		{% endif %}
+		<form action="/user/signin-auth/" method="POST">
+			{% csrf_token %}
+			<table class="form-table">
+				<tr><td>Email : </td><td><input type="text" name="email" class="inputbox" placeholder="Email id" /></td></tr>
+				<tr><td>Password : </td><td><input type="password" name="pass" class="inputbox" placeholder="Password" /></td></tr>
+				<tr><td></td>
+				<td><input type="submit" name="login" value="Login" class="buttons" />
+				</td></tr>
+			</table>
+		</form>
+	</div>
+</div>
+{% endblock %}

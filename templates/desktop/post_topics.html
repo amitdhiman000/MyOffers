@@ -1,0 +1,27 @@
+{% extends './base.html' %}
+
+{% block pagemenu %}
+{% include './post_topics_nav.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="ui-page" >
+	{% if is_ajax == true %}
+	<div data-role="main" class="ui-content">
+		<div class="ui-bar-tbb">
+			<strong>Topics </strong>
+		</div>
+		<div class="ui-body">
+			No Posts
+		</div>
+	</div>
+	{% else %}
+	<div class="ui-bar-tbb">
+		<strong>Topics </strong>
+	</div>
+	<div class="ui-body">
+		<h3> Not an Ajax Request </h3>
+	</div>
+	{% endif %}
+</div>
+{% endblock %}

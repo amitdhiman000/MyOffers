@@ -1,0 +1,40 @@
+{% extends './base.html' %}
+
+{% block content %}
+<div data-role="page" {{dataurl|safe}} id="profilepage" data-dom-cache="false" >
+	<style>
+	.ui-bar-c { border: 1px solid #DDD; padding: 0.6em 0.8em; background: #E9E9E9; }
+	</style>
+
+	{% include './header.html' %}
+	<div class="ui-content" data-role="main">
+		<div class="ui-corner-all custom-corners" style="margin-top:1.0em;">
+			<!--<div class="ui-bar ui-bar-c" >-->
+			<div class="ui-bar ui-bar-a">
+				<strong>FDI in India</strong>
+			</div>
+	  		<div class="ui-body ui-body-a" style="text-align: justify;" >
+				<strong>Introduction</strong>
+				<p>
+				Apart from being a critical driver of economic growth, foreign direct investment (FDI) is a major source of non-debt financial resource for the economic development of India. Foreign companies invest in India to take advantage of relatively lower wages, special investment privileges such as tax exemptions, etc. For a country where foreign investments are being made, it also means achieving technical know-how and generating employment.
+
+				The Indian government’s favourable policy regime and robust business environment have ensured that foreign capital keeps flowing into the country. The government has taken many initiatives in recent years such as relaxing FDI norms across sectors such as defence, PSU oil refineries, telecom, power exchanges, and stock exchanges, among others.
+				</p>
+
+				<strong>Market size</strong>
+				<p>
+				According to Department of Industrial Policy and Promotion (DIPP), the total FDI investments India received during April - September 2016 rose 30 per cent year-on-year to US$ 21.6 billion, indicating that government's effort to improve ease of doing business and relaxation in FDI norms is yielding results.
+
+				Data for April - September 2016 indicates that the services sector attracted the highest FDI equity inflow of US$ 5.29 billion, followed by telecommunications – US$ 2.79 billion, and trading – US$ 1.48 billion. Most recently, the total FDI equity inflows for the month of September 2016 touched US$ 5.15 billion.
+
+				During April - September 2016, India received the maximum FDI equity inflows from Mauritius (US$ 5.85 billion), followed by Singapore (US$ 4.68 billion), Japan (US$ 2.79 billion), (US$ 1.62 billion), and USA (US$ 1.44 billion).
+
+				Impact investments in India is expected to grow at a compound annual growth rate (CAGR) of 20-24 per cent to touch US$ 6-8 billion by 2025, from US$ 1 billion in 2015.1
+				</p>
+			</div>
+		</div>
+	</div>
+	{% include './footer.html' %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,92 @@
+{% load staticfiles %}
+
+<div data-role="header" data-position="fixed" data-tap-toggle="false" >
+	<style>
+	#website-info { width:13%; float: left; }
+	.search-box { float: left; width: 80%; }
+	.search-results { position: absolute; width: 80%; z-index:50; display: none; }
+	</style>
+	<div id="header-top" class="ui-content"  >
+		<div id="website-info" class="ui-content" style="padding: 0.2em;">
+			<!-- website logo -->
+			<a href="/" data-ajax="false" style="display: block;">
+			<img src="{% static 'images/d-logo-b.png' %}" />
+			</a>
+		</div>
+		<div class="search-box" data-role="main" class="ui-content" style="padding: 0em 0.5em;" >
+			<form method="post" action="javascript:doSearch()" id="search-form" class="search-form" >
+				<input data-type="search" name="search" id="search" class="search" value="" placeholder="Search here..." autocomplete="off" onblur="showSearchList($(this), false)" onfocus="showSearchList($(this), true)" />
+			</form>
+			<ul data-role="listview" data-filter="true" data-inset="true" data-input="#search" class="search-results" style="margin-top: 0em;" >
+			    <!--<li data-filtertext="main page:home page"><a href="#">Home</a></li>-->
+			</ul>
+		</div>
+	</div>
+	<div data-role="navbar" data-iconpos="left" >
+		<ul>
+			<li><a href="/" data-transition="none" data-icon="home"
+			{% if page == 'home' %}
+			class="ui-btn-active ui-state-persist"
+			{% endif %} >Home</a></li>
+			<li><a href="/home/topics/" data-transition="none" data-icon="grid"
+			{% if page == 'post' %}
+			class="ui-btn-active ui-state-persist"
+			{% endif %} >Topics</a></li>
+			<li><a href="/home/alerts/" data-transition="none" data-icon="alert"
+			{% if page == 'alerts' %}
+			class="ui-btn-active ui-state-persist"
+			{% endif %} >Alerts</a></li>
+			{% if user.is_loggedin %}
+			<li><a href="/user/profile/" data-transition="none" data-icon="user"
+			{% if page == 'user' %}
+			class="ui-btn-active ui-state-persist"
+			{% endif %} >{{ user.name }}</a></li>
+			{% else %}
+			<li><a href="/user/signin/" data-transition="none" data-icon="user"
+			{% if page == 'user' %}
+			class="ui-btn-active ui-state-persist"
+			{% endif %} > SignIn </a></li>
+			{% endif %}
+		</ul>
+	</div>
+</div>
+
+<!--  -->
+<div style="position: fixed; bottom: 7%; left: 5%; z-index: 51" >
+	<a href="#dais-panel" data-icon="bars" data-iconpos="notext" data-role="button" class="dais-fab" >Menu</a>
+</div>
+<div data-role="panel" id="dais-panel" data-position="left" data-display="overlay" >
+	<!-- <a href="#" data-rel="close" data-icon="delete" data-role="button" >Close</a> -->
+	<ul data-role="listview">
+		<li><a href="/politics/news/">News</a></li>
+		<li><a href="/politics/trending/">Trending</a></li>
+		<li><a href="/politics/latest-debates/">Latest Debates</a></li>
+		<li><a href="/politics/latest-laws/">Latest Laws</a></li>
+		<li><a href="/politics/latest-petitions/">Latest Petitions</a></li>
+		<li><a href="/politics/center-govt-projects/">Center Govt. Projects</a></li>
+		<li><a href="/politics/state-govt-projects/">State Govt. Projects</a></li>
+		<li><a href="/politics/indian-parliament-members/">Parliament</a></li>
+		<li><a href="/politics/indian-rajyasabha-members/">Rajayasabha</a></li>
+		<li><a href="/politics/state-legislative-members/">State Legislative</a></li>
+		<li><a href="/politics/parties/">Political Parties</a></li>
+		<li><a href="/politics/indian-fdi/">Indian FDI</a></li>
+		<li><a href="/politics/indian-gdp/">Indian GDP</a></li>
+	</ul>
+</div>
+
+
+<!-- Toast widget -->
+<div class="toast" style="display: none;" >
+</div>
+
+<!-- Comment Widget -->
+<div class="user-comments-wid" id="user-comments-wid" style="display: none;" dias-name="comment-wid" >
+	<div class="user-comments">
+	</div>
+	<form action="/post/post-comment/" method="POST" data-ajax="false" >
+		<input type="hidden" name="article_id" id="article_id" />
+		<!--<input type="text" name="comment" class="comment-text" data-mini="true" style="padding: .22em auto;"" />-->
+		<textarea name="comment" class="comment-text" style="resize:none;" data-mini="true" ></textarea>
+		<input type="submit" name="submit" value="Post" data-mini="true" data-inline="true" data-icon="check" class="user-comment-submit" />
+	</form>
+</div>

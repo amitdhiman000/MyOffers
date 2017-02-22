@@ -1,0 +1,43 @@
+{% extends './base.html' %}
+
+{% block styles %}
+{% endblock %}
+
+
+{% block content %}
+<div data-role="page" id="pollspage" data-dom-cache="false" >
+	{% include './header.html' %}
+	{% include './post_topics_nav.html' %}
+	<div data-role="main" class="ui-content ui-corner-all">
+		{% if polls.len == 0 %}
+			<div class="ui-bar ui-bar-a">
+				<strong>Polls</strong>
+			</div>
+			<div class="ui-body ui-body-a">
+				<h4>No polls</h4>
+			</div>
+		{% endif %}
+		{% for poll in polls %}
+			<div class="ui-bar ui-bar-a ui-corner-all">
+				<strong>{{poll.title}}</strong>
+			</div>
+	  		<div class="ui-body ui-body-a ui-corner-all">
+				<p>{{poll.text}}</p>
+				<form>
+					<fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+					    <legend></legend>
+					    <input name="poll" id="radio-choice-yes" value="1" type="radio">
+					    <label for="radio-choice-yes">Yes</label>
+					    <input name="poll" id="radio-choice-no" value="-1" type="radio">
+					    <label for="radio-choice-no">No</label>
+					    <input name="poll" id="radio-choice-notsure" value="0" type="radio">
+					    <label for="radio-choice-notsure">Not Sure</label>
+					</fieldset>
+				</form>
+	  		</div>
+		{% endfor %}
+	</div>
+
+	{% include './footer.html' %}
+</div>
+{% endblock %}

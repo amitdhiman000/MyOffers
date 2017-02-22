@@ -1,0 +1,59 @@
+{% extends './base.html' %}
+
+{% block content %}
+<div data-role="page" {{dataurl|safe}} id="profilepage" data-dom-cache="false" >
+	<style>
+	.parties-list thead th,
+	.parties-list tbody td .ui-table-cell-label {
+		text-transform: uppercase;
+		font-size: .7em;
+		color: rgba(0,0,0,0.5);
+		font-weight: normal;
+	}
+	/* Add strokes */
+	.parties-list thead th {
+		border-bottom: 1px solid #d6d6d6; /* non-RGBA fallback */
+		border-bottom: 1px solid rgba(0,0,0,.1);
+	}
+	.parties-list tbody td {
+		border-bottom: 1px solid #e6e6e6; /* non-RGBA fallback  */
+		border-bottom: 1px solid rgba(0,0,0,.05);
+	}
+	//.parties-list tr td:last-child { margin-bottom: 1.5em; }
+	</style>
+
+	{% include './header.html' %}
+	<div class="ui-content" data-role="main">
+		<div class="ui-corner-all custom-corners" style="margin-top:5px;" >
+			<!--<div class="ui-bar ui-bar-c" >-->
+			<div class="ui-bar ui-bar-a">
+				<b>Political parties </b>
+			</div>
+	  		<div class="ui-body ui-body-a">
+				<table data-role="table" data-mode="columntoggle" class="ui-responsive table-stroke parties-list">
+					<thead>
+						<tr>
+							<th data-priority="1" class="ui-table-cell-visible" >Sr.</th>
+							<th data-priority="2" class="ui-table-cell-visible" >Abbr</th>
+							<th data-priority="3" class="ui-table-cell-visible" >Name</th>
+							<th data-priority="4">President</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for party in parties %}
+						<tr>
+							<td class="ui-table-cell-visible">{{forloop.counter}}</td>
+							<td class="ui-table-cell-visible"><a href="#" data-rel="external">{{party.short_name}}</a></td>
+							<td class="ui-table-cell-visible" >{{party.full_name}}</td>
+							<td>*****</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	{% include './footer.html' %}
+</div>
+
+{% endblock %}

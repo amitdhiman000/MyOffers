@@ -1,0 +1,35 @@
+{% extends './base.html' %}
+
+{% block pagemenu %}
+{% include './post_topics_nav.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="ui-page" style="width: 98%;">
+	<div class="ui-corner-all custom-corners">
+		<!--<div class="ui-bar ui-bar-c" >-->
+		<div class="ui-bar-tbb">
+			<strong>New Post </strong>
+		</div>
+  		<div class="ui-body ui-body-a">
+			<form action="/post/create-post/" method="POST" >
+				{% csrf_token %}
+				<fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+					<legend></legend>
+					<input name="post_type" id="r-post-article" value="1" checked="checked" type="radio">
+					<label for="r-post-article">Topic</label>
+					<input name="post_type" id="r-post-poll" value="2" type="radio">
+					<label for="r-post-poll">Poll</label>
+					<input name="post_type" id="r-post-petition" value="3" type="radio">
+					<label for="r-post-petition">Petition</label>
+				</fieldset>
+				<h4>Title :</h4>
+				<input type="text" name="post_title" id="post_title" placeholder="Title" class="inputbox" style="width:100%" />
+				<h4>Abstract :</h4>
+				<textarea name="post_text" id="post_text" style="width:100%; height:10em; padding:0.3em; resize: none; border: 1px solid #ddd;" placeholder="Abstract"></textarea>
+				<input type="submit" name="submit" class="submit buttons" value="Submit" />
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}

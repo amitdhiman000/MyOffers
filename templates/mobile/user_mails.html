@@ -1,0 +1,27 @@
+{% extends './base.html' %}
+
+{% block styles %}
+{% endblock %}
+
+
+{% block content %}
+<div data-role="page" id="topicspage" data-dom-cache="false" >
+	{% include './header.html' %}
+	{% include './user_profile_nav.html' %}
+	<div data-role="main" class="ui-content">
+		<div class="ui-corner-all custom-corners">
+			<!--<div class="ui-bar ui-bar-c" >-->
+			<div class="ui-bar ui-bar-a">
+				<strong>Mails <strong>
+			</div>
+	  		<div class="ui-body ui-body-a">
+	  			{% for topic in topics %}
+	  				<div class="ui-content"> {{topic.title}} </div>
+	  			{% endfor %}
+	  		</div>
+		</div>
+	</div>
+
+	{% include './footer.html' %}
+</div>
+{% endblock %}

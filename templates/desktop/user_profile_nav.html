@@ -1,0 +1,16 @@
+
+<div class="left-navbar" >
+	<div class="ui-bar-tbb" > User Info </div>
+	<ul>
+		<li><a href="/user/info/" >Info</a></li>
+		<li><a href="/user/topics-select/" >Topics</a></li>
+		<li><a href="/user/mails/" >Mails</a></li>
+		<li><a href="/user/stats/" >Stats</a></li>
+		<li><a href="/user/settings/" >Settings</a></li>
+		<li><a href="/user/signout/" >SignOut</a></li>
+		{% if user.level == 9 %}
+		<li><a href="/daisadmin/" >Admin</a></li>
+		{% endif %}
+	</ul>
+	<div class="clear" ></div>
+</div>
