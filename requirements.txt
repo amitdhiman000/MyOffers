@@ -1,5 +1,6 @@
 Django==1.10.3
 django-excel==0.0.5
+gunicorn==19.6.0
 pyexcel==0.3.3
 pyexcel-io==0.2.4
 pyexcel-webio==0.0.8
