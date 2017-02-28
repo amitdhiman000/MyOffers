@@ -5,3 +5,4 @@ pyexcel==0.3.3
 pyexcel-io==0.2.4
 pyexcel-webio==0.0.8
 texttable==0.8.7
+whitenoise==3.3.0
