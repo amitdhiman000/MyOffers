@@ -42,7 +42,7 @@
 	<div class="offer_box" >
 		<div class="offer_block">
 			<div class="offer_image">
-			{% with '/media/images/offers/'|add:offer.image_name as image_path %}
+			{% with '/static/images/offers/'|add:offer.image_name as image_path %}
 				<img src="{{image_path}}" alt="{{offer.product_name}} | {{offer.discount}}% Off" title="{{offer.product_name}} | {{offer.discount}}% Off" />
 			{% endwith %}
 			</div>
@@ -52,7 +52,7 @@
 					{{offer.discount}}% Off
 				</div>
 				<div class="offer_desc2">
-					<a>[+]</a>
+					<a href="javascript:void(0)" >[+]</a>
 				</div>
 			</div>
 			<div class="clear" ></div>
@@ -60,15 +60,9 @@
 		<div class="offer_details">
 			Starting On : {{offer.start_date}} <br />
 			Last Date : {{offer.expire_date}} <br />
-			Hurry up 7 Days to go
+			Get Discount coupons
 		</div>
 	</div>
-
 	{% endfor %}
-
-	<div style="height: 70px; clear:both;">
-	<!-- last row height fix -->
-	</div>
-
 </div>
 {% endblock %}

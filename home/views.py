@@ -1,13 +1,16 @@
 from django.shortcuts import render
-
+from offer.models import Offer
 ##
 from common import login_required
 import device
 
+from pprint import pprint
 # Create your views here.
 
 def home_page(request):
-	data = {'title': 'Home'}
+	offers = Offer.get_all()
+	pprint(offers)
+	data = {'title':'home', 'offers_list': offers}
 	file = device.get_template(request, 'home.html')
 	return render(request, file, data)
 

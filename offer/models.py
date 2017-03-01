@@ -71,28 +71,25 @@ class Business(models.Model):
 # offers table for new offers
 class Offer(models.Model):
 	product_name = models.CharField(max_length=30, blank=True)
+	image_name = models.CharField(max_length=50, blank=False)
 	discount = models.CharField(max_length=3, blank=True)
 	start_date = models.DateTimeField(blank=True)
 	expire_date = models.DateTimeField(blank=True)
-	create_time = models.DateTimeField(auto_now_add=True, auto_now=False, blank=False, null=True)
+	create_time = models.DateTimeField(auto_now_add=True, auto_now=False)
 	description = models.TextField()
-#	location = models.ForeignKey(Location)
+	fk_location = models.ForeignKey(Location)
 
 	class Meta:
 		verbose_name = _('offer')
 		verbose_name_plural= _('offers')
-
-	#def __init__(self):
-	#	pass
 
 	def __str__(self):
 		# __unicode__ on Python 2
 		return self.product_name
 
 	@classmethod
-	def get_all(self):
-		pass
-		return __class__.objects.all()
+	def get_all(klass):
+		return klass.objects.all()
 
 	def get_by_location(self, location='bengaluru', count=20):
 		pass
@@ -100,9 +97,10 @@ class Offer(models.Model):
 	def get_by_keyword(self, keyword='', count=20):
 		pass
 
-	def register(self):
-		self.save()
+	@classmethod
+	def register(klass, obj):
+		obj.save()
 
-	def delete(self):
+	def delete(klass, obj):
 		pass
 

@@ -1,8 +1,12 @@
 {% extends './base.html' %}
-
 {% load staticfiles %}
-{% block content %}
 
+
+{% block pagemenu %}
+{% include './home_nav.html' %}
+{% endblock %}
+
+{% block content %}
 <style type="text/css" >
 #mid-1 { margin: 5px auto; text-align: center; }
 #mid-2 { margin: 10px auto; width: 90%;  text-align: center; }
@@ -11,6 +15,7 @@
 #mid-3-right { margin-left: 10px; float: right; }
 textarea { border: 1px solid #ccc; width: 25em; height: 10em; resize: none; }
 </style>
+
 <div class="ui-page" style="width:95%;" >
 	<div id="mid-1" >
 		<span class="text1" >GET IN TOUCH <strong>WITH US</strong></h2>

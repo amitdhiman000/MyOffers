@@ -57,27 +57,25 @@
 			.site-navbar-item a:hover { text-decoration: underline; }
 
 			#big-nav { width: 70%; margin: 0px auto; background: #f3f3f3; border: 1px solid #e7e7e7; overflow: hidden; }
-			#big-nav ul { list-style: none;  }
-			#big-nav li { float: left; }
-			#big-nav a { display: block; text-align: center; text-decoration: none; padding: 10px 20px; color: #555; }
-			#big-nav a:hover { background: #d3d3d3; }
-
-			#big-menu { position: absolute; left:15%;  display: none; width: 70%; min-height: 300px; background: #EEE;
-			 opacity: 0.95; filter: alpha(opacity=95); border: 1px solid #AAA; z-index: 3; }
+			#main-nav { list-style: none;  }
+			#main-nav li { float: left; }
+			#main-nav a { display: block; text-align: center; text-decoration: none; padding: 1.0em 2.0em; color: #555; }
+			#main-nav a:hover { background: #d3d3d3; }
+			#big-menu { position: absolute; display: none; width: 70%; min-height: 300px; background: #eee; opacity: 0.95; border: 1px solid #aaa; z-index: 3; }
 			#big-menu-inner { margin: 5px 2%; }
-			.big-menu-cols { float: left; width: 18%; margin-right: 2%;  border-right: 1px solid #AAA; }
+			.big-menu-cols { float: left; width: 18%; margin-right: 2%;  border-right: 1px solid #aaa; }
 			.big-menu-cols:last-child { margin-right: 0; border-right: none; }
 			.menu-title { text-indent: 5%; /*text-align: center;*/ }
 			.menu-list { list-style: none; }
 			.menu-list li a { display: block; padding: 5px 10px; color: #555; }
 			.menu-list li a:hover { color: #222; }
 
-			#ui-body-cont { width: 100%; margin: 0.7em 0em; clear: both; }
+			#ui-body-cont { width: 100%; margin: 0.7em 0em; }
 			#ui-body { width: 70%; margin: 0 auto; display: table; }
-			.ui-menu-cont { display: table-cell; width: 15%; }
-			.ui-menu { position: fixed; overflow: hidden; }
+			.ui-page-menu { position: relative; display: table-cell; width: 20%; }
+			.ui-menu { position: relative; overflow: hidden; vertical-align: baseline; }
 			.ui-menu:hover { overflow: auto; }
-			.ui-page-cont { position: relative; display: table-cell; width: 50%; }
+			.ui-page-main { position: relative; display: table-cell; width: 75%; }
 			.ui-page { width: 90%; margin-left: 1.0em; }
 
 			#footer-bg { position: fixed; left: 0; bottom: 0; width: 100%; margin-top: 32px; height: 30px; line-height: 30px; background-color: #e9e9e9; border-color: #ddd; }
@@ -128,16 +126,17 @@
 		{% include './header.html' %}
 		<div id="ui-body-cont" >
 			<div id="ui-body" >
-			<div class="ui-menu-cont" >
-				<div class="ui-menu" >
-				{% block pagemenu %}
-				{% endblock %}
+				<div class="ui-page-menu" >
+					<div class="ui-menu" >
+					{% block pagemenu %}
+					{% endblock %}
+					</div>
 				</div>
-			</div>
-			<div class="ui-page-cont" >
-				{% block content %}
-				{% endblock %}
-			</div>
+				<div style="clear:both;"></div>
+				<div class="ui-page-main" >
+					{% block content %}
+					{% endblock %}
+				</div>
 			</div>
 		</div>
 		{% include './footer.html' %}
