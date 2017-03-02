@@ -19,7 +19,7 @@
 			<div id="site-navbar-div" >
 				<div style="float: right;">
 				{% if user.is_loggedin %}
-					<a href="/user/profile/">{{ user.name|slice:":11" }}</a>
+					<a href="/user/profile/">{{ user.name|slice:":11" }}</a> | <a href="/user/signout/">SignOut</a>
 				{% else %}
 					<a href="/user/signin/">SignIn</a> | <a href="/user/signup/">SignUp</a>
 				{% endif %}

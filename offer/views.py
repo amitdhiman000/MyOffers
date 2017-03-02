@@ -13,6 +13,10 @@ from pprint import pprint
 def offer_home(request):
 	offers = Offer.get_all()
 	pprint(offers)
+	obj = list(offers)
+	pprint(obj[0].product_name)
+	pprint(obj[0].discount)
+	pprint(obj[0].start_date)
 	data = {'title':'Offers', 'offers_list': offers}
 	file = device.get_template(request, 'offer_home.html')
 	return render(request, file, data)

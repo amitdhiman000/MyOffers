@@ -1,9 +1,14 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from datetime import datetime
+from datetime import timedelta
+from django.utils import timezone
 from django.utils.translation import ugettext as _
 
 # Create your models here.
+def days_ahead(days=1):
+	return timezone.now() + timezone.timedelta(days=days)
 
 class Country(models.Model):
 	country_id = models.IntegerField(primary_key=True, unique=True, null=False)
@@ -70,12 +75,12 @@ class Business(models.Model):
 
 # offers table for new offers
 class Offer(models.Model):
-	product_name = models.CharField(max_length=30, blank=True)
+	product_name = models.CharField(max_length=30, blank=False)
 	image_name = models.CharField(max_length=50, blank=False)
 	discount = models.CharField(max_length=3, blank=True)
-	start_date = models.DateTimeField(blank=True)
-	expire_date = models.DateTimeField(blank=True)
-	create_time = models.DateTimeField(auto_now_add=True, auto_now=False)
+	start_date = models.DateTimeField(default=timezone.now)
+	expire_date = models.DateTimeField(default=days_ahead(5))
+	create_time = models.DateTimeField(default=timezone.now)
 	description = models.TextField()
 	fk_location = models.ForeignKey(Location)
 
@@ -84,7 +89,6 @@ class Offer(models.Model):
 		verbose_name_plural= _('offers')
 
 	def __str__(self):
-		# __unicode__ on Python 2
 		return self.product_name
 
 	@classmethod
