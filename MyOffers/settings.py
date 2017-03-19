@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 	'user',
 	'error',
 	'offer',
+	'myadmin'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -72,6 +73,7 @@ TEMPLATES = [
 				'django.template.context_processors.request',
 				#'django.contrib.auth.context_processors.auth',
 				'user.context_processors.auth',
+				'django.template.context_processors.media',
 				'django.contrib.messages.context_processors.messages',
 			],
 		},
@@ -121,6 +123,8 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
+#TIME_ZONE = 'Asia/Kolkata'
+#https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
 USE_I18N = True
 
@@ -134,7 +138,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles', 'static_root')
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static', 'static_dirs'),
+    os.path.join(BASE_DIR, 'staticfiles', 'static_dirs'),
     # '/var/www/static_files/'
 ]
 
@@ -143,10 +147,21 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'staticfiles', 'media_root')
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
+MEDIA_PROCUCTS_DIR_NAME = 'products'
+MEDIA_PROCUCTS_DIR = os.path.join(MEDIA_ROOT, 'products')
+
+
 # some custom settings
-# public pages
+
+## admin pages
+##
+ADMIN_LEVEL = 9
+ADMIN_HOME = '/myadmin/'
+
+# public pagesregister
 HOME_PAGE_URL = '/'
 # error urls
+ERROR_ACCESS_DENIED_URL = '/error/access-denied/'
 ERROR_INVALID_REQUEST_URL = '/error/invalid-request/'
 ERROR_UNDER_CONSTRUCTION_URL = '/error/under-construction/'
 # user pages
@@ -156,3 +171,9 @@ USER_SIGNUP_SUCCESS_URL = '/user/signup-success/'
 USER_LOGOUT_URL = '/user/signout/'
 USER_SETTING_URL = '/user/settings/'
 USER_PROFILE_URL = '/user/profile/'
+
+OFFER_CREATE_NEW = '/offer/create-new/'
+OFFER_CREATE_NEW_AUTH = '/offer/create-new/auth'
+OFFER_CREATE_SUCCESS = '/offer/create-success/'
+OFFER_CREATE_FAILURE = '/offer/create-failure/'
+OFFER_DETAIL_VIEW = '/offer/detail-view/'

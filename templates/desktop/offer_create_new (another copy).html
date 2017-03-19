@@ -1,0 +1,134 @@
+{% extends './base.html' %}
+{% load staticfiles %}
+
+{% block pagemenu %}
+{% include './home_left_nav.html' %}
+{% endblock %}
+
+{% block content %}
+<style>
+	#loc-results { position: absolute; width: 35%; margin-top: 3px; border: 1px solid #aaa; z-index: 4; display: none; background: #fff; }
+	#loc-results ul { list-style: none; }
+	#loc-results li a { display: block; padding: 0.5em 1.5em; }
+	.search-item { padding: 0.5em 1.0em; border-bottom: 1px solid #ddd; }
+	.search-item-a { background: #38f; color: #fff; }
+	.search-item > div { display:inline-block; vertical-align:middle; margin-right: 0.4em; }
+	.search-item img { width: 24px; height: 24px; }
+	.ui-autocomplete {
+    	max-height: 200px;
+    	overflow-y: auto;
+    	/* prevent horizontal scrollbar */
+    	overflow-x: hidden;
+	}
+</style>
+
+
+<script type="text/javascript">
+$(function(){
+	$(function(){
+		var dateFmt = "yy/mm/dd",
+			from = $("#start_date").datepicker({
+					minDate: new Date(),
+					dateFormat: dateFmt, 
+					defaultDate: "+1w",
+					changeMonth: true,
+					numberOfMonths: 1
+				}).on("change", function(){
+					to.datepicker("option", "minDate", getDate(this));
+				}),
+			to = $("#expire_date").datepicker({
+				dateFormat: dateFmt,
+				defaultDate: "+1w",
+				changeMonth: true,
+				numberOfMonths: 1
+			})
+			.on( "change", function(){
+				from.datepicker("option", "maxDate", getDate(this));
+			});
+
+		function getDate(element){
+			var date;
+			try {
+				date = $.datepicker.parseDate(dateFmt, element.value);
+			} catch(error) {
+				date = null;
+			}
+			return date;
+		}});
+
+	$("#location").autocomplete({
+		minLength: 2,
+		source: function(request, response) {
+			var data = { 'key':request.term };
+			postRequest('/ajax/location/', data, function(status, result) {
+				if (true == status) {
+					//console.log('data : '+JSON.stringify(result.data));
+					response(result.data);
+				} else {
+					console.log('error : '+JSON.stringify(result.error));
+				}
+			});
+		},
+		select: function(event, ui) {
+			//console.log("Selected: "+ui.item.name+" in "+ui.item.city+'('+ui.item.pin+')' );
+			//ui.attr('class', 'search-item-a');
+			console.log('Item selected : '+JSON.stringify(ui.item));
+			//$("#location").val(ui.name);
+		}
+	}).autocomplete("instance")._renderItemData = function(ul, item) {
+		console.log('item : '+ JSON.stringify(item));
+			var uiItem = '<li>'
+			+ '<div class="search-item">'
+			+ '<div><img src="{{loc_image}}" /></div>'
+			+ '<div>'
+			+ item.name + '<br />' + item.city + '('+item.pin+')'
+			+ '</div></div>'
+			+ '</li>';
+		return ul.append(uiItem);
+	};
+
+
+	$("#location").suggestion(function() {
+		
+		
+	});
+});
+</script>
+
+ <div class="ui-page" >
+		<div class="ui-bar-tbb">
+			<h3>Post New Offer</h3>
+		</div>	
+		<div class="ui-body" >
+			<form action="/offer/create-new/" method="POST">
+				{% csrf_token %}
+				<table class="form_table">
+					<tr><td>Product Name : </td>
+					<td><input type="text" name="product_name" value="{{form_values.product_name}}" class="inputbox" />
+					<td><p class="errors">{{form_errors.product_name}}</p></td>
+					</tr>
+					<tr><td>Discount (%) : </td>
+					<td><input type="text" name="discount" value="{{form_values.discount}}" class="inputbox" />
+					<td><p class="errors">{{form_errors.discount}}</p></td>
+					</tr>
+					<tr><td>Start Date : </td>
+					<td><input type="text" name="start_date" id="start_date" value="{{form_values.start_date}}" class="inputbox" />
+					<td><p class="errors">{{form_errors.start_date}}</p></td>
+					</tr>
+					<tr><td>Expire Date : </td>
+					<td><input type="text" name="expire_date" id="expire_date" value="{{form_values.expire_date}}" class="inputbox" />
+					<td><p class="errors">{{form_errors.expire_date}}</p></td>
+					</tr>
+					<tr><td>Location : </td>
+					<td><input type="text" name="location" id="location" value="{{form_values.location}}" class="inputbox" autocomplete="off" />
+					<td><p class="errors">{{form_errors.location}}</p></td>
+					</tr>
+
+					<tr><td></td>
+					<td><input type="submit" name="submit" value="Publish" class="buttons-long" /></td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</div>
+{% endblock %}

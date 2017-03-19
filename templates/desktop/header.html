@@ -1,7 +1,7 @@
 {% load staticfiles %}
 <header>
-	<div id="header-bg">
-		<div id="header-content" >
+	<div id="ui-header-cont">
+		<div id="ui-header" >
 			<div id="site-logo-div" >
 				<div id="logo" >
 					<a href="/" ><img src="{% static 'images/offers.png' %}" /></a>
@@ -10,7 +10,7 @@
 			</div>
 			<div id="site-search-div">
 				<form method="POST" >
-					<input type="text" name="search" id="search-input" placeholder="Search here..." autocomplete="off" onblur="showSearchList($(this), false)" onfocus="showSearchList($(this), true)" />
+					<input type="text" name="search" id="search-input" placeholder="Search here..." autocomplete="off" />
 				</form>
 				<div id="search-results" >
 					<ul class="site-list" ></ul>
@@ -28,7 +28,7 @@
 			</div>
 		</div>
 	</div>
-	{% include './site_top_nav.html' %}
+	{% include './home_top_nav.html' %}
 </header>
 
 <!-- Toast widget -->

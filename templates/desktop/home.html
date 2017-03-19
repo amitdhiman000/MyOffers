@@ -1,7 +1,7 @@
 {% extends './base.html' %}
 
 {% block pagemenu %}
-{% include './home_nav.html' %}
+{% include './home_left_nav.html' %}
 {% endblock %}
 
 {% block content %}
@@ -44,9 +44,7 @@
 	<div class="offer_box" >
 		<div class="offer_block">
 			<div class="offer_image">
-			{% with '/static/images/offers/'|add:offer.image_name as image_path %}
-				<img src="{{image_path}}" alt="{{offer.product_name}} | {{offer.discount}}% Off" title="{{offer.product_name}} | {{offer.discount}}% Off" />
-			{% endwith %}
+				<img src="{{offer.product_image.url}}" alt="{{offer.product_name}} | {{offer.discount}}% Off" title="{{offer.product_name}} | {{offer.discount}}% Off" />
 			</div>
 			<div class="offer_desc">
 				<div class="offer_desc1">

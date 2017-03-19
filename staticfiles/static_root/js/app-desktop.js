@@ -272,6 +272,8 @@ function postRequest(pAction, pData, pCallback)
 		data: pData,
 		type: 'POST',
 		async: 'true',
+		//contentType: false,
+		//parseData: false,
 		dataType: 'text',
 		beforeSend: function(xhr) {
 			console.log('+beforeSend');

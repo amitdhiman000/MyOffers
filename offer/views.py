@@ -1,10 +1,14 @@
+from django.conf import settings
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
+from django.views.decorators.csrf import csrf_exempt
+
 from .control import OfferControl
 from .models import Offer
+import base64
 
-from common import login_required
 import device
+from common import login_required, post_required, __redirect
 
 from pprint import pprint
 
@@ -14,43 +18,69 @@ def offer_home(request):
 	offers = Offer.get_all()
 	pprint(offers)
 	obj = list(offers)
+	'''
 	pprint(obj[0].product_name)
 	pprint(obj[0].discount)
 	pprint(obj[0].start_date)
+	'''
 	data = {'title':'Offers', 'offers_list': offers}
 	file = device.get_template(request, 'offer_home.html')
 	return render(request, file, data)
+
 
 def offer_view(request):
 	data = {'title':'View Offers'}
 	file = device.get_template(request, 'offer_view.html')
 	return render(request, file, data)
 
-def offer_create_view(request):
-	data = {'title': 'Create Offer'}
 
+def offer_create_view(request):
+	imgdata = open(settings.STATIC_ROOT+"/images/site-icons-svg/location.svg", "rb").read()
+	image = "data:image/svg+xml;base64,%s" % base64.b64encode(imgdata).decode('utf8')
+	data = {'title': 'Create Offer', 'loc_image': image}
 	if 'form_errors' in request.session:
-		c['form_errors'] = request.session['form_errors']
-		c['form_values'] = request.session['form_values']
+		data['form_errors'] = request.session['form_errors']
+		data['form_values'] = request.session['form_values']
 		del request.session['form_errors']
 		del request.session['form_values']
 
-	file = device.get_template(request, 'offer_create.html')
+	file = device.get_template(request, 'offer_create_new.html')
 	return render(request, file, data)
 
-def offer_create_submit(request):
+
+@csrf_exempt
+@post_required
+def offer_create(request):
+	pprint(request)
+	pprint(request.POST)
+
 	data = {'title':'Added Successfully'}
 
-	if request.method == 'POST':
-		offer_c = OfferControl(request.POST)
-		if offer_c.validate():
-			offer_c.register()
-			return render(request, 'offer_added.html', c)
-		else:
-			request.session['form_errors'] = offer_c.get_errors()
-			request.session['form_values'] = offer_c.get_values()
-			return HttpResponseRedirect('/offer/create')
-
-		return HttpResponse("Successfully Submitted!")
+	control = OfferControl()
+	if control.parseRequest(request) and control.validate():
+		control.register()
+		#return __redirect(request, setting.OFFER_CREATE_SUCCESS)
+		return JsonResponse({'status': 204, 'message': 'Offer posted succesfuly'})
 	else:
-		return HttpResponseRedirect(setting.ERROR_INVALID_REQUEST_URL)
+		if request.is_ajax():
+			return JsonResponse({'status': 401, 'error': control.get_errors()})
+		else:
+			request.session['form_errors'] = control.get_errors()
+			request.session['form_values'] = control.get_values()
+			return HttpResponseRedirect(settings.OFFER_CREATE_NEW)
+
+
+def online_view(request):
+	return offer_home(request)
+
+
+def nearby_view(request):
+	return offer_home(request)
+
+
+def bulk_view(request):
+	return offer_home(request)
+
+
+def food_view(request):
+	return offer_home(request)

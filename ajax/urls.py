@@ -19,4 +19,5 @@ from . import views
 
 urlpatterns = [
 	url(r'^search/$', views.search, name='search'),
+	url(r'^location/$', views.location, name='location'),
 ]

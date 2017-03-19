@@ -1,5 +1,5 @@
 {% extends './base.html' %}
-
+{% load tz %}
 
 {% block pagemenu %}
 {% include './user_profile_nav.html' %}
@@ -7,21 +7,19 @@
 
 {% block content %}
 <div class="ui-page" >
-	<div class="ui-corner-all custom-corners">
-		<!--<div class="ui-bar ui-bar-c" >-->
-		<div class="ui-bar-tbb">
-			<b>Account details </b>
-		</div>
-  		<div class="ui-body ui-body-a">
-			<table class="info-table" >
-				<tr><th>Name</th> <td>{{user.name}}</td></tr>
-				<tr><th>Email</th> <td>{{user.email}}</td></tr>
-				<tr><th>Phone</th> <td>{{user.phone}}</td></tr>
-				<tr><th>Level</th> <td>{{user.level}}</td></tr>
-				<tr><th>Status</th> <td>{{user.status}}</td></tr>
-				<tr><th>Registered on</th> <td>{{user.created}}</td></tr>
-		    </table>
-		</div>
+	<div class="ui-bar-tbb">
+		<b>Account details </b>
+	</div>
+	<div class="ui-body ui-body-a">
+		<table class="info-table" >
+			<tr><th>Name</th> <td>{{user.name}}</td></tr>
+			<tr><th>Email</th> <td>{{user.email}}</td></tr>
+			<tr><th>Phone</th> <td>{{user.phone}}</td></tr>
+			<tr><th>Level</th> <td>{{user.level}}</td></tr>
+			<tr><th>Status</th> <td>{{user.status}}</td></tr>
+			<tr><th>Registered on (UTC)</th> <td>{{user.created | utc}}</td></tr>
+			<tr><th>Registered on (IST)</th> <td>{{user.created | localtime}}</td></tr>
+	    </table>
 	</div>
 </div>
 {% endblock %}

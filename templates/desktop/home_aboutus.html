@@ -1,72 +1,68 @@
 {% extends './base.html' %}
-
 {% load staticfiles %}
 
 {% block style %}
-<style type="text/css" >
-#mid-1 { margin: 0px auto; text-align: center; }
-#mid-2 { margin: 10px auto; width: 90%; }
-#mid-3 { margin: 0px auto; }
-.mid-3-ibox { display: inline-block; vertical-align: top; margin-left: 4%; width: 27%; }
-.mid-3-title {  }
-.mid-3-title .title-image { margin: 1px 5px; display: inline-block; vertical-align: top; }
-.mid-3-title .title-text { margin: 1px 5px; display: inline-block; vertical-align: top; line-height: 32px;  }
+<style>
+.abtus-box { display: inline-block; vertical-align: top; margin-left: 4%; width: 27%; }
+.abtus-box > div { margin: 1px 5px; display: inline-block; vertical-align: top; }
+.abtus-box-title > div { display: inline-block; vertical-align: middle; }
+.abtus-box .abtus-box-title-text { line-height: 32px; }
 </style>
 {% endblock %}
 
 {% block pagemenu %}
-{% include './home_nav.html' %}
+{% include './home_left_nav.html' %}
 {% endblock %}
 
 
 {% block content %}
 <div class="ui-page" >
-	<div class="ui-bar-tbb" >
+	<div class="ui-bar-tbb" style="text-align: center;">
 		<h3>A LITTLE BIT <strong>ABOUT US</strong></h3>
 	</div>
 	<div class="ui-body" >
-		<div id="mid-3-1" class="mid-3-ibox">
-			<div class="mid-3-title" >
-				<div class="title-image" >
+		<div class="abtus-box">
+			<div class="abtus-box-title" >
+				<div class="abtus-box-title-image" >
 					<img src="{% static 'images/site-icons-jpg/people32.jpg' %}" />
 				</div>
-				<div class="title-text text2" >
+				<div class="abtus-box-title-text" >
 					<strong> WHO ARE WE ? </strong>
 				</div>
 			</div>
-			<p class="text4" >
+			<p>
 				 We are a team of web developers who are driven by passion and urge to create something that our customers love.
 			</p>
 		</div>
-		<div id="mid-3-2" class="mid-3-ibox">
-			<div class="mid-3-title" >
-				<div class="title-image" >
+		<div class="abtus-box">
+			<div class="abtus-box-title" >
+				<div class="abtus-box-title-image" >
 					<img src="{% static 'images/site-icons-jpg/tools32.jpg' %}" />
 				</div>
-				<div class="title-text text2" >
+				<div class="abtus-box-title-text" >
 					<strong> WHAT WE DO ? </strong>
 				</div>
 			</div>
-			<p class="text4">
+			<p>
 				We build user friendly powerful and easy to use interfaces. Which helps a million of users to get what they want.
 			</p>
 		</div>
-		<div id="mid-3-3" class="mid-3-ibox">
-			<div class="mid-3-title" >
-				<div class="title-image" >
+		<div class="abtus-box">
+			<div class="abtus-box-title" >
+				<div class="abtus-box-title-image" >
 					<img src="{% static 'images/site-icons-jpg/clock32.jpg' %}" />
 				</div>
-				<div class="title-text text2" >
+				<div class="abtus-box-title-text" >
 					<strong> SINCE WHEN ? </strong>
 				</div>
 			</div>
-			<p class="text4">
+			<p>
 				We are in the market since Jan 2014, and continusely improving the interfaces which helps the customers.
 			</p>
 		</div>
 	</div>
 
-	<div>
+	<div class="ui-body" >
 		<h4>We keep in touh with all the dealers and vendors in market to give you best deals.
 		</h4>
 	</div>

@@ -1,0 +1,156 @@
+{% extends './base.html' %}
+{% load staticfiles %}
+
+{% block pagemenu %}
+{% include './home_left_nav.html' %}
+{% endblock %}
+
+{% block content %}
+<style>
+	#loc-results { position: absolute; width: 35%; margin-top: 3px; border: 1px solid #aaa; z-index: 4; display: none; background: #fff; }
+	#loc-results ul { list-style: none; }
+	#loc-results li a { display: block; padding: 0.5em 1.5em; }
+	.search-item { padding: 0.5em 1.0em; border-bottom: 1px solid #ddd; }
+	.search-item-a { background: #38f; color: #fff; }
+	.search-item > div { display:inline-block; vertical-align:middle; margin-right: 0.4em; }
+	.search-item img { width: 24px; height: 24px; }
+</style>
+
+
+<script type="text/javascript">
+$(function(){
+	$( function() {
+		var dateFmt = "yy/mm/dd",
+			from = $("#start_date").datepicker({
+					minDate: new Date(),
+					dateFormat: dateFmt, 
+					defaultDate: "+1w",
+					changeMonth: true,
+					numberOfMonths: 1
+				}).on("change", function(){
+					to.datepicker("option", "minDate", getDate(this));
+				}),
+			to = $("#expire_date").datepicker({
+				dateFormat: dateFmt,
+				defaultDate: "+1w",
+				changeMonth: true,
+				numberOfMonths: 1
+			})
+			.on( "change", function(){
+				from.datepicker("option", "maxDate", getDate(this));
+			});
+
+		function getDate(element){
+			var date;
+			try {
+				date = $.datepicker.parseDate(dateFmt, element.value);
+			} catch(error) {
+				date = null;
+			}
+			return date;
+		}
+	});
+
+	$(document).on("keyup", '#location', function(e){
+		e.preventDefault();
+		if (e.keyCode == '38') {
+			// up key
+			return false;
+		} else if (e.keyCode == '40') {
+			// down key
+			return false;
+		}
+		console.log("+locationSearch");
+		var This = $(this);
+		var listCont = This.next("#loc-results");
+		var list = listCont.children('ul');
+		var key = This.val();
+		if ('' === key) {
+			listCont.hide();
+			console.log('key is empty');
+			return;
+		}
+		data = {'key': key}
+		console.log('key : '+key);
+		postRequest('/ajax/location/', data, function(status, result) {
+			if (status === true) {
+				var jsonData = result.data;
+				var it = null;
+				list.html('');
+				listCont.show();
+				for (i in jsonData) {
+					console.log('data : '+i);
+					console.log('name : '+jsonData[i].name);
+					if (0 == i) {
+						it = '<li><div class="search-item search-item-a" >'
+							+ '<div><img src="{{loc_image}}" /></div>';
+					} else {
+						it = '<li><div class="search-item" >'
+							+ '<div><img src="{{loc_image}}" /></div>';
+					}
+					it += '<div>'+jsonData[i].name
+					+ '<br />'+jsonData[i].city+' ('+jsonData[i].pin+')'
+					+ '</div></div></li>';
+					console.log('item : '+ it);
+					list.append(it); 
+				}
+			} else {
+				console.log("error : "+JSON.stringify(result));
+			}
+		})
+	});
+
+});
+
+function showLocationList(pThis, status)
+{
+	console.log('+showLocationList : '+status);
+	if (status === true) {
+		pThis.next("#loc-results").show();
+	} else {
+		pThis.next("#loc-results").hide();
+	}
+}
+
+</script>
+
+ <div class="ui-page" >
+		<div class="ui-bar-tbb">
+			<h3>Post New Offer</h3>
+		</div>	
+		<div class="ui-body" >
+			<form action="/offer/create-new/" method="POST">
+				{% csrf_token %}
+				<table class="form_table">
+					<tr><td>Product Name : </td>
+					<td><input type="text" name="product_name" value="{{form_values.product_name}}" class="inputbox" />
+					<td><p class="errors">{{form_errors.product_name}}</p></td>
+					</tr>
+					<tr><td>Discount (%) : </td>
+					<td><input type="text" name="discount" value="{{form_values.discount}}" class="inputbox" />
+					<td><p class="errors">{{form_errors.discount}}</p></td>
+					</tr>
+					<tr><td>Start Date : </td>
+					<td><input type="text" name="start_date" id="start_date" value="{{form_values.start_date}}" class="inputbox" />
+					<td><p class="errors">{{form_errors.start_date}}</p></td>
+					</tr>
+					<tr><td>Expire Date : </td>
+					<td><input type="text" name="expire_date" id="expire_date" value="{{form_values.expire_date}}" class="inputbox" />
+					<td><p class="errors">{{form_errors.expire_date}}</p></td>
+					</tr>
+					<tr><td>Location : </td>
+					<td><input type="text" name="location" id="location" value="{{form_values.location}}" class="inputbox" autocomplete="off" onblur="showLocationList($(this), false)" onfocus="showLocationList($(this), true)" />
+					<div id="loc-results" >
+						<ul class="site-list" ></ul>
+					</div>
+					<td><p class="errors">{{form_errors.location}}</p></td>
+					</tr>
+
+					<tr><td></td>
+					<td><input type="submit" name="submit" value="Publish" class="buttons-long" /></td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</div>
+{% endblock %}

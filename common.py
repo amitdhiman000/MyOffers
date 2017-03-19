@@ -15,7 +15,7 @@ def __redirect(request, url):
 def get_required(funct):
 	def _decorator(request, *args, **kwargs):
 		if request.method != 'GET':
-			return __redirect(request, settings.INVALID_REQUEST_URL)
+			return __redirect(request, settings.ERROR_INVALID_REQUEST_URL)
 			#if 'application/json' in request.META.get('HTTP_ACCEPT'):
 		else:
 			return funct(request, *args, **kwargs)
@@ -27,11 +27,12 @@ def get_required(funct):
 def post_required(funct):
 	def _decorator(request, *args, **kwargs):
 		if request.method != 'POST':
-			return __redirect(request, settings.INVALID_REQUEST_URL)
+			return __redirect(request, settings.ERROR_INVALID_REQUEST_URL)
 			#if 'application/json' in request.META.get('HTTP_ACCEPT'):
 		else:
 			return funct(request, *args, **kwargs)
 	return _decorator;
+
 
 ## Decorator function for chekcing the login status and redirect to login page
 ##
@@ -44,6 +45,22 @@ def login_required(funct):
 		else:
 			return funct(request, *args, **kwargs)
 	return _decorator;
+
+
+## Decorator function for checking the login user is admin or not
+##
+def admin_required(funct):
+	#@warps(funct)
+	def _decorator(request, *args, **kwargs):
+		if request.user.is_loggedin() == False:
+			return __redirect(request, settings.USER_LOGIN_URL)
+			#if 'application/json' in request.META.get('HTTP_ACCEPT'):
+		elif request.user.level != settings.ADMIN_LEVEL:
+			return __redirect(request, settings.ERROR_ACCESS_DENIED_URL)
+		else:
+			return funct(request, *args, **kwargs)
+	return _decorator;
+
 
 ## Decorator function for chekcing the login status and redirect to home page
 ##

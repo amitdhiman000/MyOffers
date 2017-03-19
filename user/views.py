@@ -4,19 +4,19 @@ from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.template.context_processors import csrf
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
-import json
 
 ## custom packages
 import device
-from common import post_required, login_required, redirect_if_loggedin, __redirect
+from common import *
+from common import __redirect
 ## custom authentication
+from . import backends
 from .models import User
 from .control import UserRegControl
-from . import backends as auth
+from .control import UserSignInControl
 
 ## debugging
 from pprint import pprint
-
 # Create your views here.
 
 @redirect_if_loggedin
@@ -32,6 +32,7 @@ def signin_view(request):
 	file = device.get_template(request, 'user_signin.html')
 	return render(request, file, data)
 
+
 #functions for registration
 def signup_view(request):
 	data = {'title':'Signup', 'page':'user'}
@@ -45,66 +46,58 @@ def signup_view(request):
 	file = device.get_template(request, 'user_signup.html')
 	return render(request, file, data)
 
+
 def signout(request):
-	auth.logout(request)
+	backends.logout(request)
 	return __redirect(request, settings.USER_LOGIN_URL)
+
 
 @post_required
 def signin_auth(request):
 	pprint(request.POST)
 	error = None
-	email = request.POST.get('email', '').strip(' \t\n\r')
-	password = request.POST.get('pass', '').strip(' \t\n\r')
-	if email == '' or password == '':
-		error = {'user': 'Email or Password cannot be empty'}
-	else:
-		user = auth.auth_user(email=email, password=password)
-		if user != None:
-			auth.login(request, user)
-			#pprint(vars(user))
-			return __redirect(request, settings.USER_PROFILE_URL)
-		else:
-			error = {'user':'*Email or password is wrong!!'}
+	control = UserSignInControl()
+	if control.parseRequest(request.POST) and control.signin(request):
+		return __redirect(request, settings.USER_PROFILE_URL)	
 
 	## Only error case will reach here.
 	if request.is_ajax():
+		error = control.get_errors()
 		return JsonResponse({'status':401, 'error':error})
 	else:
-		request.session['form_errors'] = form_errors
-		request.session['form_values'] = {'email': email}
+		request.session['form_errors'] = control.get_values()
+		request.session['form_values'] = control.get_values()
 		return __redirect(request, settings.USER_LOGIN_URL)
+
 
 @post_required
 def signup_register(request):
-	pprint(request)
-	error = None
-	user = None
+	pprint(request.POST)
+	
 	control = UserRegControl()
-	if control == None or control.parseRequest(request.POST) == False:
+	if control.parseRequest(request.POST) == False:
 		return __redirect(request, settings.INVALID_REQUEST_URL)
 
+	error = None
 	if control.validate():
 		user = control.register()
 		if user != None:
 			print('registration successful')
-			auth.login(request, user)
+			backends.login(request, user)
 			return __redirect(request, settings.USER_SIGNUP_SUCCESS_URL)
 		else:
-			error = {'user':'server error, try again'}
-			if request.is_ajax():
-				return JsonResponse({'status':401, 'message': 'Something wrong', 'error':error})
-			else:
-				request.session['form_values'] = control.get_values()
-				request.session['form_errors'] = error
-				return __redirect(request, settings.USER_SIGNUP_URL)
+			error = {'user':'server error, try again later'}
+
+	if error == None:
+		error = control.get_errors()
+
+	if request.is_ajax():
+		return JsonResponse({'status':401, 'message': 'Something wrong', 'error':error})
 	else:
-		pprint(control.get_errors());
-		if request.is_ajax():
-			return JsonResponse({'status':401, 'message': 'Something wrong', 'error':control.get_errors()})
-		else:
-			request.session['form_values'] = control.get_values()
-			request.session['form_errors'] = control.get_errors()
-			return __redirect(request, settings.USER_SIGNUP_URL)
+		request.session['form_values'] = control.get_values()
+		request.session['form_errors'] = error
+		return __redirect(request, settings.USER_SIGNUP_URL)
+
 
 @login_required
 def signup_success_view(request):
@@ -113,27 +106,23 @@ def signup_success_view(request):
 	file = device.get_template(request, 'user_registered.html');
 	return render(request, file, data)
 
+
 @login_required
 def profile_view(request):
 	print('profile')
-	data = {'title':'Profile', 'page':'user', 'dataurl':'data-url="'+settings.USER_PROFILE_URL+'"'}
+	user = User.get_user(request.user)
+	dataurl = 'data-url="'+settings.USER_PROFILE_URL+'"'
+	data = {'title':'Profile', 'page':'user', 'dataurl':dataurl, 'user': user}
 	file = device.get_template(request, 'user_profile.html');
 	return render(request, file, data)
 
 
-def invalid_request_view(request):
-	data = {'title': 'Invalid Request'};
-#	return HttpResponse ('This is Invalid Request')
-	file = device.get_template(request, 'error_invalid_request.html')
-	return render(request, file, data)
-
-
-##
 ## User personal and profile info
 ##
 
 def user_info_view(request):
 	return profile_view(request);
+
 
 @login_required
 def user_topics_select_view(request):
@@ -142,6 +131,7 @@ def user_topics_select_view(request):
 	data.update({'topics':topics})
 	file = device.get_template(request, 'user_topics_select.html')
 	return render(request, file, data)
+
 
 @login_required
 def user_topic_selected(request):
@@ -172,15 +162,18 @@ def user_topic_selected(request):
 	else:
 		return __redirect(request, settings.HOME_PAGE_URL)
 
+
 def user_mails_view(request):
 	data = {'title': 'User mails', 'page':'user'};
 	file = device.get_template(request, 'user_mails.html')
 	return render(request, file, data)
 
+
 def user_stats_view(request):
 	data = {'title': 'User stats', 'page':'user'};
 	file = device.get_template(request, 'user_stats.html')
 	return render(request, file, data)
+
 
 def user_settings_view(request):
 	data = {'title': 'User settings', 'page':'user'};

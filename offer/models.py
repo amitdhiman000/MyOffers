@@ -1,56 +1,22 @@
-from __future__ import unicode_literals
-
+import os
+from django.conf import settings
 from django.db import models
 from datetime import datetime
 from datetime import timedelta
 from django.utils import timezone
 from django.utils.translation import ugettext as _
+from user.models import Area
+from user.models import User
 
 # Create your models here.
 def days_ahead(days=1):
 	return timezone.now() + timezone.timedelta(days=days)
 
-class Country(models.Model):
-	country_id = models.IntegerField(primary_key=True, unique=True, null=False)
-	country_name = models.CharField(max_length=50, blank=True)
-
-	class Meta:
-		verbose_name = _('country')
-		verbose_name_plural= _('countries')
-
-
-class State(models.Model):
-	state_id = models.IntegerField(primary_key=True, unique=True, null=False)
-	state_name = models.CharField(max_length=50, blank=True)
-	fk_country_id = models.ForeignKey(Country, on_delete=models.CASCADE)
-
-	class Meta:
-		verbose_name = _('state')
-		verbose_name_plural= _('states')
-
-
-class City(models.Model):
-	city_id = models.IntegerField(primary_key=True, unique=True, null=False)
-	city_name = models.CharField(max_length=50, blank=True)
-	fk_state_id = models.ForeignKey(State, on_delete=models.CASCADE)
-	fk_country_id = models.ForeignKey(Country, on_delete=models.CASCADE)
-
-	class Meta:
-		verbose_name = _('city')
-		verbose_name_plural= _('cities')
-
-
-class Location(models.Model):
-	location_id = models.IntegerField(primary_key=True, unique=True, null=False)
-	location_name = models.CharField(max_length=50, blank=True)
-	location_pin = models.CharField(max_length=10, blank=True)
-	fk_city_id = models.ForeignKey(City, on_delete=models.CASCADE)
-	fk_state_id = models.ForeignKey(State, on_delete=models.CASCADE)
-	fk_country_id = models.ForeignKey(Country, on_delete=models.CASCADE)
-
-	class Meta:
-		verbose_name = _('location')
-		verbose_name_plural= _('locations')
+def user_product_dir(inst, filename):
+	# file will be uploaded to MEDIA_ROOT/products/user_<id>/<filename>
+	path = os.path.join(settings.MEDIA_PROCUCTS_DIR_NAME, 'user_{0}/{1}_{2}'.format(inst.fk_user.id, timezone.now(), filename))
+	print(path)
+	return path
 
 
 # Business types
@@ -76,13 +42,14 @@ class Business(models.Model):
 # offers table for new offers
 class Offer(models.Model):
 	product_name = models.CharField(max_length=30, blank=False)
-	image_name = models.CharField(max_length=50, blank=False)
-	discount = models.CharField(max_length=3, blank=True)
+	product_image = models.FileField(upload_to=user_product_dir)
+	discount = models.CharField(max_length=3)
+	create_time = models.DateTimeField(default=timezone.now)
 	start_date = models.DateTimeField(default=timezone.now)
 	expire_date = models.DateTimeField(default=days_ahead(5))
-	create_time = models.DateTimeField(default=timezone.now)
 	description = models.TextField()
-	fk_location = models.ForeignKey(Location)
+	fk_user = models.ForeignKey(User)
+	fk_area = models.ForeignKey(Area)
 
 	class Meta:
 		verbose_name = _('offer')
@@ -102,9 +69,23 @@ class Offer(models.Model):
 		pass
 
 	@classmethod
-	def register(klass, obj):
+	def create(klass, obj):
 		obj.save()
 
-	def delete(klass, obj):
-		pass
+	@classmethod
+	def remove(klass, obj):
+		try:
+			db_obj = klass.objects.get(obj)
+			db_obj.delete()
+			return True
+		except:
+			print('failed to delete')
+			return False
 
+	@classmethod
+	def get_match(klass, keyw):
+		try:
+			return klass.objects.annotate(name=models.F('product_name')).filter(product_name__contains=keyw).values('id', 'name')[:15]
+		except:
+			traceback.exc()
+			return []

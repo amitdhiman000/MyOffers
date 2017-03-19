@@ -20,6 +20,10 @@ from . import views
 urlpatterns = [
 	url(r'^$', views.offer_home, name='offer_home'),
 	url(r'^view/$', views.offer_view, name='offer_view'),
-	url(r'^create/$', views.offer_create_view, name='offer_create'),
-	url(r'^create/submit/$', views.offer_create_submit, name='offer_register'),
+	url(r'^create-new/$', views.offer_create_view, name='offer_create_view'),
+	url(r'^create-new/auth/$', views.offer_create, name='offer_create'),
+    url(r'^online/$', views.online_view, name='online_view'),
+    url(r'^nearby/$', views.nearby_view, name='nearby_view'),
+    url(r'^bulk/$', views.bulk_view, name='bulk_view'),
+    url(r'^food/$', views.food_view, name='food_view'),
 ]

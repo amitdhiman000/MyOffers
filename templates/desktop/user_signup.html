@@ -1,7 +1,7 @@
 {% extends './base.html' %}
 
 {% block pagemenu %}
-{% include './home_nav.html' %}
+{% include './home_left_nav.html' %}
 {% endblock %}
 
 {% block content %}
@@ -13,7 +13,7 @@
 		{% if form.errors %}
 			<p style="color:red;" >Please fill the details!!</p>
 		{% endif %}
-		<form action="/user/signup-register/" method="POST" >
+		<form action="/user/signup-register/" method="POST" class="ajax-form">
 			{% csrf_token %}
 			<table class="form-table" >	
 				<tr><td>Full Name* : </td><td><input type="text" name="name" class="inputbox" placeholder="Full Name" />
@@ -27,7 +27,7 @@
 				</tr>
 				<tr><td></td>
 				<td>
-				<input type="submit" name="signup" value="Sign Up" class="submit buttons" />
+				<input type="submit" name="signup" value="Sign Up" class="submit ui-btn btn-small" />
 				</td></tr>
 			</table>
 		</form>

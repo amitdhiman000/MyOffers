@@ -18,6 +18,7 @@ from . import views
 
 urlpatterns = [
 	url(r'^$', views.index, name='index'),
+	url(r'^access-denied/$', views.access_denied_view, name='access_denied_view'),
 	url(r'^invalid-request/$', views.invalid_request_view, name='invalid_request_view'),
 	url(r'^under-construction/$', views.under_construction_view, name='under_construction_view'),
 ]

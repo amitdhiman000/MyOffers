@@ -1,64 +1,103 @@
 from datetime import datetime
-from .models import Offer
+from django.utils import timezone
 
-# Create your tests here.
+from user.models import Area
+from offer.models import Offer
+
+## debug
+import traceback
+from pprint import pprint
+
 
 class OfferControl(object):
 
-	def __init__(self, post=None):
-		if post is None:
-			raise ValueError("post data is None")
-		else:
-			self.valid = False
-			self.values = {}
-			self.errors = {}
-			self.offer = Offer()
-			self.offer.product_name = post.get('product_name', '').strip(' \t\n\r')
-			self.offer.discount = post.get('discount', '').strip(' \t\n\r')
-			date_str1 = post.get('start_date', '').strip(' \t\n\r')
-			self.offer.start_date = datetime.strptime(date_str1, "%d-%m-%Y")
-			date_str2 = post.get('expire_date', '').strip(' \t\n\r')
-			self.offer.expire_date = datetime.strptime(date_str2, "%d-%m-%Y")
+	def parseRequest(self, request):
+		post = request.POST
+		files = request.FILES
+		try:
+			self.m_valid = False
+			self.m_values = {}
+			self.m_errors = {}
+			self.m_offer = Offer()
+ 
+			print('files : '+ str(len(files)))
+			file = files.get('product_image')
+			#print('image name : '+file.name)
 
-			self.values['product_name'] = self.offer.product_name
-			self.values['discount'] = self.offer.discount
-			self.values['start_date'] = date_str1
-			self.values['expire_date'] = date_str2
+			self.m_offer.product_image = file
+			self.m_offer.product_name = post.get('product_name', '').strip(' \t\n\r')
+			self.m_offer.discount = post.get('discount', '').strip(' \t\n\r')
+			date_str1 = post.get('start_date', '').strip(' \t\n\r')
+			date_str2 = post.get('expire_date', '').strip(' \t\n\r')
+			tz = timezone.get_current_timezone()
+			self.m_offer.start_date = tz.localize(datetime.strptime(date_str1, "%Y/%m/%d"))
+			self.m_offer.expire_date = tz.localize(datetime.strptime(date_str2, "%Y/%m/%d"))
+			self.m_offer.fk_user = request.user
+			self.m_location = post.get('location', '').strip(' \t\n\r')
+			# save values for session
+			self.m_values['product_name'] = self.m_offer.product_name
+			self.m_values['discount'] = self.m_offer.discount
+			self.m_values['start_date'] = date_str1
+			self.m_values['expire_date'] = date_str2
+			self.m_values['location'] = self.m_location
+			return True
+		except:
+			print('Failed to parse request')
+			traceback.print_exc()
+			return False
 
 	def get_errors(self):
-		return self.errors
+		return self.m_errors
 
 	def get_values(self):
-		return self.values
+		return self.m_values
 
 	def validate(self):
+		print('start validating')
 		valid = True
-		if self.offer.product_name == '':
+		if self.m_offer.product_name == '':
 			valid = False
-			self.errors['product_name'] = '*product name cannot be empty'
+			self.m_errors['product_name'] = '*product name cannot be empty'
 
-		if self.offer.discount == '':
+		if self.m_offer.discount == '':
 			valid = False
-			self.errors['discount'] = '*Discount cannot be empty'
+			self.m_errors['discount'] = '*Discount cannot be empty'
 
-		if self.offer.start_date < datetime.now():
+		if self.m_offer.start_date < timezone.now():
 			valid = False
-			self.errors['start_date'] = '*Start date cannot be before today'
+			self.m_errors['start_date'] = '*Start date cannot be before today'
 
-		if self.offer.expire_date < datetime.now():
+		if self.m_offer.expire_date < timezone.now():
 			valid = False
-			self.errors['expire_date'] = '*Expire date cannot be before today'
+			self.m_errors['expire_date'] = '*Expire date cannot be before today'
 
-		self.valid = valid
+		if self.m_offer.start_date > self.m_offer.expire_date:
+			valid = False
+			self.m_errors['start_date'] = '*Start date cannot be before expire date'
+
+		try:
+			name, pin = self.m_location.split("(")
+			pin = pin.split(")")[0]
+			print('area name : '+name)
+			print('area pin : '+pin)
+			area = Area.get(name, pin)
+			if area == None:
+				valid = False
+				self.m_errors['location'] = 'location not found'
+			else:
+				self.m_offer.fk_area = area
+		except:
+			print('failed to get area')
+			traceback.exc()
+			self.m_errors['location'] = '*Invalid location'
+			valid = False
+
+		self.m_valid = valid
 		return valid
 
 	def register(self):
-		if self.valid:
-			self.offer.register()
-			return self.offer
+		if self.m_valid:
+			Offer.create(self.m_offer)
+			return self.m_offer
 		else:
 			return None
-
-	def delete(self):
-		pass
-
