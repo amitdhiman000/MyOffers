@@ -84,9 +84,13 @@
 		</script>
 		<script type="text/javascript">
 			$(document).ready(function() {
-				$("#nav_bar ul li:first-child").on('click' , function(event) { event.stopPropagation(); $('#big-menu').fadeToggle(100); });
+				$("#nav_bar ul li:first-child").on( {
+					mouseenter : function(event) { event.stopPropagation(); $('#big-menu').fadeIn(100); },
+ 					mouseleave : function(event) { event.stopPropagation(); if (!$('#big-menu').is(':hover')){$('#big-menu').fadeOut(100);}}
+				});
+				$("#big-menu").on('mouseleave' , function(event) { event.stopPropagation(); $('#big-menu').fadeOut(100);});
 				//$("#big-menu").on('click', function(event) { event.stopPropagation(); });
-				$(document).on('click', function() { $('#big-menu').fadeOut(100); });
+				$(document).on('click', function() { $('#big-menu').fadeOut(100);});
 			});
 		</script>
 
