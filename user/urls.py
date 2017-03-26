@@ -25,6 +25,8 @@ urlpatterns = [
 	url(r'^signup-success/$', views.signup_success_view, name='signup_success_view'),
 	url(r'^signout/$', views.signout, name='signout'),
 	url(r'^profile/$', views.profile_view, name='profile_view'),
+	## file upload
+	url(r'^fileupload/$', views.fileupload, name='fileupload'),
 	## user profile tabs
 	url(r'^info/$', views.user_info_view, name='user_info_view'),
 	url(r'^topics-select/$', views.user_topics_select_view, name='user_topics_select_view'),

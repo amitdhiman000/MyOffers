@@ -23,7 +23,7 @@
 		$("div.offer_desc2 a").on('click', toggleDetails);
 	});
 
-	function toggleDetails(event)
+	function toggleDetails(e)
 	{
 		var pThis = $(this);
 		if (pThis.text().match("[+]")) {
@@ -39,7 +39,6 @@
 </script>
 
 <div class="ui-page">
-	{% for i in "amit" %}
 	{% for offer in offers_list  %}
 	<div class="offer_box" >
 		<div class="offer_block">
@@ -63,7 +62,6 @@
 			<a href="javascript:void(0)" >Get Discount coupons</a>
 		</div>
 	</div>
-	{% endfor %}
 	{% endfor %}
 </div>
 {% endblock %}

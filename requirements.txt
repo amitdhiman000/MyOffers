@@ -1,8 +1,12 @@
 Django==1.10.3
+django-background-tasks==1.0.15
+django-compat==1.0.13
 django-excel==0.0.5
 gunicorn==19.6.0
 pyexcel==0.3.3
 pyexcel-io==0.2.4
 pyexcel-webio==0.0.8
+pytz==2016.10
+six==1.10.0
 texttable==0.8.7
 whitenoise==3.3.0

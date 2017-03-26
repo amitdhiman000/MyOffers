@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
+	'background_task',
 	'ajax',
 	'home',
 	'user',
@@ -147,8 +148,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'staticfiles', 'media_root')
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
-MEDIA_PROCUCTS_DIR_NAME = 'products'
-MEDIA_PROCUCTS_DIR = os.path.join(MEDIA_ROOT, 'products')
+MEDIA_USER_FILES_DIR_NAME = 'files'
+MEDIA_TMP_FILES_DIR_NAME = 'tmp'
 
 
 # some custom settings

@@ -8,20 +8,24 @@ from django.utils.translation import ugettext as _
 from user.models import Area
 from user.models import User
 
+## debug
+import traceback
+from pprint import pprint
+
 # Create your models here.
 def days_ahead(days=1):
 	return timezone.now() + timezone.timedelta(days=days)
 
-def user_product_dir(inst, filename):
+def user_files_dir(inst, filename):
 	# file will be uploaded to MEDIA_ROOT/products/user_<id>/<filename>
-	path = os.path.join(settings.MEDIA_PROCUCTS_DIR_NAME, 'user_{0}/{1}_{2}'.format(inst.fk_user.id, timezone.now(), filename))
+	path = os.path.join(settings.MEDIA_USER_FILES_DIR_NAME, 'user_{0}/{1}_{2}'.format(inst.fk_user.id, timezone.now(), filename))
 	print(path)
 	return path
 
 
 # Business types
 class Business(models.Model):
-	business_id = models.IntegerField(primary_key=True, unique=True, null=False)
+	id = models.BigAutoField(primary_key=True)
 	business_name = models.CharField(max_length=30)
 	business_desc = models.CharField(max_length=50)
 
@@ -32,17 +36,17 @@ class Business(models.Model):
 	def __str__(self):
 		return self.business_name
 
-	def add_category(self, name=None, desc=''):
-		if name is None:
-			raise ValueError("Category Name is required!!")
-		obj = Category(business_name=name, business_desc=desc)
+	@classmethod
+	def create(klass, name, desc):
+		obj = klass(business_name=name, business_desc=desc)
 		obj.save()
 
 
 # offers table for new offers
 class Offer(models.Model):
+	id = models.BigAutoField(primary_key=True)
 	product_name = models.CharField(max_length=30, blank=False)
-	product_image = models.FileField(upload_to=user_product_dir)
+	product_image = models.FileField(upload_to=user_files_dir)
 	discount = models.CharField(max_length=3)
 	create_time = models.DateTimeField(default=timezone.now)
 	start_date = models.DateTimeField(default=timezone.now)
@@ -62,6 +66,15 @@ class Offer(models.Model):
 	def get_all(klass):
 		return klass.objects.all()
 
+	@classmethod
+	def get_by_id(klass, offer_id):
+		try:
+			return klass.objects.get(id=offer_id)
+		except:
+			print('Failed to get product')
+			traceback.print_exc()
+			return None
+
 	def get_by_location(self, location='bengaluru', count=20):
 		pass
 
@@ -71,6 +84,7 @@ class Offer(models.Model):
 	@classmethod
 	def create(klass, obj):
 		obj.save()
+		return obj
 
 	@classmethod
 	def remove(klass, obj):
@@ -89,3 +103,4 @@ class Offer(models.Model):
 		except:
 			traceback.exc()
 			return []
+

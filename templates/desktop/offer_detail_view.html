@@ -1,7 +1,22 @@
 {% extends './base.html' %}
 
-{% block content %}
-<h1>Welcome to Myoffers</h1>
-<h2>There are no offers available in this region yet.</h2>
+{% block pagemenu %}
+{% include './home_left_nav.html' %}
+{% endblock %}
 
+{% block content %}
+<div class="ui-page" >
+	{% if offer %}
+	<div class="ui-bar-tbb">
+		<h3>{{offer.product_name}}</h3>
+	</div>
+	<div class="ui-body" >
+		<img src="{{offer.product_image.url}}" alt="{{offer.product_name}} | {{offer.discount}}% Off" title="{{offer.product_name}} | {{offer.discount}}% Off" />
+
+		<div class="h-solid-line"></div>
+		<h4>{{offer.discount}}% Off</h4>
+		<h5>From {{offer.start_date}} to {{offer.expire_date}}</h5>
+	</div>
+	{% endif %}
+</div>
 {% endblock %}

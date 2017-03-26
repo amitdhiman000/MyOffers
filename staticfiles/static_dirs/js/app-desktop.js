@@ -1,7 +1,6 @@
 $(document).ready(function() {
 	/* search box*/
 	$(document).on('submit', '.ajax-form', ajaxFormSubmit);
-	$(document).on('submit', '.ajax-file-form', ajaxFileFormSubmit);
 
 	$("#search-input").suggestions({
 		minLength: 2,
@@ -24,6 +23,15 @@ $(document).ready(function() {
 		},
 		_itemSelect: function(input, item) {
 			input.val(item.name);
+		},
+		_onEnter: function(e) {
+			console.log('+_onEnter1');
+			var Inst = e.data;
+			Inst.kf._onunfocus();
+			if (Inst.kd._count > 0) {
+				var item = Inst.kd._jsonData[Inst.kd._selectedIndex];
+				location.href = '/offer/'+item.id
+			}
 		}
 	});
 });
@@ -39,107 +47,10 @@ function ajaxFormSubmit(e)
 		if (status === true) {
 			Toast.show(result.message);
 		} else {
-			Toast.show(result.error);
-			console.log('error : '+result.error);
+			Toast.show(JSON.stringify(result.error));
+			console.log('error : '+JSON.stringify(result.error));
 		}
 	});
-}
-
-function ajaxFileFormSubmit(e)
-{
-	console.log("+ajaxFileFormSubmit");
-	e.preventDefault();
-	var form = $(this);
-	var action = form.attr('action');
-	console.log('action : '+ action);
-	//var files = form.find('input[type="file"]');
-	//var files = this.querySelector('input[type="file"]');
-	var files = this.getElementById('product_image');
-	console.log('files count : '+files[0]);
-	console.log('files count : '+files.length);
-
-	var name, data;
-	var reader = new FileReader();
-	for (i in files) {
-		file = files[i];
-		console.log(file.type);
-		if (file.type.match(/image.*/)) {
-			console.log('Image file');
-		} else {
-			console.log('Not Image file');
-		}
-		name = file.name;
-		reader.readAsDataURL(file);
-		data.append(name, file);
-	}
-	//data.append('form', form.serializeArray());
-	//var data = form.serialize();
-	console.log('data :'+data);
-	ajaxRequest(action, data, function(status, result){
-			if (status) {
-				console.log('request success');
-			} else {
-				console.log('request failed');
-			}
-		}/*,
-		{contentType: false,
-		parseData: false,
-		cache: false}*/
-	);
-}
-
-function ajaxRequest(pAction, pData, pCallback, options=null)
-{
-	console.log("+ajaxRequest");
-	var request	= {
-		url: pAction,
-		data: pData,
-		type: 'POST',
-		async: true,
-		dataType: 'text',
-		beforeSend: function(xhr) {
-			console.log('+beforeSend');
-		},
-		complete: function(res) {
-			// This function is called at last for cleanup
-			console.log('+comeplete :'+ res.status);
-		},
-		success: function (data, status, xhr) {
-			mimeType = xhr.getResponseHeader("content-type");
-			if (mimeType.indexOf('json') > -1) {
-				console.log('response : ' + data);
-				jsonData = jQuery.parseJSON(data);
-				switch(jsonData.status) {
-				case 302:
-					console.log('redirect');
-					location.href = jsonData.url;
-					break;
-				case 200:
-					pCallback(true, jsonData);
-					break;
-				case 204:
-					pCallback(true, jsonData);
-					break;
-				default:
-					pCallback(false, jsonData);
-					break;
-				}
-			} else {
-				pCallback(false, {'error':'unexpected content type'});
-			}
-		},
-		error: function (xhr,error) {
-			console.log('status : '+xhr.status);
-			Toast.show('Network error occured');
-			pCallback(false, {'error':error});
-		}
-	};
-	if (options) {
-		for (k in options) {
-			request[k] = options[k];
-		}
-	}
-	$.ajax(request);
 }
 
 function postRequest(pAction, pData, pCallback)
@@ -149,8 +60,6 @@ function postRequest(pAction, pData, pCallback)
 		data: pData,
 		type: 'POST',
 		async: true,
-		//contentType: false,
-		//parseData: false,
 		dataType: 'text',
 		beforeSend: function(xhr) {
 			console.log('+beforeSend');
@@ -172,8 +81,6 @@ function postRequest(pAction, pData, pCallback)
 					location.href = jsonData.url;
 					break;
 				case 200:
-					pCallback(true, jsonData);
-					break;
 				case 204:
 					pCallback(true, jsonData);
 					break;

@@ -14,12 +14,7 @@
 	.search-item-a { background: #38f; color: #fff; }
 	.search-item > div { display:inline-block; vertical-align:middle; margin-right: 0.4em; }
 	.search-item img { width: 24px; height: 24px; }
-	.ui-autocomplete {
-    	max-height: 200px;
-    	overflow-y: auto;
-    	/* prevent horizontal scrollbar */
-    	overflow-x: hidden;
-	}
+	.ui-autocomplete { max-height: 200px; overflow-y: auto; overflow-x: hidden;	}
 </style>
 
 
@@ -30,7 +25,7 @@ $(function(){
 			from = $("#start_date").datepicker({
 					minDate: new Date(),
 					dateFormat: dateFmt,
-					defaultDate: "+1w",
+					//defaultDate: "+1w",
 					changeMonth: true,
 					numberOfMonths: 1
 				}).on("change", function(){
@@ -38,7 +33,7 @@ $(function(){
 				}),
 			to = $("#expire_date").datepicker({
 				dateFormat: dateFmt,
-				defaultDate: "+1w",
+				//defaultDate: "+1w",
 				changeMonth: true,
 				numberOfMonths: 1
 			})
@@ -54,9 +49,10 @@ $(function(){
 				date = null;
 			}
 			return date;
-		}});
+		}
+	});
 
-	$("#location").suggestions({
+	$("#area").suggestions({
 		minLength: 2,
 		_source: function(key, resp) {
 			postRequest('/ajax/location/', {'key': key}, function(status, result){
@@ -82,6 +78,8 @@ $(function(){
 			input.val(item.name+' ('+item.pin+')');
 		}
 	});
+
+	$('.ajax-file-upload').fileupload({maxFiles:2});
 });
 </script>
 
@@ -90,7 +88,7 @@ $(function(){
 			<h3>Post New Offer</h3>
 		</div>	
 		<div class="ui-body" >
-			<form action="/offer/create-new/auth/" method="POST" enctype="multipart/form-data" class="ajax-file-form">
+			<form action="/offer/create-new/auth/" method="POST" enctype="multipart/form-data" class="ajax-form">
 				{% csrf_token %}
 				<table class="form_table">
 					<tr><td>Product Name : </td>
@@ -98,7 +96,7 @@ $(function(){
 					<td><p class="errors">{{form_errors.product_name}}</p></td>
 					</tr>
 					<tr><td>Product Image : </td>
-					<td><input type="file" name="product_image" class="inputbox" />
+					<td><input type="file" name="product_image" class="inputbox ajax-file-upload" multiple />
 					<td><p class="errors">{{form_errors.product_image}}</p></td>
 					</tr>
 					<tr><td>Discount (%) : </td>
@@ -113,13 +111,13 @@ $(function(){
 					<td><input type="text" name="expire_date" id="expire_date" value="{{form_values.expire_date}}" class="inputbox" />
 					<td><p class="errors">{{form_errors.expire_date}}</p></td>
 					</tr>
-					<tr><td>Location : </td>
-					<td><input type="text" name="location" id="location" value="{{form_values.location}}" class="inputbox" autocomplete="off" />
-					<td><p class="errors">{{form_errors.location}}</p></td>
+					<tr><td>Area : </td>
+					<td><input type="text" name="area" id="area" value="{{form_values.area}}" class="inputbox" autocomplete="off" />
+					<td><p class="errors">{{form_errors.area}}</p></td>
 					</tr>
 
 					<tr><td></td>
-					<td><input type="submit" name="submit" value="Publish" class="ui-btn btn-long " /></td>
+					<td><input type="submit" name="submit" value="Publish" class="ui-btn ui-btn-long" /></td>
 					</tr>
 				</table>
 			</form>

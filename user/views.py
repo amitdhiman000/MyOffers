@@ -3,7 +3,6 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.template.context_processors import csrf
 from django.views.decorators.csrf import csrf_exempt
-from django.core import serializers
 
 ## custom packages
 import device
@@ -14,6 +13,7 @@ from . import backends
 from .models import User
 from .control import UserRegControl
 from .control import UserSignInControl
+from .control import UserFileUploadControl
 
 ## debugging
 from pprint import pprint
@@ -34,6 +34,7 @@ def signin_view(request):
 
 
 #functions for registration
+@redirect_if_loggedin
 def signup_view(request):
 	data = {'title':'Signup', 'page':'user'}
 	data.update(csrf(request))
@@ -115,6 +116,34 @@ def profile_view(request):
 	data = {'title':'Profile', 'page':'user', 'dataurl':dataurl, 'user': user}
 	file = device.get_template(request, 'user_profile.html');
 	return render(request, file, data)
+
+
+
+## User file upload
+@csrf_exempt
+@post_required
+@login_required
+def fileupload(request):
+	pprint(request.POST)
+	pprint(request.FILES)
+
+	error = None
+	upload = None
+	fileupload = UserFileUploadControl()
+	if fileupload.parseRequest(request) and fileupload.validate():
+		upload = fileupload.register()
+		if upload == None:
+			error = fileupload.get_errors()
+	else:
+		error = fileupload.get_errors()
+
+	#upload = Klass(id = 2)
+	if error == None:
+		return JsonResponse({'status': 200,
+			'message':'successfuly uploaded',
+			'data': {'upload_id': upload.id} })
+	else:
+		return JsonResponse({'status': 401, 'error': error })
 
 
 ## User personal and profile info

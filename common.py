@@ -70,3 +70,10 @@ def redirect_if_loggedin(funct):
 			return __redirect(request, settings.USER_PROFILE_URL)
 		return funct(request, *args, **kwargs)
 	return _decorator
+
+
+## class for mocking any object
+##
+class Klass:
+	def __init__(self, **kwargs):
+		self.__dict__.update(kwargs)
