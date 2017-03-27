@@ -92,27 +92,27 @@ $(function(){
 				{% csrf_token %}
 				<table class="form_table">
 					<tr><td>Product Name : </td>
-					<td><input type="text" name="product_name" value="{{form_values.product_name}}" class="inputbox" />
+					<td><input type="text" name="product_name" value="{{form_values.product_name}}" class="ui-input" />
 					<td><p class="errors">{{form_errors.product_name}}</p></td>
 					</tr>
 					<tr><td>Product Image : </td>
-					<td><input type="file" name="product_image" class="inputbox ajax-file-upload" multiple />
+					<td><input type="file" name="product_image" class="ui-input ajax-file-upload" multiple />
 					<td><p class="errors">{{form_errors.product_image}}</p></td>
 					</tr>
 					<tr><td>Discount (%) : </td>
-					<td><input type="text" name="discount" value="{{form_values.discount}}" class="inputbox" />
+					<td><input type="text" name="discount" value="{{form_values.discount}}" class="ui-input" />
 					<td><p class="errors">{{form_errors.discount}}</p></td>
 					</tr>
 					<tr><td>Start Date : </td>
-					<td><input type="text" name="start_date" id="start_date" value="{{form_values.start_date}}" class="inputbox" />
+					<td><input type="text" name="start_date" id="start_date" value="{{form_values.start_date}}" class="ui-input" />
 					<td><p class="errors">{{form_errors.start_date}}</p></td>
 					</tr>
 					<tr><td>Expire Date : </td>
-					<td><input type="text" name="expire_date" id="expire_date" value="{{form_values.expire_date}}" class="inputbox" />
+					<td><input type="text" name="expire_date" id="expire_date" value="{{form_values.expire_date}}" class="ui-input" />
 					<td><p class="errors">{{form_errors.expire_date}}</p></td>
 					</tr>
 					<tr><td>Area : </td>
-					<td><input type="text" name="area" id="area" value="{{form_values.area}}" class="inputbox" autocomplete="off" />
+					<td><input type="text" name="area" id="area" value="{{form_values.area}}" class="ui-input" autocomplete="off" />
 					<td><p class="errors">{{form_errors.area}}</p></td>
 					</tr>
 

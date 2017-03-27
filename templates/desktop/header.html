@@ -12,11 +12,8 @@
 				<form method="POST" >
 					<input type="text" name="search" id="search-input" placeholder="Search here..." autocomplete="off" />
 				</form>
-				<div id="search-results" >
-					<ul class="site-list" ></ul>
-				</div>
 			</div>
-			<div id="site-navbar-div" >
+			<div id="site-nav-div" >
 				<div style="float: right;">
 				{% if user.is_loggedin %}
 					<a href="/user/profile/">{{ user.name|slice:":11" }}</a> | <a href="/user/signout/">SignOut</a>
