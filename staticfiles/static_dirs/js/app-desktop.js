@@ -1,7 +1,12 @@
-$(document).ready(function() {
+$(function() {
 	/* search box*/
 	$(document).on('submit', '.ajax-form', ajaxFormSubmit);
+	initSearch();
+});
 
+function initSearch()
+{
+	console.log('+initSearch');
 	$("#search-input").suggestions({
 		minLength: 2,
 		_source: function(key, resp) {
@@ -15,8 +20,8 @@ $(document).ready(function() {
 		},
 		_itemCreate: function(item) {
 			var uiItem = '<li>'
-			+ '<div class="search-item">'
-			+ '<a style="display:block; padding: 0.5em;" href="/offer/'+item.id+'">'+item.name+'</a>'
+			+ '<div class="ui-search-item">'
+			+ '<a style="display:block; padding: 0.5em;" href="'+item.url+'">'+item.P_name+'</a>'
 			+ '</div>'
 			+ '</li>';
 			return uiItem;
@@ -30,25 +35,33 @@ $(document).ready(function() {
 			Inst.kf._onunfocus();
 			if (Inst.kd._count > 0) {
 				var item = Inst.kd._jsonData[Inst.kd._selectedIndex];
-				location.href = '/offer/'+item.id
+				location.href = item.url
 			}
 		}
 	});
-});
+}
 
 function ajaxFormSubmit(e)
 {
 	console.log("+ajaxFormSubmit");
 	e.preventDefault();
 	var form = $(this);
+	var handle = form.data('handlers');
 	var action = form.attr('action');
 	console.log('action : '+ action);
+
+	(handle && handle.before && handle.before(e));
 	postRequest(action, form.serialize(), (status, result) => {
-		if (status === true) {
-			Toast.show(result.message);
+		if (handle && handle.after) {
+			e.status = status;
+			e.result = result;
+			handle.after(e);
 		} else {
-			Toast.show(JSON.stringify(result.error));
-			console.log('error : '+JSON.stringify(result.error));
+			if (status === true) {
+				Toast.show(result.message);
+			} else {
+				Toast.show(JSON.stringify(result.error));
+			}
 		}
 	});
 }

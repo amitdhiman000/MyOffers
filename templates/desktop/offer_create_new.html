@@ -22,7 +22,7 @@
 $(function(){
 	$(function(){
 		var dateFmt = "yy/mm/dd",
-			from = $("#start_date").datepicker({
+			from = $("#P_start_date").datepicker({
 					minDate: new Date(),
 					dateFormat: dateFmt,
 					//defaultDate: "+1w",
@@ -31,7 +31,7 @@ $(function(){
 				}).on("change", function(){
 					to.datepicker("option", "minDate", getDate(this));
 				}),
-			to = $("#expire_date").datepicker({
+			to = $("#P_expire_date").datepicker({
 				dateFormat: dateFmt,
 				//defaultDate: "+1w",
 				changeMonth: true,
@@ -52,7 +52,7 @@ $(function(){
 		}
 	});
 
-	$("#area").suggestions({
+	$("#P_area").suggestions({
 		minLength: 2,
 		_source: function(key, resp) {
 			postRequest('/ajax/location/', {'key': key}, function(status, result){
@@ -88,35 +88,52 @@ $(function(){
 			<h3>Post New Offer</h3>
 		</div>	
 		<div class="ui-body" >
+			<h5 class="errors">{{form_errors.request}}</h5>
 			<form action="/offer/create-new/auth/" method="POST" enctype="multipart/form-data" class="ajax-form">
 				{% csrf_token %}
 				<table class="form_table">
-					<tr><td>Product Name : </td>
-					<td><input type="text" name="product_name" value="{{form_values.product_name}}" class="ui-input" />
-					<td><p class="errors">{{form_errors.product_name}}</p></td>
+					<tr>
+					<td>Product Name : </td>
+					<td><input type="text" name="P_name" class="ui-input" value="{{form_values.P_name}}" />
+					<td><p class="errors">{{form_errors.P_name}}</p></td>
 					</tr>
-					<tr><td>Product Image : </td>
-					<td><input type="file" name="product_image" class="ui-input ajax-file-upload" multiple />
-					<td><p class="errors">{{form_errors.product_image}}</p></td>
+					<tr>
+					<td>Product Image : </td>
+					<td><input type="file" name="P_image" class="ui-input ajax-file-upload" multiple />
+					<td><p class="errors">{{form_errors.P_image}}</p></td>
 					</tr>
-					<tr><td>Discount (%) : </td>
-					<td><input type="text" name="discount" value="{{form_values.discount}}" class="ui-input" />
-					<td><p class="errors">{{form_errors.discount}}</p></td>
+					<tr>
+					<td>Product Price : </td>
+					<td><input type="text" name="P_price" id="P_price" class="ui-input" value="{{form_values.P_price}}" />
+					<td><p class="errors">{{form_errors.P_price}}</p></td>
 					</tr>
-					<tr><td>Start Date : </td>
-					<td><input type="text" name="start_date" id="start_date" value="{{form_values.start_date}}" class="ui-input" />
-					<td><p class="errors">{{form_errors.start_date}}</p></td>
+					<tr>
+					<td>Discount (%) : </td>
+					<td><input type="text" name="P_discount" id="P_discount" class="ui-input" value="{{form_values.P_discount}}" />
+					<td><p class="errors">{{form_errors.P_discount}}</p></td>
 					</tr>
-					<tr><td>Expire Date : </td>
-					<td><input type="text" name="expire_date" id="expire_date" value="{{form_values.expire_date}}" class="ui-input" />
-					<td><p class="errors">{{form_errors.expire_date}}</p></td>
+					<tr>
+					<td>Discount price : </td>
+					<td><input type="text" name="P_discount_price" class="ui-input" value="{{form_values.P_discount_price}}" />
+					<td><p class="errors">{{form_errors.P_discount_price}}</p></td>
 					</tr>
-					<tr><td>Area : </td>
-					<td><input type="text" name="area" id="area" value="{{form_values.area}}" class="ui-input" autocomplete="off" />
-					<td><p class="errors">{{form_errors.area}}</p></td>
+					<tr>
+					<tr>
+					<td>Area : </td>
+					<td><input type="text" name="P_area" id="P_area" class="ui-input" value="{{form_values.P_area}}" autocomplete="off" />
+					<td><p class="errors">{{form_errors.P_area}}</p></td>
 					</tr>
-
-					<tr><td></td>
+					<td>Start Date : </td>
+					<td><input type="text" name="P_start_date" id="P_start_date" class="ui-input" value="{{form_values.P_start_date}}" autocomplete="off" readonly />
+					<td><p class="errors">{{form_errors.P_start_date}}</p></td>
+					</tr>
+					<tr>
+					<td>Expire Date : </td>
+					<td><input type="text" name="P_expire_date" id="P_expire_date" class="ui-input" value="{{form_values.P_expire_date}}" autocomplete="off" readonly />
+					<td><p class="errors">{{form_errors.P_expire_date}}</p></td>
+					</tr>
+					<tr>
+					<td>&nbsp;</td>
 					<td><input type="submit" name="submit" value="Publish" class="ui-btn ui-btn-long" /></td>
 					</tr>
 				</table>

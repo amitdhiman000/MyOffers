@@ -44,14 +44,17 @@ class Business(models.Model):
 
 # offers table for new offers
 class Offer(models.Model):
-	id = models.BigAutoField(primary_key=True)
-	product_name = models.CharField(max_length=30, blank=False)
-	product_image = models.FileField(upload_to=user_files_dir)
-	discount = models.CharField(max_length=3)
-	create_time = models.DateTimeField(default=timezone.now)
-	start_date = models.DateTimeField(default=timezone.now)
-	expire_date = models.DateTimeField(default=days_ahead(5))
-	description = models.TextField()
+	P_id = models.BigAutoField(primary_key=True)
+	P_name = models.CharField(max_length=30, blank=False)
+	P_image = models.FileField(upload_to=user_files_dir)
+	P_price = models.IntegerField(default=100) ## MRP
+	P_discount = models.IntegerField(default=0)
+	P_discount_price = models.IntegerField(default=100)
+	P_created = models.DateTimeField(default=timezone.now)
+	P_start_date = models.DateTimeField(default=timezone.now)
+	P_expire_date = models.DateTimeField(default=days_ahead(5))
+	P_slug = models.SlugField(unique=True)
+	P_details = models.TextField()
 	fk_user = models.ForeignKey(User)
 	fk_area = models.ForeignKey(Area)
 
@@ -60,26 +63,7 @@ class Offer(models.Model):
 		verbose_name_plural= _('offers')
 
 	def __str__(self):
-		return self.product_name
-
-	@classmethod
-	def get_all(klass):
-		return klass.objects.all()
-
-	@classmethod
-	def get_by_id(klass, offer_id):
-		try:
-			return klass.objects.get(id=offer_id)
-		except:
-			print('Failed to get product')
-			traceback.print_exc()
-			return None
-
-	def get_by_location(self, location='bengaluru', count=20):
-		pass
-
-	def get_by_keyword(self, keyword='', count=20):
-		pass
+		return self.P_name
 
 	@classmethod
 	def create(klass, obj):
@@ -94,13 +78,67 @@ class Offer(models.Model):
 			return True
 		except:
 			print('failed to delete')
+			traceback.print_exc()
 			return False
+
+	@classmethod
+	def add_url_to_dict(klass, db_objs):
+		for db_obj in db_objs:
+			db_obj['url'] = '/offer/'+db_obj['P_slug']
+		return db_objs
+
+	@classmethod
+	def add_url_to_objs(klass, db_objs):
+		for db_obj in db_objs:
+			db_obj.url = '/offer/'+db_obj.P_slug
+		return db_objs
+
+	@classmethod
+	def add_url_to_obj(klass, db_obj):
+		if db_obj:
+			db_obj.url = '/offer/'+db_obj.P_slug
+		return db_obj
+
+
+	@classmethod
+	def get_all(klass):
+		db_objs = klass.objects.all()
+		return klass.add_url_to_objs(db_objs)
+
+	@classmethod
+	def get_by_id(klass, id):
+		try:
+			db_objs = klass.objects.get(P_id=id)
+			return klass.add_url_to_objs(db_objs)
+		except:
+			print('Failed to get product')
+			traceback.print_exc()
+			return None
+
+
+	@classmethod
+	def get_by_slug(klass, slug):
+		try:
+			db_obj = klass.objects.get(P_slug=slug)
+			return klass.add_url_to_obj(db_obj)
+		except:
+			print('Failed to get product')
+			traceback.print_exc()
+			return None
 
 	@classmethod
 	def get_match(klass, keyw):
 		try:
-			return klass.objects.annotate(name=models.F('product_name')).filter(product_name__contains=keyw).values('id', 'name')[:15]
+			db_objs = klass.objects.filter(P_name__contains=keyw).values('P_id', 'P_name', 'P_slug')[:10]
+			return klass.add_url_to_dict(db_objs)
 		except:
-			traceback.exc()
+			traceback.print_exc()
 			return []
+
+
+	def get_by_location(self, location, count=20):
+		pass
+
+	def get_by_keyword(self, keyword, count=20):
+		pass
 

@@ -10,10 +10,12 @@
 		<h3>Sign Up</h3>
 	</div>
 	<div class="ui-body" >
-		{% if form.errors %}
-			<p style="color:red;" >Please fill the details!!</p>
-		{% endif %}
-		<form action="/user/signup-register/" method="POST" class="ajax-form">
+		<div class="ui-errors" >
+		{% for error in form.errors %}
+			{{error}} <br />
+		{% endfor %}
+		</div>
+		<form action="/user/signup-register/" method="POST" class="ajax-form signup-form">
 			{% csrf_token %}
 			<table class="form-table" >	
 				<tr><td>Full Name* : </td><td><input type="text" name="name" class="ui-input" placeholder="Full Name" />
@@ -27,10 +29,33 @@
 				</tr>
 				<tr><td></td>
 				<td>
-				<input type="submit" name="signup" value="Sign Up" class="submit ui-btn ui-btn-small" />
+				<input type="submit" name="signup" value="Sign Up" class="ui-btn" />
 				</td></tr>
 			</table>
 		</form>
 	</div>
 </div>
+<script type="text/javascript">
+$(function() {
+	console.log('adding login handler');
+	$('.signup-form').data('handlers', {before: beforeSignUp, after: afterSignUp});
+});
+
+function beforeSignUp(e) {
+	console.log("+beforeSignUp");
+}
+
+function afterSignUp(e) {
+	console.log("+afterSignUp");
+	if (e.status == false) {
+		var errors = '';
+		for (var key in e.result.error) {
+			console.log(key);
+			console.log(e.result.error[key])
+			errors += e.result.error[key]+'<br />';
+		}
+		$('.ui-errors').html(errors);
+	}
+}
+</script>
 {% endblock %}

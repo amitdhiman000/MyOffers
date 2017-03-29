@@ -8,59 +8,37 @@
 
 {% block content %}
 <style type="text/css">
-	.offer_box { display: inline-block; vertical-align: top; width: 230px; height: 230px; margin: 5px; z-index: 1; }
-	.offer_block { width: 100%; height:100%; margin: 5px; border: 1px dotted #aaa; }
-	.offer_image { width: 95%; height: 84%; margin: 0px auto; }
-	.offer_image img { max-width: 100%; max-height: 100%; min-width: 80%; min-height: 80%; }
-	.offer_desc { width: 95%; height: 15%; margin: 0px auto; font-size: 1.2em;}
-	.offer_desc1 { float: left; max-width:80%; text-align: justify; }
-	.offer_desc2 { float: right; padding: 5px; border: 1px dotted #333; }
-	.offer_desc2 a { display: block; cursor: pointer; }
-	.offer_details { position: relative; width:100%; margin: 0px 5px; z-index: 99999; display: none; background: #FFF; border: 1px solid #999; overflow: none; }
+	.P-item { width:250px; height:350px; background: #f9f9f9; border: 1px solid #ddd; display: inline-block; vertical-align: top; margin: 0.7em 0em 0em 0.5em; }
+	.P-image { width: 100%; height: 65%; }
+	.P-image img { display:block; margin:0 auto; max-width:98%; max-height:98%; min-width:98%; min-height:98%; }
+	.P-details { width:100%; min-height: 35%; padding: 0.3em; /*background: #e9e9e9;*/ }
+	.P-name { width: 100%; /*background: #888;*/  }
+	.P-discount {}
+	.P-price {}
 </style>
-
-<script type="text/javascript">
-	$(document).ready( function() {
-		//$("div.offer_desc2").click(toggleDetails);
-		$("div.offer_desc2 a").on('click', toggleDetails);
-	});
-
-	function toggleDetails(event)
-	{
-		if ($(this).text().match("[+]")) {
-			console.log("Expand");
-			$(this).text('[-]');
-			$(this).parentsUntil("div.offer_box").next().css({"display":"block"});
-		} else {
-			console.log("Contract");
-			$(this).text('[+]');
-			$(this).parentsUntil("div.offer_box").next().css({"display":"none"});
-		}
-	}
-</script>
 
 <div class="ui-page" >
 {% for offer in offers_list  %}
-	<div class="offer_box" >
-		<div class="offer_block">
-			<div class="offer_image">
-				<img src="{{offer.product_image.url}}" alt="{{offer.product_name}} | {{offer.discount}}% Off" title="{{offer.product_name}} | {{offer.discount}}% Off" />
-			</div>
-			<div class="offer_desc">
-				<div class="offer_desc1">
-					{{offer.product_name}} |
-					{{offer.discount}}% Off
-				</div>
-				<div class="offer_desc2">
-					<a>[+]</a>
-				</div>
-			</div>
-			<div class="clear" ></div>
+	<div class="P-item" >
+		<a href="{{offer.url}}" >
+		<div class="P-image">
+			<img src="{{offer.P_image.url}}" alt="{{offer.P_name}} | {{offer.P_discount}}% Off" />
 		</div>
-		<div class="offer_details">
-			Starting On : {{offer.start_date}} <br />
-			Last Date : {{offer.expire_date}} <br />
-			Get Discount coupons
+		</a>
+		<div class="P-details" >
+			<div class="P-name" >
+				<a href="{{offer.url}}" ><strong title="{{offer.P_name}}" >{{offer.P_name | truncatechars:70}}</strong></a>
+			</div>
+			<div class="ui-line-s" ></div>
+			<div class="P-discount"><h4>{{offer.P_discount}}% Off</h4></div>
+			<div class="P-price">
+				<span>&#8377; {{offer.P_discount_price}}</span> <span>&#8377; &nbsp;<strike>{{offer.P_price}}</strike></span>
+			</div>
+			<div class="ui-line-s" ></div>
+			<div>
+				<b>Validity: </b> {{offer.P_start_date | date:"d M Y D"}}<br />
+				<b>To : </b> {{offer.P_expire_date | date:"d M Y D"}}
+			</div>
 		</div>
 	</div>
 {% endfor %}
