@@ -19,7 +19,8 @@ from . import views
 
 urlpatterns = [
 	url(r'^$', views.home, name='home'),
-	url(r'^fill-defaults/$', views.fill_defaults, name='fill_defaults'),
-	url(r'^create-new/$', views.offer_create_view, name='offer_create_view'),
-	url(r'^create-new/auth/$', views.offer_create, name='offer_create'),
+	url(r'^locus/$', views.locus_view, name='locus_view'),
+    url(r'^locus-add/$', views.locus_add_view, name='locus_add_view'),
+    url(r'^messages/$', views.messages_view, name='messages_view'),
+    url(r'^locus-auth/(?P<state>[\w\ \(\)]+)/(?P<city>[\w\ \(\)]+)/$', views.locus_auth, name='locus_auth'),
 ]

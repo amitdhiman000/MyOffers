@@ -1,0 +1,553 @@
+Butcher Island	400001
+Bomani Lane	400001
+Banaji Cross Lane	400001
+Banaji Street	400001
+Bori Bunder Bombay V T	400001
+Bread Market Lane	400001
+Bhaucha Dhakka Ferry	400001
+Bohara Masjid Street	400001
+British Hotel Lane	400001
+Bhagwan Kalyan Wadi	400002
+Bhai Jivanji Lane	400002
+Babu Genu Road Hanu. Kane	400002
+Bohara Masjid Lane	400002
+Bihari Baug	400002
+Bamanji Master Rd Sild Br	400002
+Bada Mandir	400002
+Badamwadi (Kalbadevi)	400002
+Bhoiwada I Ii And Iii	400002
+Bhatia Co-Op Hsing Socety	400002
+Bhuleshwar Road Market	400002
+Bhuleswar Road	400002
+Bhatia Mahaian Wadi	400002
+Bhaskar Lane	400002
+Bhang Wadi	400002
+Bomani Master Road	400002
+Behram Baug	400002
+Bengalipura (Old And New)	400003
+Brigadiar Usman Marg E R	400003
+Bhajipala Lane	400003
+Bohara Street	400003
+Bapu Hajam Mohalla	400003
+Bapu Khote Cross Lane	400003
+Bapu Khote Street Jamli	400003
+Bibijan Street	400003
+Bangdi Bazar	400003
+Bapty Road South	400003
+Bara Imam Road	400003
+Bhandari Cross Lane	400003
+Barbhai Mohalla	400003
+Bardangalli	400003
+Bhuleshwar Road	400004
+Bhatwadedar Wadi	400004
+Bhatwadi Lane 1St&2Nd	400004
+Badam Wadi (Girgaon)	400004
+Bhandarwada (Girgaon0	400004
+Bhangi Galli	400004
+Benham Hall Cross Lane	400004
+Bandu Gokhale Marg Cow Le	400004
+Bachani Nagar	400004
+Bangad Wadi	400004
+Bhandari Cross Le Girgaon	400004
+Bhutelo Camp	400005
+Baghad Road	400005
+Bakery Lane	400005
+Bhora Street	400005
+Budhwar Park R O Colony	400005
+Bradys Flat	400005
+Bhagwandas Indrajit Road	400006
+Bal Gangadhar Kher Marg	400006
+Bhau Saheb Hife Marg Mrpr	400006
+Bramhanacharya Akhada	400006
+B.G. Kher Marg Ridge Road	400006
+Banganga Road	400006
+Band Quarters	400006
+Banganga Cross Lane	400006
+Bawan Khani	400007
+Bai Dinabai Petiti Street	400007
+Bhendi Galli	400007
+Balaram Wadi	400007
+Bhau Bhaskar Wadi	400007
+Balaram Street	400007
+Bori Compound	400007
+Babulnath Road	400007
+Babulnath Cr. Lane	400007
+Bhaji Galli	400007
+Bharat Nagar	400007
+Bai Awabai Petit Street	400007
+Badar Baug	400007
+Bhaskar Bhau Lane	400007
+Bombay Navjivan	400008
+Bombay New Nag Pada	400008
+Bombay Maulana Azad Marg	400008
+Badlu Rangari Street	400008
+Bhusari Mohalla	400008
+Byculla Club Compound	400008
+Byculla District Jail	400008
+Bharat Lokhand Bazar	400008
+Bohari Compound	400008
+Berkley Place	400008
+Bhik Bazar	400008
+Bellasis Chawls Road	400008
+Barkat Ali Virahi Marg	400008
+Bhandup Street	400009
+Bhavnagari Mohalla81To120	400009
+Bhat Bazar	400009
+Bhimanji Street	400009
+Bhimpora Dongri Street	400009
+Balu Changu Patil Marg	400009
+Bhau Saheb Surve Marg	400009
+Bhandari Bridge Latif Bld	400009
+Babula Tank Cross Lane	400009
+Bachoo Ali Road	400009
+Bhujwadi Mohalla Z M S	400009
+Baburao Bobade Road	400009
+Baroda Street	400009
+Bhisil Mohalla	400009
+Bhuddha Temple Street	400009
+B.I.T. Chawls 1,2,3	400010
+B.I.T. Blocks 1 To 16	400010
+Brahman Wadi	400010
+B.P.T. Chawls W.Br. 1 To6	400010
+Bhandarwada Reservoir	400010
+Baker Lane	400010
+Barister Nath Pai Marg	400010
+Boat Hard Road Mazgaon	400010
+Balwant Sing Dodi Marg	400010
+B.P.T. Chawls Reay Road	400010
+Bazar Galli	400011
+Balamiya Lane	400011
+Bapurao Jagtap Coly. Road	400011
+Bhagwantrao Parelkar Road	400012
+Bhoiwada Road 7 To 60	400012
+Bhoiwada Parel	400012
+Bawla Wadi	400012
+Babasaheb Abdr. Rd. Cr.Ln	400012
+Buddha Temple	400012
+Bhalekars Adda	400012
+Batliwala Road	400012
+Baliwala Road	400012
+Bara Chawls	400013
+Balshet Madurkar Mg	400013
+Bhoiwada Road 1 To 6	400014
+B.J. Devrukhkar Road	400014
+B.D.D. Chawls No 1 To 23	400014
+Burmah Shell Yard	400015
+B.D.D. Chawls No. 5 To 16	400015
+Babachi Wadi	400015
+B.P.T. Rly. Quarters	400015
+Bunder Road	400015
+Bhoiwada Hindu C	400015
+Bapat Marg	400016
+Barafwala Lane	400016
+Bhivandkar Wadi	400016
+Bidiye Wadi	400016
+Bhaskar Patil Wadi	400016
+Bunder Lane	400016
+Bal Govinddas Wadi	400016
+Bal Govinddas Road	400016
+Bhagoji Deer Marg P C Rd	400016
+Bhagwansing Coop.Hsg Society	400016
+Bhagwati Co-Op.Housing Society	400016
+Bhagat Galli	400016
+Bhagya Nagar Co-Op Hsg Society	400016
+Bai Padmabai Thakkar Road	400016
+Bhaganari Coop Housing Society	400016
+Bhatia Co-Op Hsing Socety	400016
+Bangal Wadi	400017
+B.D.D.Chawl C.Rd.1 To 121	400018
+B.D.D.Chawl Road	400018
+Bhau Saheb Desai Wadi	400018
+B.G. Kher Road	400018
+Bhagoji Waglunare Marg	400018
+Baba Saheb Worlikar Chowk	400018
+Brahman Wada	400019
+Bhau Daji Road	400019
+Bhandarkar Road	400019
+Bhavanji Arjun Khimiji M	400019
+B.N. Maheshwari Udyan	400019
+Bhau Daji Cross Road	400019
+Barrack Road	400020
+Bonv Vista	400021
+Band Stand (Fort)	400021
+Bajaj Bhavan	400021
+Bajaj Road (Yogakshema)	400021
+Bora Bazar Street	400021
+Becon	400021
+Bhaktawar	400021
+Bombay Co Op Housing Soty	400022
+Bhoslewadi	400022
+Bhandarwada (Sion0	400022
+Bombay Cycle	400023
+Burjorji Bharucha Marg	400023
+Bell Lane	400023
+Bombay Samachar Marg	400023
+Bank Street	400023
+Bhagwandas Wadi	400025
+Bhajipala Wadi	400025
+Beach House Wadi	400025
+Beach Road	400025
+Bawan Chawls	400025
+Bandu Baug	400025
+Bhat Nagar	400025
+B.P.T Colony	400025
+B.K. Dhuru Wadi	400025
+Barkat Wadi	400025
+Byramji Gamadia Road	400026
+Baba Saheb Dahanukar Marg	400026
+Bhulabhai Desai Road	400026
+Bhhnnagar	400026
+Baburao Jagtap Marg	400027
+Bhatia Nagar	400027
+Bale Wadi	400028
+Bhatwadikar Wadi	400028
+Bhatachi Wadi	400028
+Bolewadi	400028
+Bhavani Gokhale Road	400028
+Bhavani N S Bureau	400028
+Bhavani Ranade Road	400028
+Bhavani Road	400028
+Bhavani Sawarkar Marg	400028
+Bhavani Shankar (Bombay)	400028
+Bhavani Shankar Road	400028
+Bhha Baiwadi	400028
+Bal Govind Road	400028
+Bhandarwadi (Bh Shankar)	400028
+Bhandarwada Road	400028
+Bhujpujria Plot	400028
+Baburao Parulekar Marg	400028
+Bude Wadi	400028
+Buddha Chritianwadi	400028
+Britto Beni Wadi	400028
+Bhavani Shankar Roadnorth	400028
+Bhikoba Waman Pathare M	400028
+Borkar Wadi	400028
+Bai Padmabai Thakkar Road	400028
+Bai Padmabai Wadi	400028
+Bhavani Shivaji Park	400028
+Bomani Baug	400029
+Bijli Co Op Housing Society	400029
+B.G. Mahajani Path	400031
+Bombay Conon Mill Estate	400033
+Barister Nath Pai Mg R.Rd	400033
+Boat Hard Road Tank Road	400033
+Brick Bunder	400033
+Bapurao Jagtap Marg M.Brg	400034
+Body Guard Lines	400034
+Banjibhai Rathod Road	400034
+Bomani Park Road	400036
+Bhulabhai Desai Road	400036
+Ben Nevis Compound	400036
+Bhimwadi	400037
+Barkat Ali Darga Salt Pan	400037
+Ballard Pier	400038
+Ballard Estate	400038
+Battery Street	400039
+Barrow Road	400039
+Barfuwala Marg Juhu Lane	400049
+Bal Mandir Marg	400049
+Bandra Roads	400050
+Bullock Road	400050
+Bandra Bazar	400050
+Byramji Jijibhoy Road	400050
+Bandar Wadi	400050
+Band Stand (Chaupati)	400050
+Band Stand (Bandra)	400050
+Behram Nagar	400050
+Bandra Hill	400050
+Bhabha Road	400050
+Badam Wadi (Bandra)	400050
+Boran Road	400050
+Bandra Stn Road	400051
+Behram Pada	400051
+Bhavisha Nidhi Bhavan	400051
+Behram Pada Road	400051
+Badra East (Vandre)	400051
+Bindu Shopping Center	400054
+Bajaj Wadi	400054
+Birlawadi Juhu	400054
+Bombay Flying Club	400054
+Beasant Street	400054
+Bombay Collage Co Op Soty	400054
+Bimlesh Compound	400055
+B.E.S.T. Quarters	400055
+Bulsory Wadi Colony	400055
+Bulsory Road	400055
+Bhatia Glass Coumpound	400055
+Beasant Road	400056
+Bajaj Cross Road	400056
+Bajaj Road (Vile Parle W)	400056
+Bajaj Road Co-Op. Hg. Society	400056
+Bhagat Singh Road	400056
+Baptista Road	400056
+Bhagwati Wadi	400057
+Bhansali Wadi	400057
+Baliwala Hill	400058
+B.M.C. Compound	400058
+Bhadra Wadi Road	400058
+Bharada Wadi	400058
+Bank Of India Colony	400058
+Bhavsa Wadi	400058
+Bakul Co-Op. Housing Society	400058
+Barbiwala Marg	400058
+Bamanpuri Village	400059
+Bhandarwada (J.B.Nagar)	400059
+Bohara Colony	400059
+Bagdka Marg Bamanpuri Rd	400059
+Boadhawadi	400059
+Bhagat Singh Colony	400059
+B.R. Nagar	400060
+Bandra Plot	400060
+Bhavani Shankar Vara Road	400060
+Bhagwan Raja Nagar	400060
+Bandrekar Wadi	400060
+Bhan Park	400060
+Bhaskar Bhopi Marg	400061
+Bhimrao Wadi	400062
+Bhangur Wadi	400062
+Bhagat Singh Nagar	400062
+Bandu Alias Keshav Gore	400062
+Bhagapati Wadi	400062
+Bagpti Road	400062
+Belwalkar Wadi	400062
+Balkrishna Tawde Marg	400062
+Bhandarwada (Malad)	400064
+Bhadram Nagar	400064
+Bandongri	400064
+Bunder Road	400064
+Borivali East(Bombay)	400066
+Borival Shirikrishnanagar	400066
+Borival Rajendra Nagar	400066
+Borivli Daulatnagar	400066
+Bajaj Road (Kandivli)	400067
+Bhogilal Falia Marg	400067
+Borsa Padi	400067
+Bunder Pakhadi	400067
+Bandongri Road	400067
+Bhatia Nagar	400067
+Bandar Pakhadi Road	400067
+Bhatt Lane	400067
+Bhulabhai Desai Road Kvli	400067
+Balika Vidyalaya Marg	400067
+Bhud Colony Road	400067
+Bhagli Pada	400068
+Bhikaji Lad Road	400068
+Beduk Bawdi Road	400068
+Bhau Saheb Parab Marg	400068
+Bapusaheb Bagwe Road	400068
+Bharucha Road	400068
+Bhandarkar Road	400068
+Bhandarkar Wadi	400068
+Bombay Ahmedabad Road	400069
+Balaji Mandir Marg	400070
+Bail Bazar	400070
+Bhangi Wada	400070
+Bhoiwada Kurla	400070
+Brahmanwadi Pipe Road	400070
+Belgram Road	400070
+B.A.R.C. Quarters	400071
+Beggrs Home	400071
+Borla Village	400071
+Bhaktakavi Shivaji Bhai D	400071
+Bhikaji Damji Patil Marg	400071
+Baji Paslkar Marg S.V.Rd.	400072
+Borla Koliwada Road	400074
+B.S.R. Colony	400074
+Bhanushali Wadi	400077
+Bhandup Village Road	400078
+Bhandup	400078
+Bhandup Jangal	400078
+Bhandup Village	400078
+Bhandup Pawai	400078
+Bhandup Industrial Estate	400078
+Bhandup Complex	400078
+Bhandup Usha Nagar	400078
+Burjori Baug	400078
+Buddha Nagar	400078
+Bhatti Pada Road	400078
+Baba Shet Wadi	400078
+Bava Pradyumna Singh Road	400080
+Bhodkewadi	400080
+Brahmadeshwar Mandir Marg	400080
+Bhanosi Pada	400080
+Bazar Road Mulund Colony	400082
+Bhandup Complex	400082
+B.E.S.T. Nagar	400082
+Bhatwadi	400084
+Barvenagar Road 1 To 6	400084
+Barvenagar	400084
+Barvenagar Colony	400084
+B A R C Bombay	400085
+Bhavan	400086
+Bharatiya Nagar	400089
+Bangmnagar	400090
+Bangur Nagar	400090
+Babhai	400092
+Bharat Baug	400092
+Borivali (West)	400092
+Bombay Ahmedabad Road	400093
+Bombay University Campus	400098
+Baman Wada Hill	400099
+Baman Wada	400099
+Band Of Baroda Staff Qts	400099
+Bonanza Industrial Estate	400101
+Bombay Drug House	400101
+Balkum	400603
+Belapur	400611
+Belganga Sahakari	400615
+Belapur Node Sectot Iii	400615
+Bhayandar East	401105
+Bassein (Vasai)	401201
+Bassein Road(Vasai Road)	401202
+Babai	401661
+Bordi	401701
+Bagmandla	402114
+Borlai Panchayatan	402403
+Bhosari I E	411026
+Bhosarigaon	411039
+Belpukur	411125
+Bhor	412206
+Belha	412410
+Bavdhan	412804
+Baramati Kasba	413102
+Baramati West	413102
+Baramati Bazar	413102
+Baramati	413102
+Bavada	413103
+Bhavani Nagar Hpune)	413104
+Bhigwan R S	413105
+Bondia	413129
+Bhigwan	413130
+Bhimanagar	413212
+Boramani	413238
+Bhandishegaon	413316
+Barshi Market Yard	413401
+Barshi	413401
+Barshi Ada Bazar	413401
+Bhoom	413504
+Bembli	413506
+Borgaon (Osmanabad)	413511
+Bori	413543
+Bavi	413571
+Bahulgaon	413573
+Bahungaon	413573
+Boral	413575
+Balsoor	413620
+Belvandi	413702
+Belapur (Ahmedanagar)	413715
+Belpimpalgaon	413730
+Baragaon Nanda	413735
+Babhaleshwer	413737
+Bhingar Ves	414001
+Balam Takli	414504
+Bhende S K	414605
+Bhanang	415016
+Bankot	415201
+Bahule	415209
+Bhavani Nagar (Sangli)	415302
+Bilashi	415402
+Bargaon	415413
+Budh	415503
+Begum Bazar	415510
+Bhuinj	415515
+Bharne	415621
+Burondi	415720
+Bahubali	416110
+Badhubali	416110
+Bhadole	416124
+Bidri	416208
+Bambavade	416213
+Bagni	416302
+Bhilwadi	416303
+Budhgaon	416304
+Burli	416318
+Bedas	416421
+Bhose	416422
+Belanki	416428
+Bhedshi	416530
+Bhadgaon	416535
+Bhoo	416713
+Bhiwandi	421302
+Badlapur	421504
+Bhatsa Nagar	421603
+Bapatla H O	422101
+Bhausahed Nagar	422301
+Bhagur	422502
+Barnes High School	422503
+Bota	422602
+Bramhangaon	423209
+Bhadgaon (Jalgaon)	424105
+Bahal	424114
+Bokund	424312
+Bozis	424313
+Bhadli	425102
+Bahadarpur	425113
+Bamburud Raniche	425128
+Bhusawal Shivaijinagar	425201
+Bhusawal Kutchery	425201
+Bhusawal H O	425201
+Bhusawal Ath Awale Bazar	425201
+Bhalod	425304
+Betavad	425403
+Barad (Dhulia)	425442
+Bikhran	425447
+Boradi	425448
+Bhadvad	425451
+Bid Kingaon	431105
+Bhanadi	431113
+Bhokardan	431114
+Bhir Mehboobgunj	431122
+Bhir Market Yard	431122
+Bhir Rajuri Ves	431122
+Bhir H O	431122
+Bhir	431122
+Badod Bazar	431134
+Bihmanwa	431137
+Banoti	431150
+Badnapur	431202
+Bori	431508
+Basmata Nagar	431512
+Bansarola	431518
+Ballur	431526
+Bavdapur	431528
+Bal	431716
+Badba Da	431733
+Barad (Nanded)	431745
+Barul	431746
+Bhokar	431801
+Bezonabaugh	440004
+Bagadgani	440008
+Bagladganj	440008
+Banda (Ratnagan)	440050
+Buti Bari	441103
+Bela	441115
+Behta Gokul	441125
+Bhiwapur	441201
+Brahampuri (Chanda)	441206
+B S K Madhukarnagar Patas	441206
+Bhandara H O	441904
+Bhandara Town	441904
+Bhandara Ordinance Fact	441905
+Bhandara Road	441905
+Bapupeth	442403
+Ballarpur	442701
+Ballarpur Paper Mills	442901
+Bhadravati	442902
+Bhisi	442913
+Buldana H O	443001
+Bibi	443209
+Bisharatganj	443302
+Borgaon Manju	444102
+Balapur	444302
+Balpur	444302
+Barsi Takli	444401
+Badnera	444701
+Bandnera	444701
+Belora	444718
+Bramananwada	444720
+Bhatkuli	444721
+Behoda	444812
+Babhuigaon	445101
+Bori Arab	445201
+Brahmangaon	445232
+Barakalan	447443

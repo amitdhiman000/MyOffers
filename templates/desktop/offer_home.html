@@ -22,22 +22,22 @@
 	<div class="P-item" >
 		<a href="{{offer.url}}" >
 		<div class="P-image">
-			<img src="{{offer.P_image.url}}" alt="{{offer.P_name}} | {{offer.P_discount}}% Off" />
+			<img src="{{offer.image.url}}" alt="{{offer.name}} | {{offer.discount}}% Off" />
 		</div>
 		</a>
 		<div class="P-details" >
 			<div class="P-name" >
-				<a href="{{offer.url}}" ><strong title="{{offer.P_name}}" >{{offer.P_name | truncatechars:70}}</strong></a>
+				<a href="{{offer.url}}" ><strong title="{{offer.name}}" >{{offer.name | truncatechars:70}}</strong></a>
 			</div>
 			<div class="ui-line-s" ></div>
-			<div class="P-discount"><h4>{{offer.P_discount}}% Off</h4></div>
+			<div class="P-discount"><h4>{{offer.discount}}% Off</h4></div>
 			<div class="P-price">
-				<span>&#8377; {{offer.P_discount_price}}</span> <span>&#8377; &nbsp;<strike>{{offer.P_price}}</strike></span>
+				<span>&#8377; {{offer.discount_price}}</span> <span>&#8377; &nbsp;<strike>{{offer.price}}</strike></span>
 			</div>
 			<div class="ui-line-s" ></div>
 			<div>
-				<b>Validity: </b> {{offer.P_start_date | date:"d M Y D"}}<br />
-				<b>To : </b> {{offer.P_expire_date | date:"d M Y D"}}
+				<b>Validity: </b> {{offer.start_date | date:"d M Y D"}}<br />
+				<b>To : </b> {{offer.expire_date | date:"d M Y D"}}
 			</div>
 		</div>
 	</div>

@@ -1,0 +1,332 @@
+Carnac Bunder	400001
+Carnac Bridge	400001
+Campbell Park	400001
+Cannon Road	400001
+Carnesy Road	400001
+C R Path (Heme Street)	400001
+Chana Street	400001
+Cawasji Patel Street	400001
+Cause Court	400002
+Chira Bazar	400002
+Choksi Bazar	400002
+Cavel Cross Lane	400002
+Champagalli	400002
+Chandan Wadi (Cross Lane)	400002
+Chikhalwadi (M J Road)	400002
+Chandan Wadi (Kalbadevi)	400002
+Chira Bazar Market	400002
+Chapra Chawl	400002
+Cawasji Harmasji Street	400002
+Chewool Wadi	400002
+Chhipi Chawl	400002
+Chandra Chawk Lane 1To 8	400002
+Cutlery Bazar 226 Onwards	400002
+Chakla Street Cross Lane	400003
+Chindi Bazar	400003
+Cooper Street (1St & 2Nd)	400003
+Chhas Mohalla Kambekarstr	400003
+Chor Bazar	400003
+Cutchi Memon Mohalla	400003
+Cutlery Bazar (1 To 225)	400003
+Chimna Butcher Street	400003
+Cattle Pound	400004
+Chaubal Lane	400004
+Congress House	400004
+Carpenter Street 1St&2Nd	400004
+Chandewadi	400004
+Chatni Mohalla	400004
+Cooper Compound	400004
+Colaba Ashwini	400005
+Colaba Bazar	400005
+Colaba Cross Lane	400005
+Colaba Dandi Road	400005
+Colaba Dandi Rd Crosslane	400005
+Coly 1St To 5Th Lane	400005
+Colaba Holiday Camp	400005
+Colaba South	400005
+Colaba(Mumbai)	400005
+Cplaba (Points) Road	400005
+Coly 5Th Cross Lane	400005
+Connaught Barracks	400005
+Cpt Prakash Pethe Marg	400005
+Central Road	400005
+Cawasji Road	400005
+Chunam Lane	400007
+Chaupati Sea Face	400007
+C V Patel Marg	400007
+Chaupati Market	400007
+Corner Of Grant Road	400007
+C B V Marg (Stable Street	400007
+C P S Compound Proctor R	400007
+Choksi Compound	400008
+Central Railway Staff Co	400008
+Chhota Sonapur	400008
+Chikhalpada	400008
+China Compound	400008
+Chouki Mohalla	400008
+Chuna Bhatti (Foras Road)	400008
+Christ Church Road	400008
+Chinch Bunder H O	400009
+Casac Siding Road	400009
+Clive Cross Lane	400009
+Clive Road	400009
+Chimnaji Ranoji Lane	400010
+Chunarethi Bunder	400010
+Central Ralway Chawls	400010
+Copper Smith Street	400010
+C B Road Rose Cottage Rd	400010
+Carpenter Street 1St&2Nd	400010
+Chuna Bander	400010
+Clarke Bunder Road	400010
+Coal Bunder	400010
+Church Street (Mazgaon)	400010
+Chinchpokli West	400011
+Chinchpokli	400011
+C G Ganacharya Chowk	400011
+Chor Wadi	400011
+Chamar Bang (Lane)	400012
+Chamar Baug	400012
+C Rly Workshop (Parel)	400012
+Central Railway New Block	400012
+Chor Lane	400012
+Char Lane	400012
+Central Railway Quarters	400014
+Causeway Mahim	400016
+Citizen Co Op Housing Society	400016
+Chuma Bhatti (Mahim)	400016
+Chuna Bhatti (Kalakila)	400017
+Chiniwadi	400017
+Chamda Bazar	400017
+Chandawakar Road	400019
+Cutchi Lohanwadi	400019
+Custom Quarters (Matunga)	400019
+C Rly Workshop (Matunga)	400019
+Chandawakar Cross Lane	400019
+Cinema Road	400020
+C Road	400020
+Cross Madian Cross Rd No4	400020
+Cross Madian Cross Rd No3	400020
+Church Gate Central Buildings	400020
+Church Gate Reclamation	400020
+Church Gate	400020
+Cross Madian	400020
+Cooperage Telephone Excha	400021
+Cooperage Football Ground	400021
+Comrade Harbanslal Marg	400022
+Causeway Road	400022
+Central Training Institute	400022
+Central Labour Institute	400022
+Chimnabaiwadi	400025
+Champawadi (Prabhadevi)	400025
+Chapsi Dharsiwadi	400025
+Centuary Mills New Chawls	400025
+Cumbatta Hill	400026
+Cumballa Hill Road	400026
+Chandi Bazar	400027
+Cork Road	400027
+College Wadi	400028
+Chandhari Wadi	400028
+C W (Bhavani Shankar)	400028
+Chhabildas Road	400028
+College Lane	400028
+Chandrakant Dhuru Wadi	400028
+Chandrawadi	400028
+Chonkar Wadi	400028
+Churi Wadi (Bhavani Shank	400028
+Central Co Op Hsg Society	400028
+Chinch Pada	400029
+Collavery Village Road	400029
+Central Salset Trunk Road	400029
+Coal Bunder (Kolsa Bunder	400033
+Cotton Exchange	400033
+Chuna Bhatti (Tank Road)	400033
+Cotton Green	400033
+Commerce Centre	400034
+Chhaktewadi	400034
+Cumballa Sea Face	400036
+Central Govt Ware House	400037
+Chandani N (Zppad Patti)	400037
+Central Govt Staff Colony	400037
+Cochin Street	400038
+Calicut Street	400038
+Currimbhoy Road	400038
+Cusrow Baug	400039
+Cooperage	400039
+Convent Street	400039
+C S M Road (Applopier Rd)	400039
+Causeway Colaba	400039
+Council Hall	400039
+Coelho Wadi (Juhu)	400049
+Chinoy Colony (Juhu)	400049
+Chinch Wadi	400050
+Carmi Road	400050
+Chapel Road	400050
+Carter Cross Road	400050
+Chimbai	400050
+Carter Road	400050
+Convent Road	400050
+Cane Road	400050
+Church Road (Bandra)	400050
+Chandrabala Estate	400050
+Chuim Village	400052
+Chavri Galli	400052
+Chinch Wadi	400052
+Carter Road	400052
+Chak Sahebachi Wadi	400052
+Chitrakar Dhurandhar Marg	400052
+Cottage Lane	400054
+Central Avenue	400054
+Convent Avenue	400054
+Croft Lane	400054
+Chuna Bhatti (S-Cruz West	400054
+Church Avenue	400054
+Chapel Lane	400054
+Church Road (Vile Parle W	400056
+Chittaranjan	400057
+C P W D Quarters	400057
+Church Pakhadi	400057
+Chemburkarwadi	400057
+Chhatrapati Shivaji Mrj M	400057
+Chunawala	400058
+Chacha Nagar	400058
+Char Banglow	400058
+Cama Road Andheri	400058
+Ceaser Road 1To40	400058
+Church Road (J B Bagar)	400059
+Chimatpada Lane	400059
+Chin Atpatpada Road	400059
+Chimatpada	400059
+Caves Road	400060
+Colaba Plot	400060
+Chacha Nagar	400060
+College Road Jogeshwari	400060
+Cawasji Dhanti Baug	400062
+Churu Wadi (Goregaon West	400062
+Chunilal Giridharlal Road	400064
+Chincholi (Village)	400064
+Collectors Compound	400064
+Check Naka	400065
+Calf Farm	400065
+Chhabri Nagar	400067
+Char Coap Road	400067
+C O D Kandivli	400067
+Char Coap	400067
+Chuna Bhatti (Dahisar)	400068
+Chhatrapati Shivaji Road	400068
+Check Naka (Danisar)	400068
+Chakala Rd (Andheri East)	400069
+Chikkuwadi	400069
+Coal Dongri	400069
+Chankhamba (Chuna Bhatti)	400070
+Chuna Bhatti (Kurla)	400070
+Chembur Road (Part) H Gno	400070
+C S T Road 297To Surve 14	400070
+Chafegalli (Chuna Bhatti)	400070
+Church Road (Kurla)	400070
+Christian Colony	400071
+Chembur Road (1 To 21)	400071
+Charai	400071
+Catholic Colony Road	400071
+C R P Comp	400071
+Chenduphali Wadi	400071
+Chembur Municipal Colony	400071
+Central Railway Quarters	400071
+Chembur	400071
+Chandivli Road	400072
+Chandivli Village	400072
+Collectors Colony	400074
+Central Excise Quarters	400074
+Chitra Camp A & B	400074
+Chembur Colony Buildings	400074
+Chembur Camp	400074
+Custom Quarters	400074
+Chittaranjan Nagar	400077
+Chittaranjan Nagar	400077
+Chandra Nagar	400078
+Captains Colony	400084
+Cinema Rd 4Th&5Th Rajawad	400086
+Cama Lane	400086
+Cama Cross Lane	400086
+Central Govt Staff Colony	400086
+C S D Estate	400086
+Clieda Nagar	400089
+Chandwarkar Lane	400092
+Chakala Midc	400093
+Chakala Rd (Vileparle E )	400099
+Chackala Village	400099
+Collectors Chawl	400099
+Chakravarti Road	400101
+Chhitabhai Patel Road	400101
+Chinchani	401503
+Chaul	402203
+Chirner	410210
+Chakan	410501
+Chinchwad East	411019
+C M E Pune	411031
+Chinchwadngaon	411033
+Chinchwadagaon	411033
+Charkoli B K	412112
+Chapalgaon	413226
+Chikkehalli	413239
+Chakur	413513
+Chapoli	413537
+Chincholi	413569
+Changdev Nagar	413723
+Chichondi Patil	414201
+Chanda	414606
+Chimbharle	414702
+Charigaon	415120
+Chimbhare	415213
+Chikurde	415412
+Central Bldg	415510
+Chaphal	415520
+Chiplun H O	415605
+Chiplun Bazar	415605
+Chandur	416125
+Chikhali	416222
+Chandgad	416509
+Chonke	416605
+Chotori	422217
+Colliery	422507
+Chandnpuri	422613
+Chandrapur Ordinance	423101
+Chandwad	423101
+Chasnali	423604
+Chalisgaon Bazar	424101
+Chalisgaon H O	424101
+Chalisgaon Town	424117
+Chopada	425107
+Chandsar	425134
+Changdeo	425315
+Chimthan	425407
+Chinchpada	425417
+Chahardi	425434
+Chinaval	425505
+Chansala	431126
+Chikha Thana	431139
+Chincholi Limbaji	431147
+Chikhalthana	431201
+Chikhalthana Indl	431201
+Chikhalthana I A	431210
+Central Avenue Road	440018
+Cidco Colony	441103
+Chikhda	441921
+Chandori	442201
+Chandrapur H O	442401
+Chandrapur Civil Lines	442401
+Chandarpur	442401
+Chandrapur	442401
+Chandrapur City	442402
+Chandrapur Bapu Peth	442403
+Cement Nagar	442502
+Chamorshi	442603
+Chimpur	442903
+Chandur(Chandrapur)	442908
+Chikhli Buldana	443201
+Chandur Biswa	443401
+Chohotta	444125
+Chitoda	444305
+Chandur Bazar	444704
+Chikhaldara	444807
+Chandakupar	444813
+Chandur(Amravati)	444904

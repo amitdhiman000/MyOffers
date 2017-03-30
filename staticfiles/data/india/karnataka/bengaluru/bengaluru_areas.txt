@@ -1,0 +1,205 @@
+Bangalore Bazaar	560001
+BJ Circle	560001
+Brigade Road	560001
+High Court	560001
+Legislator's Home	560001
+Madhav Nagar	560001
+M. G. Road	560001
+N. P. Street	560001
+Plain Street	560001
+Seppings Road	560001
+Vidhana Soudha	560001
+BANGALORE G P O	560001
+Shivajinagar	560001
+Avenue Road	560002
+Bangalore Corpn Bldg	560002
+Bangalore City Head Post Office	560002
+BR Market	560002
+J. C. Road	560002
+N. R. Road	560002
+Nagarathpet	560002
+New Tharagupet	560002
+BANGALORE CITY H O	560002
+Malleswaram	560003
+Palace Guttahalli	560003
+Pipe Line Ext	560003
+S. P. Extention	560003
+Sampige Road	560003
+Venkatarangapuram	560003
+Vyalikaval Extension	560003
+Malleswaram	560003
+Vyalikaval	560003
+Basavangudi Head Post Office	560004
+Bull Temple Road	560004
+Lalbagh West	560004
+Mavalli	560004
+Pampa Mahakavi Road	560004
+S. P. Square	560004
+Shankarpuram	560004
+VV Puram	560004
+Basavangudi	560004
+Frazer Town	560005
+Jeevanahalli	560005
+J. C. Nagar	560006
+Training Command IAF	560006
+J C Nagar	560006
+Agram	560007
+H. A. L. 2ndStage HPO	560008
+Someswarapura	560008
+Ulsoor Bazaar	560008
+HAL II Stage	560008
+District Office Bldg	560009
+Gandhi Nagar	560009
+Kempegowda Road	560009
+Rajajinagar Head Office	560010
+RAJAJINAGAR	560010
+Byrasandra	560011
+Jayanagar 3rd Block	560011
+Madhavan Park	560011
+Indian Institute of Science	560012
+Jalahalli	560013
+Jalahalli East	560014
+Hospital Town East	560014
+Jalahalli West	560015
+Doorvaninagar	560016
+Airport	560017
+N. A. L	560017
+Vimanapura	560017
+Chamarajpet	560018
+Vithalnagar	560018
+Gavipuram Ext	560019
+G. G. Halli	560019
+N. R. Colony	560019
+Seshadripuram	560020
+Srirampuram	560021
+APMC Yard	560022
+Yeshwanthpur	560022
+Bangalore City Rly Stn	560023
+K. S. R. T. C. Bus Stn	560023
+Magadi Road	560023
+Anandnagar	560024
+Hebbal Agrl Farm	560024
+Museum Road	560025
+Residency Road	560025
+Richmond Town	560025
+Bapujinagar	560026
+DeepanjaliNagar	560026
+G. E. Factory	560026
+Goripalya	560026
+GOVT ELEC. FACTORY	560026
+S. R. Nagar	560027
+Shantinagar	560027
+Sudhamanagar	560027
+Wilson Garden	560027
+THYAGARAJANAGAR	560028
+Dharmaram College	560029
+Adugodi	560030
+Hosur Road	560030
+H. M. T	560031
+Gangenahalli Ext	560032
+P & T Colony K. B. Sandra	560032
+R. T. Nagar H. O	560032
+M. S. Nagar	560033
+Maruthisevanagar	560033
+Koramangala	560034
+St. Johns Medical College	560034
+Carmelaram	560035
+Krishnarajapuram	560036
+M. H. Colony	560037
+Ramesh Nagar	560037
+Marathahalli Colony	560037
+Binnamangala 2 nd Stage	560038
+Byappanahalli	560038
+Indiranagar Shopping Complex	560038
+Nayandanahalli	560039
+Vijaynagar (E)	560040
+Jayanagar South	560041
+Jayanagar 'T ' Block HO	560041
+Tilaknagar	560041
+Meanees Lines	560042
+S. C. Garden	560042
+SIVAN CHETTY GARDENS	560042
+Bansawadi	560043
+Rajajinagar Ind Est	560044
+Industrial Estate	560044
+Arabic College	560045
+Devar Jeevanahalli	560045
+Venkateshpuram	560045
+Benson Town	560046
+Chinnappa Garden	560046
+Jayamahal Ext	560046
+Williams Town	560046
+Neelasandra	560047
+Viveknagar	560047
+Mahadevapura	560048
+Virgoagar	560049
+Banashankari I Stage	560050
+Dasarahalli (Srinagar)	560050
+S. B. M. Colony	560050
+Broadway Road	560051
+H K P Road	560051
+Vasanthnagar	560052
+Balepet	560053
+Cottonpet	560053
+Chickpet	560053
+Gokula Ext	560054
+Mathikere	560054
+Malleswaram West	560055
+BANGALORE UNIVERSITY	560056
+Bangalore Viswavidyalaya	560056
+Dasarahalli	560057
+Peenya	560058
+R V Niketan	560059
+Kengeri	560060
+Subramanyapura	560061
+Doddakallasandra	560062
+Air Force Stn-Yelahanka	560063
+Wheel & Axle Plant	560064
+Yelhanka	560064
+G. K. V. K	560065
+Whitefield	560066
+Kadugodi	560067
+Bommanahalli	560068
+Madiwala	560068
+Jayanagar East	560069
+Banashankari II Stage	560070
+Padmanabhanagar	560070
+Banashankari 2nd Stage	560070
+Domlur	560071
+Nagarabhavi	560072
+Nagasandra	560073
+Kumbalgodu	560074
+New Thippasandra	560075
+Bannerghatta Road	560076
+BTM Layout	560076
+Kothanur	560077
+J P Nagar	560078
+Basaveshwarnagar	560079
+Palace Orchards	560080
+Sadashivanagar	560080
+Jayanagar 7th Block	560082
+Yediyur	560082
+Bannerghatta	560083
+Lingarajapuram	560084
+Pillanna Gardens	560084
+St. Thomas Town	560084
+Banashankari 3rd Stage	560085
+Mahalakshmipuram Layout	560086
+Varthur	560087
+Hesaraghatta	560088
+Hesaraghatta Lake	560089
+Chikkabanavara	560090
+Viswaneedam	560091
+Byatarayanapura	560092
+C V Raman Nagar	560093
+Antharikshabhavan	560094
+I. S. R. O	560094
+NAGASETTY HALLI	560094
+RMV Extn 2nd Stage	560094
+Sanjayanagar	560094
+Koramangala 6th Block	560095
+Nandhini Layout	560096
+Vidyaranyapura	560097
+Rajarajeshwari Nagar	560098
+Bommasandra Indl. Area	560099
+Electronic City	560100

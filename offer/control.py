@@ -2,8 +2,8 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 
 from user.models import User
-from user.models import Area
-from user.models import FileUpload
+from locus.models import Area
+from upload.models import FileUpload
 from offer.models import Offer
 
 ## debug
@@ -37,14 +37,14 @@ class OfferControl(object):
 					self.m_files = [int(x) for x in self.m_files.split(',')]
 				print('len : '+ str(len(self.m_files)))
 			else:
-				self.m_offer.P_image = files['P_image']
+				self.m_offer.image = files['P_image']
 
-			self.m_offer.P_name = post.get('P_name', '').strip(' \t\n\r')
-			self.m_offer.P_price = post.get('P_price', 0).strip(' \t\n\r')
-			self.m_offer.P_discount = post.get('P_discount', 0).strip(' \t\n\r')
-			self.m_offer.P_discount_price = post.get('P_discount_price', 0).strip(' \t\n\r')
-			self.m_offer.P_start_date = post.get('P_start_date', '').strip(' \t\n\r')
-			self.m_offer.P_expire_date = post.get('P_expire_date', '').strip(' \t\n\r')
+			self.m_offer.name = post.get('P_name', '').strip(' \t\n\r')
+			self.m_offer.price = post.get('P_price', 0).strip(' \t\n\r')
+			self.m_offer.discount = post.get('P_discount', 0).strip(' \t\n\r')
+			self.m_offer.discount_price = post.get('P_discount_price', 0).strip(' \t\n\r')
+			self.m_offer.start_date = post.get('P_start_date', '').strip(' \t\n\r')
+			self.m_offer.expire_date = post.get('P_expire_date', '').strip(' \t\n\r')
 			self.m_area = post.get('P_area', '').strip(' \t\n\r')
 		except:
 			self.m_errors['request'] = 'Failed to parse request'
@@ -53,10 +53,10 @@ class OfferControl(object):
 			return False
 
 		# save values for session
-		self.m_values['P_name'] = self.m_offer.P_name
-		self.m_values['P_discount'] = self.m_offer.P_discount
-		self.m_values['P_start_date'] = self.m_offer.P_start_date
-		self.m_values['P_expire_date'] = self.m_offer.P_expire_date
+		self.m_values['P_name'] = self.m_offer.name
+		self.m_values['P_discount'] = self.m_offer.discount
+		self.m_values['P_start_date'] = self.m_offer.start_date
+		self.m_values['P_expire_date'] = self.m_offer.expire_date
 		self.m_values['P_area'] = self.m_area
 		return True
 
@@ -71,12 +71,12 @@ class OfferControl(object):
 		temp = None
 		print('start validating')
 
-		if self.m_offer.P_name == '':
+		if self.m_offer.name == '':
 			valid = False
 			self.m_errors['P_name'] = '*product name cannot be empty'
 
 		try:
-			temp = int(self.m_offer.P_price)
+			temp = int(self.m_offer.price)
 			if temp < 0:
 				valid = False
 				self.m_errors['P_price'] = '*Price cannot be negative'
@@ -85,7 +85,7 @@ class OfferControl(object):
 			self.m_errors['P_price'] = '*Ileagal price value'
 
 		try:
-			temp = int(self.m_offer.P_discount)
+			temp = int(self.m_offer.discount)
 			if temp > 100 or temp < 0:
 				valid = False
 				self.m_errors['P_discount'] = '*Discount value expected 0 to 99'
@@ -94,7 +94,7 @@ class OfferControl(object):
 			self.m_errors['P_discount'] = '*Ileagal value not allowed'
 
 		try:
-			temp = int(self.m_offer.P_discount_price)
+			temp = int(self.m_offer.discount_price)
 			if temp < 0:
 				valid = False
 				self.m_errors['P_discount_price'] = '*Price cannot be negative'
@@ -103,17 +103,17 @@ class OfferControl(object):
 			self.m_errors['P_price'] = '*Ileagal discount price value'
 
 		tz = timezone.get_current_timezone()
-		self.m_offer.P_start_date = tz.localize(datetime.strptime(self.m_offer.P_start_date, "%Y/%m/%d"))
-		if self.m_offer.P_start_date < timezone.now():
+		self.m_offer.start_date = tz.localize(datetime.strptime(self.m_offer.start_date, "%Y/%m/%d"))
+		if self.m_offer.start_date < timezone.now():
 			valid = False
 			self.m_errors['P_start_date'] = '*Start date cannot be before today'
 
-		self.m_offer.P_expire_date = tz.localize(datetime.strptime(self.m_offer.P_expire_date, "%Y/%m/%d"))
-		if self.m_offer.P_expire_date < timezone.now():
+		self.m_offer.expire_date = tz.localize(datetime.strptime(self.m_offer.expire_date, "%Y/%m/%d"))
+		if self.m_offer.expire_date < timezone.now():
 			valid = False
 			self.m_errors['P_expire_date'] = '*Expire date cannot be before today'
 
-		if self.m_offer.P_start_date > self.m_offer.P_expire_date:
+		if self.m_offer.start_date > self.m_offer.expire_date:
 			valid = False
 			self.m_errors['P_start_date'] = '*Start date cannot be before expire date'
 
@@ -141,7 +141,7 @@ class OfferControl(object):
 			upload = FileUpload.get_file(int(self.m_files[0]), self.m_offer.fk_user)
 			if upload != None:
 				pprint(upload)
-				self.m_offer.P_image = upload.file
+				self.m_offer.image = upload.file
 			else:
 				valid = False
 				self.m_errors['P_image'] = 'File attachement expires'
@@ -150,10 +150,10 @@ class OfferControl(object):
 			self.m_errors['P_image'] = 'No files attached'
 
 		## compute the slug
-		slug = self.m_offer.P_name+'-by-'+self.m_offer.fk_user.name
+		slug = self.m_offer.name+'-by-'+self.m_offer.fk_user.name
 		slug = slugify(slug)
 		if Offer.get_by_slug(slug) == None:
-			self.m_offer.P_slug = slug
+			self.m_offer.slug = slug
 		else:
 			valid = False
 			self.m_errors['P_name'] = '*Product with this name is already present'

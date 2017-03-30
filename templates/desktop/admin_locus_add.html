@@ -1,0 +1,29 @@
+{% extends './base.html' %}
+
+{% block pagemenu %}
+{% include './admin_left_nav.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="ui-page" >
+	<div class="ui-bar-tbb">
+		<h3>Add Locations</h3>
+	</div>
+	<div class="ui-body">
+		{% for state in states %}
+			{% if state.values|length > 0 %}
+			<div class="ui-content" >
+				<h3>{{state.name}}</h3>
+				<div class="ui-line-s"></div>
+				{% for city in state.values %}
+				<a href="/myadmin/locus-auth/{{state.name}}/{{city}}/" >
+					<button class="ui-btn">{{city}}</button>
+				</a>
+				{% endfor %}
+			</div>
+			{% endif %}
+		{% endfor %}
+		</div>
+	</div>
+</div>
+{% endblock %}

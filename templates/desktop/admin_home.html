@@ -1,5 +1,10 @@
 {% extends './base.html' %}
 
+
+{% block pagemenu %}
+{% include './admin_left_nav.html' %}
+{% endblock %}
+
 {% block content %}
 <div class="ui-page" >
 	<div class="ui-bar-tbb">
@@ -16,20 +21,20 @@
 		<div class="ui-bar">
 			<h3>Countries</h3>
 		</div>
-		<table class="info-table">
+		<table class="ui-info-table">
 		<tr><th>Sr.</th><th>Country Name</th></tr>
 		{% for country in countries %}
-			<tr><td>{{country.pk}}</td><td>{{country.country_name}}</td></tr>
+			<tr><td>{{country.pk}}</td><td>{{country.name}}</td></tr>
 		{% endfor %}
 		</table>
 		<br />
 		<div class="ui-bar">
 			<h3>States</h3>
 		</div>
-		<table class="info-table">
+		<table class="ui-info-table">
 			<tr><th>Sr.</th><th>State Name</th></tr>
 			{% for state in states %}
-				<tr><td>{{state.pk}}</td><td>{{state.state_name}}</td></tr>
+				<tr><td>{{state.pk}}</td><td>{{state.name}}</td></tr>
 			{% endfor %}
 		</table>
 	{% endif %}

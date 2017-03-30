@@ -55,7 +55,7 @@ $(function(){
 	$("#P_area").suggestions({
 		minLength: 2,
 		_source: function(key, resp) {
-			postRequest('/ajax/location/', {'key': key}, function(status, result){
+			postRequest('/search/location/', {'key': key}, function(status, result){
 				if (true == status) {
 					resp(result.data);
 				} else {

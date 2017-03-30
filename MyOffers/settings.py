@@ -42,10 +42,13 @@ INSTALLED_APPS = [
 	'django.contrib.staticfiles',
 	'background_task',
 	'ajax',
-	'home',
-	'user',
 	'error',
+	'home',
+	'locus',
 	'offer',
+	'search',
+	'upload',
+	'user',
 	'myadmin'
 ]
 
@@ -142,6 +145,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'staticfiles', 'static_dirs'),
     # '/var/www/static_files/'
 ]
+STATIC_DATA_DIR = os.path.join(BASE_DIR, 'staticfiles', 'data')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'staticfiles', 'media_root')
@@ -158,6 +162,8 @@ MEDIA_TMP_FILES_DIR_NAME = 'tmp'
 ##
 ADMIN_LEVEL = 9
 ADMIN_HOME = '/myadmin/'
+ADMIN_CUSTOM_DATA = '/myadmin/add-custom/'
+ADMIN_CUSTOM_VIEW = '/myadmin/custom-view/'
 
 # public pagesregister
 HOME_PAGE_URL = '/'

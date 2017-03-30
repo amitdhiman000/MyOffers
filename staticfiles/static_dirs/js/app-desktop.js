@@ -10,7 +10,7 @@ function initSearch()
 	$("#search-input").suggestions({
 		minLength: 2,
 		_source: function(key, resp) {
-			postRequest('/ajax/search/', {'key': key}, function(status, result){
+			postRequest('/search/offer/', {'key': key}, function(status, result){
 				if (true == status) {
 					resp(result.data);
 				} else {
@@ -21,7 +21,7 @@ function initSearch()
 		_itemCreate: function(item) {
 			var uiItem = '<li>'
 			+ '<div class="ui-search-item">'
-			+ '<a style="display:block; padding: 0.5em;" href="'+item.url+'">'+item.P_name+'</a>'
+			+ '<a style="display:block; padding: 0.5em;" href="'+item.url+'">'+item.name+'</a>'
 			+ '</div>'
 			+ '</li>';
 			return uiItem;

@@ -237,7 +237,7 @@ function wfileupload(Elem, opts)
 			uiBtn.on('click', kf._cancel);
 			kd._ui.append(uiItem);
 			var request = $.ajax({
-				url: '/user/fileupload/',
+				url: '/upload/fileupload/',
 				type: 'post',
 				data: fdata,
 				cache: false,

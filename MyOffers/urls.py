@@ -20,13 +20,15 @@ import home.views
 
 urlpatterns = [
 	url(r'^$', home.views.home_page, name='home_page'),
-	url(r'^home/', include('home.urls')),
 	url(r'^aboutus/$', home.views.aboutus, name='aboutus'),
 	url(r'^contacts/$', home.views.contacts, name='contacts'),
-	url(r'^ajax/', include('ajax.urls')),
 	url(r'^error/', include('error.urls')),
-	url(r'^user/', include('user.urls')),
+	url(r'^home/', include('home.urls')),
+	url(r'^locus/', include('locus.urls')),
 	url(r'^offer/', include('offer.urls')),
+	url(r'^search/', include('search.urls')),
+	url(r'^upload/', include('upload.urls')),
+	url(r'^user/', include('user.urls')),
 	url(r'^myadmin/', include('myadmin.urls')),
 	#url(r'^admin/', admin.site.urls),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

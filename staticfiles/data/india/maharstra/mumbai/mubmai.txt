@@ -1,0 +1,146 @@
+A I Staff Colony	400029
+Agripada	400011
+Airport Mumbai	400099
+Ambewadi Mumbai	400004
+Andheri	H.O	400053
+Andheri East	400069
+Andheri Railway Station	400058
+Antop Hill	400037
+Asvini	400005
+Azad Nagar Mumbai	400053
+B P T Colony	400037
+Bandra East	400051
+Bandra West	400050
+Bazargate	400001
+Bharat Nagar Mumbai	400007
+Bhawani Shankar	400028
+Bhawani Shankar Rd	400028
+Bn Bhavan	400051
+C G S Colony	400037
+Central Building	400020
+Century Mill	400030
+Chakala Midc	400093
+Chamarbaug	400012
+Charni Road	400004
+Chaupati	400004
+Chinchpokli	400011
+Chunabhatti	400022
+Churchgate	400020
+Colaba	400005
+Cotton Exchange	400033
+Cumballa Hill	400026
+Cumballa Sea Face	400026
+Dadar	H.O	400014
+Dadar Colony	400014
+Danda	400052
+Delisle Road	400013
+Dharavi	400017
+Dharavi Road	400017
+Dockyard Road	400010
+Dr Deshmukh Marg	400026
+Falkland Road	400008
+Girgaon	400004
+Gokhale Road Mumbai	400028
+Government Colony	400051
+Gowalia Tank	400026
+Grant Road	400007
+Haffkin Institute	400012
+Haines Road	400011
+Haji Ali	400034
+Hanuman Road	400057
+High Court Building Mumbai	400032
+Hmp School	400058
+Holiday Camp	400005
+International Airport	400099
+Irla	400056
+Jacob Circle	400011
+Jb Nagar	400059
+Jjhospital	400008
+Juhu	400049
+Kalachowki	400033
+Kalbadevi	H.O	400002
+Kamathipura	400008
+Kandivali Rs	400067
+Kapad Bazar	400016
+Khar Colony	400052
+Khar Delivery	400052
+Kherwadi	400051
+Kidwai Nagar Mumbai	400031
+Kurla	400070
+L B S N E Collage	400033
+Lal Baug	400012
+M A Marg	400008
+Madh	B.O	400061
+Madhavbaug	400004
+Mahim	H.O	400016
+Mahim Bazar	400016
+Mahim East	400016
+Malabar Hill	400006
+Mantralaya Mumbai	400032
+Marine Lines	400020
+Marol Bazar	400059
+Marol Naka	400059
+Matunga	400019
+Mazgaon	400010
+Mazgaon Dock	400010
+Mazgaon Road	400010
+Mori Road	400016
+Mpt	400001
+Mumbai	G.P.O	400001
+Mumbai Central	H.O	400008
+Nagardas Road	400069
+Naigaon Mumbai	400014
+Nariman Point	400021
+Nehru Nagar Mumbai	400024
+Netajinagar	400070
+New Prabhadevi Road	400025
+New Yogakshema	400021
+Nitie	400087
+Nspatkar Marg	400007
+Opera House	400004
+Parel	400012
+Parel Naka	400012
+Prabhadevi	400025
+Princess Dock	400009
+Rajbhavan Mumbai	400035
+Ramwadi	400002
+Ranade Road	400028
+Reay Road	400033
+S C Court	400002
+S V Marg	400007
+S V S Marg	400028
+Sahar P & T Colony	400099
+Sahargaon	B.O	400099
+Sandeepany Sadhanalya	B.O	400087
+Santacruz Central	400054
+Santacruz East	400055
+Santacruz P&t Colony	400029
+Santacruz West	400054
+Secretariate	400032
+Seepz	400096
+Sewri	400015
+Shivaji Park Mumbai	400028
+Sion	400022
+Stock Exchange	400001
+Tajmahal	400001
+Tardeo	400007
+Thakurdwar	400002
+Town Hall Mumbai	400001
+Tulsiwadi	400034
+V J B Udyan	400027
+V K Bhavan	400010
+Vakola	400055
+Vesava	400061
+Vidyanagari	400098
+Vileeparle East	400057
+Vileparle Railway Station	400057
+Vileparle West	400056
+Vp Road	400052
+Vwtc	400005
+Wadala	400031
+Wadala Rs	400031
+Worli	400018
+Worli Colony	400030
+Worli Naka	400018
+Worli Police Camp	400030
+Worli Sea Face	400030
