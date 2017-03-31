@@ -38,9 +38,14 @@ def get_device(request):
 
 def get_template(request, file_name):
 	device = get_device(request)
+	'''
 	if 'mobile' in device:
 		print('mobile : '+device['mobile'])
 		return 'mobile/'+file_name
+	'''
+	if 'mobile' in device:
+		print('mobile : '+device['mobile'])
+		return 'responsive/angular/'+file_name
 	else:
 		print('desktop : '+device['desktop'])
 		return 'desktop/'+file_name

@@ -1,0 +1,20 @@
+{% extends './base.html' %}
+
+{% block pagemenu %}
+{% include './home_left_nav.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="ui-page" >
+	<div class="ui-bar-tbb" >
+		<h3>Registered successfuly</h3>
+	</div>
+	<div class="ui-body" >
+		<h4>Your account is created successfuly!</h4>
+		<p>Please check your email to activate the account</p>
+		<p>Welcome <strong>{{user.name}}</strong></p>
+		<a href="/" >Home</a>
+		<a href="mailto:{{user.email}}" >Mail</a>
+	</div>
+</div>
+{% endblock %}

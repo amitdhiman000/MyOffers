@@ -1,20 +1,52 @@
 *.pyc
-accounts/*.pyc
-accounts/__pycache__/*.pyc
-accounts/migrations/*.pyc
-accounts/migrations/__pycache__/*.pyc
+
+ajax/*.pyc
+ajax/__pycache__/*.pyc
+ajax/migrations/*.pyc
+ajax/migrations/__pycache__/*.pyc
+
+error/*.pyc
+error/__pycache__/*.pyc
+error/migrations/*.pyc
+error/migrations/__pycache__/*.pyc
 
 home/*.pyc
 home/__pycache__/*.pyc
 home/migrations/*.pyc
 home/migrations/__pycache__/*.pyc
 
-offers/*.pyc
-offers/__pycache__/*pyc
-offers/migrations/*.pyc
-offers/migrations/__pycache__/*.pyc
+locus/*.pyc
+locus/__pycache__/*.pyc
+locus/migrations/*.pyc
+locus/migrations/__pycache__/*.pyc
+
+myadmin/*.pyc
+myadmin/__pycache__/*.pyc
+myadmin/migrations/*.pyc
+myadmin/migrations/__pycache__/*.pyc
+
+offer/*.pyc
+offer/__pycache__/*pyc
+offer/migrations/*.pyc
+offer/migrations/__pycache__/*.pyc
+
+search/*.pyc
+search/__pycache__/*.pyc
+search/migrations/*.pyc
+search/migrations/__pycache__/*.pyc
+
+upload/*.pyc
+upload/__pycache__/*.pyc
+upload/migrations/*.pyc
+upload/migrations/__pycache__/*.pyc
+
+user/*.pyc
+user/__pycache__/*.pyc
+user/migrations/*.pyc
+user/migrations/__pycache__/*.pyc
 
 MyOffers/*.pyc
 MyOffers/__pycache__/*.pyc
 
-#static/images/offers/
+# development files
+staticfiles/static_root

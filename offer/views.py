@@ -45,7 +45,7 @@ def offer_detail_view1(request, slug):
 @login_required
 def offer_create_view(request):
 	pprint(request)
-	imgdata = open(settings.STATIC_ROOT+"/images/site-icons-svg/location.svg", "rb").read()
+	imgdata = open(settings.STATIC_ROOT+"/images/icons-svg/location.svg", "rb").read()
 	image = "data:image/svg+xml;base64,%s" % base64.b64encode(imgdata).decode('utf8')
 	data = {'title': 'Create Offer', 'loc_image': image}
 	if 'form_errors' in request.session:
