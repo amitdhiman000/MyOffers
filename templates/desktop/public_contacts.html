@@ -21,19 +21,20 @@ textarea { border: 1px solid #ccc; width: 20em; height: 10em; resize: none; }
 
 	<div class="ui-body">
 		<div id="contact-left" >
-			<form action="/ajax/contacts/" method="POST" >
+			<div class="ui-errors"></div>
+			<form action="/public/contacts/" method="POST" class="contact-form ajax-form" >
 				{% csrf_token %}
 				<table class="form-table">
-					<tr><td>Name : </td><td><input type="text" name="user" class="ui-input" /></td>
+					<tr><td>*Name : </td><td><input type="text" name="name" class="ui-input" /></td>
 					</tr>
-					<tr><td>Email : </td><td><input type="text" name="email" class="ui-input" /></td>
+					<tr><td>*Email : </td><td><input type="text" name="email" class="ui-input" /></td>
 					</tr>
 					<tr><td>Phone : </td><td><input type="text" name="phone" class="ui-input" /></td>
 					</tr>
-					<tr><td>Message : </td><td><textarea></textarea></td>
+					<tr><td>*Message : </td><td><textarea name="text" ></textarea></td>
 					</tr>
 					<tr><td></td>
-					<td><input type="submit" name="send" value="Send" class="ui-btn btn-long" /></td>
+					<td><input type="submit" name="send" value="Send" class="ui-btn ui-btn-long" /></td>
 					</tr>
 				</table>
 			</form>
@@ -52,4 +53,15 @@ textarea { border: 1px solid #ccc; width: 20em; height: 10em; resize: none; }
 		</div>
 	</div>
 </div>
+
+<script type="text/javascript">
+$(function() {
+	$('.contact-form').data('handlers', {before: beforeMessage, after: afterErr});
+});
+
+function beforeMessage(e) {
+	console.log("+beforeMessage");
+	return true;
+}
+</script>
 {% endblock %}

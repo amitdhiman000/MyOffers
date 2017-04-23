@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 	'home',
 	'locus',
 	'offer',
+	'public',
 	'search',
 	'upload',
 	'user',

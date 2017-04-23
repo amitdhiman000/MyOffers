@@ -10,7 +10,7 @@
 		<div id="website-info" class="ui-content" style="padding: 0.2em;">
 			<!-- website logo -->
 			<a href="/" data-ajax="false" style="display: block;">
-			<img src="{% static 'images/d-logo-b.png' %}" />
+			<img src="{% static 'images/offers.png' %}" />
 			</a>
 		</div>
 		<div class="search-box" data-role="main" class="ui-content" style="padding: 0em 0.5em;" >
@@ -28,11 +28,11 @@
 			{% if page == 'home' %}
 			class="ui-btn-active ui-state-persist"
 			{% endif %} >Home</a></li>
-			<li><a href="/home/topics/" data-transition="none" data-icon="grid"
+			<li><a href="/" data-transition="none" data-icon="grid"
 			{% if page == 'post' %}
 			class="ui-btn-active ui-state-persist"
-			{% endif %} >Topics</a></li>
-			<li><a href="/home/alerts/" data-transition="none" data-icon="alert"
+			{% endif %} >Offers</a></li>
+			<li><a href="/offer/alerts/" data-transition="none" data-icon="alert"
 			{% if page == 'alerts' %}
 			class="ui-btn-active ui-state-persist"
 			{% endif %} >Alerts</a></li>
@@ -58,35 +58,14 @@
 <div data-role="panel" id="dais-panel" data-position="left" data-display="overlay" >
 	<!-- <a href="#" data-rel="close" data-icon="delete" data-role="button" >Close</a> -->
 	<ul data-role="listview">
-		<li><a href="/politics/news/">News</a></li>
-		<li><a href="/politics/trending/">Trending</a></li>
-		<li><a href="/politics/latest-debates/">Latest Debates</a></li>
-		<li><a href="/politics/latest-laws/">Latest Laws</a></li>
-		<li><a href="/politics/latest-petitions/">Latest Petitions</a></li>
-		<li><a href="/politics/center-govt-projects/">Center Govt. Projects</a></li>
-		<li><a href="/politics/state-govt-projects/">State Govt. Projects</a></li>
-		<li><a href="/politics/indian-parliament-members/">Parliament</a></li>
-		<li><a href="/politics/indian-rajyasabha-members/">Rajayasabha</a></li>
-		<li><a href="/politics/state-legislative-members/">State Legislative</a></li>
-		<li><a href="/politics/parties/">Political Parties</a></li>
-		<li><a href="/politics/indian-fdi/">Indian FDI</a></li>
-		<li><a href="/politics/indian-gdp/">Indian GDP</a></li>
+		<li><a href="/offer/online/">online stores</a></li>
+		<li><a href="/offer/nearby/">Nearby stores</a></li>
+		<li><a href="/offer/bulk/">Bulk deals</a></li>
+		<li><a href="/offer/food/">Food deals</a></li>
 	</ul>
 </div>
 
 
 <!-- Toast widget -->
 <div class="toast" style="display: none;" >
-</div>
-
-<!-- Comment Widget -->
-<div class="user-comments-wid" id="user-comments-wid" style="display: none;" dias-name="comment-wid" >
-	<div class="user-comments">
-	</div>
-	<form action="/post/post-comment/" method="POST" data-ajax="false" >
-		<input type="hidden" name="article_id" id="article_id" />
-		<!--<input type="text" name="comment" class="comment-text" data-mini="true" style="padding: .22em auto;"" />-->
-		<textarea name="comment" class="comment-text" style="resize:none;" data-mini="true" ></textarea>
-		<input type="submit" name="submit" value="Post" data-mini="true" data-inline="true" data-icon="check" class="user-comment-submit" />
-	</form>
 </div>

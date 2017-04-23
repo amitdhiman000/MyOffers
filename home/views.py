@@ -16,16 +16,3 @@ def home_backup(request):
 	data = {'title' : 'Contacts', 'offers_list': offers}
 	file = device.get_template(request, 'home_backup.html')
 	return render(request, file, data)
-
-def aboutus(request):
-	data = {'title' : 'About us'}
-	file = device.get_template(request, 'home_aboutus.html')
-	return render(request, file, data)
-
-
-def contacts(request):
-	data = {'title' : 'Contacts'}
-	file = device.get_template(request, 'home_contacts.html')
-	return render(request, file, data)
-
-

@@ -19,6 +19,4 @@ from . import views
 urlpatterns = [
 	url(r'^$', views.home_page, name='home'),
 	url(r'^backup/$', views.home_backup, name='home_backup'),
-	url(r'^aboutus/$', views.aboutus, name='aboutus'),
-	url(r'^contacts/$', views.contacts, name='contacts'),
 ]

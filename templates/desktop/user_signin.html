@@ -30,24 +30,12 @@
 </div>
 <script type="text/javascript">
 $(function() {
-	$('.signin-form').data('handlers', {before: beforeSignIn, after: afterSignIn});
+	$('.signin-form').data('handlers', {before: beforeSignIn, after: afterErr});
 });
 
 function beforeSignIn(e) {
 	console.log("+beforeSignIn");
-}
-
-function afterSignIn(e,status, result) {
-	console.log("+afterSignIn");
-	if (e.status == false) {
-		var errors = '';
-		for (var key in e.result.error) {
-			console.log(key);
-			console.log(e.result.error[key])
-			errors += e.result.error[key]+'<br />';
-		}
-		$('.ui-errors').html(errors);
-	}
+	return true;
 }
 </script>
 

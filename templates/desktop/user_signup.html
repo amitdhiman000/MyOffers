@@ -38,24 +38,12 @@
 <script type="text/javascript">
 $(function() {
 	console.log('adding login handler');
-	$('.signup-form').data('handlers', {before: beforeSignUp, after: afterSignUp});
+	$('.signup-form').data('handlers', {before: beforeSignUp, after: afterErr});
 });
 
 function beforeSignUp(e) {
 	console.log("+beforeSignUp");
-}
-
-function afterSignUp(e) {
-	console.log("+afterSignUp");
-	if (e.status == false) {
-		var errors = '';
-		for (var key in e.result.error) {
-			console.log(key);
-			console.log(e.result.error[key])
-			errors += e.result.error[key]+'<br />';
-		}
-		$('.ui-errors').html(errors);
-	}
+	return true;
 }
 </script>
 {% endblock %}

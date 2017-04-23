@@ -20,12 +20,11 @@ import home.views
 
 urlpatterns = [
 	url(r'^$', home.views.home_page, name='home_page'),
-	url(r'^aboutus/$', home.views.aboutus, name='aboutus'),
-	url(r'^contacts/$', home.views.contacts, name='contacts'),
 	url(r'^error/', include('error.urls')),
 	url(r'^home/', include('home.urls')),
 	url(r'^locus/', include('locus.urls')),
 	url(r'^offer/', include('offer.urls')),
+	url(r'^public/', include('public.urls')),
 	url(r'^search/', include('search.urls')),
 	url(r'^upload/', include('upload.urls')),
 	url(r'^user/', include('user.urls')),
