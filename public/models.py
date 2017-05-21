@@ -8,6 +8,7 @@ import traceback
 
 class UserMessage(models.Model):
 	id = models.BigAutoField(primary_key=True)
+	title = models.CharField(max_length=200, default="blank")
 	text = models.TextField()
 	created = models.DateTimeField(default=timezone.now)
 	fk_user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
@@ -17,6 +18,7 @@ class UserMessage(models.Model):
 		msg.save()
 		return msg
 
+
 	def remove(klass, id):
 		try:
 			klass.objects.delete(id=id)
@@ -24,13 +26,16 @@ class UserMessage(models.Model):
 			print('Failed to delete the message')
 			traceback.print_exc()
 
+
 	@classmethod
-	def get_latest_messages(klass):
-		return klass.objects.filter(create_is_between);
-	
-	@classmethod
-	def get_all_messages(klass):
+	def get_all(klass):
 		return klass.objects.all();
+
+
+	@classmethod
+	def get_latest(klass):
+		return klass.objects.filter(create_is_between);
+
 
 	@classmethod
 	def get_by_date(klass, start, end):
@@ -38,13 +43,16 @@ class UserMessage(models.Model):
 		enddate = startdate + timedelta(days=6)
 		return klass.objects.filter(created_range(startdate, enddate))
 
+
 	@classmethod
 	def get_by_index(klass, start, end):
 		return [];
 
+
 	@classmethod
 	def get_by_email(klass):
 		return [];
+
 
 
 class GuestMessage(models.Model):
@@ -52,14 +60,15 @@ class GuestMessage(models.Model):
 	name = models.CharField(max_length=50)
 	email = models.EmailField()
 	phone = models.CharField(max_length=10, blank=True)
+	title = models.CharField(max_length=200, default="blank")
 	text = models.TextField()
 	created = models.DateTimeField(default=timezone.now)
-
 
 	@classmethod
 	def create(klass, msg):
 		msg.save()
 		return msg
+
 
 	def remove(klass, id):
 		try:
@@ -68,13 +77,16 @@ class GuestMessage(models.Model):
 			print('Failed to delete the message')
 			traceback.print_exc()
 
+
 	@classmethod
-	def get_latest_messages(klass):
-		return klass.objects.filter(create_is_between);
-	
-	@classmethod
-	def get_all_messages(klass):
+	def get_all(klass):
 		return klass.objects.all();
+
+
+	@classmethod
+	def get_latest(klass):
+		return klass.objects.filter(create_is_between);
+
 
 	@classmethod
 	def get_by_date(klass, start, end):
@@ -82,9 +94,11 @@ class GuestMessage(models.Model):
 		enddate = startdate + timedelta(days=6)
 		return klass.objects.filter(created_range(startdate, enddate))
 
+
 	@classmethod
 	def get_by_index(klass, start, end):
 		return [];
+
 
 	@classmethod
 	def get_by_email(klass):

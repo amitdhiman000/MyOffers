@@ -10,20 +10,11 @@
 		<h3>Add Locations</h3>
 	</div>
 	<div class="ui-body">
-		{% for state in states %}
-			{% if state.values|length > 0 %}
-			<div class="ui-content" >
-				<h3>{{state.name}}</h3>
-				<div class="ui-line-s"></div>
-				{% for city in state.values %}
-				<a href="/myadmin/locus-auth/{{state.name}}/{{city}}/" >
-					<button class="ui-btn">{{city}}</button>
-				</a>
-				{% endfor %}
-			</div>
-			{% endif %}
+		{% for country in countries %}
+		<a href="/myadmin/locus-add/{{country}}/" >
+			<button class="ui-btn">{{country}}</button>
+		</a>
 		{% endfor %}
-		</div>
 	</div>
 </div>
 {% endblock %}

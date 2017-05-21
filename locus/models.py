@@ -14,6 +14,7 @@ class Country(models.Model):
 		verbose_name = _('country')
 		verbose_name_plural= _('countries')
 
+
 	@classmethod
 	def add_country(klass, country_name):
 		if country_name == None or country_name == '':
@@ -21,11 +22,13 @@ class Country(models.Model):
 		obj = klass.objects.get_or_create(name=country_name)[0]
 		return obj
 
+
 	@classmethod
 	def add(klass, name):
 		if name == None or name == '':
 			raise ValueError('Invalid value')
 		return klass.objects.get_or_create(name=name)[0]
+
 
 	@classmethod
 	def remove(klass, name):
@@ -38,6 +41,7 @@ class Country(models.Model):
 			traceback.print_exc()
 			return False
 
+
 	@classmethod
 	def get(klass, name):
 		try:
@@ -47,10 +51,14 @@ class Country(models.Model):
 			traceback.print_exc()
 			return None
 
+
 	@classmethod
 	def get_all(klass):
 		objs = klass.objects.all()
 		return objs;
+
+
+
 
 class State(models.Model):
 	id = models.AutoField(primary_key=True)
@@ -61,12 +69,14 @@ class State(models.Model):
 		verbose_name = _('state')
 		verbose_name_plural= _('states')
 
+
 	@classmethod
 	def add_state(klass, state_name, country):
 		if state_name == None or state_name == '':
 			raise ValueError('Invalid value')
 		obj = klass.objects.get_or_create(name=state_name, fk_country=country)[0]
 		return obj
+
 
 	@classmethod
 	def add(klass, state_name, country_name = 'India'):
@@ -81,6 +91,7 @@ class State(models.Model):
 			traceback.print_exc()
 			return False
 
+
 	@classmethod
 	def remove(klass, name):
 		if name == None or name == '':
@@ -93,6 +104,7 @@ class State(models.Model):
 			traceback.print_exc()
 			return False
 
+
 	@classmethod
 	def get_all(klass, country_name):
 		try:
@@ -100,9 +112,12 @@ class State(models.Model):
 			objs = klass.objects.filter(fk_country=country)
 			return objs
 		except:
-			print("Failed to get country")
+			print("Failed to get states")
 			traceback.print_exc()
 			return None
+
+
+
 
 class City(models.Model):
 	id = models.AutoField(primary_key=True)
@@ -114,6 +129,7 @@ class City(models.Model):
 		verbose_name = _('city')
 		verbose_name_plural= _('cities')
 
+
 	@classmethod
 	def add_city(klass, city_name, state, country):
 		if city_name == None or city_name == '':
@@ -121,11 +137,11 @@ class City(models.Model):
 		obj = klass.objects.get_or_create(name=city_name, fk_state=state, fk_country=country)[0]
 		return obj
 
+
 	@classmethod
 	def add(klass, city_name, country_name='India', state_name='Karnataka'):
 		if city_name == None or city_name == '':
 			raise ValueError('Invalid value')
-
 		try:
 			country = Country.objects.get(name=country_name)
 			state = State.objects.get(name=state_name)
@@ -135,6 +151,7 @@ class City(models.Model):
 			print('Failed to add city')
 			traceback.print_exc()
 			return None
+
 
 	@classmethod
 	def remove(klass, name):
@@ -150,12 +167,27 @@ class City(models.Model):
 
 
 	@classmethod
+	def get_all(klass, country_name, state_name):
+		try:
+			country = Country.objects.get(name=country_name)
+			state = State.objects.get(name=state_name)
+			objs = klass.objects.filter(fk_country=country, fk_state=state)
+			return objs
+		except:
+			print("Failed to get cites")
+			traceback.print_exc()
+			return None
+
+
+	@classmethod
 	def get_by_name(klass, name):
 		try:
 			return klass.objects.get(name=name)
 		except:
 			traceback.print_exc()
 			return None
+
+
 
 
 class Area(models.Model):
@@ -180,10 +212,10 @@ class Area(models.Model):
 
 
 	@classmethod
-	def add(klass, area_name, area_pin, country_name, state_name, city_name):
+	def add(klass, area_name, area_pin, city_name, state_name, country_name):
 		if area_name == None or area_name == '':
 			raise ValueError('Invalid value')
-		try:	
+		try:
 			country = Country.objects.get(name=country_name)
 			state = State.objects.get(name=state_name)
 			city = City.objects.get(name=city_name)
@@ -192,6 +224,7 @@ class Area(models.Model):
 		except:
 			traceback.print_exc()
 			return None
+
 
 	@classmethod
 	def remove(klass, name):
@@ -205,13 +238,43 @@ class Area(models.Model):
 			traceback.print_exc()
 			return False
 
+
 	@classmethod
-	def get(klass, area_name, area_pin):
+	def get_all(klass, country_name, state_name, city_name):
+		try:
+			country = Country.objects.get(name=country_name)
+			state = State.objects.get(name=state_name)
+			city = City.objects.get(name=city_name)
+			objs = klass.objects.filter(fk_country=country, fk_state=state, fk_city=city)
+			return objs
+		except:
+			print("Failed to get areas")
+			traceback.print_exc()
+			return None
+
+
+	@classmethod
+	def get_area(klass, country_name, state_name, city_name, area_name):
+		try:
+			country = Country.objects.get(name=country_name)
+			state = State.objects.get(name=state_name)
+			city = City.objects.get(name=city_name)
+			objs = klass.objects.filter(name=area_name, fk_country=country, fk_state=state, fk_city=city)
+			return objs
+		except:
+			print("Failed to get area")
+			traceback.print_exc()
+			return None
+
+
+	@classmethod
+	def get_by_pin(klass, area_name, area_pin):
 		try:
 			return klass.objects.filter(pin=area_pin)[0]
 		except:
 			traceback.print_exc()
 			return None
+
 
 	@classmethod
 	def get_by_city(klass, city):
@@ -222,8 +285,9 @@ class Area(models.Model):
 			traceback.print_exc()
 			return None
 
+
 	@classmethod
-	def get_match(klass, keyw):
+	def get_by_match(klass, keyw):
 		print('key is : '+keyw)
 		query = klass.objects.annotate(city=models.F('fk_city__name')).filter(name__istartswith=keyw).values('name', 'pin', 'city')[:20]
 		#query = klass.objects.annotate(city_name=models.F('fk_city__city_name')).filter(area_name__icontains=keyw).values('area_name', 'area_pin', 'city_name')

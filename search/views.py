@@ -26,11 +26,9 @@ def offer(request):
 def location(request):
 	pprint(request.POST)
 	key = request.POST.get('key', 'bengaluru')
-	areas = Area.get_match(key)
+	areas = Area.get_by_match(key)
 
 	areadata = list(areas)
 	#pprint(areadata)
 	data = {'status':200, 'data': areadata}
 	return JsonResponse(data)
-
-

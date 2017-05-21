@@ -50,7 +50,10 @@ function ajaxFormSubmit(e)
 	var action = form.attr('action');
 	console.log('action : '+ action);
 
-	(handle && handle.before && handle.before(e));
+	if (handle && handle.before)
+		if (handle.before(e) === false)
+			return;
+
 	postRequest(action, form.serialize(), (status, result) => {
 		if (handle && handle.after) {
 			e.status = status;
@@ -64,6 +67,21 @@ function ajaxFormSubmit(e)
 			}
 		}
 	});
+}
+
+function afterResponse(e,status,result) {
+	console.log("+afterResponse");
+	if (e.status == false) {
+		var errors = '';
+		for (var key in e.result.error) {
+			console.log(key);
+			console.log(e.result.error[key]);
+			errors += e.result.error[key]+'<br />';
+		}
+		$('.ui-errors').html(errors);
+	} else {
+		$('.ui-errors').html('');
+	}
 }
 
 function postRequest(pAction, pData, pCallback)

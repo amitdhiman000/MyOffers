@@ -5,6 +5,14 @@ from public.models import UserMessage
 from public.models import GuestMessage
 
 
+def is_number(s):
+	try:
+		int(s)
+		return True
+	except ValueError:
+		return False
+
+
 class MessageControl(BaseControl):
 	def parseRequest(self, request):
 		post = request.POST
@@ -17,17 +25,20 @@ class MessageControl(BaseControl):
 		try:
 			if self.m_user.is_loggedin():
 				self.m_msg = UserMessage()
+				self.m_msg.title = post.get('title', '').strip(' \t\n\r')
 				self.m_msg.text = post.get('text', '').strip(' \t\n\r')
 			else:
 				self.m_msg = GuestMessage()
 				self.m_msg.name = post.get('name', '').strip(' \t\n\r')
 				self.m_msg.email = post.get('email', '').strip(' \t\n\r')
-				self.m_msg.phone = post.get('phone', '').strip(' \t\n\r')
+				self.m_msg.phone = self.m_msg.email
+				self.m_msg.title = post.get('title', '').strip(' \t\n\r')
 				self.m_msg.text = post.get('text', '').strip(' \t\n\r')
 				# keep a copy of older values
 				self.m_values['name'] = self.m_msg.name
 				self.m_values['email'] = self.m_msg.email
-				self.m_values['phone'] = self.m_msg.phone
+				self.m_values['title'] = self.m_msg.title
+				self.m_values['text'] = self.m_msg.text
 		except:
 			import traceback
 			traceback.print_exc()
@@ -36,9 +47,11 @@ class MessageControl(BaseControl):
 		self.m_values['text'] = self.m_msg.text
 		return True
 
+
 	def clean(self):
 		return True
 		#self.m_msg.name = self.m_msg.name.strip(' \t\n\r')
+
 
 	def validate(self):
 		valid = self.m_valid
@@ -65,45 +78,43 @@ class MessageControl(BaseControl):
 			# check for email
 			if self.m_msg.email == None or self.m_msg.email == '':
 				valid = False
-				self.m_errors['email'] = '*Email is required'
+				self.m_errors['email'] = '*Email or Phone is required'
 			else:
 				match = re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', self.m_msg.email)
-				if match == None:
+				if match != None:
+					# valid email
+					self.m_msg.phone = ""
+				elif is_number(self.m_msg.phone):
+					if len(self.m_msg.phone) < 10:
+						print('Bad Phone Number')
+						valid = False
+					else:
+						self.m_msg.email = ""
+				else:
 					print('Bad Email Address')
 					valid = False
 					self.m_errors['email'] = '*Invalid email address'
-				'''
-				else:
-					is_duplicate = User.objects.filter(email=self.m_msg.email).exists()
-					if is_duplicate:
-						valid = False
-						self.m_errors['email'] = '*Email already in use, Please try reset password'
-				'''
 
-			# check for phone
-			if self.m_msg.phone == None or self.m_msg.phone == '':
-				# okay phone is not mendatory
-				#valid = False
-				#self.m_errors['phone'] = '*phone can\'t be empty'
-				pass
-			else:
-				length = len(self.m_msg.phone)
-				if length != 10:
-					valid = False
-					self.m_errors['phone'] = '*phone should be 10 digits long'
+
+		# check for phone
+		if self.m_msg.title == None or self.m_msg.title == '':
+			# okay title is not mendatory
+			#valid = False
+			#self.m_errors['title'] = '*title can\'t be empty'
+			pass
 
 		# check for text
 		print(self.m_msg.text)
 		if self.m_msg.text == None or self.m_msg.text == '':
 			valid = False
 			self.m_errors['text'] = '*message can\'t be empty'
-			
+
 		self.m_valid = valid
 		return valid
+
 
 	def register(self):
 		if self.m_user.is_loggedin():
 			return UserMessage.create(self.m_msg)
 		else:
 			return GuestMessage.create(self.m_msg)
-

@@ -1,38 +1,12 @@
 import re
 from user.models import User
 from upload.models import FileUpload
-from . import backends
+from control import BaseControl
 
+from . import backends
 ## debug
 import traceback
 from pprint import pprint
-
-
-
-class BaseControl(object):
-
-	def parseRequest(post):
-		return True
-
-	def get_errors(self):
-		return self.m_errors
-
-	def get_values(self):
-		return self.m_values
-
-	def clean(self):
-		pass
-		#do nothing
-		return True
-
-	def validate(self):
-		# do nothing
-		return True
-
-	def register(self):
-		# do nothing
-		return None
-
 
 class UserSignInControl(BaseControl):
 	def parseRequest(self, post):

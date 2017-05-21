@@ -20,18 +20,21 @@ textarea { border: 1px solid #ccc; width: 20em; height: 10em; resize: none; }
 	</div>
 
 	<div class="ui-body">
+		<style>
+			.form-table tr td:first-child { width: 40%; }
+		</style>
 		<div id="contact-left" >
 			<div class="ui-errors"></div>
 			<form action="/public/contacts/" method="POST" class="contact-form ajax-form" >
 				{% csrf_token %}
 				<table class="form-table">
-					<tr><td>*Name : </td><td><input type="text" name="name" class="ui-input" /></td>
+					<tr><td>*Name : </td><td><input type="text" name="name" class="ui-input" placeholder="Name" /></td>
 					</tr>
-					<tr><td>*Email : </td><td><input type="text" name="email" class="ui-input" /></td>
+					<tr><td>*Contact : </td><td><input type="text" name="email" class="ui-input" placeholder="Email or Phone" /></td>
 					</tr>
-					<tr><td>Phone : </td><td><input type="text" name="phone" class="ui-input" /></td>
+					<tr><td>*About : </td><td><input type="text" name="title" class="ui-input" placeholder="About" /></td>
 					</tr>
-					<tr><td>*Message : </td><td><textarea name="text" ></textarea></td>
+					<tr><td>*Details : </td><td><textarea name="text" placeholder="Describe your query" ></textarea></td>
 					</tr>
 					<tr><td></td>
 					<td><input type="submit" name="send" value="Send" class="ui-btn ui-btn-long" /></td>
@@ -56,11 +59,17 @@ textarea { border: 1px solid #ccc; width: 20em; height: 10em; resize: none; }
 
 <script type="text/javascript">
 $(function() {
-	$('.contact-form').data('handlers', {before: beforeMessage, after: afterErr});
+	$('.contact-form').data('handlers', {before: beforeMessage, after: afterMessage});
 });
 
 function beforeMessage(e) {
 	console.log("+beforeMessage");
+	return true;
+}
+function afterMessage(e) {
+	console.log("+afterMessage");
+	if (e.status)
+	Toast.show("Message sent!!");
 	return true;
 }
 </script>

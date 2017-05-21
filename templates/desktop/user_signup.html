@@ -17,7 +17,7 @@
 		</div>
 		<form action="/user/signup-register/" method="POST" class="ajax-form signup-form">
 			{% csrf_token %}
-			<table class="form-table" >	
+			<table class="form-table" >
 				<tr><td>Full Name* : </td><td><input type="text" name="name" class="ui-input" placeholder="Full Name" />
 				</tr>
 				<tr><td>Email* : </td><td><input type="text" name="email" class="ui-input" placeholder="Email Id" /></td>
@@ -38,7 +38,7 @@
 <script type="text/javascript">
 $(function() {
 	console.log('adding login handler');
-	$('.signup-form').data('handlers', {before: beforeSignUp, after: afterErr});
+	$('.signup-form').data('handlers', {before: beforeSignUp, after: afterResponse});
 });
 
 function beforeSignUp(e) {

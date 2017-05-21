@@ -9,7 +9,7 @@
 <div class="ui-page" >
 	<div class="ui-bar-tbb">
 		<h3>Sign In</h3>
-	</div>	
+	</div>
 	<div class="ui-body" >
 		<div class="ui-errors">
 			{% for error in form_errors %}
@@ -30,7 +30,7 @@
 </div>
 <script type="text/javascript">
 $(function() {
-	$('.signin-form').data('handlers', {before: beforeSignIn, after: afterErr});
+	$('.signin-form').data('handlers', {before: beforeSignIn, after: afterResponse});
 });
 
 function beforeSignIn(e) {

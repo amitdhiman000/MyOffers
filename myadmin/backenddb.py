@@ -14,16 +14,6 @@ gCountries = (
 	{'name':'India', 'file': os.path.join(settings.STATIC_DATA_DIR, 'India_pincodes.csv')},
 )
 
-gCities = (
-	{'Andhra Pradesh': ['Hyderabad']},
-	{'Chandigarh': ['Chandigarh']},
-	{'Delhi': ['Delhi']},
-	{'Himachal Pradesh': ['Shimla', 'Hamirpur(HP)']},
-	{'Karnataka': ['Bangalore']},
-	{'Maharashtra': ['Mumbai', 'Pune']},
-	{'Tamil Nadu': ['Chennai', 'Coimbatore']}
-)
-
 def add_default_values():
 	for country in gCountries:
 		if Country.get(name=country['name']) != None:
@@ -46,7 +36,7 @@ def add_default_values():
 
 				if area_name.endswith(" B.O") or area_name.endswith(" S.O"):
 					area_name = area_name[:-3]
-	
+
 				if curr_state.name != state_name:
 					## time to create new state
 					curr_state = State.add_state(state_name, curr_country)
@@ -73,7 +63,7 @@ def add_custom_values(p_state_name, p_city_name):
 
 		curr_city = City(name='')
 		curr_state = State(name='')
-		for i, line in enumerate(reader, start=1):			
+		for i, line in enumerate(reader, start=1):
 			state_name = string.capwords(line[9])
 			city_name = line[8]
 			if p_state_name != state_name or p_city_name != city_name:
