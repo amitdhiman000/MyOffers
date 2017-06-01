@@ -9,8 +9,8 @@ from .models import Offer
 from .control import OfferControl
 
 import device
-from common import *
-from common import __redirect
+from apputil import *
+from apputil import __redirect
 from pprint import pprint
 
 # Create your views here.
@@ -22,7 +22,7 @@ def offer_home_view(request):
 	obj = list(offers)
 	'''
 	data = {'title':'Offers', 'offers_list': offers}
-	file = device.get_template(request, 'offer_home.html')
+	file = device.get_template(request, 'offer/offer_home.html')
 	return render(request, file, data)
 
 
@@ -31,14 +31,14 @@ def offer_detail_view(request, offer_id):
 	print('offer_id : '+offer_id)
 	offer = Offer.get_by_id(offer_id)
 	data = {'title':'View Offers', 'offer': offer}
-	file = device.get_template(request, 'offer_detail_view.html')
+	file = device.get_template(request, 'offer/offer_detail_view.html')
 	return render(request, file, data)
 
 def offer_detail_view1(request, slug):
 	print('slug : '+slug)
 	offer = Offer.get_by_slug(slug)
 	data = {'title':'View Offers', 'offer': offer}
-	file = device.get_template(request, 'offer_detail_view.html')
+	file = device.get_template(request, 'offer/offer_detail_view.html')
 	return render(request, file, data)
 
 
@@ -59,7 +59,7 @@ def offer_create_view(request):
 		end = (today + timedelta(days=15)).strftime("%Y/%m/%d")
 		data['form_values'] = {'P_start_date': start, 'P_expire_date': end}
 
-	file = device.get_template(request, 'offer_create_new.html')
+	file = device.get_template(request, 'offer/offer_create_new.html')
 	return render(request, file, data)
 
 

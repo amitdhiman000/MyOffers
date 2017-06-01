@@ -1,8 +1,38 @@
 $(function() {
-	/* search box*/
-	$(document).on('submit', '.ajax-form', ajaxFormSubmit);
+	$(document).on('submit', 'form.ajax-form', ajaxFormSubmit);
+	/*Initialize History*/
+	initHistory();
+	/*Initialize search*/
 	initSearch();
 });
+
+function initHistory()
+{
+	if (window.history && window.history.pushState) {
+		$(document).on('click', 'a[data-dest]', function (e) {
+			e.preventDefault();
+			var This = $(this),
+			url = This.attr("href"),
+			dest = This.attr("data-dest"),
+			title = This.text()+' :: My Offers';
+			history.pushState({url:url, title:title, dest:dest,}, title, url);
+			document.title = title;
+			getRequest(url, dest);
+		});
+
+		$(window).on('popstate', function (e) {
+			var state = e.originalEvent.state;
+			if (state !== null) {
+				document.title = state.title;
+				getRequest(state.url, state.dest);
+			} else {
+				console.log("nothing to show");
+				//document.title = 'World Regions';
+				//$("#content").empty();
+			}
+		});
+	}
+}
 
 function initSearch()
 {
@@ -92,14 +122,8 @@ function postRequest(pAction, pData, pCallback)
 		type: 'POST',
 		async: true,
 		dataType: 'text',
-		beforeSend: function(xhr) {
-			console.log('+beforeSend');
-			//$.mobile.loading('show');
-		},
 		complete: function(res) {
-			// This function is called at last for cleanup
 			console.log('+comeplete :'+ res.status);
-			//$.mobile.loading('hide');
 		},
 		success: function (data, status, xhr) {
 			mimeType = xhr.getResponseHeader("content-type");
@@ -119,6 +143,8 @@ function postRequest(pAction, pData, pCallback)
 					pCallback(false, jsonData);
 					break;
 				}
+			} else if (mimeType.indexOf('html') > -1) {
+				pCallback(true, data);
 			} else {
 				pCallback(false, {'error':'unexpected content type'});
 			}
@@ -131,6 +157,15 @@ function postRequest(pAction, pData, pCallback)
 	});
 }
 
+function getRequest((url, dest)
+{
+	$.get(url).done(function(data) {
+		$(dest).html(data);
+	}).fail(function() {
+    	$(dest).html("<h1>Failed to load page</h1>");
+  	});
+}
+
 /****************** Exteded Jquery *******************/
 jQuery.fn.exists = function(){return this.length>0;}
 /****************** Toast API ************************/
@@ -141,10 +176,8 @@ show: function(text='Error', timeout=1200) {
 },
 hide: function() {
 	$('.toast').hide();
-}
-};
-
-/****************** cookie API ***********************/
+}};
+/****************** Cookie API ***********************/
 var Cookie = {
 get: function(name) {
 	var cv = null;

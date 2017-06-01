@@ -1,5 +1,35 @@
 {% load staticfiles %}
 <header>
+<style>
+#dropdown { display: block; padding: 13px 16px; cursor: pointer; position: relative;
+	border-right: 4px solid #739cda; background: #fff; font-size: 1.1em; color: #656565;
+	box-shadow: 1px 1px 2px rgba(0,0,0,0.3); transition: all 0.15s linear;
+}
+#dropdown:hover { color: #898989; }
+#dropdown.open { background: #5a90e0; color: #fff; border-right: 1px solid #6c6d70; }
+#dropdown ul { position: absolute; top:100%; margin-left: -200%; width: 250px; padding: 0.3em 0em;
+	list-style: none; display: none;
+	border-right: 4px solid #8e9196; background: #fff; box-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+#dropdown ul li { font-size: 0.9em; }
+#dropdown ul li a { text-decoration: none; display: block; color: #447dd3; padding: 1.0em 2.5em; }
+#dropdown ul li a:hover { color: #6fa0e9; background: #e7f0f7; }
+</style>
+<script type="text/javascript">
+$(function() {
+	$("#dropdown").on("click", function(e){
+		console.log("+dropdown clicked");
+		if($(this).hasClass("open")) {
+			$(this).removeClass("open");
+			//$(this).children("ul").slideUp("fast");
+		} else {
+			$(this).addClass("open");
+			$(this).children("ul").slideDown("fast");
+		}
+		//e.preventDefault();
+	});
+});
+</script>
 	<div id="ui-header-cont">
 		<div id="ui-header" >
 			<div id="site-logo-div" >
@@ -16,7 +46,15 @@
 			<div id="site-nav-div" >
 				<div style="float: right;">
 				{% if user.is_loggedin %}
-					<a href="/user/profile/">{{ user.name|slice:":11" }}</a> | <a href="/user/signout/">SignOut</a>
+				<div id="dropdown" >
+					{{ user.name|slice:":11" }}
+					<ul>
+						<li><a href="/user/profile/">My Profile</a></li>
+						<li><a href="/user/settings/">Settings</a></li>
+						<li><a href="/user/mails/">Messages</a></li>
+						<li><a href="/user/signout/">SignOut</a></li>
+					</ul>
+				</div>
 				{% else %}
 					<a href="/user/signin/">SignIn</a> | <a href="/user/signup/">SignUp</a>
 				{% endif %}
@@ -25,7 +63,7 @@
 			</div>
 		</div>
 	</div>
-	{% include './home_top_nav.html' %}
+	{% include './top_nav.html' %}
 </header>
 
 <!-- Toast widget -->

@@ -2,7 +2,7 @@ from django.shortcuts import render
 from offer.models import Offer
 from offer.views import offer_home_view
 ##
-from common import login_required
+from apputil import login_required
 import device
 
 from pprint import pprint
@@ -14,5 +14,5 @@ def home_page(request):
 def home_backup(request):
 	offers = Offer.get_all()
 	data = {'title' : 'Contacts', 'offers_list': offers}
-	file = device.get_template(request, 'home_backup.html')
+	file = device.get_template(request, 'home/home_backup.html')
 	return render(request, file, data)

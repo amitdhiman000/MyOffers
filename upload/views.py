@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from upload.control import FileUploadControl
 
-from common import *
+from apputil import *
 ## debug
 from pprint import pprint
 

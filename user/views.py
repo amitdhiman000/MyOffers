@@ -6,8 +6,9 @@ from django.views.decorators.csrf import csrf_exempt
 
 ## custom packages
 import device
-from common import *
-from common import __redirect
+from apputil import *
+from apputil import __redirect
+from apputil import get_template
 ## custom authentication
 from . import backends
 from user.models import User
@@ -28,7 +29,7 @@ def signin_view(request):
 		del request.session['form_values']
 
 	data.update(csrf(request))
-	file = device.get_template(request, 'user_signin.html')
+	file = device.get_template(request, 'user/user_signin.html')
 	return render(request, file, data)
 
 
@@ -43,7 +44,7 @@ def signup_view(request):
 		del request.session['form_errors']
 		del request.session['form_values']
 
-	file = device.get_template(request, 'user_signup.html')
+	file = device.get_template(request, 'user/user_signup.html')
 	return render(request, file, data)
 
 
@@ -51,14 +52,14 @@ def signout(request):
 	backends.logout(request)
 	return __redirect(request, settings.USER_LOGIN_URL)
 
-
+@redirect_if_loggedin
 @post_required
 def signin_auth(request):
 	pprint(request.POST)
 	error = None
 	control = UserSignInControl()
 	if control.parseRequest(request.POST) and control.signin(request):
-		return __redirect(request, settings.USER_PROFILE_URL)	
+		return __redirect(request, settings.USER_PROFILE_URL)
 
 	## Only error case will reach here.
 	if request.is_ajax():
@@ -73,7 +74,7 @@ def signin_auth(request):
 @post_required
 def signup_register(request):
 	pprint(request.POST)
-	
+
 	control = UserRegControl()
 	if control.parseRequest(request.POST) == False:
 		return __redirect(request, settings.INVALID_REQUEST_URL)
@@ -103,17 +104,17 @@ def signup_register(request):
 def signup_success_view(request):
 	print('registration success')
 	data = {'title':'Signup :: Success', 'page':'user'}
-	file = device.get_template(request, 'user_registered.html');
+	file = device.get_template(request, 'user/user_registered.html');
 	return render(request, file, data)
 
 
 @login_required
-def profile_view(request):
-	print('profile')
+def profile_view(request, param):
+	print('profile : ' + param)
 	user = User.get_user(request.user)
 	dataurl = 'data-url="'+settings.USER_PROFILE_URL+'"'
 	data = {'title':'Profile', 'page':'user', 'dataurl':dataurl, 'user': user}
-	file = device.get_template(request, 'user_profile.html');
+	file = get_template(request, 'user/user_profile.html', param);
 	return render(request, file, data)
 
 
@@ -126,9 +127,9 @@ def user_info_view(request):
 @login_required
 def user_topics_select_view(request):
 	data = {'title': 'Follow Topics', 'page':'user'};
-	topics = Topic.get_topics(request.user)
+	topics = {}#Topic.get_topics(request.user)
 	data.update({'topics':topics})
-	file = device.get_template(request, 'user_topics_select.html')
+	file = device.get_template(request, 'user/user_topics_select.html')
 	return render(request, file, data)
 
 
@@ -162,19 +163,22 @@ def user_topic_selected(request):
 		return __redirect(request, settings.HOME_PAGE_URL)
 
 
+@login_required
 def user_mails_view(request):
 	data = {'title': 'User mails', 'page':'user'};
-	file = device.get_template(request, 'user_mails.html')
+	file = device.get_template(request, 'user/user_mails.html')
 	return render(request, file, data)
 
 
+@login_required
 def user_stats_view(request):
 	data = {'title': 'User stats', 'page':'user'};
-	file = device.get_template(request, 'user_stats.html')
+	file = device.get_template(request, 'user/user_stats.html')
 	return render(request, file, data)
 
 
+@login_required
 def user_settings_view(request):
 	data = {'title': 'User settings', 'page':'user'};
-	file = device.get_template(request, 'user_settings.html')
+	file = device.get_template(request, 'user/user_settings.html')
 	return render(request, file, data)

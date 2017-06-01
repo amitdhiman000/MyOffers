@@ -24,8 +24,8 @@ urlpatterns = [
 	url(r'^signup-register/$', views.signup_register, name='signup_register'),
 	url(r'^signup-success/$', views.signup_success_view, name='signup_success_view'),
 	url(r'^signout/$', views.signout, name='signout'),
-	url(r'^profile/$', views.profile_view, name='profile_view'),
-	## user profile tabs
+    ## user profile tabs
+	url(r'^profile/(?P<param>[\w\ ]*)$', views.profile_view, name='profile_view'),
 	url(r'^info/$', views.user_info_view, name='user_info_view'),
 	url(r'^topics-select/$', views.user_topics_select_view, name='user_topics_select_view'),
 	url(r'^topic-selected/$', views.user_topic_selected, name='user_topic_selected'),

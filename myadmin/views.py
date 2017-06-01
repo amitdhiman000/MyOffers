@@ -11,15 +11,15 @@ from public.models import GuestMessage
 from public.models import UserMessage
 
 import device
-from common import *
-from common import __redirect
+from apputil import *
+from apputil import __redirect
 from myadmin.preload_locations import gStates
 # Create your views here.
 
 @admin_required
 def home(request):
 	data = {'title': 'MyAdmin'}
-	file = device.get_template(request, 'admin_home.html')
+	file = device.get_template(request, 'admin/admin_home.html')
 	return render(request, file, data)
 
 
@@ -28,7 +28,7 @@ def locus_view(request):
 	countries = Country.get_all()
 	states = State.get_all('India')
 	data = {'title': 'MyAdmin', 'countries': countries, 'states': states}
-	file = device.get_template(request, 'admin_locus_view.html')
+	file = device.get_template(request, 'admin/admin_locus_view.html')
 	return render(request, file, data)
 
 
@@ -36,7 +36,7 @@ def locus_view(request):
 def locus_area_view(request, country, state, city, area):
 	areas = Area.get_area(country, state, city, area)
 	data = {'title': 'MyAdmin', 'country': country, 'state': state, 'city':city, 'area':area, 'areas': areas}
-	file = device.get_template(request, 'admin_locus_area.html')
+	file = device.get_template(request, 'admin/admin_locus_area.html')
 	return render(request, file, data)
 
 
@@ -44,7 +44,7 @@ def locus_area_view(request, country, state, city, area):
 def locus_city_view(request, country, state, city):
 	areas = Area.get_all(country, state, city)
 	data = {'title': 'MyAdmin', 'country': country, 'state': state, 'city':city, 'areas': areas}
-	file = device.get_template(request, 'admin_locus_city.html')
+	file = device.get_template(request, 'admin/admin_locus_city.html')
 	return render(request, file, data)
 
 
@@ -52,7 +52,7 @@ def locus_city_view(request, country, state, city):
 def locus_state_view(request, country, state):
 	cities = City.get_all(country, state)
 	data = {'title': 'MyAdmin', 'country': country, 'state': state, 'cities':cities}
-	file = device.get_template(request, 'admin_locus_state.html')
+	file = device.get_template(request, 'admin/admin_locus_state.html')
 	return render(request, file, data)
 
 
@@ -60,7 +60,7 @@ def locus_state_view(request, country, state):
 def locus_country_view(request, country):
 	states = State.get_all(country)
 	data = {'title': 'MyAdmin', 'country': country, 'states': states}
-	file = device.get_template(request, 'admin_locus_country.html')
+	file = device.get_template(request, 'admin/admin_locus_country.html')
 	return render(request, file, data)
 
 
@@ -85,7 +85,7 @@ def locus_view1(request, query):
 def locus_add_view(request):
 	countries = list(gStates.keys())
 	data = {'title': 'MyAdmin', 'countries': countries}
-	file = device.get_template(request, 'admin_locus_add.html')
+	file = device.get_template(request, 'admin/admin_locus_add.html')
 	return render(request, file, data)
 
 
@@ -95,7 +95,7 @@ def locus_add_view1(request, country):
 	if country in gStates:
 		states = gStates[country]
 	data = {'title': 'MyAdmin', 'country': country, 'states': states}
-	file = device.get_template(request, 'admin_locus_add_country.html')
+	file = device.get_template(request, 'admin/admin_locus_add_country.html')
 	return render(request, file, data)
 
 
@@ -106,7 +106,7 @@ def locus_auth(request, country, state, city):
 		add_custom_values(state, city)
 	areas = Area.get_by_city(city)
 	data = {'title': 'Location', 'country':country, 'state': state, 'city': city, 'areas': areas}
-	file = device.get_template(request, 'admin_locus_added.html')
+	file = device.get_template(request, 'admin/admin_locus_added.html')
 	return render(request, file, data)
 
 
@@ -114,5 +114,5 @@ def locus_auth(request, country, state, city):
 def messages_view(request):
 	messages = GuestMessage.get_all()
 	data = {'title': 'Messages', 'messages': messages}
-	file = device.get_template(request, 'admin_message.html')
+	file = device.get_template(request, 'admin/admin_message.html')
 	return render(request, file, data)

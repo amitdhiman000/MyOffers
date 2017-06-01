@@ -6,20 +6,20 @@ from django.views.decorators.csrf import csrf_exempt
 from public.control import MessageControl
 
 import device
-from common import *
-from common import __redirect
+from apputil import *
+from apputil import __redirect
 from pprint import pprint
 # Create your views here.
 
 def aboutus(request):
 	data = {'title' : 'About us'}
-	file = device.get_template(request, 'public_aboutus.html')
+	file = device.get_template(request, 'public/public_aboutus.html')
 	return render(request, file, data)
 
 class ContactsView(TemplateView):
 	def get(self, request):
 		data = {'title' : 'Contacts'}
-		file = device.get_template(request, self.template_name)
+		file = device.get_template(request, 'public/public_contacts.html')
 		data.update(csrf(request))
 		return render(request, file, data)
 
@@ -41,7 +41,7 @@ class ContactsView(TemplateView):
 			return JsonResponse(data)
 		else:
 			if error == None:
-				file = device.get_template(request, 'public_contacts_sent.html')
+				file = device.get_template(request, 'public/public_contacts_sent.html')
 			else:
 				file = file = device.get_template(request, self.template_name)
 				request.session['form_errors'] = control.get_errors()
