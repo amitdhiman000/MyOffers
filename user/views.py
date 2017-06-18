@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 import device
 from apputil import *
 from apputil import __redirect
-from apputil import get_template
+from apputil import __template
 ## custom authentication
 from . import backends
 from user.models import User
@@ -29,8 +29,9 @@ def signin_view(request):
 		del request.session['form_values']
 
 	data.update(csrf(request))
-	file = device.get_template(request, 'user/user_signin.html')
+	file = __template(request, 'user/user_signin.html')
 	return render(request, file, data)
+
 
 
 #functions for registration
@@ -44,13 +45,16 @@ def signup_view(request):
 		del request.session['form_errors']
 		del request.session['form_values']
 
-	file = device.get_template(request, 'user/user_signup.html')
+	file = __template(request, 'user/user_signup.html')
 	return render(request, file, data)
+
 
 
 def signout(request):
 	backends.logout(request)
 	return __redirect(request, settings.USER_LOGIN_URL)
+
+
 
 @redirect_if_loggedin
 @post_required
@@ -69,6 +73,7 @@ def signin_auth(request):
 		request.session['form_errors'] = control.get_values()
 		request.session['form_values'] = control.get_values()
 		return __redirect(request, settings.USER_LOGIN_URL)
+
 
 
 @post_required
@@ -100,22 +105,23 @@ def signup_register(request):
 		return __redirect(request, settings.USER_SIGNUP_URL)
 
 
+
 @login_required
 def signup_success_view(request):
 	print('registration success')
 	data = {'title':'Signup :: Success', 'page':'user'}
-	file = device.get_template(request, 'user/user_registered.html');
+	file = __template(request, 'user/user_registered.html');
 	return render(request, file, data)
+
 
 
 @login_required
-def profile_view(request, param):
-	print('profile : ' + param)
+def profile_view(request):
 	user = User.get_user(request.user)
-	dataurl = 'data-url="'+settings.USER_PROFILE_URL+'"'
-	data = {'title':'Profile', 'page':'user', 'dataurl':dataurl, 'user': user}
-	file = get_template(request, 'user/user_profile.html', param);
+	data = {'title':'Profile', 'page':'user', 'user': user}
+	file = __template(request, 'user/user_profile.html');
 	return render(request, file, data)
+
 
 
 ## User personal and profile info
@@ -124,13 +130,15 @@ def user_info_view(request):
 	return profile_view(request);
 
 
+
 @login_required
-def user_topics_select_view(request):
+def user_topics_view(request):
 	data = {'title': 'Follow Topics', 'page':'user'};
 	topics = {}#Topic.get_topics(request.user)
 	data.update({'topics':topics})
-	file = device.get_template(request, 'user/user_topics_select.html')
+	file = __template(request, 'user/user_topics.html')
 	return render(request, file, data)
+
 
 
 @login_required
@@ -163,22 +171,26 @@ def user_topic_selected(request):
 		return __redirect(request, settings.HOME_PAGE_URL)
 
 
+
 @login_required
 def user_mails_view(request):
+	print(request.GET.urlencode())
 	data = {'title': 'User mails', 'page':'user'};
-	file = device.get_template(request, 'user/user_mails.html')
+	file = __template(request, 'user/user_mails.html')
 	return render(request, file, data)
+
 
 
 @login_required
 def user_stats_view(request):
 	data = {'title': 'User stats', 'page':'user'};
-	file = device.get_template(request, 'user/user_stats.html')
+	file = __template(request, 'user/user_stats.html')
 	return render(request, file, data)
+
 
 
 @login_required
 def user_settings_view(request):
 	data = {'title': 'User settings', 'page':'user'};
-	file = device.get_template(request, 'user/user_settings.html')
+	file = __template(request, 'user/user_settings.html')
 	return render(request, file, data)

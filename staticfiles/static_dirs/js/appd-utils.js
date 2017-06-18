@@ -1,34 +1,43 @@
 $(function() {
+	console.log("+init");
+
 	$(document).on('submit', 'form.ajax-form', ajaxFormSubmit);
 	/*Initialize History*/
 	initHistory();
 	/*Initialize search*/
 	initSearch();
+
+	console.log("-init");
 });
 
 function initHistory()
 {
+	console.log("+initHistory");
 	if (window.history && window.history.pushState) {
 		$(document).on('click', 'a[data-dest]', function (e) {
 			e.preventDefault();
+			console.log("+a");
 			var This = $(this),
-			url = This.attr("href"),
+			href = This.attr("href"),
+			box = This.attr("data-box"),
 			dest = This.attr("data-dest"),
 			title = This.text()+' :: My Offers';
-			history.pushState({url:url, title:title, dest:dest,}, title, url);
+			history.pushState({url:href, box:box, title:title, dest:dest,}, title, href);
 			document.title = title;
-			getRequest(url, dest);
+			getRequest(href, 'pid='+box, dest);
 		});
 
-		$(window).on('popstate', function (e) {
-			var state = e.originalEvent.state;
+		window.addEventListener('popstate', function(event) {
+			console.log('+popstate');
+			var state = event.state;
+			console.log(JSON.stringify(state));
 			if (state !== null) {
 				document.title = state.title;
-				getRequest(state.url, state.dest);
+				getRequest(state.url, 'pid='+state.box, state.dest);
 			} else {
-				console.log("nothing to show");
-				//document.title = 'World Regions';
-				//$("#content").empty();
+				console.log("no history to show");
+				location.reload();
+				//window.history.go(-1);
 			}
 		});
 	}
@@ -114,10 +123,10 @@ function afterResponse(e,status,result) {
 	}
 }
 
-function postRequest(pAction, pData, pCallback)
+function postRequest(pUrl, pData, pCallback)
 {
 	console.log("+postRequest");
-	$.ajax({url: pAction,
+	$.ajax({url: pUrl,
 		data: pData,
 		type: 'POST',
 		async: true,
@@ -157,13 +166,31 @@ function postRequest(pAction, pData, pCallback)
 	});
 }
 
-function getRequest((url, dest)
+function getRequest(pUrl, pData, dest)
 {
-	$.get(url).done(function(data) {
+	$.ajax({url: pUrl,
+		data: pData,
+		type: 'GET',
+		async: true,
+		dataType: 'text',
+		success: function (data, status, xhr) {
+			mimeType = xhr.getResponseHeader("content-type");
+			if (mimeType.indexOf('json') > -1) {
+				console.log('response : ' + data);
+				jsonData = jQuery.parseJSON(data);
+				switch(jsonData.status) {
+				case 302:
+					console.log('redirect');
+					location.href = jsonData.url;
+					break;
+				}
+			}
+		},
+	}).done(function(data) {
 		$(dest).html(data);
-	}).fail(function() {
-    	$(dest).html("<h1>Failed to load page</h1>");
-  	});
+	}).fail(function(error){
+		$(dest).html("<h1>Failed to load page</h1>"+"<br />"+error);
+	});
 }
 
 /****************** Exteded Jquery *******************/

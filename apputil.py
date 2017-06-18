@@ -3,19 +3,6 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from user_agents import parse
 
-## helper functions common to all views
-##
-
-def __render(request, param, file, data):
-	file_path = get_template(request, file, param)
-	return render(request, file_path, data)
-
-
-def __redirect(request, url):
-	if request.is_ajax():
-		return JsonResponse({'status':302, 'url': url})
-	return HttpResponseRedirect(url)
-
 
 ## decorator function check for request method, if not GET redirect to invalid reguest page.
 ##
@@ -86,9 +73,25 @@ class Klass:
 		self.__dict__.update(kwargs)
 
 
-def get_template(request, file, param):
-	if param != '2' and param != '3':
-		param = ''
+## helper functions common to all views
+##
+
+def __render(request, param, file, data):
+	file_path = get_template(request, file, param)
+	return render(request, file_path, data)
+
+
+def __redirect(request, url):
+	if request.is_ajax():
+		return JsonResponse({'status':302, 'url': url})
+	return HttpResponseRedirect(url)
+
+
+def __template(request, file):
+	page_id  = request.GET.get('pid', '')
+	if request.is_ajax() == False or page_id < '2' or page_id > '3':
+		page_id = ''
+
 	ua_string = request.META.get('HTTP_USER_AGENT', '').lower()
 	user_agent = parse(ua_string)
 	base = 'responsive/'
@@ -97,6 +100,6 @@ def get_template(request, file, param):
 	else:
 		base = 'desktop/'
 
-	file_path = base+file[:-5]+param+'.html'
+	file_path = base+file[:-5]+page_id+'.html'
 	print(file_path)
 	return file_path

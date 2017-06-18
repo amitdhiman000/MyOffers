@@ -14,7 +14,6 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url
-from django.contrib import admin
 from . import views
 
 urlpatterns = [
@@ -25,9 +24,9 @@ urlpatterns = [
 	url(r'^signup-success/$', views.signup_success_view, name='signup_success_view'),
 	url(r'^signout/$', views.signout, name='signout'),
     ## user profile tabs
-	url(r'^profile/(?P<param>[\w\ ]*)$', views.profile_view, name='profile_view'),
+	url(r'^profile/$', views.profile_view, name='profile_view'),
 	url(r'^info/$', views.user_info_view, name='user_info_view'),
-	url(r'^topics-select/$', views.user_topics_select_view, name='user_topics_select_view'),
+	url(r'^topics/$', views.user_topics_view, name='user_topics_view'),
 	url(r'^topic-selected/$', views.user_topic_selected, name='user_topic_selected'),
 	url(r'^mails/$', views.user_mails_view, name='user_mails_view'),
 	url(r'^stats/$', views.user_stats_view, name='user_stats_view'),

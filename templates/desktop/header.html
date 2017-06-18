@@ -7,7 +7,7 @@
 }
 #dropdown:hover { color: #898989; }
 #dropdown.open { background: #5a90e0; color: #fff; border-right: 1px solid #6c6d70; }
-#dropdown ul { position: absolute; top:100%; margin-left: -200%; width: 250px; padding: 0.3em 0em;
+#dropdown ul { position: absolute; top:100%; right: 0; width: 200px; padding: 0.3em 0em;
 	list-style: none; display: none;
 	border-right: 4px solid #8e9196; background: #fff; box-shadow: 1px 1px 2px rgba(0,0,0,0.3);
 }
@@ -19,14 +19,16 @@
 $(function() {
 	$("#dropdown").on("click", function(e){
 		console.log("+dropdown clicked");
-		if($(this).hasClass("open")) {
-			$(this).removeClass("open");
-			//$(this).children("ul").slideUp("fast");
+		e.preventDefault();
+		var This = $(this);
+		if(This.hasClass("open")) {
+			This.removeClass("open");
+			//This.children("ul").slideUp("fast");
+			This.children("ul").hide();
 		} else {
-			$(this).addClass("open");
-			$(this).children("ul").slideDown("fast");
+			This.addClass("open");
+			This.children("ul").slideDown("fast");
 		}
-		//e.preventDefault();
 	});
 });
 </script>
@@ -49,10 +51,10 @@ $(function() {
 				<div id="dropdown" >
 					{{ user.name|slice:":11" }}
 					<ul>
-						<li><a href="/user/profile/">My Profile</a></li>
-						<li><a href="/user/settings/">Settings</a></li>
-						<li><a href="/user/mails/">Messages</a></li>
-						<li><a href="/user/signout/">SignOut</a></li>
+						<li><a href="/user/profile/" data-dest="#ui-body" data-box="2" >My Profile</a></li>
+						<li><a href="/user/settings/" data-dest="#ui-body" data-box="2" >Settings</a></li>
+						<li><a href="/user/mails/" data-dest="#ui-body" data-box="2" >Messages</a></li>
+						<li><a href="/user/signout/" data-dest="dummy" >SignOut</a></li>
 					</ul>
 				</div>
 				{% else %}
