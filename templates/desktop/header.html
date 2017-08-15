@@ -1,5 +1,4 @@
 {% load staticfiles %}
-<header>
 <style>
 #dropdown { display: block; padding: 13px 16px; cursor: pointer; position: relative;
 	border-right: 4px solid #739cda; background: #fff; font-size: 1.1em; color: #656565;
@@ -32,41 +31,48 @@ $(function() {
 	});
 });
 </script>
-	<div id="ui-header-cont">
-		<div id="ui-header" >
-			<div id="site-logo-div" >
-				<div id="logo" >
-					<a href="/" ><img src="{% static 'images/offers.png' %}" /></a>
-				</div>
-				<!--<h5>MyOffers</h5>-->
-			</div>
-			<div id="site-search-div">
-				<form method="POST" >
-					<input type="text" name="search" id="search-input" placeholder="Search here..." autocomplete="off" />
-				</form>
-			</div>
-			<div id="site-nav-div" >
-				<div style="float: right;">
-				{% if user.is_loggedin %}
-				<div id="dropdown" >
-					{{ user.name|slice:":11" }}
-					<ul>
-						<li><a href="/user/profile/" data-dest="#ui-body" data-box="2" >My Profile</a></li>
-						<li><a href="/user/settings/" data-dest="#ui-body" data-box="2" >Settings</a></li>
-						<li><a href="/user/mails/" data-dest="#ui-body" data-box="2" >Messages</a></li>
-						<li><a href="/user/signout/" data-dest="dummy" >SignOut</a></li>
-					</ul>
-				</div>
-				{% else %}
-					<a href="/user/signin/">SignIn</a> | <a href="/user/signup/">SignUp</a>
-				{% endif %}
-				</div>
-				<div class="clear"></div>
-			</div>
+<div class="ui-header" >
+	<div id="site-logo-div" >
+		<div id="logo" style="margin-left: 1em;">
+			<a href="/" ><img src="{% static 'images/logo.png' %}" width="60" height="35" /></a>
 		</div>
+		<!--<h5>MyOffers</h5>-->
 	</div>
-	{% include './top_nav.html' %}
-</header>
+	<div id="site-search-div">
+		<form method="POST" >
+			<input type="text" name="search" id="search-input" placeholder="Search here..." autocomplete="off" />
+		</form>
+	</div>
+	<div id="site-nav-div" >
+		<div style="float: right;">
+		{% if user.is_loggedin %}
+		<div id="dropdown" >
+			{{ user.name|slice:":11" }}
+			<ul>
+				<li><a href="/user/profile/" data-dest="#ui-page" data-box="2" >My Profile</a></li>
+				<li><a href="/user/settings/" data-dest="#ui-page" data-box="2" >Settings</a></li>
+				<li><a href="/user/mails/" data-dest="#ui-page" data-box="2" >Messages</a></li>
+				<li><a href="/user/signout/" data-dest="dummy" >SignOut</a></li>
+			</ul>
+		</div>
+		{% else %}
+			<a href="/user/signin/">SignIn</a> | <a href="/user/signup/">SignUp</a>
+		{% endif %}
+		</div>
+		<div class="clear"></div>
+	</div>
+</div>
+<div class="ui-header">
+	<div id="site-sidebar" >
+		<span style="margin-left: 1em; font-size:1.5em; cursor:pointer;" class="open" onclick="navClicked()">&#9776;</span>
+	</div>
+	<div id="site-menubar">
+		{% include './top_nav.html' %}
+	</div>
+	<div id="site-nav-div2" >
+		&nbsp;
+	</div>
+</div>
 
 <!-- Toast widget -->
 <div class="toast" style="display: none;" >

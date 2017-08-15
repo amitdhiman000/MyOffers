@@ -21,7 +21,7 @@ function initHistory()
 			href = This.attr("href"),
 			box = This.attr("data-box"),
 			dest = This.attr("data-dest"),
-			title = This.text()+' :: My Offers';
+			title = This.text()+' | My Offers';
 			history.pushState({url:href, box:box, title:title, dest:dest,}, title, href);
 			document.title = title;
 			getRequest(href, 'pid='+box, dest);

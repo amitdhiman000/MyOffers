@@ -18,7 +18,7 @@ class User(models.Model):
 	name = models.CharField(max_length=50, blank=False, default='')
 	email = models.EmailField()
 	password = models.CharField(max_length=32, blank=False, default='')
-	created = models.DateTimeField(default=timezone.now)
+	created_at = models.DateTimeField(default=timezone.now)
 	phone = models.CharField(max_length=10, blank=True)
 	# {-2: delete, -1:blocked, 0:inactive, 1:active }
 	status = models.IntegerField(default=1)
@@ -89,4 +89,3 @@ class Address(models.Model):
 	geo_lat = models.CharField(max_length=10, blank=True)
 	fk_area = models.ForeignKey(Area, on_delete=models.CASCADE)
 	fk_user = models.ForeignKey(User, on_delete=models.CASCADE)
-

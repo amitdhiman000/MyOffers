@@ -16,11 +16,14 @@ from pprint import pprint
 def days_ahead(days=1):
 	return timezone.now() + timezone.timedelta(days=days)
 
+
+
 def user_files_dir(inst, filename):
 	# file will be uploaded to MEDIA_ROOT/products/user_<id>/<filename>
 	path = os.path.join(settings.MEDIA_USER_FILES_DIR_NAME, 'user_{0}/{1}_{2}'.format(inst.fk_user.id, timezone.now(), filename))
 	print(path)
 	return path
+
 
 
 # Business types
@@ -34,12 +37,45 @@ class Business(models.Model):
 		verbose_name_plural= _('business')
 
 	def __str__(self):
-		return self.business_name
+		return self.name
 
 	@classmethod
 	def create(klass, name, desc):
 		obj = klass(name=name, details=desc)
 		obj.save()
+
+
+
+# Business types
+class Catagory(models.Model):
+	id = models.BigAutoField(primary_key=True)
+	name = models.CharField(max_length=30)
+	details = models.CharField(max_length=50)
+
+	class Meta:
+		verbose_name = _('business')
+		verbose_name_plural= _('business')
+
+	def __str__(self):
+		return self.name
+
+
+	@classmethod
+	def create(klass, name, desc):
+		return klass.objects.create(name=name, details=desc)
+
+
+	@classmethod
+	def remove(klass, name):
+		try:
+			db_obj = klass.objects.get(name=name)
+			db_obj.delete()
+			return True
+		except:
+			print('failed to delete')
+			traceback.print_exc()
+			return False
+
 
 
 # offers table for new offers
@@ -50,9 +86,9 @@ class Offer(models.Model):
 	price = models.IntegerField(default=100) ## MRP
 	discount = models.IntegerField(default=0)
 	discount_price = models.IntegerField(default=100)
-	created = models.DateTimeField(default=timezone.now)
-	start_date = models.DateTimeField(default=timezone.now)
-	expire_date = models.DateTimeField(default=days_ahead(5))
+	created_at = models.DateTimeField(default=timezone.now)
+	start_at = models.DateTimeField(default=timezone.now)
+	expire_at = models.DateTimeField(default=days_ahead(5))
 	slug = models.SlugField(unique=True)
 	details = models.TextField()
 	fk_user = models.ForeignKey(User)
@@ -141,4 +177,3 @@ class Offer(models.Model):
 
 	def get_by_keyword(self, keyword, count=20):
 		pass
-
