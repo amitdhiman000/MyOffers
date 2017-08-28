@@ -75,10 +75,25 @@ class Klass:
 
 ## helper functions common to all views
 ##
+def __template(request, file):
+	page_id  = request.GET.get('pid', '1')
+	ua_string = request.META.get('HTTP_USER_AGENT', '').lower()
+	user_agent = parse(ua_string)
+	base_dir = 'responsive/'
+	if user_agent.is_mobile:
+		base_dir = 'mobile/'
+	else:
+		base_dir = 'desktop/'
 
-def __render(request, param, file, data):
-	file_path = get_template(request, file, param)
-	return render(request, file_path, data)
+	base_tpl = None
+	if request.is_ajax():
+		base_tpl = base_dir + settings.BASE_AJAX_TEMPLATE
+	else:
+		base_tpl = base_dir + settings.BASE_TEMPLATE
+
+	file_path = base_dir + file[:-6] + page_id + '.html'
+	print(base_tpl, file_path , page_id)
+	return (base_tpl, file_path)
 
 
 def __redirect(request, url):
@@ -87,19 +102,7 @@ def __redirect(request, url):
 	return HttpResponseRedirect(url)
 
 
-def __template(request, file):
-	page_id  = request.GET.get('pid', '')
-	if request.is_ajax() == False or page_id < '2' or page_id > '3':
-		page_id = ''
-
-	ua_string = request.META.get('HTTP_USER_AGENT', '').lower()
-	user_agent = parse(ua_string)
-	base = 'responsive/'
-	if user_agent.is_mobile:
-		base = 'mobile/'
-	else:
-		base = 'desktop/'
-
-	file_path = base+file[:-5]+page_id+'.html'
-	print(file_path)
-	return file_path
+def __render(request, file, data):
+	base_tpl,file = __template(request, file)
+	data.update({'base_template':base_tpl})
+	return render(request, file, data)

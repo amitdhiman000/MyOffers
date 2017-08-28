@@ -159,7 +159,8 @@ MEDIA_TMP_FILES_DIR_NAME = 'tmp'
 
 
 # some custom settings
-
+BASE_TEMPLATE = 'base_1.html'
+BASE_AJAX_TEMPLATE = 'base_2.html'
 ## admin pages
 ##
 ADMIN_LEVEL = 9

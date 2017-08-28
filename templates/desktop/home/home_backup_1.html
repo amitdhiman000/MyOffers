@@ -1,0 +1,67 @@
+{% extends base_template %}
+
+{% block pagemenu %}
+{% include './home_left_nav.html' %}
+{% endblock %}
+
+{% block content %}
+<style type="text/css">
+	.offer_box { display: inline-block; vertical-align: top; width: 230px; height: 230px; margin: 5px; z-index: 1; }
+	.offer_block { width: 100%; height:100%; margin: 5px; border: 1px dotted #aaa; }
+	.offer_image { width: 95%; height: 84%; margin: 0px auto; }
+	.offer_image img { max-width: 100%; max-height: 100%; min-width: 80%; min-height: 80%; }
+	.offer_desc { width: 95%; height: 15%; margin: 0px auto; font-size: 1.2em;}
+	.offer_desc1 { float: left; max-width:80%; text-align: justify; }
+	.offer_desc2 { float: right; padding: 5px; border: 1px dotted #333; }
+	.offer_desc2 a { display: block; cursor: pointer; }
+	.offer_details { position: relative; width:100%; margin: 0px 5px; z-index: 99999; display: none; background: #FFF; border: 1px solid #999; overflow: none; }
+</style>
+
+<script type="text/javascript">
+	$(document).ready( function() {
+		//$("div.offer_desc2").click(toggleDetails);
+		$("div.offer_desc2 a").on('click', toggleDetails);
+	});
+
+	function toggleDetails(e)
+	{
+		var pThis = $(this);
+		if (pThis.text().match("[+]")) {
+			console.log("Expand");
+			pThis.text('[-]');
+			pThis.parentsUntil("div.offer_box").next().css({"display":"block"});
+		} else {
+			console.log("Contract");
+			pThis.text('[+]');
+			pThis.parentsUntil("div.offer_box").next().css({"display":"none"});
+		}
+	}
+</script>
+
+<div class="ui-page">
+	{% for offer in offers_list  %}
+	<div class="offer_box" >
+		<div class="offer_block">
+			<div class="offer_image">
+				<img src="{{offer.P_image.url}}" alt="{{offer.P_name}} | {{offer.P_discount}}% Off" title="{{offer.P_name}} | {{offer.P_discount}}% Off" />
+			</div>
+			<div class="offer_desc">
+				<div class="offer_desc1">
+					{{offer.P_name}} |
+					{{offer.P_discount}}% Off
+				</div>
+				<div class="offer_desc2">
+					<a href="javascript:void(0)" >[+]</a>
+				</div>
+			</div>
+			<div class="clear" ></div>
+		</div>
+		<div class="offer_details">
+			Valid : {{offer.P_start_date}} <br />
+			To : {{offer.P_expire_date}} <br />
+			<a href="javascript:void(0)" >Get Discount coupons</a>
+		</div>
+	</div>
+	{% endfor %}
+</div>
+{% endblock %}

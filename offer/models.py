@@ -25,6 +25,40 @@ def user_files_dir(inst, filename):
 	return path
 
 
+class Location(models.Model):
+	id = models.BigAutoField(primary_key=True)
+	name = models.CharField(max_length=50, blank=False)
+	landmark = models.CharField(max_length=50, blank=True)
+	logitude = models.CharField(max_length=10, blank=True)
+	latitude = models.CharField(max_length=10, blank=True)
+	fk_area = models.ForeignKey(Area, on_delete=models.CASCADE)
+	fk_user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+	@classmethod
+	def create(klass, loc_name, landmark, logitude, latitude, user, area):
+		if loc_name == None or loc_name == '':
+			raise ValueError('Invalid value')
+		try:
+			obj = klass.objects.get_or_create(name=loc_name, landmark=landmark, longitude=longitude, latitude=latitude, fk_user=user, fk_area=area)[0]
+			return obj
+		except:
+			print('Failed to add location')
+			traceback.print_exc()
+			return None
+
+
+	@classmethod
+	def remove(klass, name, user):
+		if name == None or name == '':
+			raise ValueError('Invalid value')
+		try:
+			obj = klass.objects.get(name=name, fk_user=user)[0]
+			obj.delete()
+			return True
+		except:
+			traceback.print_exc()
+			return False
+
 
 # Business types
 class Business(models.Model):
@@ -47,14 +81,15 @@ class Business(models.Model):
 
 
 # Business types
-class Catagory(models.Model):
+class Category(models.Model):
 	id = models.BigAutoField(primary_key=True)
 	name = models.CharField(max_length=30)
 	details = models.CharField(max_length=50)
+	parent = models.ForeignKey("self", default=1)
 
 	class Meta:
-		verbose_name = _('business')
-		verbose_name_plural= _('business')
+		verbose_name = _('category')
+		verbose_name_plural= _('categories')
 
 	def __str__(self):
 		return self.name
@@ -77,6 +112,16 @@ class Catagory(models.Model):
 			return False
 
 
+	@classmethod
+	def get_all(klass):
+		return klass.objects.get_all()
+
+
+	@classmethod
+	def get(klass, name):
+		return klass.objects.filter(parent__name=name)
+
+
 
 # offers table for new offers
 class Offer(models.Model):
@@ -91,20 +136,25 @@ class Offer(models.Model):
 	expire_at = models.DateTimeField(default=days_ahead(5))
 	slug = models.SlugField(unique=True)
 	details = models.TextField()
-	fk_user = models.ForeignKey(User)
-	fk_area = models.ForeignKey(Area)
+	fk_user = models.ForeignKey(User, on_delete=models.CASCADE)
+	#fk_category = models.ForeignKey(Category)
+	#fk_location = models.ForeignKey(Location)
+	#fk_area = models.ForeignKey(Area)
 
 	class Meta:
 		verbose_name = _('offer')
 		verbose_name_plural= _('offers')
 
+
 	def __str__(self):
 		return self.name
+
 
 	@classmethod
 	def create(klass, obj):
 		obj.save()
 		return obj
+
 
 	@classmethod
 	def remove(klass, obj):
@@ -117,17 +167,20 @@ class Offer(models.Model):
 			traceback.print_exc()
 			return False
 
+
 	@classmethod
 	def add_url_to_dict(klass, db_objs):
 		for db_obj in db_objs:
 			db_obj['url'] = '/offer/'+db_obj['slug']
 		return db_objs
 
+
 	@classmethod
 	def add_url_to_objs(klass, db_objs):
 		for db_obj in db_objs:
 			db_obj.url = '/offer/'+db_obj.slug
 		return db_objs
+
 
 	@classmethod
 	def add_url_to_obj(klass, db_obj):
@@ -140,6 +193,7 @@ class Offer(models.Model):
 	def get_all(klass):
 		db_objs = klass.objects.all()
 		return klass.add_url_to_objs(db_objs)
+
 
 	@classmethod
 	def get_by_id(klass, id):
@@ -162,6 +216,7 @@ class Offer(models.Model):
 			traceback.print_exc()
 			return None
 
+
 	@classmethod
 	def get_match(klass, keyw):
 		try:
@@ -172,8 +227,49 @@ class Offer(models.Model):
 			return []
 
 
-	def get_by_location(self, location, count=20):
-		pass
 
-	def get_by_keyword(self, keyword, count=20):
-		pass
+
+class OfferCategoryMap(models.Model):
+	id = models.BigAutoField(primary_key=True)
+	fk_offer = models.ForeignKey(Offer, on_delete=models.CASCADE)
+	fk_category = models.ForeignKey(Category, db_index=True, on_delete=models.CASCADE)
+
+	@classmethod
+	def create(klass, offer, category):
+		obj = klass.create(fk_offer=offer, fk_category=category)
+		return obj
+
+	@classmethod
+	def remove(klass, offer):
+		try:
+			db_obj = klass.objects.get(fk_offer=offer)
+			db_obj.delete()
+			return True
+		except:
+			print('failed to delete')
+			traceback.print_exc()
+			return False
+
+
+
+
+class OfferLocationMap(models.Model):
+	id = models.BigAutoField(primary_key=True)
+	fk_offer = models.ForeignKey(Offer, on_delete=models.CASCADE)
+	fk_location = models.ForeignKey(Location, db_index=True, on_delete=models.CASCADE)
+
+	@classmethod
+	def create(klass, offer, loc):
+		obj = klass.create(fk_offer=offer, fk_location=loc)
+		return obj
+
+	@classmethod
+	def remove(klass, offer):
+		try:
+			db_obj = klass.objects.get(obj)
+			db_obj.delete()
+			return True
+		except:
+			print('failed to delete')
+			traceback.print_exc()
+			return False

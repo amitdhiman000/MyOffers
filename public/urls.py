@@ -19,5 +19,5 @@ from . import views
 
 urlpatterns = [
 	url(r'^aboutus/$', views.aboutus, name='aboutus'),
-	url(r'^contacts/$', views.ContactsView.as_view(template_name='public_contacts.html')),
+	url(r'^contacts/$', views.ContactsView.as_view()),
 ]

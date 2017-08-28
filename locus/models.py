@@ -292,3 +292,39 @@ class Area(models.Model):
 		query = klass.objects.annotate(city=models.F('fk_city__name')).filter(name__istartswith=keyw).values('name', 'pin', 'city')[:20]
 		#query = klass.objects.annotate(city_name=models.F('fk_city__city_name')).filter(area_name__icontains=keyw).values('area_name', 'area_pin', 'city_name')
 		return query
+
+'''
+class Location(models.Model):
+	id = models.BigAutoField(primary_key=True)
+	name = models.CharField(max_length=50, blank=False)
+	landmark = models.CharField(max_length=50, blank=True)
+	logitude = models.CharField(max_length=10, blank=True)
+	latitude = models.CharField(max_length=10, blank=True)
+	fk_area = models.ForeignKey(Area, on_delete=models.CASCADE)
+	fk_user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+	@classmethod
+	def add(klass, loc_name, landmark, logitude, latitude, user, area):
+		if loc_name == None or loc_name == '':
+			raise ValueError('Invalid value')
+		try:
+			obj = klass.objects.get_or_create(name=loc_name, landmark=landmark, longitude=longitude, latitude=latitude, fk_area=area)[0]
+			return obj
+		except:
+			print('Failed to add location')
+			traceback.print_exc()
+			return None
+
+
+	@classmethod
+	def remove(klass, name, user):
+		if name == None or name == '':
+			raise ValueError('Invalid value')
+		try:
+			obj = klass.objects.get(name=name)[0]
+			obj.delete()
+			return True
+		except:
+			traceback.print_exc()
+			return False
+'''

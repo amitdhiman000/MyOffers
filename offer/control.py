@@ -24,6 +24,8 @@ class OfferControl(object):
 		self.m_valid = False
 		self.m_values = {}
 		self.m_errors = {}
+		self.m_category = None
+		self.m_location = None
 		self.m_files = None
 		self.m_user = request.user
 		self.m_offer = Offer()
@@ -45,7 +47,7 @@ class OfferControl(object):
 			self.m_offer.discount_price = post.get('P_discount_price', 0).strip(' \t\n\r')
 			self.m_offer.start_date = post.get('P_start_date', '').strip(' \t\n\r')
 			self.m_offer.expire_date = post.get('P_expire_date', '').strip(' \t\n\r')
-			self.m_area = post.get('P_area', '').strip(' \t\n\r')
+			self.m_location = post.get('P_location', '').strip(' \t\n\r')
 		except:
 			self.m_errors['request'] = 'Failed to parse request'
 			print('Failed to parse request')
@@ -117,22 +119,6 @@ class OfferControl(object):
 			valid = False
 			self.m_errors['P_start_date'] = '*Start date cannot be before expire date'
 
-		try:
-			name, pin = self.m_area.split("(")
-			pin = pin.split(")")[0]
-			print('area name : '+name)
-			print('area pin : '+pin)
-			area = Area.get(name, pin)
-			if area != None:
-				self.m_offer.fk_area = area
-			else:
-				valid = False
-				self.m_errors['P_area'] = 'location not found'
-		except:
-			valid = False
-			self.m_errors['P_area'] = '*Invalid area'
-			print('failed to get area')
-			traceback.print_exc()
 
 		self.m_offer.fk_user = User.get_user(self.m_user)
 		if self.m_files != None and len(self.m_files) > 0:
@@ -148,6 +134,17 @@ class OfferControl(object):
 		else:
 			valid = False
 			self.m_errors['P_image'] = 'No files attached'
+
+
+		self.m_location = location.get(self.m_user)
+		if self.m_location == None:
+			valid = False
+			self.m_errors['P_location'] = 'No location selected by you'
+
+		if self.m_category < 0:
+			valid = False
+			self.m_errors['P_category'] = 'Ileagal value selected'
+
 
 		## compute the slug
 		slug = self.m_offer.name+'-by-'+self.m_offer.fk_user.name
@@ -165,6 +162,8 @@ class OfferControl(object):
 		if self.m_valid:
 			offer = Offer.create(self.m_offer)
 			if offer != None:
+				OfferCategoryMap.create(offer, self.m_category)
+				OfferLocationMap.create(offer, self.m_location)
 				FileUpload.mark_used(self.m_files[0], self.m_user)
 			return self.m_offer
 		else:

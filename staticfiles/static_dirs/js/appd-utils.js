@@ -189,7 +189,7 @@ function getRequest(pUrl, pData, dest)
 	}).done(function(data) {
 		$(dest).html(data);
 	}).fail(function(error){
-		$(dest).html("<h1>Failed to load page</h1>"+"<br />"+error);
+		$(dest).html("<h1>Failed to load page</h1>"+"<br />"+JSON.stringify(error));
 	});
 }
 

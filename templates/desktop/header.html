@@ -14,23 +14,6 @@
 #dropdown ul li a { text-decoration: none; display: block; color: #447dd3; padding: 1.0em 2.5em; }
 #dropdown ul li a:hover { color: #6fa0e9; background: #e7f0f7; }
 </style>
-<script type="text/javascript">
-$(function() {
-	$("#dropdown").on("click", function(e){
-		console.log("+dropdown clicked");
-		e.preventDefault();
-		var This = $(this);
-		if(This.hasClass("open")) {
-			This.removeClass("open");
-			//This.children("ul").slideUp("fast");
-			This.children("ul").hide();
-		} else {
-			This.addClass("open");
-			This.children("ul").slideDown("fast");
-		}
-	});
-});
-</script>
 <div class="ui-header" >
 	<div id="site-logo-div" >
 		<div id="logo" style="margin-left: 1em;">
@@ -46,17 +29,24 @@ $(function() {
 	<div id="site-nav-div" >
 		<div style="float: right;">
 		{% if user.is_loggedin %}
-		<div id="dropdown" >
-			{{ user.name|slice:":11" }}
-			<ul>
-				<li><a href="/user/profile/" data-dest="#ui-page" data-box="2" >My Profile</a></li>
-				<li><a href="/user/settings/" data-dest="#ui-page" data-box="2" >Settings</a></li>
-				<li><a href="/user/mails/" data-dest="#ui-page" data-box="2" >Messages</a></li>
-				<li><a href="/user/signout/" data-dest="dummy" >SignOut</a></li>
-			</ul>
+		<div class="ui-dropdown">
+			<a onclick="dropToggle(event,this);" class="ui-dropbtn">
+				<img src="{% static 'images/icons-svg/user.svg' %}" class="ui-dselect" style="pointer-events: none; width:32px; height:32px;" />
+			</a>
+			<div class="ui-dropcontent ui-hide" style="width:15em;" >
+				<div class="ui-content">
+					<a href="/user/profile/" >{{ user.name|slice:":15" }}</a>
+				</div>
+				<ul class="ui-vlist">
+					<li><a href="/user/profile/" data-dest="#ui-page" data-box="1" >My Profile</a></li>
+					<li><a href="/user/settings/" data-dest="#ui-page" data-box="1" >Settings</a></li>
+					<li><a href="/user/mails/" data-dest="#ui-page" data-box="1" >Messages</a></li>
+					<li><a href="/user/signout/" data-dest="dummy" >SignOut</a></li>
+				</ul>
+			</div>
 		</div>
 		{% else %}
-			<a href="/user/signin/">SignIn</a> | <a href="/user/signup/">SignUp</a>
+			<a href="/user/signin/">SignIn</a> &nbsp; | &nbsp; <a href="/user/signup/">SignUp</a>
 		{% endif %}
 		</div>
 		<div class="clear"></div>

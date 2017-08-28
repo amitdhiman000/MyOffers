@@ -9,6 +9,7 @@ import device
 from apputil import *
 from apputil import __redirect
 from apputil import __template
+from apputil import __render
 ## custom authentication
 from . import backends
 from user.models import User
@@ -29,8 +30,7 @@ def signin_view(request):
 		del request.session['form_values']
 
 	data.update(csrf(request))
-	file = __template(request, 'user/user_signin.html')
-	return render(request, file, data)
+	return __render(request, 'user/user_signin_1.html', data)
 
 
 
@@ -45,8 +45,7 @@ def signup_view(request):
 		del request.session['form_errors']
 		del request.session['form_values']
 
-	file = __template(request, 'user/user_signup.html')
-	return render(request, file, data)
+	return __render(request, 'user/user_signup_1.html', data)
 
 
 
@@ -109,9 +108,8 @@ def signup_register(request):
 @login_required
 def signup_success_view(request):
 	print('registration success')
-	data = {'title':'Signup :: Success', 'page':'user'}
-	file = __template(request, 'user/user_registered.html');
-	return render(request, file, data)
+	data = {'title':'Signup | Success', 'page':'user'}
+	return __render(request, 'user/user_registered_1.html', data)
 
 
 
@@ -119,8 +117,7 @@ def signup_success_view(request):
 def profile_view(request):
 	user = User.get_user(request.user)
 	data = {'title':'Profile', 'page':'user', 'user': user}
-	file = __template(request, 'user/user_profile.html');
-	return render(request, file, data)
+	return __render(request, 'user/user_profile_1.html', data)
 
 
 
@@ -136,8 +133,7 @@ def user_topics_view(request):
 	data = {'title': 'Follow Topics', 'page':'user'};
 	topics = {}#Topic.get_topics(request.user)
 	data.update({'topics':topics})
-	file = __template(request, 'user/user_topics.html')
-	return render(request, file, data)
+	return __render(request, 'user/user_topics_1.html', data)
 
 
 
@@ -175,22 +171,19 @@ def user_topic_selected(request):
 @login_required
 def user_mails_view(request):
 	print(request.GET.urlencode())
-	data = {'title': 'User mails', 'page':'user'};
-	file = __template(request, 'user/user_mails.html')
-	return render(request, file, data)
+	data = {'title': 'User mails', 'page':'user'}
+	return __render(request, 'user/user_mails_1.html', data)
 
 
 
 @login_required
 def user_stats_view(request):
 	data = {'title': 'User stats', 'page':'user'};
-	file = __template(request, 'user/user_stats.html')
-	return render(request, file, data)
+	return __render(request, 'user/user_stats_1.html', data)
 
 
 
 @login_required
 def user_settings_view(request):
 	data = {'title': 'User settings', 'page':'user'};
-	file = __template(request, 'user/user_settings.html')
-	return render(request, file, data)
+	return __render(request, 'user/user_settings_1.html', data)
