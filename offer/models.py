@@ -18,7 +18,7 @@ def days_ahead(days=1):
 
 
 
-def user_files_dir(inst, filename):
+def App_UserFilesDir(inst, filename):
 	# file will be uploaded to MEDIA_ROOT/products/user_<id>/<filename>
 	path = os.path.join(settings.MEDIA_USER_FILES_DIR_NAME, 'user_{0}/{1}_{2}'.format(inst.fk_user.id, timezone.now(), filename))
 	print(path)
@@ -127,7 +127,7 @@ class Category(models.Model):
 class Offer(models.Model):
 	id = models.BigAutoField(primary_key=True)
 	name = models.CharField(max_length=30, blank=False)
-	image = models.FileField(upload_to=user_files_dir)
+	image = models.FileField(upload_to=App_UserFilesDir)
 	price = models.IntegerField(default=100) ## MRP
 	discount = models.IntegerField(default=0)
 	discount_price = models.IntegerField(default=100)

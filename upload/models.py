@@ -4,19 +4,14 @@ from django.db import models
 from django.utils import timezone
 
 from user.models import User
+from apputil import App_UserFilesDir
 ## debug
 import traceback
 from pprint import pprint
 
-def user_files_dir(inst, filename):
-	# file will be uploaded to MEDIA_ROOT/products/user_<id>/<filename>
-	path = os.path.join(settings.MEDIA_USER_FILES_DIR_NAME, 'user_{0}/{1}_{2}'.format(inst.fk_user.id, timezone.now(), filename))
-	print(path)
-	return path
-
 class FileUpload(models.Model):
 	id = models.BigAutoField(primary_key=True)
-	file = models.FileField(upload_to=user_files_dir)
+	file = models.FileField(upload_to=App_UserFilesDir)
 	used = models.IntegerField(default=0)
 	created = models.DateTimeField(default=timezone.now)
 	fk_user = models.ForeignKey(User)

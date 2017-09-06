@@ -1,16 +1,16 @@
 {% load staticfiles %}
-<header>
-	<div id="ui-header-cont">
-		<div id="ui-header" >
-			<div id="site-logo-div" >
+<app_app_header>
+	<div id="app_header-cont">
+		<div id="app_header" >
+			<div id="app_logo_div" >
 				<div id="logo" >
 					<a href="/" ><img src="{% static 'images/offers.png' %}" /></a>
 				</div>
 				<!--<h5>MyOffers</h5>-->
 			</div>
-			<div id="site-search-div">
+			<div id="app_search_div">
 				<form method="POST" >
-					<input type="text" name="search" id="search-input" placeholder="Search here..." autocomplete="off" />
+					<input type="text" name="search" id="app_search_input" placeholder="Search here..." autocomplete="off" />
 				</form>
 			</div>
 			<div id="site-nav-div" >
@@ -26,7 +26,7 @@
 		</div>
 	</div>
 	{% include './home_top_nav.html' %}
-</header>
+</app_app_header>
 
 <!-- Toast widget -->
 <div class="toast" style="display: none;" >

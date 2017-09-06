@@ -1,0 +1,69 @@
+{% extends base_template %}
+{% load staticfiles %}
+
+
+{% block pagemenu %}
+{% include 'mobile/left_nav.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="ui-content" >
+	<div class="ui-bar-tbb" >
+		<h3>GET IN TOUCH <strong>WITH US</strong></h3>
+	</div>
+	<div class="ui-body">
+		<div id="contact-left" >
+			<div class="ui-errors"></div>
+			<form action="/public/contacts/" method="POST" class="contact-form ajax-form" >
+				{% csrf_token %}
+				<table class="form-table">
+					<tr><td>*NAME </td></tr>
+					<tr><td><input type="text" name="name" class="ui-input" placeholder="Name" /></td>
+					</tr>
+					<tr><td>*CONTACT </td></tr>
+					<tr><td><input type="text" name="email" class="ui-input" placeholder="Email or Phone" /></td>
+					</tr>
+					<tr><td>*ABOUT </td></tr>
+					<tr><td><input type="text" name="title" class="ui-input" placeholder="About" /></td>
+					</tr>
+					<tr><td>*DETAILS : </td></tr>
+					<tr><td><textarea class="ui-textarea" name="text" placeholder="Tell us about your thoughts" ></textarea></td>
+					</tr>
+					<tr><td><input type="submit" name="send" value="Send" class="ui-btn ui-btn-long" /></td>
+					</tr>
+				</table>
+			</form>
+		</div>
+		<div id="contact-right">
+			<div style="margin: 3px 0px;">
+				GOT A QUESTION? <strong>TALK WITH US DIRECT.</strong>
+			</div>
+			<div>
+				<p style="font-size:2em;" >
+					<strong>CALL </strong> <a href="callto:0123456789" > 0123 456 789</a>
+				</p>
+				<p>
+					<strong>EMAIL </strong><a href="mailto:hello@myoffers.com">hello@myoffers.com</a>
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+$(function() {
+	$('.contact-form').data('handlers', {before: beforeMessage, after: null});
+});
+
+function beforeMessage(e) {
+	console.log("+beforeMessage");
+	return true;
+}
+function afterMessage(e) {
+	console.log("+afterMessage");
+	if (e.status)
+	Toast.show("Message sent!!");
+	return true;
+}
+</script>
+{% endblock %}

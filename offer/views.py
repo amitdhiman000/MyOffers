@@ -8,10 +8,9 @@ from datetime import datetime, timedelta
 from .models import Offer
 from .control import OfferControl
 
-import device
 from apputil import *
-from apputil import __redirect
-from apputil import __render
+from apputil import App_Redirect
+from apputil import App_Render
 from pprint import pprint
 
 # Create your views here.
@@ -23,7 +22,7 @@ def offer_home_view(request):
 	obj = list(offers)
 	'''
 	data = {'title':'Offers', 'offers_list': offers}
-	return __render(request, 'offer/offer_home_1.html', data)
+	return App_Render(request, 'offer/offer_home_1.html', data)
 
 
 
@@ -31,16 +30,16 @@ def offer_detail_view(request, offer_id):
 	print('offer_id : '+offer_id)
 	offer = Offer.get_by_id(offer_id)
 	data = {'title':'View Offers', 'offer': offer}
-	return __render(request, 'offer/offer_detail_view_1.html', data)
+	return App_Render(request, 'offer/offer_detail_view_1.html', data)
 
 def offer_detail_view1(request, slug):
 	print('slug : '+slug)
 	offer = Offer.get_by_slug(slug)
 	data = {'title':'View Offers', 'offer': offer}
-	return __render(request, 'offer/offer_detail_view_1.html', data)
+	return App_Render(request, 'offer/offer_detail_view_1.html', data)
 
 
-@login_required
+@App_LoginRequired
 def offer_create_view(request):
 	pprint(request)
 	imgdata = open(settings.STATIC_ROOT+"/images/icons-svg/location.svg", "rb").read()
@@ -57,11 +56,11 @@ def offer_create_view(request):
 		end = (today + timedelta(days=15)).strftime("%Y/%m/%d")
 		data['form_values'] = {'P_start_date': start, 'P_expire_date': end}
 
-	return __render(request, 'offer/offer_create_new_1.html', data)
+	return App_Render(request, 'offer/offer_create_new_1.html', data)
 
 
-@post_required
-@login_required
+@App_PostRequired
+@App_LoginRequired
 def offer_create(request):
 	pprint(request)
 	pprint(request.POST)
@@ -70,7 +69,7 @@ def offer_create(request):
 	control = OfferControl()
 	if control.parseRequest(request) and control.validate():
 		control.register()
-		#return __redirect(request, setting.OFFER_CREATE_SUCCESS)
+		#return App_Redirect(request, setting.OFFER_CREATE_SUCCESS)
 		return JsonResponse({'status': 204, 'message': 'Offer posted succesfuly'})
 	else:
 		if request.is_ajax():

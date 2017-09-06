@@ -1,29 +1,14 @@
 {% load staticfiles %}
-<style>
-#dropdown { display: block; padding: 13px 16px; cursor: pointer; position: relative;
-	border-right: 4px solid #739cda; background: #fff; font-size: 1.1em; color: #656565;
-	box-shadow: 1px 1px 2px rgba(0,0,0,0.3); transition: all 0.15s linear;
-}
-#dropdown:hover { color: #898989; }
-#dropdown.open { background: #5a90e0; color: #fff; border-right: 1px solid #6c6d70; }
-#dropdown ul { position: absolute; top:100%; right: 0; width: 200px; padding: 0.3em 0em;
-	list-style: none; display: none;
-	border-right: 4px solid #8e9196; background: #fff; box-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-}
-#dropdown ul li { font-size: 0.9em; }
-#dropdown ul li a { text-decoration: none; display: block; color: #447dd3; padding: 1.0em 2.5em; }
-#dropdown ul li a:hover { color: #6fa0e9; background: #e7f0f7; }
-</style>
-<div class="ui-header" >
-	<div id="site-logo-div" >
+<div class="app_header" >
+	<div id="app_logo_div">
 		<div id="logo" style="margin-left: 1em;">
-			<a href="/" ><img src="{% static 'images/logo.png' %}" width="60" height="35" /></a>
+			<a href="/" style="display: block;"><img src="{% static 'images/logo.png' %}" width="60" height="35" /></a>
 		</div>
 		<!--<h5>MyOffers</h5>-->
 	</div>
-	<div id="site-search-div">
+	<div id="app_search_div">
 		<form method="POST" >
-			<input type="text" name="search" id="search-input" placeholder="Search here..." autocomplete="off" />
+			<input type="text" name="search" id="app_search_input" placeholder="Search here..." autocomplete="off" />
 		</form>
 	</div>
 	<div id="site-nav-div" >
@@ -31,16 +16,26 @@
 		{% if user.is_loggedin %}
 		<div class="ui-dropdown">
 			<a onclick="dropToggle(event,this);" class="ui-dropbtn">
-				<img src="{% static 'images/icons-svg/user.svg' %}" class="ui-dselect" style="pointer-events: none; width:32px; height:32px;" />
+				<img src="{{user.image.url}}" class="ui-dselect" style="width:32px; height:32px;" />
 			</a>
 			<div class="ui-dropcontent ui-hide" style="width:15em;" >
 				<div class="ui-content">
-					<a href="/user/profile/" >{{ user.name|slice:":15" }}</a>
+					<table>
+					<tr><td>
+					<a href="/user/profile/" data-dest="#ui-page" data-box="1" style="display:block;" >
+					<img src="{{user.image.url}}" class="ui-dselect" style="width:48px; height:48px;" />
+					</a>
+					</td>
+					<td>
+					<a href="/user/profile/" data-dest="#ui-page" data-box="1" >{{ user.name|slice:":15" }}</a>
+					</td>
+					</tr>
+					</table>
 				</div>
 				<ul class="ui-vlist">
-					<li><a href="/user/profile/" data-dest="#ui-page" data-box="1" >My Profile</a></li>
-					<li><a href="/user/settings/" data-dest="#ui-page" data-box="1" >Settings</a></li>
-					<li><a href="/user/mails/" data-dest="#ui-page" data-box="1" >Messages</a></li>
+					<li><a href="/user/profile/" data-dest="#app_page" data-box="1" >My Profile</a></li>
+					<li><a href="/user/settings/" data-dest="#app_page" data-box="1" >Settings</a></li>
+					<li><a href="/user/mails/" data-dest="#app_page" data-box="1" >Messages</a></li>
 					<li><a href="/user/signout/" data-dest="dummy" >SignOut</a></li>
 				</ul>
 			</div>
@@ -52,8 +47,8 @@
 		<div class="clear"></div>
 	</div>
 </div>
-<div class="ui-header">
-	<div id="site-sidebar" >
+<div class="app_header">
+	<div id="site-sidebar">
 		<span style="margin-left: 1em; font-size:1.5em; cursor:pointer;" class="open" onclick="navClicked()">&#9776;</span>
 	</div>
 	<div id="site-menubar">
@@ -65,5 +60,5 @@
 </div>
 
 <!-- Toast widget -->
-<div class="toast" style="display: none;" >
+<div class="ui-toast" style="display: none;" >
 </div>

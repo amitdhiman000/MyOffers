@@ -1,0 +1,82 @@
+{% extends base_template %}
+
+{% load staticfiles %}
+
+{% block style %}
+<style type="text/css" >
+.abtus-box-title > div { display: inline-block; vertical-align: middle; }
+.abtus-box-title-image img { width: 24px; height: 24px; }
+.abtus-box .abtus-box-title-text { line-height: 24px; }
+</style>
+{% endblock %}
+
+{% block pagemenu %}
+{% include 'mobile/left_nav.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="ui-content" >
+	<div class="ui-bar-tbb" style="text-align: center;">
+		<h2>A LITTLE BIT <strong>ABOUT US</strong></h2>
+	</div>
+	<div class="ui-content" >
+		<div class="ui-bar-tbb">
+			<h2>About MyOffers</h2>
+		</div>
+		<div class="ui-body" >
+			<p>MyOffers is about connecting Customers with Vendors directly.
+				This website provide interface for Consumers to search, browse Offers based on Location.
+				You can find different sales, discounts, coupons alerts on MyOffers.
+				We keep in touch with various dealers and vendors in market to give you best deals available.
+			<p>
+		</div>
+	</div>
+	<div class="ui-body" >
+		<div class="ui-content">
+			<div class="ui-bar-tbb abtus-box-title" >
+				<div class="abtus-box-title-image" >
+					<img src="{% static 'images/icons-svg/people.svg' %}" />
+				</div>
+				<div class="abtus-box-title-text" >
+					<h2> WHO ARE WE ? </h2>
+				</div>
+			</div>
+			<div class="ui-body">
+				<p>
+				 We are a team of web developers who are driven by passion and urge to create something that our customers love.
+				</p>
+			</div>
+		</div>
+		<div class="ui-content">
+			<div class="ui-bar-tbb abtus-box-title" >
+				<div class="abtus-box-title-image" >
+					<img src="{% static 'images/icons-svg/tools.svg' %}" />
+				</div>
+				<div class="abtus-box-title-text" >
+					<h2> WHAT WE DO ? </h2>
+				</div>
+			</div>
+			<div class="ui-body">
+				<p>
+				We build user friendly powerful and easy to use interfaces. Which helps a million of users to get what they want.
+				</p>
+			</div>
+		</div>
+		<div class="ui-content">
+			<div class="ui-bar-tbb abtus-box-title" >
+				<div class="abtus-box-title-image" >
+					<img src="{% static 'images/icons-svg/clock.svg' %}" />
+				</div>
+				<div class="abtus-box-title-text" >
+					<h2> SINCE WHEN ? </h2>
+				</div>
+			</div>
+			<div class="ui-body">
+				<p>
+				We are in the market since Jan 2014, and continusely improving the interfaces which helps the customers.
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

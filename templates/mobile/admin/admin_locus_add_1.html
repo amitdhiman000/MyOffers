@@ -1,0 +1,20 @@
+{% extends base_template %}
+
+{% block pagemenu %}
+{% include './admin_left_nav.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="ui-content" >
+	<div class="ui-bar-tbb">
+		<h3>Add Locations</h3>
+	</div>
+	<div class="ui-body">
+		{% for country in countries %}
+		<a href="/myadmin/locus-add/{{country}}/" >
+			<button class="ui-btn">{{country}}</button>
+		</a>
+		{% endfor %}
+	</div>
+</div>
+{% endblock %}

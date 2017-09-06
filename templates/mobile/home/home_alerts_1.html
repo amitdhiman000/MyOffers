@@ -1,0 +1,19 @@
+{% extends base_template %}
+
+{% block pagemenu %}
+{% include './home_left_nav.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="ui-content">
+	<div class="ui-corner-all custom-corners">
+		<div class="ui-bar ui-bar-a">
+			<b>Alerts </b>
+		</div>
+		<div class="ui-body ui-body-a">
+			<p>No any notifications</p>
+			<a href="#" class="ui-btn" onclick="Toast.show('Refreshing...')" >Refresh</a>
+		</div>
+	</div>
+</div>
+{% endblock %}

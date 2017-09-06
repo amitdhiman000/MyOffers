@@ -1,0 +1,29 @@
+{% extends base_template %}
+
+
+{% block pagemenu %}
+{% include './admin_left_nav.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="ui-content" >
+	<div class="ui-bar-tbb">
+		<h3>Categories</h3>
+	</div>
+	<div class="ui-body">
+	{% if categories|length == 0 %}
+		<h4>No default values</h4>
+	{% else %}
+		<div class="ui-bar-tbb">
+			<a href="/myadmin/category/">Categories &gt;&gt; </a>
+		</div>
+		<table class="ui-info-table">
+		<tr><th>Sr.</th><th>Category Name</th></tr>
+		{% for cat in categories %}
+			<tr><td>{{forloop.counter}}</td><td><a href="/myadmin/category/{{cat.name}}/" >{{cat.name}}</a></td></tr>
+		{% endfor %}
+		</table>
+	{% endif %}
+	</div>
+</div>
+{% endblock %}

@@ -18,20 +18,19 @@
 			#contact-left { min-width: 40%; }
 			#contact-right { margin-left: 5px; }
 			.form-table tr td:first-child { width: 20%; }
-			textarea { border: 1px solid #ccc; width: 20em; height: 10em; resize: none; }
 		</style>
 		<div id="contact-left" >
 			<div class="ui-errors"></div>
 			<form action="/public/contacts/" method="POST" class="contact-form ajax-form" >
 				{% csrf_token %}
 				<table class="form-table">
-					<tr><td>*Name : </td><td><input type="text" name="name" class="ui-input" placeholder="Name" /></td>
+					<tr><td>*NAME </td><td><input type="text" name="name" class="ui-input" placeholder="Name" /></td>
 					</tr>
-					<tr><td>*Contact : </td><td><input type="text" name="email" class="ui-input" placeholder="Email or Phone" /></td>
+					<tr><td>*CONTACT </td><td><input type="text" name="email" class="ui-input" placeholder="Email or Phone" /></td>
 					</tr>
-					<tr><td>*About : </td><td><input type="text" name="title" class="ui-input" placeholder="About" /></td>
+					<tr><td>*ABOUT </td><td><input type="text" name="title" class="ui-input" placeholder="About" /></td>
 					</tr>
-					<tr><td>*Details : </td><td><textarea class="ui-textarea" name="text" placeholder="Tell us about your thoughts" ></textarea></td>
+					<tr><td>*DETAILS : </td><td><textarea class="ui-textarea" name="text" placeholder="Tell us about your thoughts" ></textarea></td>
 					</tr>
 					<tr><td></td>
 					<td><input type="submit" name="send" value="Send" class="ui-btn ui-btn-long" /></td>
@@ -44,10 +43,11 @@
 				GOT A QUESTION? <strong>TALK WITH US DIRECT.</strong>
 			</div>
 			<div>
-				<p style="font-size:30px;" >
-					<strong>Call.</strong> <a href="callto:0123456789" > 0123 456 789</a>
+				<p style="font-size:2em;" >
+					<strong>CALL </strong> <a href="callto:0123456789" > 0123 456 789</a>
 				</p>
-				<p><strong>Email.</strong><a href="mailto:hello@myoffers.com">hello@myoffers.com</a>
+				<p>
+					<strong>EMAIL </strong><a href="mailto:hello@myoffers.com">hello@myoffers.com</a>
 				</p>
 			</div>
 		</div>

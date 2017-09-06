@@ -6,10 +6,10 @@ from user_agents import parse
 
 ## decorator function check for request method, if not GET redirect to invalid reguest page.
 ##
-def get_required(funct):
+def App_GetRequired(funct):
 	def _decorator(request, *args, **kwargs):
 		if request.method != 'GET':
-			return __redirect(request, settings.ERROR_INVALID_REQUEST_URL)
+			return App_Redirect(request, settings.ERROR_INVALID_REQUEST_URL)
 			#if 'application/json' in request.META.get('HTTP_ACCEPT'):
 		else:
 			return funct(request, *args, **kwargs)
@@ -18,10 +18,10 @@ def get_required(funct):
 
 ## decorator function check for request method, if not POST redirect to invalid reguest page.
 ##
-def post_required(funct):
+def App_PostRequired(funct):
 	def _decorator(request, *args, **kwargs):
 		if request.method != 'POST':
-			return __redirect(request, settings.ERROR_INVALID_REQUEST_URL)
+			return App_Redirect(request, settings.ERROR_INVALID_REQUEST_URL)
 			#if 'application/json' in request.META.get('HTTP_ACCEPT'):
 		else:
 			return funct(request, *args, **kwargs)
@@ -30,11 +30,11 @@ def post_required(funct):
 
 ## Decorator function for chekcing the login status and redirect to login page
 ##
-def login_required(funct):
+def App_LoginRequired(funct):
 	#@warps(funct)
 	def _decorator(request, *args, **kwargs):
 		if request.user.is_loggedin() == False:
-			return __redirect(request, settings.USER_LOGIN_URL)
+			return App_Redirect(request, settings.USER_LOGIN_URL)
 			#if 'application/json' in request.META.get('HTTP_ACCEPT'):
 		else:
 			return funct(request, *args, **kwargs)
@@ -43,14 +43,14 @@ def login_required(funct):
 
 ## Decorator function for checking the login user is admin or not
 ##
-def admin_required(funct):
+def App_AdminRequired(funct):
 	#@warps(funct)
 	def _decorator(request, *args, **kwargs):
 		if request.user.is_loggedin() == False:
-			return __redirect(request, settings.USER_LOGIN_URL)
+			return App_Redirect(request, settings.USER_LOGIN_URL)
 			#if 'application/json' in request.META.get('HTTP_ACCEPT'):
 		elif request.user.level != settings.ADMIN_LEVEL:
-			return __redirect(request, settings.ERROR_ACCESS_DENIED_URL)
+			return App_Redirect(request, settings.ERROR_ACCESS_DENIED_URL)
 		else:
 			return funct(request, *args, **kwargs)
 	return _decorator;
@@ -58,13 +58,20 @@ def admin_required(funct):
 
 ## Decorator function for chekcing the login status and redirect to home page
 ##
-def redirect_if_loggedin(funct):
+def App_RedirectIfLoggedin(funct):
 	def _decorator(request, *args, **kwargs):
 		if request.user.is_loggedin() == True:
-			return __redirect(request, settings.USER_PROFILE_URL)
+			return App_Redirect(request, settings.USER_PROFILE_URL)
 		return funct(request, *args, **kwargs)
 	return _decorator
 
+
+
+def App_UserFilesDir(inst, filename):
+	# file will be uploaded to MEDIA_ROOT/products/user_<id>/<filename>
+	path = os.path.join(settings.MEDIA_USER_FILES_DIR_NAME, 'user_{0}/{1}_{2}'.format(inst.fk_user.id, timezone.now(), filename))
+	print(path)
+	return path
 
 ## class for mocking any object
 ##
@@ -75,10 +82,19 @@ class Klass:
 
 ## helper functions common to all views
 ##
-def __template(request, file):
+def App_Template(request, file):
 	page_id  = request.GET.get('pid', '1')
-	ua_string = request.META.get('HTTP_USER_AGENT', '').lower()
+	ua_string = request.META.get('HTTP_USER_AGENT', '')
 	user_agent = parse(ua_string)
+	'''
+	print(ua_string)
+	print(user_agent)
+	print(user_agent.is_pc)
+	print(user_agent.is_mobile)
+	print(user_agent.is_tablet)
+	print(user_agent.is_touch_capable)
+	print(user_agent.is_bot)
+	'''
 	base_dir = 'responsive/'
 	if user_agent.is_mobile:
 		base_dir = 'mobile/'
@@ -96,13 +112,13 @@ def __template(request, file):
 	return (base_tpl, file_path)
 
 
-def __redirect(request, url):
+def App_Redirect(request, url):
 	if request.is_ajax():
 		return JsonResponse({'status':302, 'url': url})
 	return HttpResponseRedirect(url)
 
 
-def __render(request, file, data):
-	base_tpl,file = __template(request, file)
+def App_Render(request, file, data):
+	base_tpl,file = App_Template(request, file)
 	data.update({'base_template':base_tpl})
 	return render(request, file, data)

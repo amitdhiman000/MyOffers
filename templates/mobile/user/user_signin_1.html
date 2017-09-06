@@ -1,0 +1,60 @@
+{% extends base_template %}
+{% load staticfiles %}
+
+{% block pagemenu %}
+{% include 'mobile/left_nav.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="ui-content">
+	<div class="wt-switchtab" id="signin-switchtab" >
+		<ul class="wt-switchtab-nav ui-hlist-resp" >
+			<li><a href="/user/signin/" rel="#tab-signin" class="wt-switchtab-a" >SignIn</a></li>
+			<li><a href="/user/signup/" rel="#tab-signup" >SignUp</a></li>
+		</ul>
+		<div class="wt-switchtab-item wt-switchtab-item-a" id="tab-signin">
+			<div class="ui-content" >
+				<div class="ui-errors" >
+					{% if form_errors %} {{form_errors.user}} {% endif %}
+				</div>
+				<form action="/user/signin-auth/" method="POST" data-ajax="false" >
+					{% csrf_token %}
+					<table class="ui-form-table">
+						<tr><td>EMAIL : </td></tr>
+						<tr><td><input type="text" name="email" class="ui-input" placeholder="Email" /></td></tr>
+						<tr><td>PASSWORD : </td></tr>
+						<tr><td><input type="password" name="pass" class="ui-input" placeholder="Password"/></td></tr>
+						<tr><td><input type="submit" name="login" value="SignIn" class="submit ui-btn" /></td></tr>
+					</table>
+				</form>
+			</div>
+		</div>
+		<div class="wt-switchtab-item" id="tab-signup" >
+			<div class="ui-content" >
+				<div class="ui-errors" >
+					{% if form_errors %} {{form_errors.user}} {% endif %}
+				</div>
+				<form action="/user/signup-register/" method="POST" >
+					{% csrf_token %}
+					<table class="ui-form-table" >
+						<tr><td>NAME* : </td></tr>
+						<tr><td><input type="text" name="name" class="ui-input" placeholder="Name" /></td>
+						</tr>
+						<tr><td>EMAIL* : </td></tr>
+						<tr><td><input type="text" name="email" class="ui-input" placeholder="Email" /></td>
+						</tr>
+						<tr><td>PASSWORD* : </td></tr>
+						<tr><td><input type="password" name="pass" class="ui-input" placeholder="Password" /></td>
+						</tr>
+						<tr><td>PHONE* : </td></tr>
+						<tr><td><input type="text" name="phone" class="ui-input" placeholder="Phone Number" /></td>
+						</tr>
+						<tr><td><input type="submit" name="signup" value="SignUp" class="submit ui-btn" />
+						</td></tr>
+					</table>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

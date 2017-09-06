@@ -7,6 +7,7 @@ from django.core.mail import send_mail
 #from time import timezone
 from datetime import datetime
 from locus.models import Area
+from apputil import App_UserFilesDir
 
 ## debug
 import traceback
@@ -24,6 +25,7 @@ class User(models.Model):
 	status = models.IntegerField(default=1)
 	# {0:guest, 1:normal, 2:morderator, 3:author, 9:admin}
 	level = models.IntegerField(default=1)
+	image = models.FileField(upload_to=App_UserFilesDir, default=settings.DEFAULT_USER_IMAGE)
 
 	@classmethod
 	def create(klass, user):

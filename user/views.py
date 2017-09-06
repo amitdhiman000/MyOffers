@@ -5,11 +5,9 @@ from django.template.context_processors import csrf
 from django.views.decorators.csrf import csrf_exempt
 
 ## custom packages
-import device
 from apputil import *
-from apputil import __redirect
-from apputil import __template
-from apputil import __render
+from apputil import App_Redirect
+from apputil import App_Render
 ## custom authentication
 from . import backends
 from user.models import User
@@ -20,7 +18,7 @@ from user.control import UserSignInControl
 from pprint import pprint
 # Create your views here.
 
-@redirect_if_loggedin
+@App_RedirectIfLoggedin
 def signin_view(request):
 	data = {'title':'Login', 'page':'user'}
 	if 'form_errors' in request.session:
@@ -30,12 +28,12 @@ def signin_view(request):
 		del request.session['form_values']
 
 	data.update(csrf(request))
-	return __render(request, 'user/user_signin_1.html', data)
+	return App_Render(request, 'user/user_signin_1.html', data)
 
 
 
 #functions for registration
-@redirect_if_loggedin
+@App_RedirectIfLoggedin
 def signup_view(request):
 	data = {'title':'Signup', 'page':'user'}
 	data.update(csrf(request))
@@ -45,24 +43,24 @@ def signup_view(request):
 		del request.session['form_errors']
 		del request.session['form_values']
 
-	return __render(request, 'user/user_signup_1.html', data)
+	return App_Render(request, 'user/user_signup_1.html', data)
 
 
 
 def signout(request):
 	backends.logout(request)
-	return __redirect(request, settings.USER_LOGIN_URL)
+	return App_Redirect(request, settings.USER_LOGIN_URL)
 
 
 
-@redirect_if_loggedin
-@post_required
+@App_RedirectIfLoggedin
+@App_PostRequired
 def signin_auth(request):
 	pprint(request.POST)
 	error = None
 	control = UserSignInControl()
 	if control.parseRequest(request.POST) and control.signin(request):
-		return __redirect(request, settings.USER_PROFILE_URL)
+		return App_Redirect(request, settings.USER_PROFILE_URL)
 
 	## Only error case will reach here.
 	if request.is_ajax():
@@ -71,17 +69,17 @@ def signin_auth(request):
 	else:
 		request.session['form_errors'] = control.get_values()
 		request.session['form_values'] = control.get_values()
-		return __redirect(request, settings.USER_LOGIN_URL)
+		return App_Redirect(request, settings.USER_LOGIN_URL)
 
 
 
-@post_required
+@App_PostRequired
 def signup_register(request):
 	pprint(request.POST)
 
 	control = UserRegControl()
 	if control.parseRequest(request.POST) == False:
-		return __redirect(request, settings.INVALID_REQUEST_URL)
+		return App_Redirect(request, settings.INVALID_REQUEST_URL)
 
 	error = None
 	if control.validate():
@@ -89,7 +87,7 @@ def signup_register(request):
 		if user != None:
 			print('registration successful')
 			backends.login(request, user)
-			return __redirect(request, settings.USER_SIGNUP_SUCCESS_URL)
+			return App_Redirect(request, settings.USER_SIGNUP_SUCCESS_URL)
 		else:
 			error = {'user':'server error, try again later'}
 
@@ -101,23 +99,23 @@ def signup_register(request):
 	else:
 		request.session['form_values'] = control.get_values()
 		request.session['form_errors'] = error
-		return __redirect(request, settings.USER_SIGNUP_URL)
+		return App_Redirect(request, settings.USER_SIGNUP_URL)
 
 
 
-@login_required
+@App_LoginRequired
 def signup_success_view(request):
 	print('registration success')
 	data = {'title':'Signup | Success', 'page':'user'}
-	return __render(request, 'user/user_registered_1.html', data)
+	return App_Render(request, 'user/user_registered_1.html', data)
 
 
 
-@login_required
+@App_LoginRequired
 def profile_view(request):
 	user = User.get_user(request.user)
 	data = {'title':'Profile', 'page':'user', 'user': user}
-	return __render(request, 'user/user_profile_1.html', data)
+	return App_Render(request, 'user/user_profile_1.html', data)
 
 
 
@@ -128,16 +126,16 @@ def user_info_view(request):
 
 
 
-@login_required
+@App_LoginRequired
 def user_topics_view(request):
 	data = {'title': 'Follow Topics', 'page':'user'};
 	topics = {}#Topic.get_topics(request.user)
 	data.update({'topics':topics})
-	return __render(request, 'user/user_topics_1.html', data)
+	return App_Render(request, 'user/user_topics_1.html', data)
 
 
 
-@login_required
+@App_LoginRequired
 def user_topic_selected(request):
 	pprint(request.POST)
 	error = None
@@ -164,26 +162,26 @@ def user_topic_selected(request):
 		else:
 			return JsonResponse({'status':401, 'error': error})
 	else:
-		return __redirect(request, settings.HOME_PAGE_URL)
+		return App_Redirect(request, settings.HOME_PAGE_URL)
 
 
 
-@login_required
+@App_LoginRequired
 def user_mails_view(request):
 	print(request.GET.urlencode())
 	data = {'title': 'User mails', 'page':'user'}
-	return __render(request, 'user/user_mails_1.html', data)
+	return App_Render(request, 'user/user_mails_1.html', data)
 
 
 
-@login_required
+@App_LoginRequired
 def user_stats_view(request):
 	data = {'title': 'User stats', 'page':'user'};
-	return __render(request, 'user/user_stats_1.html', data)
+	return App_Render(request, 'user/user_stats_1.html', data)
 
 
 
-@login_required
+@App_LoginRequired
 def user_settings_view(request):
 	data = {'title': 'User settings', 'page':'user'};
-	return __render(request, 'user/user_settings_1.html', data)
+	return App_Render(request, 'user/user_settings_1.html', data)

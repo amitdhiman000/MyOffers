@@ -50,7 +50,8 @@ INSTALLED_APPS = [
 	'search',
 	'upload',
 	'user',
-	'myadmin'
+	'myadmin',
+	'MyOffers',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -161,6 +162,7 @@ MEDIA_TMP_FILES_DIR_NAME = 'tmp'
 # some custom settings
 BASE_TEMPLATE = 'base_1.html'
 BASE_AJAX_TEMPLATE = 'base_2.html'
+DEFAULT_USER_IMAGE = 'default/user.svg'
 ## admin pages
 ##
 ADMIN_LEVEL = 9

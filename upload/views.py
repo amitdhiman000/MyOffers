@@ -10,8 +10,8 @@ from pprint import pprint
 
 ## User file upload
 @csrf_exempt
-@post_required
-@login_required
+@App_PostRequired
+@App_LoginRequired
 def fileupload(request):
 	pprint(request.POST)
 	pprint(request.FILES)

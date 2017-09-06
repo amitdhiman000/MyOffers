@@ -22,8 +22,8 @@ urlpatterns = [
 	url(r'^locus/(?P<query>[\w\ \(\)\/]*)$', views.locus_view, name='locus_view'),
 	url(r'^locus-add/(?P<query>[\w\ \(\)\/]*)$', views.locus_add_view, name='locus_add_view'),
 	url(r'^locus-auth/(?P<query>[\w\ \(\)\/]*)$', views.locus_auth, name='locus_auth'),
-	url(r'^categories/(?P<query>[\w\ \(\)\/\&]*)$', views.category_view, name='category_view'),
-	url(r'^category-add/(?P<query>[\w\ \(\)\/\&]*)$', views.category_add_view, name='category_add_view'),
-	url(r'^category-auth/(?P<query>[\w\ \(\)\/\&]*)$', views.locus_auth, name='locus_auth'),
+	url(r'^categories/(?P<query>[\w\ \(\)\/\&\-]*)$', views.category_view, name='category_view'),
+	url(r'^category-add/(?P<query>[\w\ \(\)\/\&\-]*)$', views.category_add_view, name='category_add_view'),
+	url(r'^category-auth/(?P<query>[\w\ \(\)\/\&\-]*)$', views.locus_auth, name='locus_auth'),
 	url(r'^messages/$', views.messages_view, name='messages_view'),
 ]

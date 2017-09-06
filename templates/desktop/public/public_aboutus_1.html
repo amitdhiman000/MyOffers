@@ -6,6 +6,7 @@
 .abtus-box { display: inline-block; vertical-align: top; margin-left: 4%; width: 27%; }
 .abtus-box > div { margin: 1px 5px; display: inline-block; vertical-align: top; }
 .abtus-box-title > div { display: inline-block; vertical-align: middle; }
+.abtus-box-title-image img { width: 32px; height: 32px; }
 .abtus-box .abtus-box-title-text { line-height: 32px; }
 </style>
 {% endblock %}
@@ -14,17 +15,28 @@
 {% include 'desktop/left_nav.html' %}
 {% endblock %}
 
-
 {% block content %}
 <div class="ui-content" >
 	<div class="ui-bar-tbb" style="text-align: center;">
-		<h3>A LITTLE BIT <strong>ABOUT US</strong></h3>
+		<h2>A LITTLE BIT <strong>ABOUT US</strong></h2>
+	</div>
+	<div class="ui-content" >
+		<div class="ui-bar-tbb">
+			<h2>About MyOffers</h2>
+		</div>
+		<div class="ui-body" >
+			<p>MyOffers is about connecting Customers with Vendors directly.
+				This website provide interface for Consumers to search, browse Offers based on Location.
+				You can find different sales, discounts, coupons alerts on MyOffers.
+				We keep in touch with various dealers and vendors in market to give you best deals available.
+			<p>
+		</div>
 	</div>
 	<div class="ui-body" >
 		<div class="abtus-box">
 			<div class="abtus-box-title" >
 				<div class="abtus-box-title-image" >
-					<img src="{% static 'images/icons-jpg/people32.jpg' %}" />
+					<img src="{% static 'images/icons-svg/people.svg' %}" />
 				</div>
 				<div class="abtus-box-title-text" >
 					<strong> WHO ARE WE ? </strong>
@@ -37,7 +49,7 @@
 		<div class="abtus-box">
 			<div class="abtus-box-title" >
 				<div class="abtus-box-title-image" >
-					<img src="{% static 'images/icons-jpg/tools32.jpg' %}" />
+					<img src="{% static 'images/icons-svg/tools.svg' %}" />
 				</div>
 				<div class="abtus-box-title-text" >
 					<strong> WHAT WE DO ? </strong>
@@ -50,7 +62,7 @@
 		<div class="abtus-box">
 			<div class="abtus-box-title" >
 				<div class="abtus-box-title-image" >
-					<img src="{% static 'images/icons-jpg/clock32.jpg' %}" />
+					<img src="{% static 'images/icons-svg/clock.svg' %}" />
 				</div>
 				<div class="abtus-box-title-text" >
 					<strong> SINCE WHEN ? </strong>
@@ -60,11 +72,6 @@
 				We are in the market since Jan 2014, and continusely improving the interfaces which helps the customers.
 			</p>
 		</div>
-	</div>
-
-	<div class="ui-body" >
-		<h4>We keep in touh with all the dealers and vendors in market to give you best deals.
-		</h4>
 	</div>
 </div>
 {% endblock %}
