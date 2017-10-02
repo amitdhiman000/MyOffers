@@ -108,15 +108,15 @@ function initApp()
 		console.log("+ui-close clicked");
 		navClicked();
 	});
-	$("#app_leftbar").on("click", function(e){
-		console.log("+app_leftbar");
+	$("#app_leftnav").on("click", function(e){
+		console.log("+app_leftnav");
 		navClicked();
 	});
 }
 
 function navClicked() {
 	console.log("+navClicked");
-	var appleft = document.getElementById("app_left");
+	var appleft = document.getElementById("app_leftnav");
 	var appclose = document.getElementById("app_close");
 	if (appleft && appclose) {
 		console.log("width: "+appleft.style.width);
@@ -309,7 +309,9 @@ var wsuggest = function(Elem, opts) {
 			kd._ui = $('<ul class="wt-search-list wt-search-list-app" >');
 			kd._ui.css({width: Elem.css('width')});
 			Elem.after(kd._ui);
-			kd._ui.on('mouseenter', 'li', kf._itemHover);
+			//kd._ui.on('touchstart click', 'li', kf._itemClick);
+			kd._ui.on('touchend', 'li', kf._itemClick);
+			//kd._ui.on('mouseenter', 'li', kf._itemHover);
 			Elem.on("keyup", kf._keyUp);
 			Elem.on("keypress", kf._keyPress);
 			Elem.on("focus", kf._onfocus);
@@ -358,13 +360,23 @@ var wsuggest = function(Elem, opts) {
 			var index = $(this).index();
 			console.log('old selected : '+ kd._selectedIndex);
 			console.log('new selected : '+ index);
-			if (kd._selectedIndex != index) {
+			if (kd._jsonData && kd._selectedIndex != index) {
 				kd._ui.children().eq(kd._selectedIndex).removeClass('wt-search-item-a');
+				kd._ui.children().eq(index).addClass('wt-search-item-a');
+				kf._itemSelect(Elem, kd._jsonData[index]);
 				kd._selectedIndex = index;
-				kd._ui.children().eq(kd._selectedIndex).addClass('wt-search-item-a');
-				if (kd._jsonData) {
-					kf._itemSelect(Elem, kd._jsonData[index]);
-				}
+			}
+		},
+		_itemClick: function(e) {
+			console.log('+_itemClick');
+			var index = $(this).index();
+			console.log('old selected : '+ kd._selectedIndex);
+			console.log('new selected : '+ index);
+			if (kd._jsonData) {
+				kd._ui.children().eq(kd._selectedIndex).removeClass('wt-search-item-a');
+				kd._ui.children().eq(index).addClass('wt-search-item-a');
+				kf._itemSelect(Elem, kd._jsonData[index]);
+				kd._selectedIndex = index;
 			}
 		},
 		_itemSelect: function(input, item) {
@@ -543,6 +555,12 @@ function wfileupload(Elem, opts)
 					return xhr;
 				},
 				success: function(jsonData, status, xhr) {
+
+					if (302 == jsonData.status) {
+						console.log('redirect');
+						location.href = jsonData.url;
+						return;
+					}
 					if(!jsonData.error) {
 						console.log("upload finished");
 						var id = jsonData.data.upload_id;

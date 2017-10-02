@@ -19,10 +19,10 @@ class BaseControl(object):
 	def parseRequest(post):
 		return True
 
-	def get_errors(self):
+	def errors(self):
 		return self.m_errors
 
-	def get_values(self):
+	def values(self):
 		return self.m_values
 
 	def clean(self):

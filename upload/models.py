@@ -1,4 +1,3 @@
-import os
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
@@ -14,7 +13,7 @@ class FileUpload(models.Model):
 	file = models.FileField(upload_to=App_UserFilesDir)
 	used = models.IntegerField(default=0)
 	created = models.DateTimeField(default=timezone.now)
-	fk_user = models.ForeignKey(User)
+	fk_user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 	@classmethod
 	def create(klass, file_data, user):
@@ -37,7 +36,7 @@ class FileUpload(models.Model):
 			return False
 
 	@classmethod
-	def get_file(klass, file_id, user):
+	def fetch_file(klass, file_id, user):
 		try:
 			obj = klass.objects.get(id=file_id, fk_user=user)
 			return obj

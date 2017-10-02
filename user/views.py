@@ -11,6 +11,7 @@ from apputil import App_Render
 ## custom authentication
 from . import backends
 from user.models import User
+from locus.models import Address
 from user.control import UserRegControl
 from user.control import UserSignInControl
 
@@ -28,6 +29,7 @@ def signin_view(request):
 		del request.session['form_values']
 
 	data.update(csrf(request))
+	data.update({settings.USER_LOGIN_NEXT:request.GET.get(settings.USER_LOGIN_NEXT, '')})
 	return App_Render(request, 'user/user_signin_1.html', data)
 
 
@@ -37,6 +39,7 @@ def signin_view(request):
 def signup_view(request):
 	data = {'title':'Signup', 'page':'user'}
 	data.update(csrf(request))
+	data.update({settings.USER_LOGIN_NEXT: request.POST.get(settings.USER_LOGIN_NEXT, '')})
 	if 'form_errors' in request.session:
 		data['form_errors'] = request.session['form_errors']
 		data['form_values'] = request.session['form_values']
@@ -58,18 +61,25 @@ def signout(request):
 def signin_auth(request):
 	pprint(request.POST)
 	error = None
+	redirect_url = None
+
 	control = UserSignInControl()
 	if control.parseRequest(request.POST) and control.signin(request):
-		return App_Redirect(request, settings.USER_PROFILE_URL)
+		redirect_url = request.POST.get(settings.USER_LOGIN_NEXT, '')
+		if '' == redirect_url:
+			redirect_url = settings.HOME_URL
+		print('redirect amit : '+redirect_url)
+		return App_Redirect(request, redirect_url)
 
 	## Only error case will reach here.
 	if request.is_ajax():
-		error = control.get_errors()
+		error = control.errors()
 		return JsonResponse({'status':401, 'error':error})
 	else:
-		request.session['form_errors'] = control.get_values()
-		request.session['form_values'] = control.get_values()
-		return App_Redirect(request, settings.USER_LOGIN_URL)
+		redirect_url = request.META.get('HTTP_REFERER', settings.USER_LOGIN_URL)
+		request.session['form_errors'] = control.errors()
+		request.session['form_values'] = control.values()
+		return App_Redirect(request, redirect_url)
 
 
 
@@ -92,13 +102,13 @@ def signup_register(request):
 			error = {'user':'server error, try again later'}
 
 	if error == None:
-		error = control.get_errors()
+		error = control.errors()
 
 	if request.is_ajax():
 		return JsonResponse({'status':401, 'message': 'Something wrong', 'error':error})
 	else:
-		request.session['form_values'] = control.get_values()
 		request.session['form_errors'] = error
+		request.session['form_values'] = control.values()
 		return App_Redirect(request, settings.USER_SIGNUP_URL)
 
 
@@ -113,7 +123,9 @@ def signup_success_view(request):
 
 @App_LoginRequired
 def profile_view(request):
-	user = User.get_user(request.user)
+	user = User.fetch_user(request.user)
+	address = Address.fetch_by_user(user)
+	user.address = address
 	data = {'title':'Profile', 'page':'user', 'user': user}
 	return App_Render(request, 'user/user_profile_1.html', data)
 
@@ -129,7 +141,7 @@ def user_info_view(request):
 @App_LoginRequired
 def user_topics_view(request):
 	data = {'title': 'Follow Topics', 'page':'user'};
-	topics = {}#Topic.get_topics(request.user)
+	topics = {}#Topic.fetch_topics(request.user)
 	data.update({'topics':topics})
 	return App_Render(request, 'user/user_topics_1.html', data)
 
@@ -143,7 +155,7 @@ def user_topic_selected(request):
 	topic_id = request.POST.get('topic_id', -1)
 	topic_followed = int(request.POST.get('topic_followed', 0))
 	if topic_followed == 0:
-		if TopicFollower.add_follower(request.user, topic_id):
+		if TopicFollower.fetch_follower(request.user, topic_id):
 			msg = 'folllowed'
 		else:
 			error = 'Server operation failed'
@@ -179,6 +191,11 @@ def user_stats_view(request):
 	data = {'title': 'User stats', 'page':'user'};
 	return App_Render(request, 'user/user_stats_1.html', data)
 
+
+@App_LoginRequired
+def user_wishlist_view(request):
+	data = {'title': 'User Wishlist', 'page':'user'};
+	return App_Render(request, 'user/user_wishlist_1.html', data)
 
 
 @App_LoginRequired

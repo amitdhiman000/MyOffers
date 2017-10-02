@@ -11,7 +11,7 @@ USER_LEVEL_KEY = '_user_level'
 USER_AUTH_KEY = '_user_auth'
 
 
-def get_user(request):
+def fetch_user(request):
 	user = None
 	if USER_EMAIL_KEY in request.session:
 		uid = request.session[USER_UID_KEY]

@@ -16,7 +16,7 @@ from pprint import pprint
 # Create your views here.
 
 def offer_home_view(request):
-	offers = Offer.get_all()
+	offers = Offer.fetch_all()
 	''''
 	pprint(offers)
 	obj = list(offers)
@@ -28,13 +28,13 @@ def offer_home_view(request):
 
 def offer_detail_view(request, offer_id):
 	print('offer_id : '+offer_id)
-	offer = Offer.get_by_id(offer_id)
+	offer = Offer.fetch_by_id(offer_id)
 	data = {'title':'View Offers', 'offer': offer}
 	return App_Render(request, 'offer/offer_detail_view_1.html', data)
 
 def offer_detail_view1(request, slug):
 	print('slug : '+slug)
-	offer = Offer.get_by_slug(slug)
+	offer = Offer.fetch_by_slug(slug)
 	data = {'title':'View Offers', 'offer': offer}
 	return App_Render(request, 'offer/offer_detail_view_1.html', data)
 
@@ -59,8 +59,8 @@ def offer_create_view(request):
 	return App_Render(request, 'offer/offer_create_new_1.html', data)
 
 
-@App_PostRequired
 @App_LoginRequired
+@App_PostRequired
 def offer_create(request):
 	pprint(request)
 	pprint(request.POST)
@@ -73,10 +73,10 @@ def offer_create(request):
 		return JsonResponse({'status': 204, 'message': 'Offer posted succesfuly'})
 	else:
 		if request.is_ajax():
-			return JsonResponse({'status': 401, 'error': control.get_errors()})
+			return JsonResponse({'status': 401, 'error': control.errors()})
 		else:
-			request.session['form_errors'] = control.get_errors()
-			request.session['form_values'] = control.get_values()
+			request.session['form_errors'] = control.errors()
+			request.session['form_values'] = control.values()
 			return HttpResponseRedirect(settings.OFFER_CREATE_NEW)
 
 

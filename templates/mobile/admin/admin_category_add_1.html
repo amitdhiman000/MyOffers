@@ -1,10 +1,10 @@
 {% extends base_template %}
 
-{% block pagemenu %}
+{% block appmenu %}
 {% include './admin_left_nav.html' %}
 {% endblock %}
 
-{% block content %}
+{% block pagecontent %}
 <div class="ui-content" >
 	<div class="ui-bar-tbb">
 		<h3>Add Category</h3>
@@ -31,7 +31,7 @@
 		{% endif %}
 		</div>
 		<div>
-			<form method="POST" action="/myadmin/category-add/">
+			<form method="POST" action="/myadmin/category-fetch/">
 				<table class="form-table">
 					<tr><td>Category Name :</td>
 						<td><input type="text" name="cat_name" class="ui-input" /></td>

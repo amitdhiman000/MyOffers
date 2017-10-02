@@ -1,11 +1,11 @@
 {% extends base_template %}
 {% load staticfiles %}
 
-{% block pagemenu %}
+{% block appmenu %}
 {% include './home_left_nav.html' %}
 {% endblock %}
 
-{% block content %}
+{% block pagecontent %}
 <style>
 	#loc-results { position: absolute; width: 35%; margin-top: 3px; border: 1px solid #aaa; z-index: 4; display: none; background: #fff; }
 	#loc-results ul { list-style: none; }
@@ -83,7 +83,7 @@ $(function(){
 });
 </script>
 
- <div class="app_page" >
+ <div class="page_body" >
 		<div class="ui-bar-tbb">
 			<h3>Post New Offer</h3>
 		</div>	

@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.template.context_processors import csrf
 from django.views.decorators.csrf import csrf_exempt
+from django.utils import timezone
 
 from upload.control import FileUploadControl
 
@@ -22,9 +23,9 @@ def fileupload(request):
 	if fileupload.parseRequest(request) and fileupload.validate():
 		upload = fileupload.register()
 		if upload == None:
-			error = fileupload.get_errors()
+			error = fileupload.errors()
 	else:
-		error = fileupload.get_errors()
+		error = fileupload.errors()
 
 	#upload = Klass(id = 2)
 	if error == None:

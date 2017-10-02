@@ -30,5 +30,6 @@ urlpatterns = [
 	url(r'^topic-selected/$', views.user_topic_selected, name='user_topic_selected'),
 	url(r'^mails/$', views.user_mails_view, name='user_mails_view'),
 	url(r'^stats/$', views.user_stats_view, name='user_stats_view'),
+    url(r'^wishlist/$', views.user_wishlist_view, name='user_wishlist_view'),
 	url(r'^settings/$', views.user_settings_view, name='user_settings_view'),
 ]

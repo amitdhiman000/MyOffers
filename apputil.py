@@ -1,3 +1,5 @@
+import os
+from django.utils import timezone
 from django.conf import settings
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
@@ -34,7 +36,8 @@ def App_LoginRequired(funct):
 	#@warps(funct)
 	def _decorator(request, *args, **kwargs):
 		if request.user.is_loggedin() == False:
-			return App_Redirect(request, settings.USER_LOGIN_URL)
+			redirect_url = settings.USER_LOGIN_URL + "?"+settings.USER_LOGIN_NEXT+"="+request.path
+			return App_Redirect(request, redirect_url)
 			#if 'application/json' in request.META.get('HTTP_ACCEPT'):
 		else:
 			return funct(request, *args, **kwargs)
@@ -66,6 +69,12 @@ def App_RedirectIfLoggedin(funct):
 	return _decorator
 
 
+## class for mocking any object
+##
+class Klass:
+	def __init__(self, **kwargs):
+		self.__dict__.update(kwargs)
+
 
 def App_UserFilesDir(inst, filename):
 	# file will be uploaded to MEDIA_ROOT/products/user_<id>/<filename>
@@ -73,11 +82,11 @@ def App_UserFilesDir(inst, filename):
 	print(path)
 	return path
 
-## class for mocking any object
-##
-class Klass:
-	def __init__(self, **kwargs):
-		self.__dict__.update(kwargs)
+
+def App_Slugify(text):
+	import re
+	#text = unidecode.unidecode(text).lower()
+	return re.sub(r'\W+', '-', text)
 
 
 ## helper functions common to all views

@@ -5,16 +5,12 @@ from user.models import User
 from locus.models import Area
 from upload.models import FileUpload
 from offer.models import Offer
+from apputil import App_Slugify
 
 ## debug
 import traceback
 from pprint import pprint
 
-
-def slugify(text):
-	import re
-	#text = unidecode.unidecode(text).lower()
-	return re.sub(r'\W+', '-', text)
 
 class OfferControl(object):
 
@@ -62,10 +58,10 @@ class OfferControl(object):
 		self.m_values['P_area'] = self.m_area
 		return True
 
-	def get_errors(self):
+	def errors(self):
 		return self.m_errors
 
-	def get_values(self):
+	def values(self):
 		return self.m_values
 
 	def validate(self):
@@ -122,7 +118,7 @@ class OfferControl(object):
 
 		self.m_offer.fk_user = User.get_user(self.m_user)
 		if self.m_files != None and len(self.m_files) > 0:
-			# FIXME later :: add support for multiple images
+			# FIXME later :: fetch support for multiple images
 			pprint(self.m_files[0])
 			upload = FileUpload.get_file(int(self.m_files[0]), self.m_offer.fk_user)
 			if upload != None:
@@ -136,7 +132,8 @@ class OfferControl(object):
 			self.m_errors['P_image'] = 'No files attached'
 
 
-		self.m_location = location.get(self.m_user)
+		#self.m_location = Location.get(self.m_user)
+		self.m_location = Location.get_location_for_area(area)
 		if self.m_location == None:
 			valid = False
 			self.m_errors['P_location'] = 'No location selected by you'
@@ -148,7 +145,7 @@ class OfferControl(object):
 
 		## compute the slug
 		slug = self.m_offer.name+'-by-'+self.m_offer.fk_user.name
-		slug = slugify(slug)
+		slug = App_Slugify(slug)
 		if Offer.get_by_slug(slug) == None:
 			self.m_offer.slug = slug
 		else:
@@ -168,4 +165,3 @@ class OfferControl(object):
 			return self.m_offer
 		else:
 			return None
-

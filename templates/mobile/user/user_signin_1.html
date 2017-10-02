@@ -1,11 +1,7 @@
 {% extends base_template %}
 {% load staticfiles %}
 
-{% block pagemenu %}
-{% include 'mobile/left_nav.html' %}
-{% endblock %}
-
-{% block content %}
+{% block pagecontent %}
 <div class="ui-content">
 	<div class="wt-switchtab" id="signin-switchtab" >
 		<ul class="wt-switchtab-nav ui-hlist-resp" >
@@ -19,6 +15,7 @@
 				</div>
 				<form action="/user/signin-auth/" method="POST" data-ajax="false" >
 					{% csrf_token %}
+					<input type="hidden" name="next" value="{{ next }}">
 					<table class="ui-form-table">
 						<tr><td>EMAIL : </td></tr>
 						<tr><td><input type="text" name="email" class="ui-input" placeholder="Email" /></td></tr>

@@ -110,7 +110,7 @@ function initApp()
 	$("#ui-main-nav").on('click', function(e) {
 		$('#ui-big-sub-nav').fadeOut(100);
 	});
-/*
+
 	// Close the dropdown if the user clicks outside of it
 	$(window).on("click", function(event) {
 		console.log("window clicked");
@@ -120,7 +120,6 @@ function initApp()
 			});
 		}
 	});
-	*/
 }
 
 function dropToggle(e, pThis)
@@ -136,19 +135,22 @@ function dropToggle(e, pThis)
 function navClicked()
 {
 	console.log("+navClicked");
-	var appleft = document.getElementById("app_left");
-	var appmain = document.getElementById("app_main");
-	if (appleft && appmain) {
-		console.log("width: "+appleft.style.width);
-		console.log("width: "+$(appleft).width());
-		if ($(appleft).width() != "0") {
-			appleft.style.width = "0";
-			appmain.style.marginLeft = "0";
-			appmain.style.width = "100%";
+	var appleft = document.getElementById("app_leftnav");
+	var apppage = document.getElementById("app_page");
+	if (appleft && apppage) {
+		console.log("marginLeft: "+appleft.style.marginLeft)
+		if (appleft.style.marginLeft !== "-18%") {
+			//appleft.style.width = "0";
+			//apppage.style.marginLeft = "0";
+			appleft.style.marginLeft = "-18%";
+			apppage.style.marginLeft = "0";
+			apppage.style.width = "100%";
 		} else {
-			appleft.style.width = "18%";
-			appmain.style.marginLeft = "18%";
-			appmain.style.width = "82%";
+			//appleft.style.width = "18%";
+			//apppage.style.marginLeft = "18%";
+			appleft.style.marginLeft = "0";
+			apppage.style.marginLeft = "18%";
+			apppage.style.width = "82%";
 		}
 	}
 }

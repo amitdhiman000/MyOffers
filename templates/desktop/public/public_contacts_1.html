@@ -2,11 +2,7 @@
 {% load staticfiles %}
 
 
-{% block pagemenu %}
-{% include 'desktop/left_nav.html' %}
-{% endblock %}
-
-{% block content %}
+{% block pagecontent %}
 <div class="ui-content" >
 	<div class="ui-bar-tbb" >
 		<h3>GET IN TOUCH <strong>WITH US</strong></h3>
@@ -24,13 +20,13 @@
 			<form action="/public/contacts/" method="POST" class="contact-form ajax-form" >
 				{% csrf_token %}
 				<table class="form-table">
-					<tr><td>*NAME </td><td><input type="text" name="name" class="ui-input" placeholder="Name" /></td>
+					<tr><td>NAME* </td><td><input type="text" name="name" class="ui-input" placeholder="Name" /></td>
 					</tr>
-					<tr><td>*CONTACT </td><td><input type="text" name="email" class="ui-input" placeholder="Email or Phone" /></td>
+					<tr><td>CONTACT* </td><td><input type="text" name="email" class="ui-input" placeholder="Email or Phone" /></td>
 					</tr>
-					<tr><td>*ABOUT </td><td><input type="text" name="title" class="ui-input" placeholder="About" /></td>
+					<tr><td>ABOUT* </td><td><input type="text" name="title" class="ui-input" placeholder="About" /></td>
 					</tr>
-					<tr><td>*DETAILS : </td><td><textarea class="ui-textarea" name="text" placeholder="Tell us about your thoughts" ></textarea></td>
+					<tr><td>DETAILS* </td><td><textarea class="ui-textarea" name="text" placeholder="Tell us about your thoughts" ></textarea></td>
 					</tr>
 					<tr><td></td>
 					<td><input type="submit" name="send" value="Send" class="ui-btn ui-btn-long" /></td>

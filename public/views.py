@@ -29,7 +29,7 @@ class ContactsView(TemplateView):
 		if control.parseRequest(request) and control.validate():
 			control.register()
 		else:
-			error = control.get_errors()
+			error = control.errors()
 
 		if request.is_ajax():
 			if error == None:
@@ -41,6 +41,6 @@ class ContactsView(TemplateView):
 			if error == None:
 				return App_Render(request, 'public/public_contacts_sent_1.html', data)
 			else:
-				request.session['form_errors'] = control.get_errors()
-				request.session['form_values'] = control.get_values()
+				request.session['form_errors'] = control.errors()
+				request.session['form_values'] = control.values()
 			return App_Render(request, 'public/public_contacts_1.html', data)

@@ -163,20 +163,30 @@ MEDIA_TMP_FILES_DIR_NAME = 'tmp'
 BASE_TEMPLATE = 'base_1.html'
 BASE_AJAX_TEMPLATE = 'base_2.html'
 DEFAULT_USER_IMAGE = 'default/user.svg'
+
 ## admin pages
 ##
 ADMIN_LEVEL = 9
 ADMIN_HOME = '/myadmin/'
-ADMIN_CUSTOM_DATA = '/myadmin/add-custom/'
+ADMIN_CUSTOM_DATA = '/myadmin/fetch-custom/'
 ADMIN_CUSTOM_VIEW = '/myadmin/custom-view/'
 
-# public pagesregister
-HOME_PAGE_URL = '/'
+## public pages
+##
+PUBLIC_CONTACTS_URL = '/public/contacts/'
+PUBLIC_ABOUTUS_URL = '/public/aboutus/'
+
+## home pages
+##
+HOME_URL = '/'
+
 # error urls
 ERROR_ACCESS_DENIED_URL = '/error/access-denied/'
 ERROR_INVALID_REQUEST_URL = '/error/invalid-request/'
 ERROR_UNDER_CONSTRUCTION_URL = '/error/under-construction/'
+
 # user pages
+USER_LOGIN_NEXT = 'next'
 USER_LOGIN_URL = '/user/signin/'
 USER_SIGNUP_URL = '/user/signup/'
 USER_SIGNUP_SUCCESS_URL = '/user/signup-success/'

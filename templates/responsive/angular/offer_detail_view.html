@@ -1,11 +1,11 @@
 {% extends base_template %}
 
-{% block pagemenu %}
+{% block appmenu %}
 {% include './home_left_nav.html' %}
 {% endblock %}
 
-{% block content %}
-<div class="app_page" >
+{% block pagecontent %}
+<div class="page_body" >
 	{% if offer %}
 	<div class="ui-bar-tbb">
 		<h3>{{offer.name}}</h3>

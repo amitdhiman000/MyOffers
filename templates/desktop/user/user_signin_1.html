@@ -1,11 +1,8 @@
 {% extends base_template %}
 {% load static %}
 
-{% block pagemenu %}
-{% include 'desktop/left_nav.html' %}
-{% endblock %}
 
-{% block content %}
+{% block pagecontent %}
 <div class="ui-content" >
 	<div class="ui-bar-tbb">
 		<h3>Sign In</h3>
@@ -18,9 +15,10 @@
 		</div>
 		<form action="/user/signin-auth/" method="POST" class="ajax-form signin-form" >
 			{% csrf_token %}
-			<table class="form-table">
-				<tr><td>Email : </td><td><input type="text" name="email" class="ui-input" placeholder="Email id" /></td></tr>
-				<tr><td>Password : </td><td><input type="password" name="pass" class="ui-input" placeholder="Password" /></td></tr>
+			<input type="hidden" name="next" value="{{ next }}">
+			<table class="ui-form-table">
+				<tr><td>EMAIL </td><td><input type="text" name="email" class="ui-input" placeholder="Email id" /></td></tr>
+				<tr><td>PASSWORD </td><td><input type="password" name="pass" class="ui-input" placeholder="Password" /></td></tr>
 				<tr><td></td>
 				<td><input type="submit" name="signin" value="Sign In" class="ui-btn" />
 				</td></tr>

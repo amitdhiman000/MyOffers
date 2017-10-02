@@ -1,11 +1,11 @@
 {% extends base_template %}
 
-{% block pagemenu %}
+{% block appmenu %}
 {% include './home_left_nav.html' %}
 {% endblock %}
 
-{% block content %}
-<div class="app_page" >
+{% block pagecontent %}
+<div class="page_body" >
 	<div class="ui-bar-tbb">
 		<h3>Sign Up</h3>
 	</div>
@@ -37,7 +37,7 @@
 </div>
 <script type="text/javascript">
 $(function() {
-	console.log('adding login handler');
+	console.log('fetching login handler');
 	$('.signup-form').data('handlers', {before: beforeSignUp, after: afterSignUp});
 });
 

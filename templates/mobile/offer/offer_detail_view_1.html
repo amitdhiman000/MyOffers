@@ -1,6 +1,10 @@
 {% extends base_template %}
 
-{% block content %}
+{% block appmenu %}
+{% include 'mobile/left_nav.html' %}
+{% endblock %}
+
+{% block pagecontent %}
 <div data-role="page" id="indexpage" data-dom-cache="false" >
 {% include './app_app_header.html' %}
 	{% if offer %}

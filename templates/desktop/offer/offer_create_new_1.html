@@ -1,11 +1,8 @@
 {% extends base_template %}
 {% load staticfiles %}
 
-{% block pagemenu %}
-{% include './offer_left_nav.html' %}
-{% endblock %}
 
-{% block content %}
+{% block pagecontent %}
 <style>
 	#loc-results { position: absolute; width: 35%; margin-top: 3px; border: 1px solid #aaa; z-index: 4; display: none; background: #fff; }
 	#loc-results ul { list-style: none; }
@@ -20,37 +17,35 @@
 
 <script type="text/javascript">
 $(function(){
-	$(function(){
-		var dateFmt = "yy/mm/dd",
-			from = $("#P_start_date").datepicker({
-					minDate: new Date(),
-					dateFormat: dateFmt,
-					//defaultDate: "+1w",
-					changeMonth: true,
-					numberOfMonths: 1
-				}).on("change", function(){
-					to.datepicker("option", "minDate", getDate(this));
-				}),
-			to = $("#P_expire_date").datepicker({
+	var dateFmt = "yy/mm/dd",
+		from = $("#P_start_date").datepicker({
+				minDate: new Date(),
 				dateFormat: dateFmt,
 				//defaultDate: "+1w",
 				changeMonth: true,
 				numberOfMonths: 1
-			})
-			.on( "change", function(){
-				from.datepicker("option", "maxDate", getDate(this));
-			});
+			}).on("change", function(){
+				to.datepicker("option", "minDate", getDate(this));
+			}),
+		to = $("#P_expire_date").datepicker({
+			dateFormat: dateFmt,
+			//defaultDate: "+1w",
+			changeMonth: true,
+			numberOfMonths: 1
+		})
+		.on( "change", function(){
+			from.datepicker("option", "maxDate", getDate(this));
+		});
 
-		function getDate(element){
-			var date;
-			try {
-				date = $.datepicker.parseDate(dateFmt, element.value);
-			} catch(error) {
-				date = null;
-			}
-			return date;
+	function getDate(element){
+		var date;
+		try {
+			date = $.datepicker.parseDate(dateFmt, element.value);
+		} catch(error) {
+			date = null;
 		}
-	});
+		return date;
+	}
 
 	$("#P_area").suggestions({
 		minLength: 2,

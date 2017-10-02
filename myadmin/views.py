@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.shortcuts import render
-from myadmin.backenddb import add_default_values
-from myadmin.backenddb import add_custom_values
+from myadmin.backenddb import insert_default_values
+from myadmin.backenddb import insert_custom_values
 
 from locus.models import Country
 from locus.models import State
@@ -28,36 +28,40 @@ def home(request):
 
 @App_AdminRequired
 def locus_area_view(request, country, state, city, area):
-	areas = Area.get_area(country, state, city, area)
+	print(area)
+	areas = Area.fetch_by_name(area, city, state, country)
 	data = {'title': 'MyAdmin', 'country': country, 'state': state, 'city':city, 'area':area, 'areas': areas}
 	return App_Render(request, 'admin/admin_locus_area_1.html', data)
 
 
 @App_AdminRequired
 def locus_city_view(request, country, state, city):
-	areas = Area.get_all(country, state, city)
+	print(city)
+	areas = Area.fetch_all(city, state, country)
 	data = {'title': 'MyAdmin', 'country': country, 'state': state, 'city':city, 'areas': areas}
 	return App_Render(request, 'admin/admin_locus_city_1.html', data)
 
 
 @App_AdminRequired
 def locus_state_view(request, country, state):
-	cities = City.get_all(country, state)
+	print(state)
+	cities = City.fetch_all(state, country)
 	data = {'title': 'MyAdmin', 'country': country, 'state': state, 'cities':cities}
 	return App_Render(request, 'admin/admin_locus_state_1.html', data)
 
 
 @App_AdminRequired
 def locus_country_view(request, country):
-	states = State.get_all(country)
+	print(country)
+	states = State.fetch_all(country)
 	data = {'title': 'MyAdmin', 'country': country, 'states': states}
 	return App_Render(request, 'admin/admin_locus_country_1.html', data)
 
 
 @App_AdminRequired
 def locus_view0(request):
-	countries = Country.get_all()
-	states = State.get_all('India')
+	countries = Country.fetch_all()
+	states = State.fetch_all('India')
 	data = {'title': 'MyAdmin', 'countries': countries, 'states': states}
 	return App_Render(request, 'admin/admin_locus_view_1.html', data)
 
@@ -128,9 +132,9 @@ def locus_auth(request, query):
 	state = params[1]
 	city = params[2]
 	print(country, state, city)
-	if City.get_by_name(city) == None:
-		add_custom_values(state, city)
-	areas = Area.get_by_city(city)
+	if City.fetch_by_name(city_name=city, state_name=state, country_name=country) == None:
+		insert_custom_values(city, state, country)
+	areas = Area.fetch_by_city(city)
 	data = {'title': 'Location', 'country':country, 'state': state, 'city': city, 'areas': areas}
 	return App_Render(request, 'admin/admin_locus_added_1.html', data)
 
@@ -148,7 +152,7 @@ def category_view(request, query):
 	if length > 0 and params[0] != None:
 		name = params[0]
 
-	categories = Category.get(name)
+	categories = Category.fetch(name)
 	data = {'title': 'MyAdmin', 'categories': categories}
 	return App_Render(request, 'admin/admin_category_1.html', data)
 
@@ -217,6 +221,6 @@ def category_add_view(request, query):
 
 @App_AdminRequired
 def messages_view(request):
-	messages = GuestMessage.get_all()
+	messages = GuestMessage.fetch_all()
 	data = {'title': 'Messages', 'messages': messages}
 	return App_Render(request, 'admin/admin_message_1.html', data)

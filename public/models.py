@@ -28,29 +28,29 @@ class UserMessage(models.Model):
 
 
 	@classmethod
-	def get_all(klass):
+	def fetch_all(klass):
 		return klass.objects.all();
 
 
 	@classmethod
-	def get_latest(klass):
+	def fetch_latest(klass):
 		return klass.objects.filter(create_is_between);
 
 
 	@classmethod
-	def get_by_date(klass, start, end):
+	def fetch_by_date(klass, start, end):
 		startdate = date.today()
 		enddate = startdate + timedelta(days=6)
 		return klass.objects.filter(created_range(startdate, enddate))
 
 
 	@classmethod
-	def get_by_index(klass, start, end):
+	def fetch_by_index(klass, start, end):
 		return [];
 
 
 	@classmethod
-	def get_by_email(klass):
+	def fetch_by_email(klass):
 		return [];
 
 
@@ -79,27 +79,27 @@ class GuestMessage(models.Model):
 
 
 	@classmethod
-	def get_all(klass):
+	def fetch_all(klass):
 		return klass.objects.all();
 
 
 	@classmethod
-	def get_latest(klass):
+	def fetch_latest(klass):
 		return klass.objects.filter(create_is_between);
 
 
 	@classmethod
-	def get_by_date(klass, start, end):
+	def fetch_by_date(klass, start, end):
 		startdate = date.today()
 		enddate = startdate + timedelta(days=6)
 		return klass.objects.filter(created_range(startdate, enddate))
 
 
 	@classmethod
-	def get_by_index(klass, start, end):
+	def fetch_by_index(klass, start, end):
 		return [];
 
 
 	@classmethod
-	def get_by_email(klass):
+	def fetch_by_email(klass):
 		return [];

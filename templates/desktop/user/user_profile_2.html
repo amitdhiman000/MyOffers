@@ -1,22 +1,18 @@
 {% load tz %}
 {% load staticfiles %}
-<script>
-function EnableEdit(e,pThis)
+<script type="text/javascript">
+function ToggleEdit(e,pThis)
 {
 	console.log('+EnableEdit');
-	if ($('#base-info').find('.ui-input').attr('readonly')) {
-		$('#base-info').find('.ui-input').removeAttr('readonly');
-		$('#base-info').find('#base-controls').removeClass('ui-hide');
+	var inputs = $('#base-info').find('.ui-input');
+	var controls = $('#base-info').find('#base-controls');
+	if (inputs.attr('readonly')) {
+		inputs.removeAttr('readonly');
 	} else {
-		$('#base-info').find('.ui-input').attr('readonly', 'readonly');
-		$('#base-info').find('#base-controls').attr('class','ui-hide');
+		inputs.attr('readonly', 'readonly');
 	}
-}
-function DisableEdit(e,pThis)
-{
-	console.log('+DisableEdit');
-	$('#base-info').find('.ui-input').attr('readonly', 'readonly');
-	$('#base-info').find('#base-controls').attr('class','ui-hide');
+	inputs.toggleClass('ui-dinput');
+	controls.toggleClass('ui-hide');
 }
 
 function passChangePopup(e, pThis)
@@ -24,6 +20,9 @@ function passChangePopup(e, pThis)
 	console.log("+passChangePopup");
 }
 </script>
+<style type="text/css">
+	#base-info td { padding: 0.2em; }
+</style>
 <div class="ui-content" >
 	<div class="ui-bar-tbb">
 		<h3>Account details </h3>
@@ -32,19 +31,19 @@ function passChangePopup(e, pThis)
 		<div class="ui-section-title">
 			<div class="ui-section-title-text"><h3>Basic Info</h3></div>
 			<div class="ui-section-title-icons">
-				<a onclick="EnableEdit(event, this)" href="javascript:void(0)" >
+				<a onclick="ToggleEdit(event, this)" href="javascript:void(0)" >
 				<img src="{% static 'images/icons-svg/edit_fill.svg' %}" style="width:24px; height:24px;" />
 				</a>
 			</div>
 		</div>
 		<div class="ui-section-body">
-			<table class="info-table" id="base-info" >
+			<table class="ui-info-table" id="base-info" >
 				<!--<tr><td>PHOTO</td><td><img src="{{user.image.url}}" style="width:80px; height:80px;" /></td></tr>-->
-				<tr><td>NAME</td> <td><input readonly type="text" value="{{user.name}}" placeholder="Name" class="ui-input" /></td></tr>
-				<tr><td>EMAIL</td> <td><input readonly type="text" value="{{user.email}}" placeholder="Email" class="ui-input" /></td></tr>
-				<tr><td>PHONE</td> <td><input readonly type="text" value="{{user.phone}}" placeholder="Phone" class="ui-input" /></td></tr>
+				<tr><td>NAME</td> <td><input readonly type="text" value="{{user.name}}" placeholder="Name" class="ui-input ui-dinput" /></td></tr>
+				<tr><td>EMAIL</td> <td><input readonly type="text" value="{{user.email}}" placeholder="Email" class="ui-input ui-dinput" /></td></tr>
+				<tr><td>PHONE</td> <td><input readonly type="text" value="{{user.phone}}" placeholder="Phone" class="ui-input ui-dinput" /></td></tr>
 				<tr class="ui-hide" id="base-controls" ><td>&nbsp;</th> <td>
-					<input type="submit" onclick="DisableEdit(event, this)" class="ui-btn" value="Cancel" />
+					<input type="submit" onclick="ToggleEdit(event, this)" class="ui-btn" value="Cancel" />
 					<input type="submit" class="ui-btn" value="Save" />
 					</td>
 				</tr>
@@ -64,7 +63,7 @@ function passChangePopup(e, pThis)
 		<div class="ui-section-body">
 			<table class="info-table" id="advance-info" >
 				<!--<tr><td>PHOTO</td><td><img src="{{user.image.url}}" style="width:80px; height:80px;" /></td></tr>-->
-				<tr><td>ADDRESS</td> <td><input readonly type="text" value="{{user.name}}" placeholder="Name" class="ui-input" /></td></tr>
+				<tr><td>ADDRESS</td> <td><input readonly type="text" value="{{user.name}}" placeholder="Name" class="ui-input ui-dinput" /></td></tr>
 			</table>
 		</div>
 	</div>

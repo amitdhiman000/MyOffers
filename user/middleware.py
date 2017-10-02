@@ -1,9 +1,9 @@
 from django.utils.functional import SimpleLazyObject
 from . import backends
 
-def get_user(request):
+def fetch_user(request):
     if not hasattr(request, '_cached_user'):
-        request._cached_user = backends.get_user(request)
+        request._cached_user = backends.fetch_user(request)
     return request._cached_user
 
 class AuthMiddleware(object):
@@ -14,4 +14,4 @@ class AuthMiddleware(object):
             "'django.contrib.sessions.middleware.SessionMiddleware' before "
             "'django.contrib.auth.middleware.AuthenticationMiddleware'."
         )
-        request.user = SimpleLazyObject(lambda: get_user(request))
+        request.user = SimpleLazyObject(lambda: fetch_user(request))

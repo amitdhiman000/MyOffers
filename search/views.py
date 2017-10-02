@@ -14,7 +14,7 @@ from pprint import pprint
 def offer(request):
 	pprint(request.POST)
 	key = request.POST.get('key', 'offer')
-	offers = Offer.get_match(key)
+	offers = Offer.fetch_by_match(key)
 	offersdata = list(offers)
 
 	data = {'status':200, 'data': offersdata}
@@ -26,7 +26,7 @@ def offer(request):
 def location(request):
 	pprint(request.POST)
 	key = request.POST.get('key', 'bengaluru')
-	areas = Area.get_by_match(key)
+	areas = Area.fetch_by_match(key)
 
 	areadata = list(areas)
 	#pprint(areadata)

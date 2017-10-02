@@ -6,7 +6,6 @@ from django.utils.translation import ugettext as _
 from django.core.mail import send_mail
 #from time import timezone
 from datetime import datetime
-from locus.models import Area
 from apputil import App_UserFilesDir
 
 ## debug
@@ -25,7 +24,9 @@ class User(models.Model):
 	status = models.IntegerField(default=1)
 	# {0:guest, 1:normal, 2:morderator, 3:author, 9:admin}
 	level = models.IntegerField(default=1)
+	#profile image by default : user.svg
 	image = models.FileField(upload_to=App_UserFilesDir, default=settings.DEFAULT_USER_IMAGE)
+
 
 	@classmethod
 	def create(klass, user):
@@ -41,7 +42,7 @@ class User(models.Model):
 			return None
 
 	@classmethod
-	def get_user(klass, user):
+	def fetch_user(klass, user):
 		try:
 			return klass.objects.get(email=user.email)
 		except:
@@ -50,7 +51,7 @@ class User(models.Model):
 			return None
 
 	@classmethod
-	def get_user_by_id(klass, user_id):
+	def fetch_user_by_id(klass, user_id):
 		try:
 			return klass.objects.get(id=user_id)
 		except:
@@ -58,10 +59,10 @@ class User(models.Model):
 			traceback.print_exc()
 			return None
 
-	def get_absolute_url(self):
+	def fetch_absolute_url(self):
 		return '/user/%s/' % urlquote(self.email)
 
-	def get_name(self):
+	def fetch_name(self):
 		return self.name
 	##
 	## Always return True, user object is created means loggedin.
@@ -77,17 +78,8 @@ class Guest:
 		#self.email = ''
 		self.name = 'Guest'
 
-	def get_full_name(self):
+	def fetch_full_name(self):
 		return self.name
 
 	def is_loggedin(self):
 		return False
-
-class Address(models.Model):
-	id = models.BigAutoField(primary_key=True)
-	line1 = models.CharField(max_length=50, blank=True)
-	line2 = models.CharField(max_length=50, blank=True)
-	geo_long = models.CharField(max_length=10, blank=True)
-	geo_lat = models.CharField(max_length=10, blank=True)
-	fk_area = models.ForeignKey(Area, on_delete=models.CASCADE)
-	fk_user = models.ForeignKey(User, on_delete=models.CASCADE)
