@@ -32,12 +32,11 @@ function initHistory()
 			console.log("+a");
 			var This = $(this),
 			href = This.attr("href"),
-			box = This.attr("data-box"),
-			dest = This.attr("data-dest"),
+			dest = This.attr("data-dest").split(":");
 			title = This.text()+' | My Offers';
-			history.pushState({url:href, box:box, title:title, dest:dest,}, title, href);
+			history.pushState({url:href, title:title, dest:dest,}, title, href);
 			document.title = title;
-			getRequest(href, 'pid='+box, dest);
+			getRequest(href, 'pid='+dest[1], dest[0]);
 		});
 
 		window.addEventListener('popstate', function(event) {
@@ -46,7 +45,7 @@ function initHistory()
 			console.log(JSON.stringify(state));
 			if (state !== null) {
 				document.title = state.title;
-				getRequest(state.url, 'pid='+state.box, state.dest);
+				getRequest(state.url, 'pid='+state.dest[1], state.dest[0]);
 			} else {
 				console.log("no history to show");
 				location.reload();
@@ -103,13 +102,18 @@ function initSwitchTabs()
 
 function initApp()
 {
-	$("#ui-main-nav li:first-child").on('click' , function(e) {
+	$("#app_main_nav li:first-child").on('click' , function(e) {
 		e.stopPropagation();
-		$('#ui-big-sub-nav').fadeToggle(100);
+		$('#app_sub_nav_content').fadeToggle(100);
 	});
-	$("#ui-main-nav").on('click', function(e) {
-		$('#ui-big-sub-nav').fadeOut(100);
+	$("#app_main_nav").on('click', function(e) {
+		$('#app_sub_nav_content').fadeOut(100);
 	});
+
+    $(".app_vlist_exp_item > a").on("click", function(e) {
+        e.preventDefault();
+        $(this).parent().toggleClass("expanded");
+    });
 
 	// Close the dropdown if the user clicks outside of it
 	$(window).on("click", function(event) {

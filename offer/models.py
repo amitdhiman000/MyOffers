@@ -178,7 +178,7 @@ class Offer(models.Model):
 
 
 	@classmethod
-	def fetch_match(klass, keyw):
+	def fetch_by_match(klass, keyw):
 		try:
 			db_objs = klass.objects.filter(name__contains=keyw).values('id', 'name', 'slug')[:10]
 			return klass.create_url_to_dict(db_objs)

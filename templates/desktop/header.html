@@ -1,60 +1,65 @@
 {% load staticfiles %}
 <div class="app_header" >
-	<div id="app_logo_div">
-		<div id="logo" style="margin-left: 1em;">
-			<a href="/" style="display: block;"><img src="{% static 'images/logo.png' %}" width="60" height="35" /></a>
+	<div class="app_header_c1">
+		<div id="logo" style="margin-left: 1em; width:60px; height:35px;" >
+			<a href="/" style="display: block;">
+				<img src="{% static 'images/logo.png' %}" class="ui-fit" />
+			</a>
 		</div>
 		<!--<h5>MyOffers</h5>-->
 	</div>
-	<div id="app_search_div">
+	<div class="app_header_c2">
 		<form method="POST" >
 			<input type="text" name="search" id="app_search_input" placeholder="Search here..." autocomplete="off" />
 		</form>
 	</div>
-	<div id="site-nav-div" >
-		<div style="float: right;">
-		{% if user.is_loggedin %}
-		<div class="ui-dropdown">
-			<a onclick="dropToggle(event,this);" class="ui-dropbtn">
-				<img src="{{user.image.url}}" class="ui-dselect" style="width:32px; height:32px;" />
-			</a>
-			<div class="ui-dropcontent ui-hide" style="width:15em;" >
-				<div class="ui-content">
-					<table>
-					<tr><td>
-					<a href="/user/profile/" data-dest="#page_body" data-box="1" style="display:block;" >
-					<img src="{{user.image.url}}" class="ui-dselect" style="width:48px; height:48px;" />
-					</a>
-					</td>
-					<td>
-					<a href="/user/profile/" data-dest="#page_body" data-box="1" >{{ user.name|slice:":15" }}</a>
-					</td>
-					</tr>
-					</table>
+	<div class="app_header_c3" >
+		<div style="display: flex; justify-content: flex-end;" >
+			{% if user.is_loggedin %}
+			<div class="ui-dropdown" >
+				<a onclick="dropToggle(event,this);" class="ui-dropbtn">
+					<img src="{{user.image.url}}" class="ui-dselect" style="width:32px; height:32px;" />
+				</a>
+				<div class="ui-dropcontent ui-hide" style="width:15em;" >
+					<div class="ui-content">
+						<table>
+						<tr><td>
+						<a href="/user/profile/" data-dest="#app_page:1" style="display:block;" >
+						<img src="{{user.image.url}}" class="ui-dselect" style="width:48px; height:48px;" />
+						</a>
+						</td>
+						<td>
+						<a href="/user/profile/" data-dest="#app_page:1" >{{ user.name|slice:":15" }}</a>
+						</td>
+						</tr>
+						</table>
+					</div>
+					<ul class="ui-vlist">
+						<li><a href="/user/profile/" data-dest="#app_page:1" >My Profile</a></li>
+						<li><a href="/user/settings/" data-dest="#app_page:1" >Settings</a></li>
+						<li><a href="/user/mails/" data-dest="#app_page:1" >Messages</a></li>
+						<li><a href="/user/signout/" >SignOut</a></li>
+					</ul>
 				</div>
-				<ul class="ui-vlist">
-					<li><a href="/user/profile/" data-dest="#app_page" data-box="1" >My Profile</a></li>
-					<li><a href="/user/settings/" data-dest="#app_page" data-box="1" >Settings</a></li>
-					<li><a href="/user/mails/" data-dest="#app_page" data-box="1" >Messages</a></li>
-					<li><a href="/user/signout/" data-dest="dummy" >SignOut</a></li>
-				</ul>
 			</div>
+			{% else %}
+			<div style="text-align: right;">
+				<a href="/user/signin/">SignIn</a>
+				&nbsp; | &nbsp;
+				<a href="/user/signup/">SignUp</a>
+			</div>
+			{% endif %}
 		</div>
-		{% else %}
-			<a href="/user/signin/">SignIn</a> &nbsp; | &nbsp; <a href="/user/signup/">SignUp</a>
-		{% endif %}
-		</div>
-		<div class="clear"></div>
 	</div>
 </div>
 <div class="app_header">
-	<div id="site-sidebar">
+	<div class="app_header_c1" >
 		<span style="margin-left: 1em; font-size:1.5em; cursor:pointer;" class="open" onclick="navClicked()">&#9776;</span>
 	</div>
-	<div id="site-menubar">
+	<div class="app_header_c2" >
 		{% include './top_nav.html' %}
 	</div>
-	<div id="site-nav-div2" >
+	<div class="app_header_c3" >
 		&nbsp;
 	</div>
 </div>

@@ -1,0 +1,4 @@
+15-10-2015
+1.) Address adding page [todo]
+2.) Mobile app menu [done 15-10-2015]
+3.) Offer add and display [todo]
