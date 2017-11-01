@@ -13,12 +13,12 @@
 				{{error}}<br />
 			{% endfor %}
 		</div>
-		<form action="/user/signin-auth/" method="POST" class="ajax-form signin-form" >
+		<form action="/user/signin-auth/" method="POST" class="ajax-form" id="signin-form" >
 			{% csrf_token %}
 			<input type="hidden" name="next" value="{{ next }}">
 			<table class="ui-form-table">
-				<tr><td>EMAIL </td><td><input type="text" name="email" class="ui-input" placeholder="Email id" /></td></tr>
-				<tr><td>PASSWORD </td><td><input type="password" name="pass" class="ui-input" placeholder="Password" /></td></tr>
+				<tr><td>EMAIL </td><td><input type="text" name="U_email" class="ui-input" placeholder="Email id" /></td></tr>
+				<tr><td>PASSWORD </td><td><input type="password" name="U_pass" class="ui-input" placeholder="Password" /></td></tr>
 				<tr><td></td>
 				<td><input type="submit" name="signin" value="Sign In" class="ui-btn" />
 				</td></tr>
@@ -28,10 +28,10 @@
 </div>
 <script type="text/javascript">
 $(function() {
-	$('.signin-form').data('handlers', {before: beforeSignIn, after: afterResponse});
+	$('#signin-form').data('handlers', {before: beforeSignInReq, after: afterResponse});
 });
 
-function beforeSignIn(e) {
+function beforeSignInReq(e) {
 	console.log("+beforeSignIn");
 	return true;
 }

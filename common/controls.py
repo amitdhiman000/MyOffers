@@ -1,6 +1,9 @@
 class BaseControl(object):
+	m_valid = True
+	m_errors = {}
+	m_values = {}
 
-	def parseRequest(post):
+	def parseRequest(self, request):
 		return True
 
 	def errors(self):
@@ -10,7 +13,6 @@ class BaseControl(object):
 		return self.m_values
 
 	def clean(self):
-		pass
 		#do nothing
 		return True
 
@@ -18,6 +20,6 @@ class BaseControl(object):
 		# do nothing
 		return True
 
-	def register(self):
+	def execute(self):
 		# do nothing
 		return None

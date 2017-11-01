@@ -17,11 +17,10 @@
 		</div>
 		<div class="ui-body">
 		{% if categories %}
+			<a href="{{last_url.href}}?command=Add" class="ui-btn" >Add <b>+</b></a>
 			{% with nav_links|last as last_url %}
 			{% for cat in categories %}
-			<a href="{{last_url.href}}{{cat.name}}/" >
-				<button class="ui-btn">{{cat.name}} <b>+</b></button>
-			</a>
+			<a href="{{last_url.href}}{{cat.name}}/" class="ui-btn" >{{cat.name}} <b>+</b></a>
 			{% endfor %}
 			{% endwith %}
 		{% elif category %}

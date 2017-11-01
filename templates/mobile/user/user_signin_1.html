@@ -31,7 +31,7 @@
 				<div class="ui-errors" >
 					{% if form_errors %} {{form_errors.user}} {% endif %}
 				</div>
-				<form action="/user/signup-register/" method="POST" >
+				<form action="/user/signup-auth/" method="POST" >
 					{% csrf_token %}
 					<table class="ui-form-table" >
 						<tr><td>NAME* : </td></tr>

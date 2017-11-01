@@ -1,7 +1,8 @@
 from django.conf import settings
 from django.shortcuts import render
-from myadmin.backenddb import insert_default_values
-from myadmin.backenddb import insert_custom_values
+from myadmin.backenddb import insert_default_areas
+from myadmin.backenddb import insert_custom_areas
+from myadmin.backenddb import insert_default_categories
 
 from locus.models import Country
 from locus.models import State
@@ -10,12 +11,9 @@ from locus.models import Area
 from offer.models import Category
 from public.models import GuestMessage
 from public.models import UserMessage
-
-from apputil import *
-from apputil import App_Redirect
-from apputil import App_Render
 from myadmin.preload_data import gCountries
 from myadmin.preload_data import gCategories
+from common.apputil import *
 # Create your views here.
 
 from pprint import pprint
@@ -149,12 +147,13 @@ def category_view(request, query):
 	print('length : '+str(length))
 
 	name = "All"
-	if length > 0 and params[0] != None:
-		name = params[0]
+	if length > 0 and params[0] != '':
+		name = params[length - 1]
 
-	categories = Category.fetch(name)
+	categories = Category.fetch_children(name)
 	data = {'title': 'MyAdmin', 'categories': categories}
 	return App_Render(request, 'admin/admin_category_1.html', data)
+
 
 
 @App_AdminRequired
@@ -208,12 +207,22 @@ def category_add_view1(request, params, length):
 
 
 @App_AdminRequired
+def category_add(request, params):
+	insert_default_categories()
+
+
+
+@App_AdminRequired
 def category_add_view(request, query):
 	print('query : '+query)
 	params = query.rstrip('/').split('/')
 	length = len(params)
 	print(params)
 	print('length : '+str(length))
+	command = request.GET.get('command', '')
+	if command == 'Add':
+		category_add(request, params)
+
 	if params[0] == '':
 		params[0] = 'All';
 	return category_add_view1(request, params, length)

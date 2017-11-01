@@ -42,7 +42,8 @@
 
 			#app_leftnav { width: 18%; position: fixed; top: 6em; bottom: 3em; z-index: 100; overflow-x: hidden; transition: 0.4s; }
 			#app_page { width: 82%; margin-left: 18%; padding-left: 1em; transition: 0.5s; }
-			#page_body { width: 100%; }
+			#app_page_menu { width: 100%; }
+			#app_page_body { width: 100%; }
 			#app_footer span { display: inline-block; vertical-align: middle; text-align: center; }
 		</style>
 
@@ -67,14 +68,14 @@
 					{% endblock %}
 				</div>
 				<div id="app_page" >
-					<div id="page_menu">
+					<div id="app_page_menu">
 						{% block pagemenu %}
 						{% endblock %}
 					</div>
-					<div id="page_body">
+					<div id="app_page_body">
 						{% block pagecontent %}
 						{% endblock %}
-					<div>
+					</div>
 				</div>
 			</div>
 		</section>

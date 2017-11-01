@@ -6,11 +6,12 @@ from django.utils.translation import ugettext as _
 from django.core.mail import send_mail
 #from time import timezone
 from datetime import datetime
-from apputil import App_UserFilesDir
+from common.apputil import App_UserFilesDir
 
 ## debug
 import traceback
 from pprint import pprint
+
 
 
 class User(models.Model):
@@ -27,7 +28,6 @@ class User(models.Model):
 	#profile image by default : user.svg
 	image = models.FileField(upload_to=App_UserFilesDir, default=settings.DEFAULT_USER_IMAGE)
 
-
 	@classmethod
 	def create(klass, user):
 		try:
@@ -41,6 +41,7 @@ class User(models.Model):
 			traceback.print_exc()
 			return None
 
+
 	@classmethod
 	def fetch_user(klass, user):
 		try:
@@ -50,35 +51,65 @@ class User(models.Model):
 			traceback.print_exc()
 			return None
 
-	@classmethod
-	def fetch_user_by_id(klass, user_id):
-		try:
-			return klass.objects.get(id=user_id)
-		except:
-			print("failed to get user")
-			traceback.print_exc()
-			return None
 
-	def fetch_absolute_url(self):
+	@classmethod
+	def update_name(klass, name, user):
+		u = klass.fetch_user(user)
+		u.name = name
+		return u.save()
+
+
+	@classmethod
+	def update_email(klass, email, user):
+		u = klass.fetch_user(user)
+		u.email = email
+		return u.save()
+
+
+	@classmethod
+	def update_phone(klass, phone, user):
+		u = klass.fetch_user(user)
+		u.phone = phone
+		return u.save()
+
+
+	@classmethod
+	def update_password(klass, password, user):
+		u = klass.fetch_user(user)
+		u.password = password
+		return u.save()
+
+
+	@classmethod
+	def check_password(klass, password, user):
+		u = klass.fetch_user(user)
+		return u.password == password
+
+
+	def fetch_url(self):
 		return '/user/%s/' % urlquote(self.email)
+
 
 	def fetch_name(self):
 		return self.name
-	##
+
+
 	## Always return True, user object is created means loggedin.
 	def is_loggedin(self):
 		return True
+
 
 	def email_user(self, from_email=None, subject='Hello', message=None):
 		send_mail(subject, message, from_email, self.email)
 
 
-class Guest:
+
+class Guest(object):
 	def __init__(self):
 		#self.email = ''
 		self.name = 'Guest'
 
-	def fetch_full_name(self):
+	def fetch_name(self):
 		return self.name
 
 	def is_loggedin(self):

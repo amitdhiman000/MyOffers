@@ -1,6 +1,5 @@
 {% extends base_template %}
 
-
 {% block appmenu %}
 {% include './admin_left_nav.html' %}
 {% endblock %}
@@ -15,12 +14,12 @@
 		<h4>No default values</h4>
 	{% else %}
 		<div class="ui-bar-tbb">
-			<a href="/myadmin/category/">Categories &gt;&gt; </a>
+			<a href="/myadmin/categories/">Categories &gt;&gt; </a>
 		</div>
 		<table class="ui-info-table">
 		<tr><th>Sr.</th><th>Category Name</th></tr>
 		{% for cat in categories %}
-			<tr><td>{{forloop.counter}}</td><td><a href="/myadmin/category/{{cat.name}}/" >{{cat.name}}</a></td></tr>
+			<tr><td>{{forloop.counter}}</td><td><a href="/myadmin/categories/{{cat.name}}/" >{{cat.name}}</a></td></tr>
 		{% endfor %}
 		</table>
 	{% endif %}

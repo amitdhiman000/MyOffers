@@ -47,7 +47,7 @@ $(function(){
 		return date;
 	}
 
-	$("#P_area").suggestions({
+	$("#P_address").suggestions({
 		minLength: 2,
 		_source: function(key, resp) {
 			postRequest('/search/location/', {'key': key}, function(status, result){
@@ -87,6 +87,10 @@ $(function(){
 		<form action="/offer/create-new/auth/" method="POST" enctype="multipart/form-data" class="ajax-form">
 			{% csrf_token %}
 			<table class="form_table">
+				<td>Address : </td>
+				<td><input type="text" name="P_address" id="P_address" class="ui-input" value="{{form_values.P_address}}" autocomplete="off" />
+				<td><p class="errors">{{form_errors.P_address}}</p></td>
+				</tr>
 				<tr>
 				<td>Product Image : </td>
 				<td><input type="file" name="P_image" class="ui-input ajax-file-upload" multiple />
@@ -114,10 +118,6 @@ $(function(){
 				</tr>
 				<tr>
 				<tr>
-				<td>Area : </td>
-				<td><input type="text" name="P_area" id="P_area" class="ui-input" value="{{form_values.P_area}}" autocomplete="off" />
-				<td><p class="errors">{{form_errors.P_area}}</p></td>
-				</tr>
 				<td>Start Date : </td>
 				<td><input type="text" name="P_start_date" id="P_start_date" class="ui-input" value="{{form_values.P_start_date}}" autocomplete="off" readonly />
 				<td><p class="errors">{{form_errors.P_start_date}}</p></td>
@@ -129,7 +129,7 @@ $(function(){
 				</tr>
 				<tr>
 				<td>&nbsp;</td>
-				<td><input type="submit" name="submit" value="Publish" class="ui-btn ui-btn-long" /></td>
+				<td><input type="submit" name="submit" value="Publish" class="ui-btn ui-btn-input" /></td>
 				</tr>
 			</table>
 		</form>

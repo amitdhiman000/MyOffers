@@ -3,9 +3,8 @@ from django.template.context_processors import csrf
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 
-from upload.control import FileUploadControl
-
-from apputil import *
+from upload.controls import FileUploadControl
+from common.apputil import *
 ## debug
 from pprint import pprint
 

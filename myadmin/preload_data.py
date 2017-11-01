@@ -275,7 +275,7 @@ gCategories = [
 			{'name':'Accessories', 'desc':'',
 				'sub':[
 					{'name':'Car & Bike Accessories', 'desc':'',
-						'desc':[
+						'sub':[
 							{'name':'Car & Bike Accessories', 'desc':'',},
 							{'name':'Car Body Cover', 'desc':'',},
 							{'name':'Bike Body Cover', 'desc':'',},

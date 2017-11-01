@@ -1,9 +1,9 @@
 import re
-from control import BaseControl
 from user.models import User
 from public.models import UserMessage
 from public.models import GuestMessage
-
+from common.controls import BaseControl
+from common.validators import UserValidator
 
 def is_number(s):
 	try:
@@ -50,30 +50,21 @@ class MessageControl(BaseControl):
 
 	def clean(self):
 		return True
-		#self.m_msg.name = self.m_msg.name.strip(' \t\n\r')
 
 
 	def validate(self):
 		valid = self.m_valid
 
+		validator = UserValidator()
 		if self.m_user.is_loggedin():
 			# get user
 			user = User.get_user(self.m_user)
 			self.m_msg.fk_user = user
 		else:
 			# check for user name
-			if self.m_msg.name == None or self.m_msg.name == '':
-				valid = False
-				self.m_errors['name'] = '*Name is required'
-			else:
-				length = len(self.m_msg.name)
-				if length > 50:
-					valid = False
-					self.m_errors['name'] = '*Name is too long'
-				elif length < 3:
-					valid = False
-					self.m_errors['name'] = '*Name is too short'
-				#some more checks required
+			error = validator.validateName(self.m_msg.name)
+			if error != None:
+				self.m_errors['name'] = error
 
 			# check for email
 			if self.m_msg.email == None or self.m_msg.email == '':
@@ -113,7 +104,7 @@ class MessageControl(BaseControl):
 		return valid
 
 
-	def register(self):
+	def execute(self):
 		if self.m_user.is_loggedin():
 			return UserMessage.create(self.m_msg)
 		else:

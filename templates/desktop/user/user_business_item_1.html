@@ -1,0 +1,41 @@
+<div class="ui-block ui-shadow business-item" data-id="{{b.id}}" style="margin-top:2.5em;" >
+    <div class="ui-block-bar">
+        <div class="ui-content" >
+            <strong>{{b.name}}</strong>
+        </div>
+        <div class="ui-content" style="text-transform: none;" >
+            <div class="ui-right" >
+                <a onclick="deafaultBusiness(this,null)" >Default</a>
+                &nbsp;|&nbsp;<a onclick="editBusiness(this,null)" >Edit</a>
+                &nbsp;|&nbsp;<a onclick="deleteBusiness(this,null)" >Delete</a>
+            </div>
+        </div>
+    </div>
+    <div class="ui-block-body">
+        <table class="ui-form-table" >
+            <tr><td>NAME</td> <td><p>{{b.name}}</p></td></tr>
+            <tr><td>ABOUT</td> <td><p>{{b.desc}}</p></td></tr>
+            <tr><td>CATEGORY</td> <td><p>{{b.category.name}}</p></td></tr>
+            <tr><td>WEBSITE</td> <td><p>{{b.website}}</p></td></tr>
+        </table>
+        {% if b.address %}
+            {% for address in b.address %}
+            <div class="ui-body" >
+                <table class="ui-from-table" >
+                    <tr><td>NAME</td> <td><p>{{b.address.name}}</p></td></tr>
+                    <tr><td>LANDMARK</td> <td><p>{{b.address.landmark}}</p></td></tr>
+                    <tr><td>STREET</td> <td><p>{{b.address.address}}</p></td></tr>
+                    <tr><td>PHONE></td> <td><p>{{b.address.phone}}</p></td></tr>
+                </table>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="ui-body" >
+                <h3>No Business Address</h3>
+            </div>
+        {% endif %}
+        <div style="margin-top: 1em;">
+            <a href="javascript:void(0)" class="ui-btn-a" onclick="showAddressBox(event, this)" >[+] Add Address</a>
+        </div>
+    </div>
+</div>

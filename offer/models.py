@@ -9,7 +9,7 @@ from django.utils.translation import ugettext as _
 from locus.models import Address
 from user.models import User
 
-from apputil import App_UserFilesDir
+from common.apputil import App_UserFilesDir
 
 ## debug
 import traceback
@@ -20,32 +20,13 @@ def days_ahead(days=1):
 	return timezone.now() + timezone.timedelta(days=days)
 
 
-# Business types
-class Business(models.Model):
-	id = models.BigAutoField(primary_key=True)
-	name = models.CharField(max_length=30)
-	details = models.CharField(max_length=50)
-
-	class Meta:
-		verbose_name = _('business')
-		verbose_name_plural= _('business')
-
-	def __str__(self):
-		return self.name
-
-	@classmethod
-	def create(klass, name, desc):
-		obj = klass(name=name, details=desc)
-		obj.save()
-
-
 
 # Business types
 class Category(models.Model):
 	id = models.BigAutoField(primary_key=True)
 	name = models.CharField(max_length=30)
 	details = models.CharField(max_length=50)
-	parent = models.ForeignKey("self", default=1)
+	parent = models.ForeignKey("self", default=None, null=True, blank=True)
 
 	class Meta:
 		verbose_name = _('category')
@@ -56,8 +37,8 @@ class Category(models.Model):
 
 
 	@classmethod
-	def create(klass, name, desc):
-		return klass.objects.create(name=name, details=desc)
+	def create(klass, parent, name, desc):
+		return klass.objects.create(parent=parent, name=name, details=desc)
 
 
 	@classmethod
@@ -74,19 +55,104 @@ class Category(models.Model):
 
 	@classmethod
 	def fetch_all(klass):
-		return klass.objects.get_all()
+		return klass.objects.all()
 
 
 	@classmethod
-	def fetch(klass, name):
+	def fetch_by_id(klass, id):
+		try:
+			return klass.objects.get(id=id)
+		except:
+			traceback.print_exc()
+			return None
+
+
+	@classmethod
+	def fetch_by_name(klass, name):
+		try:
+			return klass.objects.get(name=name)
+		except:
+			traceback.print_exc()
+			return None
+
+
+	@classmethod
+	def fetch_children(klass, name):
 		return klass.objects.filter(parent__name=name)
+
+
+
+# Business
+class Business(models.Model):
+	id = models.BigAutoField(primary_key=True)
+	name = models.CharField(max_length=50, blank=False)
+	desc = models.CharField(max_length=100, blank=False)
+	website = models.CharField(max_length=100, blank=True)
+	fk_category = models.ForeignKey(Category)
+	fk_user = models.ForeignKey(User, on_delete=models.CASCADE)
+	#fk_address = models.ForeignKey(Address)
+
+
+	@classmethod
+	def create(klass, b, user):
+		obj = klass.objects.get_or_create(name=b.name, desc=b.desc, website=b.website, fk_category=b.category, fk_user=user)[0]
+		return obj
+
+
+	@classmethod
+	def remove(klass, id, name, user):
+		if name == None or name == '':
+			raise ValueError('Invalid value')
+		try:
+			obj = klass.objects.get(id=id, name=name, fk_user=user)[0]
+			obj.delete()
+			return True
+		except:
+			traceback.print_exc()
+			return False
+
+
+	@classmethod
+	def fetch_by_user(klass, user):
+		return klass.objects.filter(fk_user=user)
+
+
+
+class BusinessAdressMap(models.Model):
+	id = models.BigAutoField(primary_key=True)
+	fk_business = models.ForeignKey(Business, on_delete=models.CASCADE)
+	fk_address = models.ForeignKey(Address, on_delete=models.CASCADE)
+
+	@classmethod
+	def create(klass, business, address):
+		return klass.objects.get_or_create(fk_business=business, fk_address=address)
+
+
+	@classmethod
+	def remove(klass, business, address):
+		try:
+			db_obj = klass.objects.get(business, address)
+			db_obj.delete()
+			return True
+		except:
+			print('failed to delete')
+			traceback.print_exc()
+			return False
+
+
+	@classmethod
+	def fetch_by_business(klass, business):
+		db_objs = klass.objects.filter(fk_business=business)
+		return db_objs
 
 
 
 # offers table for new offers
 class Offer(models.Model):
 	id = models.BigAutoField(primary_key=True)
+	slug = models.SlugField(unique=True)
 	name = models.CharField(max_length=30, blank=False)
+	details = models.TextField()
 	image = models.FileField(upload_to=App_UserFilesDir)
 	price = models.IntegerField(default=100) ## MRP
 	discount = models.IntegerField(default=0)
@@ -94,12 +160,8 @@ class Offer(models.Model):
 	created_at = models.DateTimeField(default=timezone.now)
 	start_at = models.DateTimeField(default=timezone.now)
 	expire_at = models.DateTimeField(default=days_ahead(5))
-	slug = models.SlugField(unique=True)
-	details = models.TextField()
 	fk_user = models.ForeignKey(User, on_delete=models.CASCADE)
-	#fk_category = models.ForeignKey(Category)
-	#fk_location = models.ForeignKey(Location)
-	#fk_area = models.ForeignKey(Area)
+
 
 	class Meta:
 		verbose_name = _('offer')

@@ -1,5 +1,4 @@
-from django.shortcuts import render
-from apputil import App_Render
+from common.apputil import App_Render
 # Create your views here.
 
 def index(request):

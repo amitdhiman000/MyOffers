@@ -1,0 +1,135 @@
+<div class="ui-content" >
+	<style type="text/css" >
+		#business_add_box { display: none; }
+		#address_add_box {display: none; }
+	</style>
+	<script type="text/javascript" >
+	function showBusinessBox(e, pThis) {
+		console.log("+showBusinessBox");
+		e.stopPropagation();
+		$("#business_add_box").toggle();
+		console.log("-showBusinessBox");
+	}
+
+	function showAddressBox(e, pThis) {
+		console.log("+showAddressBox");
+		e.stopPropagation();
+		$("#address_add_box").toggle();
+		$("#address_add_box").insertAfter(pThis);
+		console.log("-showAddressBox");
+	}
+
+    function beforeBReq() {
+        console.log('+beforeBRequest');
+        return true;
+    }
+
+    function afterBRes(event) {
+        console.log('+afterBResponse');
+        console.log(event.data);
+        if (event.status) {
+            $("#business-items").append(event.data);
+        }
+    }
+
+	function editBusiness(pLink, data)
+	{
+		console.log('+deleteBusiness');
+		var item = $(pLink).parents('.business-item');
+		//item.hide('slow', function(){ item.remove(); });
+		item.fadeOut(600, function(){ $(this).remove(); });
+		/*item.animate({
+			"opacity" : "0", 1000,
+        	function(){ item.remove(); }
+ 		});*/
+	}
+
+	function deleteBusiness(pLink, data)
+	{
+		console.log('+deleteBusiness');
+		var item = $(pLink).parents('.business-item');
+		//item.hide('slow', function(){ item.remove(); });
+		item.fadeOut(600, function(){ $(this).remove(); });
+		/*item.animate({
+			"opacity" : "0", 1000,
+        	function(){ item.remove(); }
+ 		});*/
+	}
+
+    $(function() {
+		$('#business-form').data('handlers', {before: beforeBReq, after: afterBRes});
+    });
+	</script>
+	<div id="delete-dialog" title="Delete" style="display: none;">
+		<p>Are you sure want to delete this business ?</p>
+	</div>
+	<div class="ui-block">
+		<div class="ui-block-bar">
+			<div>
+				<strong>BUSINESS</strong>
+			</div>
+		</div>
+		<div class="ui-block-body" >
+			<a href="javascript:void(0)" class="ui-btn-a" onclick="showBusinessBox(event, this);" >[+] ADD BUSINESS</a>
+			<div id="business_add_box" >
+				<form method="POST" action="/user/business-create/" class="ajax-form" id="business-form" >
+					<table class="ui-form-table" >
+						{% csrf_token %}
+						<input type="hidden" name="B_id" class="ui-input" value="{{business.id}}" />
+						<tr><td>CATEGORY*</td><td>
+						<select class="ui-input" name="B_cat" >
+							{% for cat in categories %}
+							<option value="{{cat.id}}">{{cat.name}}</option>
+							{% endfor %}
+						</select>
+						</td></tr>
+						<tr><td>NAME*</td><td>
+						<input type="text" name="B_name" class="ui-input" value="{{business.name}}" />
+						</td></tr>
+						<tr><td>ABOUT</td><td>
+						<input type="text" name="B_desc" class="ui-input" value="{{business.desc}}" />
+						</td></tr>
+						<tr><td>WEBSITE</td><td>
+						<input type="text" name="B_web" class="ui-input" value="{{business.web}}" />
+						</td></tr>
+						<tr><td></td><td><input type="submit" value="Save" class="ui-btn ui-btn-input" /></td></tr>
+					</table>
+				</form>
+			</div>
+
+			<div id="address_add_box" >
+				<form method="POST" action="/user/business-address-create/" class="ajax-form" id="business-form" >
+					<table class="ui-form-table" >
+						{% csrf_token %}
+						<input type="hidden" name="BA_id" class="ui-input" value="{{business.address.id}}" />
+						<tr><td>NAME*</td><td>
+						<input type="text" name="BA_name" class="ui-input" value="{{business.address.name}}" />
+						</td></tr>
+						<tr><td>COUNTRY</td><td>
+						<input type="text" name="BA_country" class="ui-input" value="{{business.address.country}}" />
+						</td></tr>
+						<tr><td>PHONE</td><td>
+						<input type="text" name="BA_phone" class="ui-input" value="{{business.address.phone}}" />
+						</td></tr>
+						<tr><td>PINCODE</td><td>
+						<input type="text" name="BA_pincode" class="ui-input" value="{{business.address.pincode}}" />
+						</td></tr>
+						<tr><td>LANDMARK</td><td>
+						<input type="text" name="BA_landmark" class="ui-input" value="{{business.address.landmark}}" />
+						</td></tr>
+						<tr><td>ADDRESS</td><td>
+						<textarea name="BA_address" class="ui-textarea" > {{business.address.address}} </textarea>
+						</td></tr>
+						<tr><td></td><td><input type="submit" value="Save" class="ui-btn ui-btn-input" /></td></tr>
+					</table>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div class="ui-content" id="business-items">
+		{% for b in business %}
+			{% include './user_business_item_1.html' %}
+		{% endfor %}
+	</div>
+</div>

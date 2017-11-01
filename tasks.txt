@@ -1,4 +1,10 @@
 15-10-2015
-1.) Address adding page [todo]
+1.) Business and Address adding page [todo]
 2.) Mobile app menu [done 15-10-2015]
 3.) Offer add and display [todo]
+16-10-2017
+4.) Adding product categories.
+5.) User account edit option implementation [todo]
+6.) Implementation of wishlist.
+7.) Imlementation of user interests.
+8.) Align the mobile website UI.

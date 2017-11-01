@@ -3,11 +3,10 @@ from django.views.generic import TemplateView
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.template.context_processors import csrf
 from django.views.decorators.csrf import csrf_exempt
-from public.control import MessageControl
 
-from apputil import *
-from apputil import App_Redirect
-from apputil import App_Render
+from public.controls import MessageControl
+from common.apputil import *
+
 from pprint import pprint
 # Create your views here.
 

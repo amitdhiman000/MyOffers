@@ -14,7 +14,7 @@
 		</form>
 	</div>
 	<div class="app_header_c3" >
-		<div style="display: flex; justify-content: flex-end;" >
+		<div class="ui-right" >
 			{% if user.is_loggedin %}
 			<div class="ui-dropdown" >
 				<a onclick="dropToggle(event,this);" class="ui-dropbtn">
@@ -23,19 +23,19 @@
 				<div class="ui-dropcontent ui-hide" style="width:15em;" >
 					<div class="ui-content">
 						<table>
-						<tr><td>
-						<a href="/user/profile/" data-dest="#app_page:1" style="display:block;" >
-						<img src="{{user.image.url}}" class="ui-dselect" style="width:48px; height:48px;" />
-						</a>
-						</td>
-						<td>
-						<a href="/user/profile/" data-dest="#app_page:1" >{{ user.name|slice:":15" }}</a>
-						</td>
-						</tr>
+							<tr><td>
+								<a href="/user/account/" data-dest="#app_page:1" style="display:block;" >
+								<img src="{{user.image.url}}" class="ui-dselect" style="width:48px; height:48px;" />
+								</a>
+							</td>
+							<td>
+								<a href="/user/account/" data-dest="#app_page:1" >{{ user.name|slice:":15" }}</a>
+							</td>
+							</tr>
 						</table>
 					</div>
 					<ul class="ui-vlist">
-						<li><a href="/user/profile/" data-dest="#app_page:1" >My Profile</a></li>
+						<li><a href="/user/account/" data-dest="#app_page:1" >My Profile</a></li>
 						<li><a href="/user/settings/" data-dest="#app_page:1" >Settings</a></li>
 						<li><a href="/user/mails/" data-dest="#app_page:1" >Messages</a></li>
 						<li><a href="/user/signout/" >SignOut</a></li>
@@ -66,4 +66,7 @@
 
 <!-- Toast widget -->
 <div class="ui-toast" style="display: none;" >
+</div>
+<!-- Noti widget -->
+<div class="ui-alert">
 </div>

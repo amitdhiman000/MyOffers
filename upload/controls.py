@@ -1,6 +1,7 @@
 from background_task import background
 from upload.models import FileUpload
 from user.models import User
+from common.controls import BaseControl
 ## debug
 from pprint import pprint
 
@@ -14,35 +15,9 @@ def clear_file_upload(user_id, upload_id):
 	#user.email_user('Here is a notification', 'You have been notified')
 
 
-class BaseControl(object):
-
-	def parseRequest(post):
-		return True
-
-	def errors(self):
-		return self.m_errors
-
-	def values(self):
-		return self.m_values
-
-	def clean(self):
-		pass
-		#do nothing
-		return True
-
-	def validate(self):
-		# do nothing
-		return True
-
-	def register(self):
-		# do nothing
-		return None
-
 
 class FileUploadControl(BaseControl):
 	def parseRequest(self, request):
-		self.m_errors = {}
-		self.m_valid = True
 		self.m_file = None
 		self.m_user = request.user
 		if request.FILES == None:
@@ -75,10 +50,13 @@ class FileUploadControl(BaseControl):
 		return self.m_valid
 
 
-	def register(self):
+	def execute(self):
+		if self.m_valid == False:
+			return None
+
 		upload = FileUpload.create(self.m_file, self.m_user)
 		if upload != None:
-			clear_file_upload(self.m_user.pk, upload.id)
+			clear_file_upload(self.m_user.id, upload.id)
 		else:
-			m_errors['upload'] = 'File upload server error, try again'
+			self.m_errors['upload'] = 'File upload server error, try again'
 		return upload

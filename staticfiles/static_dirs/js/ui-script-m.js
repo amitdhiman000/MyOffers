@@ -1,3 +1,10 @@
+var KEY_ESCAPE = 27
+var KEY_ENTER = 13;
+var KEY_LEFT = 37;
+var KEY_UP = 38;
+var KEY_RIGHT = 39;
+var KEY_DOWN = 40;
+
 $(function() {
 	console.log("+init");
 
@@ -8,7 +15,7 @@ $(function() {
 	initSearch();
 	/*Initialize switchTabs*/
 	initSwitchTabs();
-	/*Initialize app*/
+	/*Initialize App*/
 	initApp();
 
 	console.log("-init");
@@ -27,27 +34,41 @@ function initHistory()
 {
 	console.log("+initHistory");
 	if (window.history && window.history.pushState) {
+		function afterGetResponse(status, data, state) {
+			console.log('afterGetResponse');
+			if (status) {
+				$(state.dest[0]).html(data);
+				history.pushState(state, state.title, state.url);
+				document.title = state.title;
+			} else {
+				$(state.dest[0]).html("<h1>Failed to load page</h1>");
+				//$(state.dest[0]).html("<h1>Failed to load page</h1>"+"<br />"+JSON.stringify(data));
+			}
+		}
+		function makeGetRequest(state) {
+			getRequest(state.url, 'pid='+state.dest[1],
+				function(status, data) {
+					afterGetResponse(status, data, state);
+				});
+		}
 		$(document).on('click', 'a[data-dest]', function (e) {
 			e.preventDefault();
 			console.log("+a");
 			var This = $(this),
-			href = This.attr("href"),
-			dest = This.attr("data-dest").split(":");
+			url = This.attr("href"),
+			dest = This.attr("data-dest").split(':');
 			title = This.text()+' | My Offers';
-			history.pushState({url:href, title:title, dest:dest,}, title, href);
-			document.title = title;
-			getRequest(href, 'pid='+dest[1], dest[0]);
+			state = {url:url, title:title, dest:dest,};
+			makeGetRequest(state);
 		});
 
-		window.addEventListener('popstate', function(event) {
+		window.addEventListener('popstate', function(e) {
 			console.log('+popstate');
-			var state = event.state;
 			console.log(JSON.stringify(state));
-			if (state !== null) {
-				document.title = state.title;
-				getRequest(state.url, 'pid='+state.dest[1], state.dest[0]);
+			if (e.state !== null) {
+				makeGetRequest(e.state);
 			} else {
-				console.log("no history to show");
+				console.log("no history to load");
 				location.reload();
 				//window.history.go(-1);
 			}
@@ -65,7 +86,7 @@ function initSearch()
 				if (true == status) {
 					resp(result.data);
 				} else {
-					console.log('error : '+JSON.stringify(result.error));
+					console.log('data : '+JSON.stringify(result.data));
 				}
 			});
 		},
@@ -85,7 +106,7 @@ function initSearch()
 			var Inst = e.data;
 			Inst.kf._onunfocus();
 			if (Inst.kd._count > 0) {
-				var item = Inst.kd._jsonData[Inst.kd._selectedIndex];
+				var item = Inst.kd._jsonObj[Inst.kd._selectedIndex];
 				location.href = item.url
 			}
 		}
@@ -150,29 +171,28 @@ function ajaxFormSubmit(e)
 		if (handle.before(e) === false)
 			return;
 
-	postRequest(action, form.serialize(), (status, result) => {
+	postRequest(action, form.serialize(), (status, data) => {
 		if (handle && handle.after) {
 			e.status = status;
-			e.result = result;
+			e.data = data;
 			handle.after(e);
 		} else {
 			if (status === true) {
-				Toast.show(result.message);
+				Toast.show(data.message);
 			} else {
-				Toast.show(JSON.stringify(result.error));
+				Toast.show(JSON.stringify(data));
 			}
 		}
 	});
 }
 
-function afterResponse(e,status,result) {
+function afterResponse(e) {
 	console.log("+afterResponse");
 	if (e.status == false) {
 		var errors = '';
-		for (var key in e.result.error) {
-			console.log(key);
-			console.log(e.result.error[key]);
-			errors += e.result.error[key]+'<br />';
+		for (var key in e.data) {
+			console.log(key + ' : '+ e.data[key]);
+			errors += e.data[key]+'<br />';
 		}
 		$('.ui-errors').html(errors);
 	} else {
@@ -195,35 +215,38 @@ function postRequest(pUrl, pData, pCallback)
 			mimeType = xhr.getResponseHeader("content-type");
 			if (mimeType.indexOf('json') > -1) {
 				console.log('response : ' + data);
-				jsonData = jQuery.parseJSON(data);
-				switch(jsonData.status) {
-				case 302:
-					console.log('redirect');
-					location.href = jsonData.url;
-					break;
-				case 200:
-				case 204:
-					pCallback(true, jsonData);
-					break;
-				default:
-					pCallback(false, jsonData);
-					break;
+				jsonObj = jQuery.parseJSON(data);
+				switch(jsonObj.status) {
+					case 302:
+						console.log('redirect');
+						location.href = jsonObj.url;
+						break;
+					case 200:
+					case 204:
+						pCallback(true, jsonObj.data);
+						break;
+					case 401:
+					default:
+						pCallback(false, jsonObj.data);
+						break;
 				}
 			} else if (mimeType.indexOf('html') > -1) {
+				console.log('html response');
 				pCallback(true, data);
 			} else {
+				console.log('unknown response');
 				pCallback(false, {'error':'unexpected content type'});
 			}
 		},
 		error: function (xhr,error) {
 			console.log('status : '+xhr.status);
 			Toast.show('Network error occured');
-			pCallback(false, {'error':error});
+			pCallback(false, {'data': error});
 		}
 	});
 }
 
-function getRequest(pUrl, pData, dest)
+function getRequest(pUrl, pData, pCallback)
 {
 	$.ajax({url: pUrl,
 		data: pData,
@@ -234,64 +257,70 @@ function getRequest(pUrl, pData, dest)
 			mimeType = xhr.getResponseHeader("content-type");
 			if (mimeType.indexOf('json') > -1) {
 				console.log('response : ' + data);
-				jsonData = jQuery.parseJSON(data);
-				switch(jsonData.status) {
+				jsonObj = jQuery.parseJSON(data);
+				switch(jsonObj.status) {
 				case 302:
 					console.log('redirect');
-					location.href = jsonData.url;
+					location.href = jsonObj.url;
 					break;
 				}
 			}
 		},
 	}).done(function(data) {
-		$(dest).html(data);
-	}).fail(function(error){
-		$(dest).html("<h1>Failed to load page</h1>"+"<br />"+JSON.stringify(error));
+		console.log('html response');
+		pCallback(true, data);
+	}).fail(function(error) {
+		console.log('unknown response');
+		pCallback(false, error);
 	});
 }
 
 /****************** Cookie API ***********************/
 var Cookie = {
-get: function(name) {
-	var cv = null;
-	if (document.cookie != 'undefined' && document.cookie !== '') {
-		var c = document.cookie.split(';');
-		for (var i = 0; i < c.length; i++) {
-			var c = jQuery.trim(c[i]);
-			// Does this cookie string begin with the name we want?
-			if (c.substring(0, name.length + 1) === (name + '=')) {
-				cv = decodeURIComponent(c.substring(name.length + 1));
-				break;
+	get: function(name) {
+		var cv = null;
+		if (document.cookie != 'undefined' && document.cookie !== '') {
+			var c = document.cookie.split(';');
+			for (var i = 0; i < c.length; i++) {
+				var c = jQuery.trim(c[i]);
+				// Does this cookie string begin with the name we want?
+				if (c.substring(0, name.length + 1) === (name + '=')) {
+					cv = decodeURIComponent(c.substring(name.length + 1));
+					break;
+				}
 			}
 		}
+		return cv;
+	},
+	set: function (cname, cvalue, exdays) {
+		var d = new Date();
+		d.setTime(d.getTime() + (exdays*24*60*60*1000));
+		var expires = "expires="+d.toUTCString();
+		document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 	}
-	return cv;
-},
-set: function (cname, cvalue, exdays) {
-	var d = new Date();
-	d.setTime(d.getTime() + (exdays*24*60*60*1000));
-	var expires = "expires="+d.toUTCString();
-	document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-}
 };
 
 /*****************************************************/
 /******************** Widgets ************************/
 /****************** Toast API ************************/
-var Toast =  {
-show: function(text='Error', timeout=1200) {
-	//$('.toast').text(text).fadeIn(500).delay(timeout).fadeOut(500);
-	$('.toast').fadeIn({duration: 500, start: function() {$(this).text(text);}}).delay(timeout).fadeOut(500);
-},
-hide: function() {
-	$('.toast').hide();
-}};
+var Popup = {
+	show: function() {
 
-var KEY_ENTER = 13;
-var KEY_LEFT = 37;
-var KEY_UP = 38;
-var KEY_RIGHT = 39;
-var KEY_DOWN = 40;
+	},
+	hide: function() {
+
+	}
+};
+
+var Toast =  {
+	show: function(text='Error', timeout=1200) {
+		//$('.ui-toast').text(text).fadeIn(500).delay(timeout).fadeOut(500);
+		$('.ui-toast').fadeIn({duration: 500, start: function() {$(this).text(text);}}).delay(timeout).fadeOut(500);
+	},
+	hide: function() {
+		$('.ui-toast').hide();
+	}
+};
 
 var wsuggest = function(Elem, opts) {
 	console.log('+wsuggest');
@@ -301,7 +330,7 @@ var wsuggest = function(Elem, opts) {
 		_name: 'suggest',
 		_ui: null,
 		_count: 0,
-		_jsonData: null,
+		_jsonObj: null,
 		_selectedItem: null,
 		_selectedIndex: 0,
 	};
@@ -315,8 +344,8 @@ var wsuggest = function(Elem, opts) {
 			kd._ui.css({width: Elem.css('width')});
 			Elem.after(kd._ui);
 			//kd._ui.on('touchstart click', 'li', kf._itemClick);
-			kd._ui.on('touchend', 'li', kf._itemClick);
 			//kd._ui.on('mouseenter', 'li', kf._itemHover);
+			kd._ui.on('touchend', 'li', kf._itemClick);
 			Elem.on("keyup", kf._keyUp);
 			Elem.on("keypress", kf._keyPress);
 			Elem.on("focus", kf._onfocus);
@@ -335,16 +364,16 @@ var wsuggest = function(Elem, opts) {
 		_source: function(key, resp) {
 			console.log('implement _source function');
 		},
-		_parse: function(jsonData) {
+		_parse: function(jsonObj) {
 			console.log('+_parse');
 			kd._ui.html('');
-			if (jsonData.length > 0) {
+			if (jsonObj.length > 0) {
 				var count = 0;
-				for (i in jsonData) {
-					kd._ui.append(kf._itemCreate(jsonData[i]));
+				for (i in jsonObj) {
+					kd._ui.append(kf._itemCreate(jsonObj[i]));
 					count++;
 				}
-				kd._jsonData = jsonData;
+				kd._jsonObj = jsonObj;
 				kd._count = count;
 				kd._selectedIndex = 0;
 				kd._selectedItem = kd._ui.children().eq(kd._selectedIndex).addClass('wt-search-item-a');
@@ -365,11 +394,13 @@ var wsuggest = function(Elem, opts) {
 			var index = $(this).index();
 			console.log('old selected : '+ kd._selectedIndex);
 			console.log('new selected : '+ index);
-			if (kd._jsonData && kd._selectedIndex != index) {
+			if (kd._selectedIndex != index) {
 				kd._ui.children().eq(kd._selectedIndex).removeClass('wt-search-item-a');
-				kd._ui.children().eq(index).addClass('wt-search-item-a');
-				kf._itemSelect(Elem, kd._jsonData[index]);
 				kd._selectedIndex = index;
+				kd._ui.children().eq(kd._selectedIndex).addClass('wt-search-item-a');
+				if (kd._jsonObj) {
+					kf._itemSelect(Elem, kd._jsonObj[index]);
+				}
 			}
 		},
 		_itemClick: function(e) {
@@ -388,8 +419,8 @@ var wsuggest = function(Elem, opts) {
 			 console.log('implement _itemSelect function');
 		},
 		_itemSelectCurrent: function() {
-			if (kd._count > 0 && kd._jsonData) {
-				kf._itemSelect(Elem, kd._jsonData[kd._selectedIndex]);
+			if (kd._count > 0 && kd._jsonObj) {
+				kf._itemSelect(Elem, kd._jsonObj[kd._selectedIndex]);
 			}
 		},
 		_onEnter: function(e) {
@@ -417,8 +448,8 @@ var wsuggest = function(Elem, opts) {
 					var cont = kd._ui;
 					cont.scrollTop(child.position().top + cont.scrollTop());
 					//cont.scrollTop(child.offset().top - cont.offset().top + cont.scrollTop());
-					if (kd._jsonData) {
-						kf._itemSelect(Elem, kd._jsonData[kd._selectedIndex]);
+					if (kd._jsonObj) {
+						kf._itemSelect(Elem, kd._jsonObj[kd._selectedIndex]);
 					}
 				}
 				handled = true;
@@ -432,8 +463,8 @@ var wsuggest = function(Elem, opts) {
 					//console.log("child top : "+ child.position().top);
 					//console.log("scroll top : "+ cont.scrollTop());
 					cont.scrollTop(child.position().top + cont.scrollTop());
-					if (kd._jsonData) {
-						kf._itemSelect(Elem, kd._jsonData[kd._selectedIndex]);
+					if (kd._jsonObj) {
+						kf._itemSelect(Elem, kd._jsonObj[kd._selectedIndex]);
 					}
 				}
 				handled = true;
@@ -559,26 +590,31 @@ function wfileupload(Elem, opts)
 					}, false);
 					return xhr;
 				},
-				success: function(jsonData, status, xhr) {
-
-					if (302 == jsonData.status) {
-						console.log('redirect');
-						location.href = jsonData.url;
-						return;
-					}
-					if(!jsonData.error) {
-						console.log("upload finished");
-						var id = jsonData.data.upload_id;
-						kd._uploads.push(id);
-						kd._hidden.val(kd._uploads.toString());
-						uiBtn.data('request', null);
-						uiBtn.data('upload_id', id);
-						uiBtn.text('Remove');
-						console.log('ids : '+kd._uploads.toString());
-					} else {
-						// Handle errors here
-						console.log('ERRORS: ' + JSON.stringify(data.error));
-						uiItem.remove();
+				success: function(jsonObj, status, xhr) {
+					switch (jsonObj.status) {
+						case 302:
+						{
+							console.log('redirect');
+							location.href = jsonObj.url;
+							break;
+						}
+						case 200:
+						case 204:
+						{
+							console.log("upload finished");
+							var id = jsonObj.data.upload_id;
+							kd._uploads.push(id);
+							kd._hidden.val(kd._uploads.toString());
+							uiBtn.data('request', null);
+							uiBtn.data('upload_id', id);
+							uiBtn.text('Remove');
+							console.log('ids : '+kd._uploads.toString());
+							break;
+						}
+						case 401:
+						default:
+							console.log('ERRORS: ' + JSON.stringify(jsonObj.data));
+							uiItem.remove();
 					}
 				},
 				error: function(xhr, status, errorThrown) {
@@ -722,8 +758,18 @@ function onSwipe(el,func) {
       },false);
 }
 
+function wcenter () {
+    this.css("position","absolute");
+    this.css("top", Math.max(0, (($(window).height() - $(this).height()) / 2) +
+                                                $(window).scrollTop()) + "px");
+    this.css("left", Math.max(0, (($(window).width() - $(this).width()) / 2) +
+                                                $(window).scrollLeft()) + "px");
+    return this;
+}
+
 /****************** Exteded Jquery *******************/
 jQuery.fn.exists = function(){return this.length>0;}
 jQuery.fn.switchtab = function(options) { new wswitchtab(this, options); }
 jQuery.fn.fileupload = function(options) { new wfileupload(this, options); }
 jQuery.fn.suggestions = function(options) { new wsuggest(this, options); }
+jQuery.fn.center = wcenter;

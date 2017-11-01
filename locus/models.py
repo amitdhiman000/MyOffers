@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.apps import apps
 
@@ -7,6 +8,8 @@ from user.models import User
 ## debug
 import traceback
 from pprint import pprint
+
+
 
 class Country(models.Model):
 	id = models.AutoField(primary_key=True)
@@ -334,14 +337,17 @@ class Area(models.Model):
 
 class Address(models.Model):
 	id = models.BigAutoField(primary_key=True)
-	line1 = models.CharField(max_length=50, blank=True)
-	line2 = models.CharField(max_length=50, blank=True)
+	name = models.CharField(max_length=50, blank=False)
+	phone = models.CharField(max_length=10, blank=True)
+	address = models.CharField(max_length=50, blank=False)
 	landmark = models.CharField(max_length=50, blank=True)
 	latitude = models.CharField(max_length=10, blank=True)
 	longitude = models.CharField(max_length=10, blank=True)
-	user_flags = models.IntegerField()
+	created_at = models.DateTimeField(default=timezone.now)
+	updated_at = models.DateTimeField(default=timezone.now)
 	fk_area = models.ForeignKey(Area, on_delete=models.CASCADE)
 	fk_user = models.ForeignKey(User, on_delete=models.CASCADE)
+	user_flags = models.IntegerField()
 
 
 	@classmethod

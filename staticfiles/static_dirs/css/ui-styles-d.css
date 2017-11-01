@@ -1,23 +1,29 @@
 * { margin:0; padding:0; border:0; outline:0; font-size: 100%; font: inherit; vertical-align: baseline; box-sizing: border-box; }
-a { text-decoration: none; color: #333; }
+a { text-decoration: none; cursor: pointer; color: #333; }
 a:hover { text-decoration: underline; }
 img { user-select: none; pointer-events: none; }
 ul { list-style: none; }
 table { min-width: 50%; border-spacing: 1.5em 1.5em; border-collapse: collapse; }
 table th, table td { padding: 0.7em; text-align: left; }
 input { background: transparent; }
-body { background: #f7f7f7; color: #333; font-size: 0.8em; /*font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;*/
-font-family: "Avenir Next",-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
+body { background: #eee; color: #333; font-size: 0.8em;
+font-family: 'Roboto','Heebo',Arial,sans-serif;
+/*font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;*/
+/*font-family: "Avenir Next",-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",sans-serif;*/
 overflow-y: scroll; overflow-x: auto;
 }
+.ui-clear { clear: both; text-indent: -9999px; }
 .ui-link { text-decoration: underline; }
 .ui-fit { max-width: 100%; max-height: 100%; min-width: 100%; min-height: 100%; }
-.ui-clear { clear: both; text-indent: -9999px; }
+.ui-half { width: 50%; height: auto; }
+.ui-full { width: 100%; height: auto; }
+.ui-left { display: flex; justify-content: flex-start; }
+.ui-right { display: flex; justify-content: flex-end; }
 .ui-hide { display:none; }
 .ui-show { display:block; }
 .ui-border { border: 1px solid #ddd; }
 .ui-corner { border-radius: 0.2em; }
-.ui-overlay{position:fixed;display:none;width:100%;height:100%;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.3);z-index:100}
+.ui-overlay { position:fixed;display:none;width:100%;height:100%;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.3);z-index:100}
 .ui-dselect { user-select: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -o-user-select: none; }
 .ui-select { user-select: text; -webkit-user-select: text; -khtml-user-select: text; -moz-user-select: text; -o-user-select: text; }
 .ui-errors { color:red; font-weight: bold; }
@@ -45,8 +51,14 @@ overflow-y: scroll; overflow-x: auto;
 .ui-textarea:focus { border: 1px solid #aaa; }
 .ui-btn { padding: 0.6em 1em; background: #f9f9f9; border: 1px solid #35f; border-radius: 0.2em; cursor: pointer; }
 .ui-btn:hover { background: #37f; color: #fff; }
-.ui-btn-small { padding: 0.0em; width: 5.5em; height: 2.8em; }
-.ui-btn-long { padding: 0.0em; width: 15.5em; height: 2.8em; }
+.ui-btn-a { display: block; padding: 1em; background: #f9f9f9; border: 1px solid #ccc; border-radius: 0.2em; cursor: pointer;  }
+.ui-btn-a:hover { background: #f3f3f3; text-decoration: none; }
+.ui-btn-a:active { background: #e9e9e9; text-decoration: none; }
+.ui-btn-input { padding: 0.0em; width: 30em; height: 3.0em; }
+.ui-btn-small { padding: 0.0em; width: 6.0em; height: 3.0em; }
+.ui-btn-half { padding: 0.0em; width: 50%; height: 3.0em; }
+.ui-btn-full { padding: 0.0em; width: 100%; height: 3.0em; }
+
 .ui-dropdown { position: relative; display: inline-block; }
 .ui-dropbtn { display: block; padding: 0.5em; font-size: 0.8em; cursor: pointer; }
 .ui-dropcontent { position: absolute; background: #f9f9f9; min-width: 100%; right:0; z-index: 20; overflow: auto; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);	}
@@ -56,30 +68,45 @@ overflow-y: scroll; overflow-x: auto;
 .ui-section-title-text {}
 .ui-section-title-icons { text-align: right; }
 .ui-section-body { width: 100%; margin-top: 0.2em; }
+
+.ui-block { background: #fff; border: 1px solid #ddd; }
+.ui-block-bar { padding: 1em; border-bottom: 1px solid #ddd; }
+.ui-block-bar > div { display: table-cell; }
+.ui-block-body { padding: 1em; }
+
 .ui-dline { border-bottom: 1px dotted #ccc; height: 1px; }
 .ui-sline { border-bottom: 1px solid #ccc; height: 1px; margin: 0.2em auto;}
-.ui-bar { width: 100%; border: 1px solid #bbb; padding: 0.6em 0.8em; background: #e9e9e9; }
+.ui-bar { width: 100%; border: 1px solid #bbb; padding: 0.6em 0.8em; background: #f1f1f1; }
 .ui-bar-tbb { width: 100%; margin-bottom: 0.5em; border-bottom:1px solid #ddd; padding:0.6em 0.4em; /*text-transform:uppercase;*/}
-.ui-body { width: 100%; border: 1px solid #ddd; padding: 0.6em 0.8em; background-color: #f9f9f9; }
+.ui-body { width: 100%; border: 1px solid #ddd; padding: 0.6em 0.8em; background: #fff; }
 .ui-content { width: 100%; padding: 0.2em; /*border: 1px solid #d3d3d3;*/ }
-.ui-shadow { margin-top: 0.5em; padding: 0.2em; border: 1px solid #ccc; box-shadow: 0px 4px 8px #777; background: #fff; }
-.ui-shadow:before { position: absolute; content: ""; transform: rotate(3deg); }
-.ui-shadow:after { transform: rotate(-3deg); }
+
+.ui-shadow { box-shadow: 0px 2px 2px rgba(0,0,0,0.12); }
+.ui-shadow:before { content: ""; transform: rotate(0deg); }
+.ui-shadow:after { transform: rotate(-2deg); }
+
+.ui-overlay { position:fixed; display:none; width:100%; height:100%;
+top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.3); z-index:101;
+}
+.ui-overlay-close { position: absolute; font-size: 1em; top: 5%; right: 10%; opacity: 0.5; }
+.ui-overlay-close:hover { opacity: 1; }
+.ui-popup { position: absolute;  min-width: 40%; min-height: 40%;
+	background: #fff; border: 1px solid #bbb;
+	box-shadow: 0px 2px 2px rgba(0,0,0,0.25);
+}
 .ui-toast { position: fixed; display: none; min-width: 30%; max-width: 80%; z-index: 40;
 height: auto; left:50%; margin-left:-20%; bottom:10%; background: #e9e9e9; color: #222;
 font-family: Calibri; font-size: 1.0em; padding:0.9em; text-align:center; border-radius: 2px;
--webkit-box-shadow: 0px 0px 24px -1px rgba(56, 56, 56, 1);
--moz-box-shadow: 0px 0px 24px -1px rgba(56, 56, 56, 1);
 box-shadow: 0px 0px 24px -1px rgba(56, 56, 56, 1);
 }
-.ui-fab{ width:50px; height:50px; border-radius:100%; 	/*background:#F44336;*/ background: #38C;
+.ui-fab { width:50px; height:50px; border-radius:100%; background: #38C;
 	font-size:1.0em; transition:.3s;
 	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-	-webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 .ui-fab:focus {	transform:scale(1.1);
 	transform:rotate(45deg);
 	-ms-transform: rotate(45deg);
+	-moz-transform: rotate(45deg);
 	-webkit-transform: rotate(45deg);
 }
 /* suggestion list */

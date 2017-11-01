@@ -5,17 +5,19 @@ from django.conf import settings
 ## models import
 from user.models import User
 from locus.models import *
+from offer.models import Category
+
 ## debug
 from pprint import pprint
 # Create your models here.
 
 
-gCountries = (
+gCountriesDataSource = (
 	{'name':'India', 'file': os.path.join(settings.STATIC_DATA_DIR, 'India_pincodes.csv')},
 )
 
-def insert_default_values():
-	for country in gCountries:
+def insert_default_areas():
+	for country in gCountriesDataSource:
 		if Country.fetch(name=country['name']) != None:
 			continue
 
@@ -51,9 +53,9 @@ def insert_default_values():
 
 
 
-def insert_custom_values(p_city_name, p_state_name, p_country_name):
+def insert_custom_areas(p_city_name, p_state_name, p_country_name):
 	country_name = 'India'
-	country_file = os.path.join(settings.STATIC_DATA_DIR, 'India_pincodes.csv')
+	country_file = gCountriesDataSource[country_name]
 	curr_country = Country.fetch_or_create(country_name)
 
 	with open(country_file, "rt") as file:
@@ -86,3 +88,21 @@ def insert_custom_values(p_city_name, p_state_name, p_country_name):
 
 			Area.fetch_or_create(area_name, area_pincode, curr_city, curr_state, curr_country)
 		print('Done!!')
+
+
+
+def insert_category(parent, items):
+	for item in items:
+		cat = Category.create(parent=parent, name=item['name'], desc=item['desc'])
+		if 'sub' in item:
+			insert_category(cat, item['sub'])
+
+
+def insert_default_categories():
+	from myadmin.preload_data import gCategories
+	cat = Category.fetch_by_name('All')
+	if cat != None:
+		return True
+	else:
+		cat = Category(id=0)
+		insert_category(None, gCategories)

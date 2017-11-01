@@ -11,17 +11,17 @@
 			{{error}} <br />
 		{% endfor %}
 		</div>
-		<form action="/user/signup-register/" method="POST" class="ajax-form signup-form">
+		<form action="/user/signup-auth/" method="POST" class="ajax-form" id="signup-form" >
 			{% csrf_token %}
 			<table class="ui-form-table" >
-				<tr><td>NAME* </td><td><input type="text" name="name" class="ui-input" placeholder="Full Name" />
+				<tr><td>NAME* </td><td><input type="text" name="U_name" class="ui-input" placeholder="Full Name" />
 				</tr>
-				<tr><td>EMAIL* </td><td><input type="text" name="email" class="ui-input" placeholder="Email Id" /></td>
+				<tr><td>EMAIL* </td><td><input type="text" name="U_email" class="ui-input" placeholder="Email Id" /></td>
 				</tr>
 
-				<tr><td>PASSWORD* </td><td><input type="password" name="pass" class="ui-input" placeholder="Password" />
+				<tr><td>PASSWORD* </td><td><input type="password" name="U_pass" class="ui-input" placeholder="Password" />
 				</td></tr>
-				<tr><td>PHONE* </td><td><input type="text" name="phone" class="ui-input" placeholder="Phone Number" />
+				<tr><td>PHONE* </td><td><input type="text" name="U_phone" class="ui-input" placeholder="Phone Number" />
 				</tr>
 				<tr><td></td>
 				<td>
@@ -34,10 +34,10 @@
 <script type="text/javascript">
 $(function() {
 	console.log('fetching login handler');
-	$('.signup-form').data('handlers', {before: beforeSignUp, after: afterResponse});
+	$('#signup-form').data('handlers', {before: beforeSignUpReq, after: afterResponse});
 });
 
-function beforeSignUp(e) {
+function beforeSignUpReq(e) {
 	console.log("+beforeSignUp");
 	return true;
 }

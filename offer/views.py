@@ -5,12 +5,12 @@ from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime, timedelta
 
-from .models import Offer
-from .control import OfferControl
+from offer.models import Offer
+from offer.controls import OfferControl
 
-from apputil import *
-from apputil import App_Redirect
-from apputil import App_Render
+from common.apputil import *
+#from apputil import App_Redirect
+#from apputil import App_Render
 from pprint import pprint
 
 # Create your views here.
@@ -25,12 +25,12 @@ def offer_home_view(request):
 	return App_Render(request, 'offer/offer_home_1.html', data)
 
 
-
 def offer_detail_view(request, offer_id):
 	print('offer_id : '+offer_id)
 	offer = Offer.fetch_by_id(offer_id)
 	data = {'title':'View Offers', 'offer': offer}
 	return App_Render(request, 'offer/offer_detail_view_1.html', data)
+
 
 def offer_detail_view1(request, slug):
 	print('slug : '+slug)
@@ -69,11 +69,10 @@ def offer_create(request):
 	control = OfferControl()
 	if control.parseRequest(request) and control.validate():
 		control.register()
-		#return App_Redirect(request, setting.OFFER_CREATE_SUCCESS)
 		return JsonResponse({'status': 204, 'message': 'Offer posted succesfuly'})
 	else:
 		if request.is_ajax():
-			return JsonResponse({'status': 401, 'error': control.errors()})
+			return JsonResponse({'status': 401, 'message': 'Failed', 'data': control.errors()})
 		else:
 			request.session['form_errors'] = control.errors()
 			request.session['form_values'] = control.values()

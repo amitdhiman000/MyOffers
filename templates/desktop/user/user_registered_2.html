@@ -1,13 +1,16 @@
 <div class="ui-content" >
-	<div class="ui-bar-tbb" >
-		<h3>Registered successfuly</h3>
-	</div>
-	<div class="ui-body" >
-		<h4>Your account is created successfuly!</h4>
-		<p>Please check your email to activate the account</p>
-		<p>Welcome <strong>{{user.name}}</strong></p>
-		<a href="/" >Home</a>
-		<a href="/" >Home</a>
-		<a href="mailto:{{user.email}}" >Mail</a>
+	<div class="ui-block">
+		<div class="ui-block-bar" >
+			<h3>REGISTRATION SUCCESSFUL</h3>
+		</div>
+		<div class="ui-block-body" >
+			<h3>Hello <strong>{{user.name}}</strong></h3>
+			<br />
+			<h4>Your account is created successfuly!</h4>
+			<h5>Please check your email to activate the account</h5>
+			<br />
+			<a href="/" class="ui-btn" >Home</a>
+			<a href="mailto:{{user.email}}"  class="ui-btn">Mail</a>
+		</div>
 	</div>
 </div>
