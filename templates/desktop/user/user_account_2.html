@@ -1,69 +1,157 @@
 {% load tz %}
 {% load staticfiles %}
 <script type="text/javascript">
-function ToggleEdit(e,pThis)
+function editText(e,pThis)
 {
-	console.log('+EnableEdit');
-	var inputs = $('#base-info').find('.ui-input');
-	var controls = $('#base-info').find('#base-controls');
+	e.stopPropagation();
+	e.preventDefault();
+	console.log('+editText');
+	var root = $(pThis).parents('.info_item');
+	var inputs = root.find('.ui-input');
+	var controls = root.find('.item_controls');
 	if (inputs.attr('readonly')) {
 		inputs.removeAttr('readonly');
 	} else {
 		inputs.attr('readonly', 'readonly');
+		inputs.val(inputs.attr('data-value'));
 	}
-	inputs.toggleClass('ui-dinput');
 	controls.toggleClass('ui-hide');
 }
-
-function passChangePopup(e, pThis)
+function changePass(e, pThis)
 {
-	console.log("+passChangePopup");
+	editText(e, pThis);
+	var root = $(pThis).parents('.info_item');
+	var inputs = root.find('.ui-input');
+	if (!inputs.attr('readonly')) {
+		inputs.val('');
+	}
+}
+$(function(){ $('.info_item form').data('handlers', {before: beforeSaveReq, after: afterSaveResponse}); });
+
+function beforeSaveReq(e) {
+	console.log("+beforeSaveReq");
+	return true;
+}
+
+function afterSaveResponse(e) {
+	console.log("+afterSaveResponse");
+	if (e.status) {
+		var val = e.resp.data;
+		console.log(val);
+		e.$src.find('.ui-input').attr('data-value', val);
+		e.$src.find('input[type=reset]').click();
+		console.log(e.$src.find('.ui-input').attr('data-value'));
+		Noti.info({title:e.resp.message, text:''});
+	} else {
+		var errors = '';
+		for (var err in e.resp.data) {
+			errors += e.resp.data[err] + '<br />';
+		}
+		Noti.info({title:e.resp.message, text:errors});
+	}
 }
 </script>
-<style type="text/css">
-	#base-info td { padding: 0.2em; }
-</style>
-
-<div class="ui-content" >
+<div class="ui-content" style="height: 2000px;">
 	<div class="ui-block" >
 		<div class="ui-block-bar">
-			<div class="ui-left"><h3>ACCOUNT</h3></div>
-			<div class="ui-right">
-				<a onclick="ToggleEdit(event, this)" >
+			<div>
+				<h3>ACCOUNT</h3>
+			</div>
+			<div>
+				<div class="ui-right" >
+				<a onclick="editField(event, this)" >
 				<img src="{% static 'images/icons-svg/edit_fill.svg' %}" style="width:24px; height:24px;" />
 				</a>
+				</div>
 			</div>
 		</div>
 		<div class="ui-block-body">
 			<table class="ui-form-table" id="base-info" >
 				<!--<tr><td>PHOTO</td><td><img src="{{user.image.url}}" style="width:80px; height:80px;" /></td></tr>-->
-				<tr>
+				<tr class="info_item" >
 					<td>NAME</td>
 					<td>
-						<input readonly type="text" value="{{user.name}}" placeholder="Name" class="ui-input ui-dinput" />
-						<br /><input type="submit" value="Save" class="ui-btn" />
-						<input type="submit" value="Cancel" class="ui-btn" />
+						<form method="POST" action="/user/update/" class="ajax-form">
+						<div>
+							{% csrf_token %}
+							<input readonly type="text" name="U_name" value="{{user.name}}" data-value="{{user.name}}" placeholder="Name" class="ui-input" />
+						</div>
+						<div class="ui-hide item_controls" >
+							<input type="submit" value="Save" class="ui-btn" />
+							<input type="reset" value="Cancel" onclick="editText(event,this)" class="ui-btn" />
+						</div>
+						</form>
 					</td>
-					<td><a >Edit</a></td>
+					<td><a onclick="editText(event,this)" >Edit</a></td>
 				</tr>
-				<tr>
+				<tr class="info_item" >
 					<td>EMAIL</td>
-					<td><input readonly type="text" value="{{user.email}}" placeholder="Email" class="ui-input ui-dinput" /></td>
-					<td><a >Edit</a></td>
+					<td>
+						<form method="POST" action="/user/update/" class="ajax-form">
+						<div>
+							{% csrf_token %}
+							<input readonly type="text" name="U_email" value="{{user.email}}" data-value="{{user.email}}" placeholder="Email" class="ui-input" />
+						</div>
+						<div class="ui-hide item_controls" >
+							<input type="submit" value="Save" class="ui-btn" />
+							<input type="reset" value="Cancel" onclick="editText(event,this)" class="ui-btn" />
+						</div>
+						</form>
+					</td>
+					<td><a onclick="editText(event,this)" >Edit</a></td>
 				</tr>
-				<tr>
+				<tr class="info_item" >
 					<td>PHONE</td>
-					<td><input readonly type="text" value="{{user.phone}}" placeholder="Phone" class="ui-input ui-dinput" /></td>
-					<td><a >Edit</a></td>
+					<td>
+						<form method="POST" action="/user/update/" class="ajax-form">
+						<div>
+							{% csrf_token %}
+							<input readonly type="text" name="U_phone" value="{{user.phone}}" data-value="{{user.phone}}" placeholder="Phone" class="ui-input" />
+						</div>
+						<div class="ui-hide item_controls" >
+							<input type="submit" value="Save" class="ui-btn" />
+							<input type="reset" value="Cancel" onclick="editText(event,this)" class="ui-btn" />
+						</div>
+						</form>
+					</td>
+					<td><a onclick="editText(event,this)" >Edit</a></td>
 				</tr>
-				<tr>
+				<tr class="info_item" >
 					<td>PASSWORD</td>
-					<td><input readonly type="password" value="xxxxxxxx" placeholder="Password" class="ui-input ui-dinput" /></td>
-					<td><a >Change</a></td>
+					<td>
+						<form method="POST" action="/user/update/" class="ajax-form">
+						<div>
+							{% csrf_token %}
+							<input readonly type="password" name="U_pass" value="xxxxxxxx" data-value="xxxxxxxx" placeholder="Old Password" class="ui-input" />
+						</div>
+						<div class="ui-hide item_controls" >
+							<br />
+							<input type="password" name="U_pass1" value="" placeholder="New Password" class="ui-input" />
+							<br />
+							<input type="password" name="U_pass2" value="" placeholder="Repeat New Password" class="ui-input" />
+							<br />
+							<input type="submit" value="Save" class="ui-btn" />
+							<input type="reset" value="Cancel" onclick="changePass(event,this)" class="ui-btn" />
+						</div>
+						</form>
+					</td>
+					<td><a onclick="changePass(event,this)" >Change</a></td>
 				</tr>
-				<tr><td>LEVEL</td><td>{{user.level}}</td></tr>
-				<tr><td>STATUS</th> <td>{{user.status}}</td></tr>
-				<tr><td>REG. TIME</td> <td>{{user.created_at | localtime}}  IST</td></tr>
+				<tr class="info_item" >
+					<td>LEVEL</td>
+					<td><input readonly type="text" name="U_level" value="{{user.level}}" data-value="{{user.level}}" placeholder="Phone" class="ui-input" /></td>
+					<td></td>
+				</tr>
+				<tr class="info_item" >
+					<td>STATUS</td>
+					<td><input readonly type="text" name="U_status" value="{{user.status}}" data-value="{{user.status}}" placeholder="Phone" class="ui-input" /></td>
+					<td></td>
+				</tr>
+				<tr class="info_item" >
+					<td>REG. TIME</td>
+					<td><input readonly type="text" name="U_reg" value="{{user.created_at | localtime}}" data-value="{{user.created_at | localtime}}" placeholder="Phone" class="ui-input" /></td>
+					<td></td>
+				</tr>
 			</table>
 		</div>
 	</div>

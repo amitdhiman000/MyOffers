@@ -24,41 +24,70 @@
         return true;
     }
 
-    function afterBRes(event) {
+    function afterBRes(e) {
         console.log('+afterBResponse');
-        console.log(event.data);
-        if (event.status) {
-            $("#business-items").append(event.data);
+        console.log(e.resp);
+        if (e.status) {
+            $("#business-items").append(e.resp);
+			$('.info_item form').data('handlers', {before: beforeSaveReq, after: afterSaveResponse});
         }
     }
 
-	function editBusiness(pLink, data)
-	{
+	function deleteBusiness(pLink, data) {
 		console.log('+deleteBusiness');
 		var item = $(pLink).parents('.business-item');
 		//item.hide('slow', function(){ item.remove(); });
 		item.fadeOut(600, function(){ $(this).remove(); });
-		/*item.animate({
-			"opacity" : "0", 1000,
-        	function(){ item.remove(); }
- 		});*/
-	}
-
-	function deleteBusiness(pLink, data)
-	{
-		console.log('+deleteBusiness');
-		var item = $(pLink).parents('.business-item');
-		//item.hide('slow', function(){ item.remove(); });
-		item.fadeOut(600, function(){ $(this).remove(); });
-		/*item.animate({
-			"opacity" : "0", 1000,
-        	function(){ item.remove(); }
- 		});*/
 	}
 
     $(function() {
 		$('#business-form').data('handlers', {before: beforeBReq, after: afterBRes});
+		$('.info_item form').data('handlers', {before: beforeSaveReq, after: afterSaveResponse});
     });
+
+	function editText(e,pThis) {
+		e.stopPropagation();
+		e.preventDefault();
+		console.log('+editText');
+		var root = $(pThis).parents('.info_item');
+		var inputs = root.find('.ui-input');
+		var controls = root.find('.item_controls');
+		/*if (controls.exists()) {
+			controls.remove();
+		} else {
+			item.after('<div class="item_controls" ><input type="submit" value="Save" class="ui-btn" /><input type="button" value="Cancel" onclick="editTextF(event,this)" class="ui-btn" /></div>');
+		}*/
+		if (inputs.attr('readonly')) {
+			inputs.removeAttr('readonly');
+		} else {
+			inputs.attr('readonly', 'readonly');
+			inputs.val(inputs.attr('data-value'));
+		}
+		controls.toggleClass('ui-hide');
+	}
+
+	function beforeSaveReq(e) {
+		console.log("+beforeSaveReq");
+		return true;
+	}
+
+	function afterSaveResponse(e) {
+		console.log("+afterSaveResponse");
+		if (e.status) {
+			var val = e.resp.data;
+			console.log(val);
+			e.$src.find('.ui-input').attr('data-value', val);
+			e.$src.find('input[type=button]').click();
+			Noti.info({title:e.resp.message, text:''});
+		} else {
+			var errors = '';
+			for (var err in e.resp.data) {
+				errors += e.resp.data[err] + '<br />';
+			}
+			Noti.info({title:e.resp.message, text:errors});
+		}
+	}
+
 	</script>
 	<div id="delete-dialog" title="Delete" style="display: none;">
 		<p>Are you sure want to delete this business ?</p>
@@ -72,12 +101,12 @@
 		<div class="ui-block-body" >
 			<a href="javascript:void(0)" class="ui-btn-a" onclick="showBusinessBox(event, this);" >[+] ADD BUSINESS</a>
 			<div id="business_add_box" >
-				<form method="POST" action="/user/business-create/" class="ajax-form" id="business-form" >
+				<form method="POST" action="/business/create/" class="ajax-form" id="business-form" >
 					<table class="ui-form-table" >
 						{% csrf_token %}
 						<input type="hidden" name="B_id" class="ui-input" value="{{business.id}}" />
 						<tr><td>CATEGORY*</td><td>
-						<select class="ui-input" name="B_cat" >
+						<select class="ui-input" name="B_category" >
 							{% for cat in categories %}
 							<option value="{{cat.id}}">{{cat.name}}</option>
 							{% endfor %}
@@ -87,10 +116,10 @@
 						<input type="text" name="B_name" class="ui-input" value="{{business.name}}" />
 						</td></tr>
 						<tr><td>ABOUT</td><td>
-						<input type="text" name="B_desc" class="ui-input" value="{{business.desc}}" />
+						<input type="text" name="B_about" class="ui-input" value="{{business.about}}" />
 						</td></tr>
 						<tr><td>WEBSITE</td><td>
-						<input type="text" name="B_web" class="ui-input" value="{{business.web}}" />
+						<input type="text" name="B_website" class="ui-input" value="{{business.website}}" />
 						</td></tr>
 						<tr><td></td><td><input type="submit" value="Save" class="ui-btn ui-btn-input" /></td></tr>
 					</table>
@@ -98,7 +127,7 @@
 			</div>
 
 			<div id="address_add_box" >
-				<form method="POST" action="/user/business-address-create/" class="ajax-form" id="business-form" >
+				<form method="POST" action="/business/address-create/" class="ajax-form" id="business-form" >
 					<table class="ui-form-table" >
 						{% csrf_token %}
 						<input type="hidden" name="BA_id" class="ui-input" value="{{business.address.id}}" />
@@ -117,7 +146,7 @@
 						<tr><td>LANDMARK</td><td>
 						<input type="text" name="BA_landmark" class="ui-input" value="{{business.address.landmark}}" />
 						</td></tr>
-						<tr><td>ADDRESS</td><td>
+						<tr><td style="vertical-align:top;">ADDRESS</td><td>
 						<textarea name="BA_address" class="ui-textarea" > {{business.address.address}} </textarea>
 						</td></tr>
 						<tr><td></td><td><input type="submit" value="Save" class="ui-btn ui-btn-input" /></td></tr>
@@ -129,7 +158,7 @@
 
 	<div class="ui-content" id="business-items">
 		{% for b in business %}
-			{% include './user_business_item_1.html' %}
+			{% include './business_item_1.html' %}
 		{% endfor %}
 	</div>
 </div>

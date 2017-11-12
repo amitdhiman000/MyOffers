@@ -20,6 +20,7 @@ import home.views
 
 urlpatterns = [
 	url(r'^$', home.views.home_page, name='home_page'),
+    url(r'^business/', include('business.urls')),
 	url(r'^error/', include('error.urls')),
 	url(r'^home/', include('home.urls')),
 	url(r'^locus/', include('locus.urls')),

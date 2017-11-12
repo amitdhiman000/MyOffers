@@ -2,7 +2,8 @@ from functools import wraps
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
-from .models import User, Guest
+from user.models import User, Guest
+import traceback
 
 USER_UID_KEY = '_user_uid'
 USER_EMAIL_KEY = '_user_name'
@@ -27,12 +28,7 @@ def fetch_user(request):
 
 
 def auth_user(email, password):
-	user = None
-	try:
-		user = User.objects.get(email=email, password=password)
-	except ObjectDoesNotExist:
-		user = None
-	return user
+	return User.check_creds(email, password)
 
 
 def login(request, user):

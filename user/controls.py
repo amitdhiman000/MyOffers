@@ -5,8 +5,7 @@ from common.validators import UserValidator
 
 from . import backends
 ## debug
-import traceback
-from pprint import pprint
+import logging
 
 
 class UserSignInControl(BaseControl):
@@ -17,9 +16,8 @@ class UserSignInControl(BaseControl):
 		try:
 			self.m_user.email = post.get('U_email', '').strip(' \t\n\r')
 			self.m_user.passw = post.get('U_pass', '').strip(' \t\n\r')
-		except:
-			import traceback
-			traceback.print_exc()
+		except Exception as e:
+			logging.error(e)
 			self.m_errors['error'] = 'Invalid request format'
 			return False
 		return True
@@ -27,6 +25,8 @@ class UserSignInControl(BaseControl):
 
 	def validate(self):
 		user = backends.auth_user(self.m_user.email, self.m_user.passw)
+		print(self.m_user.email)
+		print(self.m_user.passw)
 		if user != None:
 			self.m_user = user
 		else:
@@ -53,19 +53,14 @@ class UserSignUpControl(BaseControl):
 			self.m_user.email = post.get('U_email', '').strip(' \t\n\r')
 			self.m_user.password = post.get('U_pass', '').strip(' \t\n\r')
 			self.m_user.phone = post.get('U_phone', '').strip(' \t\n\r')
-		except:
-			import traceback
-			traceback.print_exc()
+		except Exception as e:
+			logging.error(e)
 			return False
 
 		# keep a copy of older values
 		self.m_values['U_name'] = self.m_user.name
 		self.m_values['U_email'] = self.m_user.email
 		self.m_values['U_phone'] = self.m_user.phone
-		return True
-
-
-	def clean(self):
 		return True
 
 
@@ -97,30 +92,14 @@ class UserSignUpControl(BaseControl):
 
 
 
-class UserControlFactory(object):
-	@classmethod
-	def getControl(request):
-		field = request.POST.get('field_name', '')
-		controls = {
-			'U_name': UserNameControl,
-			'U_email': UserEmailControl,
-			'U_pass': UserPassControl,
-			'U_phone': UserPhoneControl,
-			'': BaseControl,
-		}
-		return controls[field]
-
-
-
 class UserNameControl(BaseControl):
 	def parseRequest(self, request):
 		post = request.POST
 		self.m_user = request.user;
 		try:
 			self.m_val = post.get('U_name', '').strip(' \t\n\r')
-		except:
-			import traceback
-			traceback.print_exc()
+		except Exception as e:
+			logging.error(e)
 			return False
 		return True
 
@@ -145,12 +124,12 @@ class UserNameControl(BaseControl):
 class UserEmailControl(BaseControl):
 	def parseRequest(self, request):
 		post = request.POST
+		self.m_request = request
 		self.m_user = request.user;
 		try:
 			self.m_val = post.get('U_email', '').strip(' \t\n\r')
-		except:
-			import traceback
-			traceback.print_exc()
+		except Exception as e:
+			logging.error(e)
 			return False
 		return True
 
@@ -168,7 +147,11 @@ class UserEmailControl(BaseControl):
 	def execute(self):
 		if self.m_valid == False:
 			return None
-		return User.update_email(self.m_val, self.m_user)
+		email = User.update_email(self.m_val, self.m_user)
+		if email != None:
+			self.m_user.email = email
+			backends.login(self.m_request, self.m_user)
+		return email
 
 
 class UserPhoneControl(BaseControl):
@@ -177,16 +160,15 @@ class UserPhoneControl(BaseControl):
 		self.m_user = request.user;
 		try:
 			self.m_val = post.get('U_phone', '').strip(' \t\n\r')
-		except:
-			import traceback
-			traceback.print_exc()
+		except Exception as e:
+			logging.error(e)
 			return False
 		return True
 
 
 	def validate(self):
 		validator = UserValidator()
-		error = validator.validateEmail(self.m_val)
+		error = validator.validatePhone(self.m_val)
 		if error != None:
 			self.m_errors['U_phone'] = error
 
@@ -209,9 +191,8 @@ class UserPasswordControl(BaseControl):
 			self.m_pass0 = post.get('U_pass0', '').strip(' \t\n\r')
 			self.m_pass1 = post.get('U_pass1', '').strip(' \t\n\r')
 			self.m_pass2 = post.get('U_pass2', '').strip(' \t\n\r')
-		except:
-			import traceback
-			traceback.print_exc()
+		except Exception as e:
+			logging.error(e)
 			return False
 		return True
 
@@ -233,3 +214,25 @@ class UserPasswordControl(BaseControl):
 		if self.m_valid == False:
 			return None
 		return User.update_password(self.pass1, self.m_user)
+
+
+class UserControlFactory(object):
+	@classmethod
+	def getControl(klass, request):
+		print(request.POST)
+		field = ''
+		controls = {
+			'U_name': UserNameControl,
+			'U_email': UserEmailControl,
+			'U_pass': UserPasswordControl,
+			'U_phone': UserPhoneControl,
+			'': BaseControl,
+		}
+
+		for key in request.POST:
+			if key in controls.keys():
+				field = key
+				break
+
+		print(field)
+		return controls[field]()

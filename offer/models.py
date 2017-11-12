@@ -1,4 +1,3 @@
-import os
 from django.conf import settings
 from django.db import models
 from datetime import datetime
@@ -6,9 +5,10 @@ from datetime import timedelta
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 
-from locus.models import Address
 from user.models import User
-
+from locus.models import Address
+from business.models import Category
+from business.models import Business
 from common.apputil import App_UserFilesDir
 
 ## debug
@@ -18,133 +18,6 @@ from pprint import pprint
 # Create your models here.
 def days_ahead(days=1):
 	return timezone.now() + timezone.timedelta(days=days)
-
-
-
-# Business types
-class Category(models.Model):
-	id = models.BigAutoField(primary_key=True)
-	name = models.CharField(max_length=30)
-	details = models.CharField(max_length=50)
-	parent = models.ForeignKey("self", default=None, null=True, blank=True)
-
-	class Meta:
-		verbose_name = _('category')
-		verbose_name_plural= _('categories')
-
-	def __str__(self):
-		return self.name
-
-
-	@classmethod
-	def create(klass, parent, name, desc):
-		return klass.objects.create(parent=parent, name=name, details=desc)
-
-
-	@classmethod
-	def remove(klass, name):
-		try:
-			db_obj = klass.objects.get(name=name)
-			db_obj.delete()
-			return True
-		except:
-			print('failed to delete')
-			traceback.print_exc()
-			return False
-
-
-	@classmethod
-	def fetch_all(klass):
-		return klass.objects.all()
-
-
-	@classmethod
-	def fetch_by_id(klass, id):
-		try:
-			return klass.objects.get(id=id)
-		except:
-			traceback.print_exc()
-			return None
-
-
-	@classmethod
-	def fetch_by_name(klass, name):
-		try:
-			return klass.objects.get(name=name)
-		except:
-			traceback.print_exc()
-			return None
-
-
-	@classmethod
-	def fetch_children(klass, name):
-		return klass.objects.filter(parent__name=name)
-
-
-
-# Business
-class Business(models.Model):
-	id = models.BigAutoField(primary_key=True)
-	name = models.CharField(max_length=50, blank=False)
-	desc = models.CharField(max_length=100, blank=False)
-	website = models.CharField(max_length=100, blank=True)
-	fk_category = models.ForeignKey(Category)
-	fk_user = models.ForeignKey(User, on_delete=models.CASCADE)
-	#fk_address = models.ForeignKey(Address)
-
-
-	@classmethod
-	def create(klass, b, user):
-		obj = klass.objects.get_or_create(name=b.name, desc=b.desc, website=b.website, fk_category=b.category, fk_user=user)[0]
-		return obj
-
-
-	@classmethod
-	def remove(klass, id, name, user):
-		if name == None or name == '':
-			raise ValueError('Invalid value')
-		try:
-			obj = klass.objects.get(id=id, name=name, fk_user=user)[0]
-			obj.delete()
-			return True
-		except:
-			traceback.print_exc()
-			return False
-
-
-	@classmethod
-	def fetch_by_user(klass, user):
-		return klass.objects.filter(fk_user=user)
-
-
-
-class BusinessAdressMap(models.Model):
-	id = models.BigAutoField(primary_key=True)
-	fk_business = models.ForeignKey(Business, on_delete=models.CASCADE)
-	fk_address = models.ForeignKey(Address, on_delete=models.CASCADE)
-
-	@classmethod
-	def create(klass, business, address):
-		return klass.objects.get_or_create(fk_business=business, fk_address=address)
-
-
-	@classmethod
-	def remove(klass, business, address):
-		try:
-			db_obj = klass.objects.get(business, address)
-			db_obj.delete()
-			return True
-		except:
-			print('failed to delete')
-			traceback.print_exc()
-			return False
-
-
-	@classmethod
-	def fetch_by_business(klass, business):
-		db_objs = klass.objects.filter(fk_business=business)
-		return db_objs
-
 
 
 # offers table for new offers

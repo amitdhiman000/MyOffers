@@ -56,34 +56,49 @@ class User(models.Model):
 	def update_name(klass, name, user):
 		u = klass.fetch_user(user)
 		u.name = name
-		return u.save()
+		u.save()
+		return u.name
 
 
 	@classmethod
 	def update_email(klass, email, user):
 		u = klass.fetch_user(user)
 		u.email = email
-		return u.save()
+		u.save()
+		return u.email
 
 
 	@classmethod
 	def update_phone(klass, phone, user):
 		u = klass.fetch_user(user)
 		u.phone = phone
-		return u.save()
+		u.save()
+		return u.phone
 
 
 	@classmethod
 	def update_password(klass, password, user):
 		u = klass.fetch_user(user)
 		u.password = password
-		return u.save()
+		u.save()
+		return 'xxxxxxxx'
 
 
 	@classmethod
 	def check_password(klass, password, user):
 		u = klass.fetch_user(user)
 		return u.password == password
+
+
+	@classmethod
+	def check_creds(klass, email, password):
+		try:
+			return klass.objects.get(email=email, password=password)
+			#return klass.objects.filter(email=email, password=password).first()
+		except:
+			print("user creds do not match")
+			traceback.print_exc()
+			return None
 
 
 	def fetch_url(self):

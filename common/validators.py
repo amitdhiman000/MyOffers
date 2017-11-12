@@ -1,6 +1,7 @@
 import re
 from user.models import User
 
+
 class UserValidator(object):
 	def validateName(self, name):
 		error = None
@@ -121,4 +122,76 @@ class OfferValidator(object):
 
 			if start > end:
 				error = '*Start date cannot be before expire date'
+		return error
+
+
+
+class BusinessValidator(object):
+	def validateName(self, value):
+		error = None
+		if value == None or value == '':
+			error = '*Business Name is required'
+		else:
+			length = len(value)
+			if length > 50:
+				error = '*Business Name is too long'
+			elif length < 3:
+				error = '*Business Name is too short'
+			#some more checks required
+		return error
+
+
+	def validateCategory(self, value):
+		error = None
+		if value == None or value == '':
+			pass
+			#error = '*Website is required'
+		else:
+			pass
+		#some more checks required
+		return error
+
+
+	def validateDescription(self, value):
+		error = None
+		if value == None or value == '':
+			pass
+			#error = '*Website is required'
+		else:
+			pass
+		#some more checks required
+		return error
+
+
+	def validateWebsite(self, value):
+		error = None
+		if value == None or value == '':
+			pass
+			#error = '*Website is required'
+		else:
+			pass
+		#some more checks required
+		return error
+
+
+class BaseValidator(object):
+	@staticmethod
+	def validate(value, *args, **kwargs):
+		return 'not implemented'
+
+
+
+class BusinessNameValidator(BaseValidator):
+	@staticmethod
+	def validate(value, *args, **kwargs):
+		error = None
+		if value == None or value == '':
+			error = '*Business Name is required'
+		else:
+			length = len(value)
+			if length > 50:
+				error = '*Business Name is too long'
+			elif length < 3:
+				error = '*Business Name is too short'
+			#some more checks required
 		return error

@@ -5,63 +5,16 @@ from user.models import User
 from locus.models import Area
 from upload.models import FileUpload
 from offer.models import Offer
-from offer.models import Category
-from offer.models import Business
+from business.models import Category
+from business.models import Business
 
 from common.controls import BaseControl
 from common.apputil import App_Slugify
 from common.validators import OfferValidator
 
 ## debug
-import traceback
+import logging
 from pprint import pprint
-
-
-
-class BusinessControl(BaseControl):
-	def parseRequest(self, request):
-		post = request.POST;
-		self.m_user = request.user;
-		self.m_business = Business()
-		try:
-			self.m_business.name = post.get('B_name', '').strip(' \t\n\r')
-			self.m_business.desc = post.get('B_desc', '').strip(' \t\n\r')
-			self.m_business.category = post.get('B_cat', '').strip(' \t\n\r')
-			self.m_business.website = post.get('B_web', '').strip(' \t\n\r')
-		except:
-			import traceback
-			traceback.print_exc()
-			self.m_errors['error'] = 'Failed to parse request data'
-			return False
-
-		# keep a copy of older values
-		self.m_values['B_name'] = self.m_business.name
-		self.m_values['B_desc'] = self.m_business.desc
-		self.m_values['B_cat'] = self.m_business.category
-		self.m_values['B_web'] = self.m_business.website
-		return True
-
-
-	def validate(self):
-		self.m_business.category = Category.fetch_by_id(self.m_business.category)
-		if self.m_business.category == None:
-			self.m_errors['error'] = 'No such category found'
-
-		self.m_valid = (len(self.m_errors) == 0)
-		return self.m_valid
-
-
-	def execute(self):
-		if False == self.m_valid:
-			return None
-
-		business = Business.create(self.m_business, self.m_user)
-		if business == None:
-			print('DB operation failed')
-			self.m_errors['error'] = 'Database internal Error'
-		return business
-
-
 
 class OfferControl(BaseControl):
 	def parseRequest(self, request):
@@ -91,10 +44,9 @@ class OfferControl(BaseControl):
 			self.m_offer.start_date = post.get('P_start_date', '').strip(' \t\n\r')
 			self.m_offer.expire_date = post.get('P_expire_date', '').strip(' \t\n\r')
 			self.m_location = post.get('P_location', '').strip(' \t\n\r')
-		except:
+		except Exception as e:
+			logging.error(e)
 			self.m_errors['error'] = 'Failed to parse request'
-			print('Failed to parse request')
-			traceback.print_exc()
 			return False
 
 		# save values for session

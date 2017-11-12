@@ -9,9 +9,11 @@
 	</div>
 	<div class="ui-body" >
 		<div class="ui-errors">
+			{% if form_errors %}
 			{% for error in form_errors %}
-				{{error}}<br />
+				{{error}} <br />
 			{% endfor %}
+			{% endif %}
 		</div>
 		<form action="/user/signin-auth/" method="POST" class="ajax-form" id="signin-form" >
 			{% csrf_token %}

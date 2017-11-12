@@ -9,14 +9,14 @@ from django.views.decorators.csrf import csrf_exempt
 from . import backends
 from user.models import User
 from locus.models import Address
-from offer.models import Category
-from offer.models import Business
-from user.controls import UserSignUpControl
-from user.controls import UserSignInControl
+from business.models import Category
+from business.models import Business
+from user.controls import *
 from common.apputil import *
 
 ## debugging
 from pprint import pprint
+import logging
 # Create your views here.
 
 @App_RedirectIfLoggedin
@@ -37,6 +37,7 @@ def signin_view(request):
 #functions for registration
 @App_RedirectIfLoggedin
 def signup_view(request):
+	logging.debug('Hello');
 	data = {'title':'Signup'}
 	data.update(csrf(request))
 	data.update({settings.USER_LOGIN_NEXT: request.POST.get(settings.USER_LOGIN_NEXT, '')})
@@ -119,16 +120,8 @@ def user_account_view(request):
 	address = Address.fetch_by_user(user)
 	user.address = address
 	data = {'title':'Account', 'user': user}
+	data.update(csrf(request))
 	return App_Render(request, 'user/user_account_1.html', data)
-
-
-
-@App_LoginRequired
-def user_business_view(request):
-	business = Business.fetch_by_user(request.user)
-	categories = Category.fetch_all()
-	data = {'title': 'User Business', 'business': business, 'categories': categories };
-	return App_Render(request, 'user/user_business_1.html', data)
 
 
 
@@ -163,44 +156,21 @@ def user_settings_view(request):
 
 @App_LoginRequired
 def user_update(request):
-	control = UserUpdateControl()
-	if control.parseRequest(request) and control.validate():
-		control.execute()
-
-	if request.is_ajax:
-		return JsonResponse({'status': 204, 'message': 'Updated'})
-	else:
-		return App_Redirect(request, '/user/account/')
-
-
-
-@App_LoginRequired
-def user_business_create(request):
-	from offer.controls import BusinessControl
 	data = None
-	control = BusinessControl()
+	control = UserControlFactory.getControl(request)
 	if (control.parseRequest(request)
 			and control.clean()
 			and control.validate()):
 		data = control.execute()
-		#data = model_to_dict(data)
+		#pass
 
 	if request.is_ajax:
-		if data != None:
-			return App_Render(request, 'user/user_business_item_1.html', {'b':data})
-			##return JsonResponse({'status':200, 'message':'Business saved', 'data':data});
+		if data == None:
+			return JsonResponse({'status': 400, 'message': 'Save Failed', 'data':control.errors()})
 		else:
-			data = control.errors()
-			return JsonResponse({'status':401, 'message':'Business save failed', 'data':data});
+			return JsonResponse({'status': 200, 'message': 'Saved Successfully', 'data':data})
 	else:
-		return App_Redirect(request, '/user/business/')
-
-
-
-@App_LoginRequired
-def user_business_delete(request):
-	data = {'title': 'User Business'};
-	return App_Render(request, 'user/user_business_1.html', data)
+		return App_Redirect(request, '/user/account/')
 
 
 

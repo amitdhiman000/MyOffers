@@ -1,16 +1,24 @@
 class BaseControl(object):
-	m_valid = True
-	m_errors = {}
-	m_values = {}
+
+	def __init__(self):
+		self.m_valid = True
+		self.m_errors = {}
+		self.m_values = {}
 
 	def parseRequest(self, request):
-		return True
+		return False
 
 	def errors(self):
 		return self.m_errors
 
 	def values(self):
 		return self.m_values
+
+	def reset(self):
+		self.m_valid = True
+		self.m_errors = {}
+		self.m_values = {}
+		return self
 
 	def clean(self):
 		#do nothing

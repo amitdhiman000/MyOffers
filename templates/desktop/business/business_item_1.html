@@ -1,0 +1,128 @@
+<div class="ui-block ui-shadow business-item" data-id="{{b.id}}" style="margin-top:2.5em;" >
+    <div class="ui-block-bar">
+        <div class="ui-content" >
+            <strong>{{b.name}}</strong>
+        </div>
+        <div class="ui-content" style="text-transform: none;" >
+            <div class="ui-right" >
+                <a onclick="deafaultBusiness(this,null)" >Default</a>
+                &nbsp;|&nbsp;<a onclick="deleteBusiness(this,null)" >Delete</a>
+            </div>
+        </div>
+    </div>
+    <div class="ui-block-body">
+        <table class="ui-form-table" >
+            <tr class="info_item" >
+                <td>NAME</td>
+                <td>
+                    <form method="POST" action="/business/update/" class="ajax-form">
+                    <div>
+                        {% csrf_token %}
+                        <input type="hidden" name="B_id" value="{{b.id}}" />
+                        <input readonly type="text" name="B_name" value="{{b.name}}" data-value="{{b.name}}" placeholder="Name" class="ui-input" />
+                    </div>
+                    <div class="ui-hide item_controls" >
+                        <input type="submit" value="Save" class="ui-btn" />
+                        <input type="button" value="Cancel" onclick="editText(event,this)" class="ui-btn" />
+                    </div>
+                    </form>
+                </td>
+                <td><a onclick="editText(event,this)" >Edit</a></td>
+            </tr>
+            <tr class="info_item" >
+                <td>ABOUT</td>
+                <td>
+                    <form method="POST" action="/business/update/" class="ajax-form">
+                    <div>
+                        {% csrf_token %}
+                        <input type="hidden" name="B_id" value="{{b.id}}" />
+                        <input readonly type="text" name="B_about" value="{{b.about}}" data-value="{{b.about}}" placeholder="About Business" class="ui-input" />
+                    </div>
+                    <div class="ui-hide item_controls" >
+                        <input type="submit" value="Save" class="ui-btn" />
+                        <input type="button" value="Cancel" onclick="editText(event,this)" class="ui-btn" />
+                    </div>
+                    </form>
+                </td>
+                <td><a onclick="editText(event,this)" >Edit</a></td>
+            </tr>
+            <tr class="info_item" >
+                <td>CATEGORY</td>
+                <td>
+                    <form method="POST" action="/business/update/" class="ajax-form">
+                    <div>
+                        {% csrf_token %}
+                        <input type="hidden" name="B_id" value="{{b.id}}" />
+                        <select readonly name="B_category" value="{{b.category}}" data-value="{{b.category}}" class="ui-input" >
+                            {% for cat in categories %}
+                            <option value="{{cat.id}}" {% if b.fk_category.id == cat.id %}selected{% endif %}>{{cat.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="ui-hide item_controls" >
+                        <input type="submit" value="Save" class="ui-btn" />
+                        <input type="button" value="Cancel" onclick="editText(event,this)" class="ui-btn" />
+                    </div>
+                    </form>
+                </td>
+                <td><a onclick="editText(event,this)" >Edit</a></td>
+            </tr>
+            <tr class="info_item" >
+                <td>WEBSITE</td>
+                <td>
+                    <form method="POST" action="/business/update/" class="ajax-form">
+                    <div>
+                        {% csrf_token %}
+                        <input type="hidden" name="B_id" value="{{b.id}}" />
+                        <input readonly type="text" name="B_website" value="{{b.website}}" data-value="{{b.website}}" placeholder="Website e.g. http://mybusiness.com" class="ui-input" />
+                    </div>
+                    <div class="ui-hide item_controls" >
+                        <input type="submit" value="Save" class="ui-btn" />
+                        <input type="button" value="Cancel" onclick="editText(event,this)" class="ui-btn" />
+                    </div>
+                    </form>
+                </td>
+                <td><a onclick="editText(event,this)" >Edit</a></td>
+            </tr>
+        </table>
+        {% if b.address %}
+            {% for address in b.address %}
+            <div class="ui-body" >
+                <form method="POST" action="/business/address-create/" class="ajax-form" id="business-form" >
+					<table class="ui-form-table" >
+						{% csrf_token %}
+						<input type="hidden" name="BA_id" class="ui-input" value="{{business.address.id}}" />
+						<tr><td>NAME*</td><td>
+						<input readonly type="text" name="BA_name" class="ui-input" value="{{business.address.name}}" data-value="{{business.address.name}}" />
+						</td></tr>
+						<tr><td>COUNTRY</td><td>
+						<input readonly type="text" name="BA_country" class="ui-input" value="{{business.address.country}}" data-value="{{business.address.country}}" />
+						</td></tr>
+						<tr><td>PHONE</td><td>
+						<input readonly type="text" name="BA_phone" class="ui-input" value="{{business.address.phone}}" data-value="{{business.address.phone}}" />
+						</td></tr>
+						<tr><td>PINCODE</td><td>
+						<input readonly type="text" name="BA_pincode" class="ui-input" value="{{business.address.pincode}}"  data-value="{{business.address.pincode}}" />
+						</td></tr>
+						<tr><td>LANDMARK</td>
+                        <td><input readonly type="text" name="BA_landmark" class="ui-input" value="{{business.address.landmark}}" data-value="{{business.address.landmark}}" />
+						</td></tr>
+						<tr><td style="vertical-align:top;">ADDRESS</td>
+                        <td><textarea readonly name="BA_address" class="ui-textarea" data-value="{{business.address.address}}" > {{business.address.address}} </textarea>
+						</td></tr>
+						<tr><td></td><td><input type="submit" value="Save" class="ui-btn ui-btn-input" /> <input type="button" value="Cancel" class="ui-btn ui-btn-input" /></td></tr>
+					</table>
+				</form>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="ui-body" >
+                <h3>No Business Address</h3>
+            </div>
+        {% endif %}
+        <div style="margin-top: 1em;">
+            <a href="javascript:void(0)" class="ui-btn-a" onclick="showAddressBox(event, this)" >[+] Add Address</a>
+        </div>
+    </div>
+</div>
+<!-- end item -->

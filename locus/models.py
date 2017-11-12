@@ -351,11 +351,12 @@ class Address(models.Model):
 
 
 	@classmethod
-	def create(klass, loc_name, landmark, logitude, latitude, user, area):
-		if loc_name == None or loc_name == '':
+	def create(klass, a, user):
+		if a.name == None or a.name == '':
 			raise ValueError('Invalid value')
 		try:
-			obj = klass.objects.get_or_create(name=loc_name, landmark=landmark, longitude=longitude, latitude=latitude, fk_area=area)[0]
+			loc_name, landmark, logitude, latitude, user, area
+			obj = klass.objects.get_or_create(name=a.name, landmark=a.landmark, longitude=a.longitude, latitude=a.latitude, fk_area=area)[0]
 			return obj
 		except:
 			print('Failed to create location')

@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 	'django.contrib.staticfiles',
 	'background_task',
 	'ajax',
+	'business',
 	'error',
 	'home',
 	'locus',
@@ -83,6 +84,7 @@ TEMPLATES = [
 				'common.context_processors.user',
 				'common.context_processors.ajax',
 			],
+			#'string_if_invalid': '',
 		},
 	},
 ]
@@ -96,7 +98,6 @@ WSGI_APPLICATION = 'MyOffers.wsgi.application'
 DATABASES = {
 	'default': {
 		'ENGINE': 'django.db.backends.sqlite3',
-		#'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 		'NAME': os.path.join(BASE_DIR, 'devel.sqlite3')
 	}
 }
@@ -120,6 +121,69 @@ AUTH_PASSWORD_VALIDATORS = [
 	},
 ]
 
+import sys
+## website logging settings.
+LOGGING = {
+    'version': 1,
+    'formatters': {
+        'simple': {
+            'format': '%(asctime)s %(levelname)s %(module)s:%(funcName)s(%(lineno)d) %(message)s'
+        },
+		'normal': {
+            'format': '%(asctime)s %(levelname)s %(filename)s:%(funcName)s :(%(lineno)d) %(message)s'
+        },
+		'verbose': {
+            'format': '%(asctime)s %(levelname)s %(pathname)s:%(funcName)s :(%(lineno)d) %(process)d %(thread)d %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'normal',
+			'stream': sys.stdout,
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/logs.log',
+            'formatter': 'normal'
+        },
+		'file_request': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/request_logs.log',
+            'formatter': 'simple'
+        },
+    },
+    'loggers': {
+		'': {
+			'handlers': ['file'],
+			'level': 'DEBUG',
+			'propagate': True,
+		},
+		'django': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+		'django.request': {
+            'handlers': ['file_request'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+		'django.template': {
+            'handlers': ['file_request'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    }
+}
+
+if DEBUG:
+    # make all loggers use the console.
+    for logger in LOGGING['loggers']:
+        LOGGING['loggers'][logger]['handlers'] = ['console']
 
 #AUTH_USER_MODEL = accounts.User
 #AUTHENTICATION_BACKEND = (accounts.backends.UserAuth,)
@@ -192,7 +256,7 @@ USER_SIGNUP_URL = '/user/signup/'
 USER_SIGNUP_SUCCESS_URL = '/user/signup-success/'
 USER_LOGOUT_URL = '/user/signout/'
 USER_SETTING_URL = '/user/settings/'
-USER_PROFILE_URL = '/user/profile/'
+USER_PROFILE_URL = '/user/account/'
 
 OFFER_CREATE_NEW = '/offer/create-new/'
 OFFER_CREATE_NEW_AUTH = '/offer/create-new/auth'

@@ -69,6 +69,16 @@ def App_RedirectIfLoggedin(funct):
 	return _decorator
 
 
+def App_Time(funct):
+	def _decorator(*args, **kwargs):
+		t1 = time.time()
+		retv = funct(request, *args, **kwargs)
+		t2 = time.time() - t1
+		print('{} ran in {} sec'.format(funct.__name__, t2))
+		return retv
+	return _decorator
+
+
 ## class for mocking any object
 ##
 class Klass:

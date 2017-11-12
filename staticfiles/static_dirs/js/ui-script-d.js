@@ -82,11 +82,11 @@ function initSearch()
 	$("#app_search_input").suggestions({
 		minLength: 2,
 		_source: function(key, resp) {
-			postRequest('/search/offer/', {'key': key}, function(status, result){
+			postRequest('/search/offer/', {'key': key}, function(status, json){
 				if (true == status) {
-					resp(result.data);
+					resp(json.data);
 				} else {
-					console.log('data : '+JSON.stringify(result.data));
+					console.log('data : '+JSON.stringify(json.data));
 				}
 			});
 		},
@@ -136,8 +136,6 @@ function initApp()
         e.preventDefault();
         $(this).parent().toggleClass("expanded");
     });
-
-
 
 	// Close the dropdown if the user clicks outside of it
 	$(window).on("click", function(event) {
@@ -196,17 +194,14 @@ function ajaxFormSubmit(e)
 		if (handle.before(e) === false)
 			return;
 
-	postRequest(action, form.serialize(), (status, data) => {
+	postRequest(action, form.serialize(), (status, json) => {
 		if (handle && handle.after) {
 			e.status = status;
-			e.data = data;
+			e.resp = json;
+			e.$src = form;
 			handle.after(e);
 		} else {
-			if (status === true) {
-				Toast.show(data.message);
-			} else {
-				Toast.show(JSON.stringify(data));
-			}
+			Toast.show(JSON.stringify(json.message));
 		}
 	});
 }
@@ -215,9 +210,9 @@ function afterResponse(e) {
 	console.log("+afterResponse");
 	if (e.status == false) {
 		var errors = '';
-		for (var key in e.data) {
-			console.log(key + ' : '+ e.data[key]);
-			errors += e.data[key]+'<br />';
+		for (var key in e.resp.data) {
+			console.log(key + ' : '+ e.resp.data[key]);
+			errors += e.resp.data[key]+'<br />';
 		}
 		$('.ui-errors').html(errors);
 	} else {
@@ -247,12 +242,15 @@ function postRequest(pUrl, pData, pCallback)
 						location.href = jsonObj.url;
 						break;
 					case 200:
+						pCallback(true, jsonObj);
+						break;
 					case 204:
-						pCallback(true, jsonObj.data);
+						Toast.show(jsonObj.message);
+						//pCallback(true, jsonObj.data);
 						break;
 					case 401:
 					default:
-						pCallback(false, jsonObj.data);
+						pCallback(false, jsonObj);
 						break;
 				}
 			} else if (mimeType.indexOf('html') > -1) {
@@ -260,13 +258,13 @@ function postRequest(pUrl, pData, pCallback)
 				pCallback(true, data);
 			} else {
 				console.log('unknown response');
-				pCallback(false, {'error':'unexpected content type'});
+				pCallback(false, {'message': 'Unknown response', 'data':'unexpected content type'});
 			}
 		},
 		error: function (xhr,error) {
 			console.log('status : '+xhr.status);
 			Toast.show('Network error occured');
-			pCallback(false, {'data': error});
+			pCallback(false, {'message': 'Network failed', 'data': {error} });
 		}
 	});
 }
@@ -327,7 +325,7 @@ var Cookie = {
 
 /*****************************************************/
 /******************** Widgets ************************/
-/****************** Toast API ************************/
+/****************** UI API ************************/
 var Popup = {
 	show: function() {
 
@@ -337,13 +335,50 @@ var Popup = {
 	}
 };
 
-var Toast =  {
-	show: function(text='Error', timeout=1200) {
-		//$('.ui-toast').text(text).fadeIn(500).delay(timeout).fadeOut(500);
-		$('.ui-toast').fadeIn({duration: 500, start: function() {$(this).text(text);}}).delay(timeout).fadeOut(500);
+var Noti = {
+	_defaults: {
+		link: window.location,
+		title: 'Alert',
+		text: 'Alert',
+		timeout: 5000,
+	},
+	options: function(p) {
+		var finalOpts = this._defaults;
+		for (var key in p) {
+			finalOpts[key] = p[key];
+		}
+		return finalOpts;
+	},
+	info: function(p) {
+		var opts = this.options(p);
+		console.log(JSON.stringify(opts));
+		var $elm = $('#wt-noti').clone().removeAttr('id');
+		$elm.fadeIn({duration: 500,
+			start: function() {
+				$(this).find('.wt-notititle').html(opts.title);
+				$(this).find('.wt-notibody').html(opts.text);
+				$(this).find('.wt-notilink').attr('href', opts.link);
+			}
+		}).delay(opts.timeout).fadeOut({duration:500,
+			always: function() {
+				$(this).remove();
+			}
+		});
+		$('.wt-notibox').append($elm);
+	},
+	error: function(link) {
+	},
+	warn: function(link) {
+	}
+};
+
+var Toast = {
+	show: function(text='Error', timeout=1800) {
+		//$('.wt-toast').text(text).fadeIn(500).delay(timeout).fadeOut(500);
+		$('.wt-toast').fadeIn({duration: 500, start: function() {$(this).text(text);}}).delay(timeout).fadeOut(500);
 	},
 	hide: function() {
-		$('.ui-toast').hide();
+		$('.wt-toast').hide();
 	}
 };
 
@@ -781,12 +816,22 @@ function onSwipe(el,func) {
       },false);
 }
 
-function wcenter () {
-    this.css("position","absolute");
-    this.css("top", Math.max(0, (($(window).height() - $(this).height()) / 2) +
-                                                $(window).scrollTop()) + "px");
-    this.css("left", Math.max(0, (($(window).width() - $(this).width()) / 2) +
+function hcenter(pThis) {
+	pThis.css("left", Math.max(0, (($(window).width() - $(this).width()) / 2) +
                                                 $(window).scrollLeft()) + "px");
+}
+
+function vcenter(pThis) {
+	pThis.css("top", Math.max(0, (($(window).height() - $(this).height()) / 2) +
+                                                $(window).scrollTop()) + "px");
+}
+
+function wcenter () {
+    //this.css("position","absolute");
+    //this.css("top", Math.max(0, (($(window).height() - $(this).height()) / 2) + $(window).scrollTop()) + "px");
+    //this.css("left", Math.max(0, (($(window).width() - $(this).width()) / 2) + $(window).scrollLeft()) + "px");
+	//vcenter(this);
+	hcenter(this);
     return this;
 }
 
