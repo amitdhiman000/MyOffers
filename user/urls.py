@@ -17,6 +17,7 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
+    url(r'^$', views.home_view, name='home_view'),
 	url(r'^signin/$', views.signin_view, name='signin_view'),
 	url(r'^signin-auth/$', views.signin_auth, name='signin_auth'),
 	url(r'^signup/$', views.signup_view, name='signup_view'),

@@ -6,23 +6,25 @@
 
 {% block pagecontent %}
 <div class="ui-content" >
-	<div class="ui-bar-tbb">
-		<h3>Categories</h3>
-	</div>
-	<div class="ui-body">
-	{% if categories|length == 0 %}
-		<h4>No default values</h4>
-	{% else %}
-		<div class="ui-bar-tbb">
-			<a href="/myadmin/categories/">Categories &gt;&gt; </a>
+	<div class="ui-block" >
+		<div class="ui-block-bar">
+			<h3>Categories</h3>
 		</div>
-		<table class="ui-info-table">
-		<tr><th>Sr.</th><th>Category Name</th></tr>
-		{% for cat in categories %}
-			<tr><td>{{forloop.counter}}</td><td><a href="/myadmin/categories/{{cat.name}}/" >{{cat.name}}</a></td></tr>
-		{% endfor %}
-		</table>
-	{% endif %}
+		<div class="ui-block-body">
+		{% if categories|length == 0 %}
+			<h4>No default values</h4>
+		{% else %}
+			<div class="ui-bar-tbb">
+				<a href="/myadmin/categories/">Categories &gt;&gt; </a>
+			</div>
+			<table class="ui-info-table">
+			<tr><th>Sr.</th><th>Category Name</th></tr>
+			{% for cat in categories %}
+				<tr><td>{{forloop.counter}}</td><td><a href="/myadmin/categories/{{cat.name}}/" >{{cat.name}}</a></td></tr>
+			{% endfor %}
+			</table>
+		{% endif %}
+		</div>
 	</div>
 </div>
 {% endblock %}

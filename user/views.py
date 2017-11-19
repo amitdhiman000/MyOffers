@@ -19,6 +19,11 @@ from pprint import pprint
 import logging
 # Create your views here.
 
+
+def home_view(request):
+	return user_account_view(request)
+
+
 @App_RedirectIfLoggedin
 def signin_view(request):
 	data = {'title':'Login'}

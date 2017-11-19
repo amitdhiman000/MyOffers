@@ -6,6 +6,7 @@
 	<head>
 		<title>{{ title }} | MyOffers</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="csrf-token" key="csrfmiddlewaretoken" content="{{csrf_token}}" />
 
 		<link rel="stylesheet" type="text/css" href="{% static 'libs/jquery-ui/jquery-ui.css' %}" />
 		<script type="text/javascript" src="{% static 'libs/jquery/jquery-1.9.1.min.js' %}" ></script>
@@ -14,16 +15,16 @@
 
 		<style type="text/css">
 			{% includestatic 'css/ui-styles-d.css' %}
-			#app_header { position: fixed; width: 100%; background: #f9f9f9; border-bottom: 1px solid #ccd; z-index: 99; }
-			#app_body { position: absolute; top: 6em; width: 100%; margin-bottom: 50px; }
-			#app_footer { position: fixed; left: 0; bottom: 0; width: 100%; height: 30px; line-height: 30px; background: #e9e9e9; border-color: #ddd; }
+			#app_header { position: fixed; width: 100%; border-bottom: 1px solid #ccd; background: #f9f9f9; z-index: 99; box-shadow: 0 0 4px rgba(0,0,0,.14), 0 4px 8px rgba(0,0,0,.28); }
+			#app_body { position: absolute; top: 5em; width: 100%;  }
+			#app_footer { position: fixed; left: 0; bottom: 0; width: 100%; height: 3em; background: #f9f9f9; border-color: #ddd; }
 			.app_header { width: 98%; /*height: 40%;*/ margin: 0 auto; display: table; }
 			.app_header > div { display:table-cell; vertical-align: middle; }
 			.app_header_c1 { width: 20%; display: table-cell; }
 			.app_header_c2 { width: 55%; margin: 0.1em 0.5%;  }
 			.app_header_c3 { width:25%; margin:0.1em 0.5%; }
 
-			#app_logo { padding: 0.4em 0.4em; }
+			#app_logo { padding: 0.4em 0.4em; font-size: 2em; font-weight: bold; }
 			#app_search_input { width:97%; height:2.5em; padding: 0.7em 1.2em; border: 1px solid #ddd; background: #fff url({% static 'images/icons-svg/search.svg' %}) no-repeat right; }
 			#app_search_input:focus { border: 1px solid #bbb; }
 			#app_sub_nav_content { width: 60%; position: absolute; display: none; min-height: 12em; background: #eee; opacity: 0.95; padding: 0.3em; border: 1px solid #aaa; z-index: 99; }
@@ -40,11 +41,13 @@
 			li.app_vlist_exp_item > a:after { content: '\002B'; font-weight: bold; float: right; }
 			li.app_vlist_exp_item.expanded > a:after { content: "\2212"; }
 
-			#app_leftnav { width: 18%; position: fixed; top: 6em; bottom: 3em; z-index: 99; overflow-x: hidden; transition: 0.4s; }
-			#app_page { width: 82%; margin-left: 18%; padding-left: 1em; transition: 0.5s; }
-			#app_page_menu { width: 100%; }
+			#app_leftnav { width: 20%; position: fixed; height: 85%; z-index: 99; overflow: hidden; transition: 0.4s; }
+			#app_leftnav:hover { overflow-y: auto; }
+			#app_page { width: 80%; margin-left: 20%; padding-left: 1em; transition: margin 0.3s; }
+			#app_page_nav { width: 100%; background: #fff; box-shadow: 0px 2px 2px rgba(0,0,0,0.12); }
 			#app_page_body { width: 100%; }
 			#app_footer span { display: inline-block; vertical-align: middle; text-align: center; }
+			//::-webkit-scrollbar { width: 4px; }
 		</style>
 
 		<!-- scripts -->
@@ -89,8 +92,8 @@
 					{% endblock %}
 				</div>
 				<div id="app_page" >
-					<div id="app_page_menu">
-						{% block pagemenu %}
+					<div id="app_page_nav" >
+						{% block pagenav %}
 						{% endblock %}
 					</div>
 					<div id="app_page_body">

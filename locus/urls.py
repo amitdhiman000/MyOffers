@@ -18,4 +18,9 @@ from django.contrib import admin
 from . import views
 
 urlpatterns = [
+    url(r'^$', views.home_view, name='home_view'),
+    url(r'^address/$', views.address_view, name='address_view'),
+    url(r'^address-create/$', views.address_create, name='address_create'),
+    url(r'^address-update/$', views.address_update, name='address_update'),
+    url(r'^address-delete/$', views.address_delete, name='address_delete'),
 ]

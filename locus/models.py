@@ -6,6 +6,7 @@ from django.apps import apps
 
 from user.models import User
 ## debug
+import logging
 import traceback
 from pprint import pprint
 
@@ -39,8 +40,8 @@ class Country(models.Model):
 		try:
 			obj = klass.objects.get(name=name)[0]
 			return True
-		except:
-			traceback.print_exc()
+		except Exception as e:
+			logging.error(e)
 			return False
 
 
@@ -51,12 +52,11 @@ class Country(models.Model):
 
 
 	@classmethod
-	def fetch(klass, name):
+	def fetch_by_name(klass, name):
 		try:
 			return klass.objects.get(name=name)
-		except:
-			print('Failed to fetch country')
-			traceback.print_exc()
+		except Exception as e:
+			logging.error(e)
 			return None
 
 
@@ -87,9 +87,8 @@ class State(models.Model):
 			country = Country.objects.get(country_name=country_name)
 			obj = klass.objects.get_or_create(name=state_name, fk_country=country)[0]
 			return obj
-		except:
-			print('Failed to get country'+ country_name)
-			traceback.print_exc()
+		except Exception as e:
+			logging.error(e)
 			return False
 
 
@@ -100,14 +99,12 @@ class State(models.Model):
 
 	@classmethod
 	def remove(klass, name):
-		if name == None or name == '':
-			raise ValueError('Invalid value')
 		try:
 			obj = klass.objects.get(name=name)[0]
 			obj.delete()
 			return True
-		except:
-			traceback.print_exc()
+		except Exception as e:
+			logging.error(e)
 			return False
 
 
@@ -117,9 +114,8 @@ class State(models.Model):
 			country = Country.objects.get(name=country_name)
 			objs = klass.objects.filter(fk_country=country)
 			return objs
-		except:
-			print("Failed to get states")
-			traceback.print_exc()
+		except Exception as e:
+			logging.error(e)
 			return None
 
 
@@ -127,8 +123,8 @@ class State(models.Model):
 	def fetch(klass, name):
 		try:
 			return klass.objects.get(name=name)
-		except:
-			traceback.print_exc()
+		except Exception as e:
+			logging.error(e)
 			return None
 
 
@@ -136,8 +132,8 @@ class State(models.Model):
 	def fetch_by_objs(klass, name, country):
 		try:
 			return klass.objects.get(name=name, fk_country=country)
-		except:
-			traceback.print_exc()
+		except Exception as e:
+			logging.error(e)
 			return None
 
 
@@ -169,9 +165,8 @@ class City(models.Model):
 			state = State.objects.get(name=state_name)
 			obj = klass.objects.get_or_create(name=city_name, fk_state=state, fk_country=country,)[0]
 			return obj
-		except:
-			print('Failed to create city')
-			traceback.print_exc()
+		except Exception as e:
+			logging.error(e)
 			return None
 
 
@@ -188,8 +183,8 @@ class City(models.Model):
 			obj = klass.objects.get(name=name)[0]
 			obj.delete()
 			return True
-		except:
-			traceback.print_exc()
+		except Exception as e:
+			logging.error(e)
 			return False
 
 
@@ -200,9 +195,8 @@ class City(models.Model):
 			state = State.objects.get(name=state_name)
 			objs = klass.objects.filter(fk_country=country, fk_state=state)
 			return objs
-		except:
-			print("Failed to get cites")
-			traceback.print_exc()
+		except Exception as e:
+			logging.error(e)
 			return None
 
 
@@ -210,8 +204,8 @@ class City(models.Model):
 	def fetch(klass, name):
 		try:
 			return klass.objects.get(name=name)
-		except:
-			traceback.print_exc()
+		except Exception as e:
+			logging.error(e)
 			return None
 
 
@@ -219,8 +213,8 @@ class City(models.Model):
 	def fetch_by_name(klass, city_name, state_name, country_name):
 		try:
 			return klass.objects.get(name=city_name, fk_state__name=state_name, fk_country__name=country_name)
-		except:
-			traceback.print_exc()
+		except Exception as e:
+			logging.error(e)
 			return None
 
 
@@ -228,7 +222,7 @@ class City(models.Model):
 class Area(models.Model):
 	id = models.BigAutoField(primary_key=True)
 	name = models.CharField(max_length=50, blank=True)
-	pin = models.CharField(max_length=10, blank=True)
+	pincode = models.CharField(max_length=10, blank=True)
 	fk_city = models.ForeignKey(City, on_delete=models.CASCADE)
 	fk_state = models.ForeignKey(State, on_delete=models.CASCADE)
 	fk_country = models.ForeignKey(Country, on_delete=models.CASCADE)
@@ -240,24 +234,20 @@ class Area(models.Model):
 
 	@classmethod
 	def create(klass, area_name, area_pin, city, state, country):
-		if area_name == None or area_name == '' or area_pin == None or area_pin == '':
-			raise ValueError('Invalid value')
-		obj = klass.objects.get_or_create(name=area_name, pin=area_pin, fk_city=city, fk_state=state, fk_country=country)[0]
+		obj = klass.objects.get_or_create(name=area_name, pincode=area_pin, fk_city=city, fk_state=state, fk_country=country)[0]
 		return obj
 
 
 	@classmethod
 	def create0(klass, area_name, area_pin, city_name, state_name, country_name):
-		if area_name == None or area_name == '':
-			raise ValueError('Invalid value')
 		try:
 			country = Country.objects.get(name=country_name)
 			state = State.objects.get(name=state_name)
 			city = City.objects.get(name=city_name)
-			obj = klass.objects.get_or_create(name=area_name, pin=area_pin, fk_country=country, fk_state=state, fk_city=city)[0]
+			obj = klass.objects.get_or_create(name=area_name, pincode=area_pin, fk_country=country, fk_state=state, fk_city=city)[0]
 			return (obj != None)
-		except:
-			traceback.print_exc()
+		except Exception as e:
+			logging.error(e)
 			return None
 
 
@@ -268,14 +258,12 @@ class Area(models.Model):
 
 	@classmethod
 	def remove(klass, name):
-		if name == None or name == '':
-			raise ValueError('Invalid value')
 		try:
 			obj = klass.objects.get(name=name)[0]
 			obj.delete()
 			return True
-		except:
-			traceback.print_exc()
+		except Exception as e:
+			logging.error(e)
 			return False
 
 
@@ -287,9 +275,8 @@ class Area(models.Model):
 			city = City.objects.get(name=city_name)
 			objs = klass.objects.filter(fk_country=country, fk_state=state, fk_city=city)
 			return objs
-		except:
-			print("Failed to fetch areas")
-			traceback.print_exc()
+		except Exception as e:
+			logging.error(e)
 			return None
 
 
@@ -301,18 +288,17 @@ class Area(models.Model):
 			city = City.objects.get(name=city_name)
 			objs = klass.objects.filter(name=area_name, fk_country=country, fk_state=state, fk_city=city)
 			return objs
-		except:
-			print("Failed to get area")
-			traceback.print_exc()
+		except Exception as e:
+			logging.error(e)
 			return None
 
 
 	@classmethod
-	def fetch_by_pin(klass, area_name, area_pin):
+	def fetch_by_pincode(klass, area_pin):
 		try:
-			return klass.objects.filter(pin=area_pin)[0]
-		except:
-			traceback.print_exc()
+			return klass.objects.filter(pincode=area_pin)[0]
+		except Exception as e:
+			logging.error(e)
 			return None
 
 
@@ -320,9 +306,8 @@ class Area(models.Model):
 	def fetch_by_city(klass, city):
 		try:
 			return klass.objects.filter(fk_city__name=city)
-		except:
-			print('Failed to get areas')
-			traceback.print_exc()
+		except Exception as e:
+			logging.error(e)
 			return None
 
 
@@ -347,21 +332,27 @@ class Address(models.Model):
 	updated_at = models.DateTimeField(default=timezone.now)
 	fk_area = models.ForeignKey(Area, on_delete=models.CASCADE)
 	fk_user = models.ForeignKey(User, on_delete=models.CASCADE)
-	user_flags = models.IntegerField()
+	flags = models.IntegerField(default=0)
 
 
 	@classmethod
 	def create(klass, a, user):
-		if a.name == None or a.name == '':
-			raise ValueError('Invalid value')
 		try:
-			loc_name, landmark, logitude, latitude, user, area
-			obj = klass.objects.get_or_create(name=a.name, landmark=a.landmark, longitude=a.longitude, latitude=a.latitude, fk_area=area)[0]
+			obj = klass.objects.get_or_create(name=a.name, phone=a.phone, address=a.address, landmark=a.landmark, longitude=a.longitude, latitude=a.latitude, fk_area=a.area, fk_user=a.user)[0]
 			return obj
-		except:
-			print('Failed to create location')
-			traceback.print_exc()
+		except Exception as e:
+			logging.error(e)
 			return None
+
+	@classmethod
+	def remove(klass, id, user):
+		try:
+			obj = klass.objects.get(id=id, fk_user=user)
+			obj.delete()
+			return True
+		except Exception as e:
+			logging.error(e)
+			return False
 
 
 	@classmethod
@@ -385,9 +376,8 @@ class Location(models.Model):
 		try:
 			obj = klass.objects.get_or_create(name=loc_name, landmark=landmark, longitude=longitude, latitude=latitude, fk_area=area)[0]
 			return obj
-		except:
-			print('Failed to create location')
-			traceback.print_exc()
+		except Exception as e:
+			logging.error(e)
 			return None
 
 
@@ -399,8 +389,8 @@ class Location(models.Model):
 			obj = klass.objects.get(name=name)[0]
 			obj.delete()
 			return True
-		except:
-			traceback.print_exc()
+		except Exception as e:
+			logging.error(e)
 			return False
 
 

@@ -165,18 +165,18 @@ function navClicked()
 	var apppage = document.getElementById("app_page");
 	if (appleft && apppage) {
 		console.log("marginLeft: "+appleft.style.marginLeft)
-		if (appleft.style.marginLeft !== "-18%") {
+		if (appleft.style.marginLeft !== "-20%") {
 			//appleft.style.width = "0";
 			//apppage.style.marginLeft = "0";
-			appleft.style.marginLeft = "-18%";
-			apppage.style.marginLeft = "0";
-			apppage.style.width = "100%";
+			appleft.style.marginLeft = "-20%";
+			apppage.style.width = "95%";
+			apppage.style.margin = "0 auto";
 		} else {
 			//appleft.style.width = "18%";
 			//apppage.style.marginLeft = "18%";
 			appleft.style.marginLeft = "0";
-			apppage.style.marginLeft = "18%";
-			apppage.style.width = "82%";
+			apppage.style.marginLeft = "20%";
+			apppage.style.width = "80%";
 		}
 	}
 }
@@ -208,15 +208,15 @@ function ajaxFormSubmit(e)
 
 function afterResponse(e) {
 	console.log("+afterResponse");
-	if (e.status == false) {
+	if (e.status) {
+		Noti.info({title:"Successful", text:e.resp.message});
+	} else {
 		var errors = '';
 		for (var key in e.resp.data) {
 			console.log(key + ' : '+ e.resp.data[key]);
 			errors += e.resp.data[key]+'<br />';
 		}
-		$('.ui-errors').html(errors);
-	} else {
-		$('.ui-errors').html('');
+		Noti.error({title:e.resp.message, text:errors});
 	}
 }
 
@@ -323,6 +323,13 @@ var Cookie = {
 	}
 };
 
+function get_csrf()
+{
+	var $mt = $('meta[name=csrf-token]');
+	var data = {};
+	data[$mt.attr("key")] = $mt.attr("content");
+	return data;
+}
 /*****************************************************/
 /******************** Widgets ************************/
 /****************** UI API ************************/
@@ -366,9 +373,11 @@ var Noti = {
 		});
 		$('.wt-notibox').append($elm);
 	},
-	error: function(link) {
+	error: function(p) {
+		this.info(p);
 	},
-	warn: function(link) {
+	warn: function(p) {
+		this.info(p);
 	}
 };
 

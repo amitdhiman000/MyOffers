@@ -1,0 +1,221 @@
+{% load tz %}
+{% load staticfiles %}
+<script type="text/javascript">
+function initMap()
+{
+  console.log("+initMap");
+  var myLatlng = new google.maps.LatLng(12.972132,77.594010);
+  var mapOptions = {
+	zoom: 13,
+	center: myLatlng
+  }
+  var map = new google.maps.Map(document.getElementById("gmap"), mapOptions);
+  var marker = new google.maps.Marker({
+	  position: myLatlng,
+	  map: map,
+	  draggable:true,
+	  title:"Drag me!"
+  });
+}
+
+function locateAddress()
+{
+  console.log("+fetchAddress");
+  navigator.geolocation.getCurrentPosition(function(pos, err) {
+	var lat = pos.coords.latitude.toFixed(8);
+	var lng = pos.coords.longitude.toFixed(8);
+	var ts = pos.timestamp;
+	var acc = pos.coords.accuracy;
+	initCurrentLoc(lat, lng);
+  });
+}
+
+function fetchAddress()
+{
+  console.log("+findAddress");
+  var loc = $('#F_location').val();
+  console.log(loc);
+  var coords = loc.split(",");
+  initCurrentLoc(coords[0], coords[1]);
+}
+
+var g_geocoder;
+//Check value is present or not & call google api function
+function initCurrentLoc(lat, lng)
+{
+  g_geocoder = new google.maps.Geocoder();
+  console.log(lat + "-- ######## --" + lng);
+  if (lat != '' && lng != '') {
+	var myLatlng = new google.maps.LatLng(lat, lng);
+	return getCurrentAddress(myLatlng, OnAddressFound);
+  }
+}
+
+//Get current address
+function getCurrentAddress(loc, OnFound)
+{
+  g_geocoder.geocode({
+		'location': loc
+  }, function(results, status) {
+	  if (status == google.maps.GeocoderStatus.OK) {
+		  console.log(results[0]);
+		  OnFound(true, results[0]);
+	  } else {
+		  console.log('Geocode failed reason: ' + status);
+		  OnFound(false, "");
+	  }
+  });
+}
+
+function OnAddressFound(status, address)
+{
+  console.log("+OnAddressFound");
+  var faddr = address.formatted_address;
+  var loc = address.geometry.location;
+  loc = loc.lat() + "," + loc.lng();
+  console.log('loc : '+loc);
+  $("#address").html(faddr);
+  var parts = faddr.split(",");
+  var len = parts.length;
+  var name = parts[0];
+  var stateStr = parts[len - 2];
+  var index = stateStr.lastIndexOf(" ");
+  var state = stateStr.substr(0, index);
+  var pincode = stateStr.substr(index + 1);
+  var country = parts[len - 1];
+  $('#A_name').val(name);
+  $('#A_address').val(faddr);
+  $('#A_pincode').val(pincode);
+  $('#A_location').val(loc);
+}
+
+
+function defaultAddress(pThis,id)
+{
+	console.log('+defaultAddress');
+}
+
+function editAddress(pThis,id)
+{
+	console.log('+editAddress');
+}
+
+function deleteAddress(pThis,id)
+{
+	console.log('+deleteAddress');
+	data = get_csrf();
+	data['id'] = id;
+	postRequest('/locus/address-delete/', data, function(status, resp){
+		if (status) {
+			$(pThis).parents("addr_item").remove();
+		} else {
+			Noti.error({title:resp.message, text:JSON.stringify(resp.data)});
+		}
+	});
+}
+
+function beforeSaveReq(e) {
+	console.log("+beforeSaveReq");
+	return true;
+}
+
+function afterSaveResponse(e) {
+	console.log("+afterSaveResponse");
+	if (e.status) {
+		var val = e.resp.data;
+		console.log(val);
+		e.$src.find('.ui-input').attr('data-value', val);
+		e.$src.find('input[type=reset]').click();
+		console.log(e.$src.find('.ui-input').attr('data-value'));
+		Noti.info({title:e.resp.message, text:''});
+	} else {
+		var errors = '';
+		for (var err in e.resp.data) {
+			errors += e.resp.data[err] + '<br />';
+		}
+		Noti.info({title:e.resp.message, text:errors});
+	}
+}
+
+$(function(){
+	$('#addr_form').data('handlers', {before: beforeSaveReq, after: afterSaveResponse});
+	locateAddress();
+});
+</script>
+<div class="ui-content" style="height: 2000px;">
+	<div class="ui-block" >
+		<div class="ui-block-bar">
+			<div>
+				<h3>ADDRESS</h3>
+			</div>
+			<div>
+			</div>
+		</div>
+		<div class="ui-block-body">
+			<div style="width: 90%; margin: 0 auto; border: 1px solid #ddd; ">
+			  <div style="display:table-cell; width: 45%;">
+			    <h1 style="font-size: 1.5em; font-weight:bold;">Google Map Location</h1>
+				<h2 style="font-size: 1em; font-weight:bold;">Choose your business location from map to increase Visibility on Internet</h2>
+				<br /><br />
+				{% comment %}
+			    <input type="text" name="F_location" id="F_location" class="ui-input" />
+				<br />
+			    <a class="ui-btn-a" onclick="fetchAddress()"> Finnd Address </a>
+				{% endcomment %}
+			    <div id="gmap" style="width: 90%; height: 300px; border: 2px solid #bbb;" >
+					<h1>Hello Amit how are you ? </h1>
+			    </div>
+			  </div>
+			  <div style="display:table-cell; min-width: 50%;" >
+			    <form action="/locus/address-create/" method="POST" id="addr_form" class="ajax-form" >
+			      <table class="ui-info-table">
+					{% csrf_token %}
+			        <input type="hidden" name="A_location" id="A_location" value="" />
+			        <tr><td>NAME</td></tr>
+			        <tr><td><input type="text" name="A_name" id="A_name" class="ui-input" style="padding-right:7em;" placeholder="House / Office Building Number" />
+					<a class="ui-btn-a" style="width: 7em; margin-left:-7.3em;" onclick="locateAddress()"> Locate Me </a>
+					</td></tr>
+					<tr><td>PINCODE / ZIPCODE</td></tr>
+			        <tr><td><input type="text" name="A_pincode" id="A_pincode" class="ui-input" placeholder="176039"/> </td></tr>
+			        <tr><td>ADDRESS</td></tr>
+			        <tr><td><textarea name="A_address" id="A_address" class="ui-textarea"> </textarea> </td></tr>
+					<tr><td>PHONE</td></tr>
+			        <tr><td><input type="text" name="A_phone" id="A_phone" class="ui-input" placeholder="+91 9876543210" /> </td></tr>
+					<tr><td><input type="submit" value="Save" class="ui-btn" /></td></tr>
+				  </table>
+			    </form>
+			  </div>
+			</div>
+		</div>
+	</div>
+
+	{% for address in addresses %}
+		<div class="ui-block" style="margin-top: 1em;" class="addr_item">
+			<div class="ui-block-bar">
+				<div>
+					<h2>{{address.name}}</h2>
+				</div>
+				<div style="width: 100px;" >
+					<a onclick="defaultAddress(this, {{address.id}})" >Default</a> |
+					<a onclick="editAddress(this, {{address.id}})" >Edit</a> |
+					<a onclick="deleteAddress(this, {{address.id}})" >Delete</a>
+				</div>
+			</div>
+			<div class="ui-block-body">
+				<table class="ui-form-table" >
+					<tr><td>NAME </td><td>{{address.name}}</td></tr>
+					<tr><td>PHONE </td><td>{{address.phone}}</td></tr>
+					<tr><td>PINCODE </td><td>{{address.fk_area.pincode}}</td></tr>
+					<tr><td>AREA </td><td>{{address.fk_area.name}}</td></tr>
+					<tr><td>CITY </td><td>{{address.fk_area.fk_city.name}}</td></tr>
+					<tr><td>STATE </td><td>{{address.fk_area.fk_state.name}}</td></tr>
+					<tr><td>COUNTRY </td><td>{{address.fk_area.fk_country.name}}</td></tr>
+					<tr><td>LANDMARK </td><td>{{address.landmark}}</td></tr>
+					<tr><td>ADDRESS </td><td>{{address.address}}</td></tr>
+				</table>
+			</div>
+		</div>
+	{% endfor %}
+</div>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMz94217XzpYaxnQRagzgCwpy4dfBM1Ho&callback=initMap">
+</script>

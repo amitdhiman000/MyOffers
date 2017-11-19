@@ -131,7 +131,7 @@ def locus_auth(request, query):
 	city = params[2]
 	print(country, state, city)
 	if City.fetch_by_name(city_name=city, state_name=state, country_name=country) == None:
-		insert_custom_values(city, state, country)
+		insert_custom_areas(city, state, country)
 	areas = Area.fetch_by_city(city)
 	data = {'title': 'Location', 'country':country, 'state': state, 'city': city, 'areas': areas}
 	return App_Render(request, 'admin/admin_locus_added_1.html', data)

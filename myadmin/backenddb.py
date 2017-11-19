@@ -12,9 +12,9 @@ from pprint import pprint
 # Create your models here.
 
 
-gCountriesDataSource = (
-	{'name':'India', 'file': os.path.join(settings.STATIC_DATA_DIR, 'India_pincodes.csv')},
-)
+gCountriesDataSource = {
+	'India' : os.path.join(settings.STATIC_DATA_DIR, 'India_pincodes.csv')
+}
 
 def insert_default_areas():
 	for country in gCountriesDataSource:

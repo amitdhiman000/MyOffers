@@ -1,10 +1,15 @@
 {% load staticfiles %}
 <div class="app_header" >
 	<div class="app_header_c1">
-		<div id="logo" style="margin-left: 1em; width:60px; height:35px;" >
-			<a href="/" style="display: block;">
-				<img src="{% static 'images/logo.png' %}" class="ui-fit" />
-			</a>
+		<div style="display:table-cell;">
+			<span style="margin-left: 1em; font-size:1.6em; cursor:pointer;" class="open" onclick="navClicked()">&#9776;</span>
+		</div>
+		<div style="display:table-cell;">
+			<div id="app_logo" style="margin-left: 1em;" >
+				<a href="/" style="display: block; color:#9966FF; text-decoration:none;">
+					Trader
+				</a>
+			</div>
 		</div>
 		<!--<h5>MyOffers</h5>-->
 	</div>
@@ -52,6 +57,7 @@
 		</div>
 	</div>
 </div>
+{% comment %}
 <div class="app_header">
 	<div class="app_header_c1" >
 		<span style="margin-left: 1em; font-size:1.5em; cursor:pointer;" class="open" onclick="navClicked()">&#9776;</span>
@@ -63,3 +69,4 @@
 		&nbsp;
 	</div>
 </div>
+{% endcomment %}
