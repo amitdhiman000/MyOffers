@@ -17,6 +17,7 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
-	url(r'^$', views.home_page, name='home'),
-	url(r'^backup/$', views.home_backup, name='home_backup'),
+	url(r'^$', views.home_view, name='home_view'),
+	url(r'^backup/$', views.home_backup_view, name='home_backup_view'),
+	url(r'^test/$', views.test_view, name='test_view'),
 ]
