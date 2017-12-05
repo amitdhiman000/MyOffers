@@ -14,10 +14,48 @@ from business.models import Business
 from user.controls import *
 from common.apputil import *
 
+from api.views import RestApiView
+from .services import UserService
+from .forms import UserRegForm
 ## debugging
 from pprint import pprint
 import logging
 # Create your views here.
+
+
+
+class UserView(RestApiView):
+	service = UserService
+	form = UserRegForm
+
+	@App_TokenRequired
+	def get(self, request, key=None):
+		print('user : ',request.user)
+		if key == None:
+			users = self.service.users()
+			return JsonResponse({'result': users} , status=200)
+		user = self.service.user_by_id(key)
+		if user == None:
+			return JsonResponse({'error': {'message':'Resource not found'}} , status=404)
+		return JsonResponse({'result': user}, status=200)
+
+
+	@App_TokenRequired
+	def post(self, request, key=None):
+		form = self.form()
+		if (form.parseJson(request)
+			and form.clean()
+			and form.validate()
+			):
+			obj = form.save()
+			if obj != None:
+				res = JsonResponse(status=201)
+				res['location'] = obj.absolute_url()
+				return res
+		errors = form.errors()
+		return JsonResponse(errors, status=400)
+
+
 
 
 def home_view(request):

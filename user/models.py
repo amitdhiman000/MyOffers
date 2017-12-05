@@ -28,6 +28,12 @@ class User(models.Model):
 	#profile image by default : user.svg
 	image = models.FileField(upload_to=App_UserFilesDir, default=settings.DEFAULT_USER_IMAGE)
 
+	
+	@classmethod
+	def queryset(klass):
+		fields = ('id', 'name', 'email', 'phone')
+		return klass.objects.values(*fields)
+	
 	@classmethod
 	def create(klass, user):
 		try:
@@ -41,7 +47,12 @@ class User(models.Model):
 			traceback.print_exc()
 			return None
 
+		
+	@classmethod
+	def fetch_all(klass):
+		return klass.queryset().all()
 
+	
 	@classmethod
 	def fetch_user(klass, user):
 		try:

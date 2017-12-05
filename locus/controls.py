@@ -19,7 +19,7 @@ import logging
 class AddressControl(BaseControl):
 	def parseRequest(self, request):
 		post = request.POST;
-		self.m_user = request.user;
+		self.m_user = request.user
 		self.m_address = Address()
 		try:
 			self.m_address.name = post.get('A_name', '').strip(' \t\n\r')

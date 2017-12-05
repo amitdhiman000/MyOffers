@@ -175,7 +175,7 @@ $(function(){
                     </div>
                 </div>
                 <div style="display:table-cell; width: 50%;" >
-                    <form action="/locus/address-create/" method="POST" id="addr_form" class="ajax-form" >
+                    <form action="/locus/address/create/" method="POST" id="addr_form" class="ajax-form" >
                     <table class="ui-info-table">
                         {% csrf_token %}
                         <input type="hidden" name="A_location" id="A_location" value="" />
@@ -217,11 +217,11 @@ $(function(){
 				<table class="ui-form-table" >
 					<tr><td>NAME </td><td>{{address.name}}</td></tr>
 					<tr><td>PHONE </td><td>{{address.phone}}</td></tr>
-					<tr><td>PINCODE </td><td>{{address.fk_area.pincode}}</td></tr>
-					<tr><td>AREA </td><td>{{address.fk_area.name}}</td></tr>
-					<tr><td>CITY </td><td>{{address.fk_area.fk_city.name}}</td></tr>
-					<tr><td>STATE </td><td>{{address.fk_area.fk_state.name}}</td></tr>
-					<tr><td>COUNTRY </td><td>{{address.fk_area.fk_country.name}}</td></tr>
+					<tr><td>PINCODE </td><td>{{address.pincode}}</td></tr>
+					<tr><td>AREA </td><td>{{address.area}}</td></tr>
+					<tr><td>CITY </td><td>{{address.city}}</td></tr>
+					<tr><td>STATE </td><td>{{address.state}}</td></tr>
+					<tr><td>COUNTRY </td><td>{{address.country}}</td></tr>
 					<tr><td>LANDMARK </td><td>{{address.landmark}}</td></tr>
 					<tr><td>ADDRESS </td><td>{{address.address}}</td></tr>
 				</table>

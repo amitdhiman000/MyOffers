@@ -1,6 +1,13 @@
 import re
 from user.models import User
 
+class Validator(object):
+    def __init__(self):
+        pass
+
+    def __call__(self, field):
+        pass
+
 
 class UserValidator(object):
 	def validateName(self, name):

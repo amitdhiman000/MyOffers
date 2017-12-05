@@ -296,7 +296,7 @@ class Area(models.Model):
 	@classmethod
 	def fetch_by_pincode(klass, area_pin):
 		try:
-			return klass.objects.filter(pincode=area_pin)[0]
+			return klass.objects.filter(pincode=area_pin).first()
 		except Exception as e:
 			logging.error(e)
 			return None
@@ -332,17 +332,40 @@ class Address(models.Model):
 	updated_at = models.DateTimeField(default=timezone.now)
 	fk_area = models.ForeignKey(Area, on_delete=models.CASCADE)
 	fk_user = models.ForeignKey(User, on_delete=models.CASCADE)
-	flags = models.IntegerField(default=0)
+	flags = models.CharField(max_length=10, default='')
+
+
+	def absolute_url(self):
+		return '/locus/address/'+ str(self.id) + '/'
+
+	@classmethod
+	def queryset(klass):
+		fields = ('id', 'name', 'pincode', 'address', 'area', 'city', 'state', 'country')
+		return klass.objects.annotate(
+		pincode=models.F('fk_area__pincode'),
+		area=models.F('fk_area__name'),
+		city=models.F('fk_area__fk_city__name'),
+		state=models.F('fk_area__fk_state__name'),
+		country=models.F('fk_area__fk_country__name')).values(*fields)
 
 
 	@classmethod
-	def create(klass, a, user):
+	def create(klass, values):
 		try:
-			obj = klass.objects.get_or_create(name=a.name, phone=a.phone, address=a.address, landmark=a.landmark, longitude=a.longitude, latitude=a.latitude, fk_area=a.area, fk_user=a.user)[0]
+			obj = klass.objects.get_or_create(
+			name=values['name'],
+			phone=values['phone'],
+			address=values['address'],
+			landmark=values['landmark'],
+			latitude=values['latitude'],
+			longitude=values['longitude'],
+			fk_area=values['area'],
+			fk_user=values['user'])[0]
 			return obj
 		except Exception as e:
 			logging.error(e)
 			return None
+
 
 	@classmethod
 	def remove(klass, id, user):
@@ -356,10 +379,18 @@ class Address(models.Model):
 
 
 	@classmethod
-	def fetch_by_user(klass, user):
-		obj = klass.objects.filter(fk_user=user)
-		return obj
+	def fetch_all(klass):
+		return klass.queryset()
 
+
+	@classmethod
+	def fetch_by_id(klass, id_):
+		return klass.queryset().filter(id=id_)
+
+
+	@classmethod
+	def fetch_by_user(klass, user):
+		return klass.queryset().filter(fk_user=user)
 
 
 

@@ -1,0 +1,40 @@
+{% extends base_template %}
+
+
+{% block pagecontent %}
+<script type="text/javascript">
+function initMap()
+{
+    console.log("+initMap");
+    var myLatlng = new google.maps.LatLng(12.972132,77.594010);
+    var mapOpts = {
+        zoom: 8,
+        center: myLatlng,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    }
+
+    var gmap = new google.maps.Map(document.getElementById("gmap"), mapOpts);
+    var marker = new google.maps.Marker({
+		map: gmap,
+        position: myLatlng,
+        draggable: true,
+        zIndex: 101,
+        title: "Your Location"
+    });
+
+    google.maps.event.addListener(marker, 'dragend', function (event) {
+        console.log('+ pin dragged');
+        var lat = event.latLng.lat();
+        var lng = event.latLng.lng();
+        console.log('location : '+lat+' '+lng);
+    });    
+}
+</script>
+	<div style="width: 75%; margin: 0 auto; border #ddd; z-index: 500;">
+		<h1>Google Map with Marker </h1>
+		<div id="gmap" style="width: 90%; height: 300px; border: 2px solid #bbb;" >
+		</div>
+	</div>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMz94217XzpYaxnQRagzgCwpy4dfBM1Ho&callback=initMap">
+</script>
+{% endblock %}

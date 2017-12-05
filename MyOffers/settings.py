@@ -41,6 +41,8 @@ INSTALLED_APPS = [
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
 	'background_task',
+	'rest_framework',
+	'api',
 	'ajax',
 	'business',
 	'error',
@@ -55,7 +57,7 @@ INSTALLED_APPS = [
 	'MyOffers',
 ]
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
 	'django.middleware.security.SecurityMiddleware',
 	'django.contrib.sessions.middleware.SessionMiddleware',
 	'django.middleware.common.CommonMiddleware',

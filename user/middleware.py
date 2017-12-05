@@ -6,8 +6,12 @@ def fetch_user(request):
         request._cached_user = backends.fetch_user(request)
     return request._cached_user
 
+
 class AuthMiddleware(object):
-    def process_request(self, request):
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
         assert hasattr(request, 'session'), (
             "The Django authentication middleware requires session middleware "
             "to be installed. Edit your MIDDLEWARE_CLASSES setting to insert "
@@ -15,3 +19,10 @@ class AuthMiddleware(object):
             "'django.contrib.auth.middleware.AuthenticationMiddleware'."
         )
         request.user = SimpleLazyObject(lambda: fetch_user(request))
+        response = self.get_response(request)
+        return response
+
+
+    ## this method will suppress the excepion callstack so commented
+    ##def process_exception(self, request, exception):
+    ##    pass

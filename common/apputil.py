@@ -2,8 +2,52 @@ import os
 from django.utils import timezone
 from django.conf import settings
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.http import (HttpResponseRedirect,
+HttpResponse, JsonResponse)
 from user_agents import parse
+from datetime import (datetime, timedelta)
+
+
+
+## JSON Web Token
+##
+import jwt
+def App_CreateToken(request, user):
+	if user == None:
+		return None
+	payload = { 'user_id':user.id, 'exp': datetime.utcnow() + timedelta(seconds=600)}
+	token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
+	return token.decode('utf-8')
+
+
+def App_RefreshToken(request, user):
+	if user == None:
+		return None
+	if App_VerifyToken(request):
+		return App_CreateToken(request, user)
+	return None
+
+
+def App_VerifyToken(request):
+	token = request.META.get('HTTP_AUTHORIZATION', 'a:b')
+	print('auth token : '+ token)
+	try:
+		payload = jwt.decode(token, settings.SECRET_KEY, algorithm='HS256')
+		uid = payload['user_id']
+		#request.user = Klass(id=uid)
+		return True
+	except Exception as e:
+		print(e)
+	return False
+
+
+def App_TokenRequired(funct):
+	def _decorator(self, request, *args, **kwargs):
+		if App_VerifyToken(request) == False:
+			return JsonResponse({'result': {'message': 'Token expired'}}, status=401)
+		else:
+			return funct(self, request, *args, **kwargs)
+	return _decorator;
 
 
 ## decorator function check for request method, if not GET redirect to invalid reguest page.

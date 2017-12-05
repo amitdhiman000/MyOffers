@@ -14,7 +14,7 @@ class Category(models.Model):
 	id = models.BigAutoField(primary_key=True)
 	name = models.CharField(max_length=30)
 	details = models.CharField(max_length=50)
-	parent = models.ForeignKey("self", default=None, null=True, blank=True)
+	parent = models.ForeignKey("self", null=True, on_delete=models.DO_NOTHING)
 
 	class Meta:
 		verbose_name = _('category')
@@ -80,7 +80,7 @@ class Business(models.Model):
 	name = models.CharField(max_length=50, blank=False)
 	about = models.CharField(max_length=100, blank=False)
 	website = models.CharField(max_length=100, blank=True)
-	fk_category = models.ForeignKey(Category)
+	fk_category = models.ForeignKey(Category, on_delete=models.CASCADE)
 	fk_user = models.ForeignKey(User, on_delete=models.CASCADE)
 	#fk_address = models.ForeignKey(Address)
 
