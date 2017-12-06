@@ -101,10 +101,9 @@ def address_create(request):
         and control.validate()):
         data = control.execute()
 
-    data = control.errors()
     if request.is_ajax():
         if data != None:
-            return JsonResponse({'status': 200, 'message': 'Saved Successfully', 'data': data})
+            return JsonResponse({'status': 204, 'message': 'Saved Successfully'})
         else:
             data = control.errors()
             return JsonResponse({'status': 400, 'message': 'Saving Failed', 'data': data})

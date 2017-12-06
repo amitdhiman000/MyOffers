@@ -23,7 +23,7 @@
 		<table class="ui-info-table">
 		<tr><th>Sr.</th><th>Area Name</th><th>Area Pin</th></tr>
 		{% for area in areas %}
-			<tr><td>{{forloop.counter}}</td><td><a href="/myadmin/locus/{{country}}/{{state}}/{{city}}/{{area.name}}/" >{{area.name}}</a></td><td>{{area.pin}}</td></tr>
+			<tr><td>{{forloop.counter}}</td><td><a href="/myadmin/locus/{{country}}/{{state}}/{{city}}/{{area.name}}/" >{{area.name}}</a></td><td>{{area.pincode}}</td></tr>
 		{% endfor %}
 		</table>
 	{% endif %}

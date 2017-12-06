@@ -10,4 +10,6 @@
 8.) Align the mobile website UI.
 2017-11-06
 9.) User actions history
-10.) 
+2017-12-06
+10.) Create Basic Rest API skelton
+11.) Forms to parse Html Forms and Json Payloads

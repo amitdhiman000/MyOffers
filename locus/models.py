@@ -368,6 +368,23 @@ class Address(models.Model):
 
 
 	@classmethod
+	def create(klass, ad, user):
+		try:
+			obj = klass.objects.get_or_create(
+			name=ad.name,
+			phone=ad.phone,
+			address=ad.address,
+			latitude=ad.latitude,
+			longitude=ad.longitude,
+			fk_area=ad.area,
+			fk_user=ad.user)[0]
+			return obj
+		except Exception as e:
+			logging.error(e)
+			return None
+
+
+	@classmethod
 	def remove(klass, id, user):
 		try:
 			obj = klass.objects.get(id=id, fk_user=user)
