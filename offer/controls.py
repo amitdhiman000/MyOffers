@@ -10,7 +10,7 @@ from business.models import Business
 
 from common.controls import BaseControl
 from common.apputil import App_Slugify
-from common.validators import OfferValidator
+from offer.validators import *
 
 ## debug
 import logging

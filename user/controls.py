@@ -1,7 +1,7 @@
 from user.models import User
 from upload.models import FileUpload
 from common.controls import BaseControl
-from common.validators import UserValidator
+from common.validators import *
 
 from . import backends
 ## debug

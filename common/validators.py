@@ -1,16 +1,20 @@
 import re
-from user.models import User
 
 class Validator(object):
-    def __init__(self):
-        pass
-
-    def __call__(self, field):
-        pass
+	def __call__(self, value, *args):
+		return 'Not validated'
 
 
-class UserValidator(object):
-	def validateName(self, name):
+
+class NoValidator(Validator):
+	def __call__(self, value, *args):
+		return None
+
+
+
+class NameValidator(Validator):
+	def __call__(self, value, *args):
+		name = value
 		error = None
 		if name == None or name == '':
 			error = '*Name is required'
@@ -24,22 +28,24 @@ class UserValidator(object):
 		return error
 
 
-	def validateEmail(self, email):
+
+class EmailValidator(Validator):
+	def __call__(self, value, *args):
+		email = value
 		error = None
 		if email == None or email == '':
 			error = '*Email is required'
 		else:
 			match = re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', email)
 			if match == None:
-				print('Bad Email Address')
 				error = '*Invalid email address'
-			else:
-				if User.objects.filter(email=email).exists():
-					error = '*Email already in use, Please try reset password'
 		return error
 
 
-	def validatePhone(self, phone):
+
+class PhoneValidator(Validator):
+	def __call__(self, value, *args):
+		phone = value
 		error = None
 		if phone == None or phone == '':
 			error = '*phone can\'t be empty'
@@ -50,14 +56,15 @@ class UserValidator(object):
 		return error
 
 
-	def validatePassword(self, pass1, pass2):
+
+class PasswordValidator(Validator):
+	def __call__(self, value, *args):
+		passw = value
 		error = None
-		if pass1 == None or pass1 == '':
+		if passw == None or passw == '':
 			error = '*password can\'t be empty'
-		elif pass1 != pass2:
-			error = '*passwords donot match'
 		else:
-			length = len(pass1)
+			length = len(passw)
 			'''
 			if length > 20:
 				error = '*password is too long'
@@ -68,22 +75,9 @@ class UserValidator(object):
 
 
 
-class OfferValidator(object):
-	def validateName(self, name):
-		error = None
-		if name == None or name == '':
-			error = '*Offer Name is required'
-		else:
-			length = len(name)
-			if length > 50:
-				error = '*Offer Name is too long'
-			elif length < 3:
-				error = '*Offer Name is too short'
-			#some more checks required
-		return error
-
-
-	def validatePrice(self, price):
+class PriceValidator(Validator):
+	def __call__(self, value, *args):
+		price = value
 		error = None
 		if price == None or price == '':
 			error = '*Price is required'
@@ -98,7 +92,10 @@ class OfferValidator(object):
 		return error
 
 
-	def validateDiscount(self, discount):
+
+def DiscountValidator(Validator):
+	def __call__(self, value, *args):
+		discount = value
 		error = None
 		if discount == None or discount == '':
 			error = '*Discount filed is required'
@@ -113,92 +110,31 @@ class OfferValidator(object):
 		return error
 
 
-	def validateDates(self, start, end):
-		error = None
-		if start == None or start == '' or end == None or end == '':
-			error = '*Date field is missing'
-		else:
-			tz = timezone.get_current_timezone()
-			start = tz.localize(datetime.strptime(start, "%Y/%m/%d"))
-			if start < timezone.now():
-				error = '*Start date cannot be before today'
 
-			end = tz.localize(datetime.strptime(end, "%Y/%m/%d"))
-			if end < timezone.now():
-				error = '*Expire date cannot be before today'
-
-			if start > end:
-				error = '*Start date cannot be before expire date'
-		return error
-
-
-
-class BusinessValidator(object):
-	def validateName(self, value):
+def DescriptionValidator(Validator):
+	def __call__(self, value, *args):
+		desc = value
 		error = None
 		if value == None or value == '':
-			error = '*Business Name is required'
+			error = '*Description cannot be empty'
 		else:
 			length = len(value)
-			if length > 50:
-				error = '*Business Name is too long'
+			if length > 200:
+				error = '*Too long description'
 			elif length < 3:
-				error = '*Business Name is too short'
-			#some more checks required
+				error = '*Too short description'
 		return error
 
 
-	def validateCategory(self, value):
+
+def WebsiteValidator(Validator):
+	def __call__(self, value, *args):
+		name = value
 		error = None
 		if value == None or value == '':
 			pass
 			#error = '*Website is required'
 		else:
 			pass
-		#some more checks required
-		return error
-
-
-	def validateDescription(self, value):
-		error = None
-		if value == None or value == '':
-			pass
-			#error = '*Website is required'
-		else:
-			pass
-		#some more checks required
-		return error
-
-
-	def validateWebsite(self, value):
-		error = None
-		if value == None or value == '':
-			pass
-			#error = '*Website is required'
-		else:
-			pass
-		#some more checks required
-		return error
-
-
-class BaseValidator(object):
-	@staticmethod
-	def validate(value, *args, **kwargs):
-		return 'not implemented'
-
-
-
-class BusinessNameValidator(BaseValidator):
-	@staticmethod
-	def validate(value, *args, **kwargs):
-		error = None
-		if value == None or value == '':
-			error = '*Business Name is required'
-		else:
-			length = len(value)
-			if length > 50:
-				error = '*Business Name is too long'
-			elif length < 3:
-				error = '*Business Name is too short'
 			#some more checks required
 		return error
