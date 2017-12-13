@@ -1,50 +1,61 @@
 import json
 from common.forms import *
 from common.validators import *
+from user.models import User
 
 
-user_fields = {
-	## for html form
-	'U_id': {'name': 'id', 'validator': NoValidator},
-	'U_name': {'name': 'name', 'validator': NameValidator},
-	'U_pass': {'name': 'password', 'validator': PasswordValidator},
-	'U_email': {'name': 'email', 'validator': EmailValidator},
-	'U_phone': {'name': 'phone', 'validator': PhoneValidator},
-	## for json
+model_fields = {
 	'id': {'name': 'id', 'validator': NoValidator},
 	'name': {'name': 'name', 'validator': NameValidator},
-	'pass': {'name': 'password', 'validator': PasswordValidator},
+	'password': {'name': 'password', 'validator': PasswordValidator},
 	'email': {'name': 'email', 'validator': EmailValidator},
 	'phone': {'name': 'phone', 'validator': PhoneValidator},
 }
 
+form_fields = {
+	## for html form
+	'U_id': 'id',
+	'U_name': 'name',
+	'U_pass': 'password',
+	'U_email': 'email',
+	'U_phone': 'phone',
+	## for json
+	'id': 'id',
+	'name': 'name',
+	'pass': 'password',
+	'email': 'email',
+	'phone': 'phone',
+}
 
-class UserRegForm(Form):
+
+class UserRegForm(CreateForm):
 
 	def __init__(self):
-		super().__init__(self)
-		self.m_fields = user_fields
+		super().__init__()
+		self.m_form_fields = form_fields
+		self.m_model_fields = model_fields
 
 	def parseJson(self, request):
 		self.m_data = json.loads(request.body.decode('utf-8'))
-		super().parse()
+		return super().parse()
 
 
 	def parseForm(self, request):
 		self.m_data = request.POST
-		super().parse()
+		return super().parse()
 
 
 	def validate(self):
 		is_valid = super().validate()
 		if not is_valid:
 			return is_valid
-		values = self.model_values()
-		email = values.get('email', '')
-		#if User.check_email():
+		email = self.values().get('email', '')
+		if User.check_email(email):
+			self.set_error('email', 'Email already in use')
+			return False
 		return True
 
 
 	def save(self):
-		values = self.model_values()
-		return User.create(values)
+		print('saving ....')
+		return User.create(self.values())

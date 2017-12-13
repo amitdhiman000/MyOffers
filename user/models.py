@@ -28,31 +28,27 @@ class User(models.Model):
 	#profile image by default : user.svg
 	image = models.FileField(upload_to=App_UserFilesDir, default=settings.DEFAULT_USER_IMAGE)
 
-	
+
 	@classmethod
 	def queryset(klass):
 		fields = ('id', 'name', 'email', 'phone')
 		return klass.objects.values(*fields)
-	
+
 	@classmethod
-	def create(klass, user):
+	def create(klass, values):
 		try:
-			return klass.objects.create(name=user.name,
-					email=user.email,
-					password=user.password,
-					phone=user.phone,
-					level=9)
+			return klass.objects.create(level=9, **values)
 		except:
 			print('failed to create user')
 			traceback.print_exc()
 			return None
 
-		
+
 	@classmethod
 	def fetch_all(klass):
 		return klass.queryset().all()
 
-	
+
 	@classmethod
 	def fetch_user(klass, user):
 		try:
@@ -99,6 +95,11 @@ class User(models.Model):
 	def check_password(klass, password, user):
 		u = klass.fetch_user(user)
 		return u.password == password
+
+
+	@classmethod
+	def check_email(klass, email):
+		return klass.objects.filter(email=email).exists()
 
 
 	@classmethod

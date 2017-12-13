@@ -11,6 +11,7 @@ from user.models import User
 from locus.models import Address
 from business.models import Category
 from business.models import Business
+from user.forms import UserRegForm
 from user.controls import *
 from common.apputil import *
 
@@ -123,22 +124,22 @@ def signin_auth(request):
 @App_PostRequired
 def signup_auth(request):
 	pprint(request.POST)
-	control = UserSignUpControl()
-	if (control.parseRequest(request)
-			and control.clean()
-			and control.validate()):
-		user = control.execute()
+	form = UserRegForm()
+	if (form.parseForm(request)
+			and form.clean()
+			and form.validate()):
+		user = form.commit()
 		if user != None:
 			print('registration successful')
 			backends.login(request, user)
 			return App_Redirect(request, settings.USER_SIGNUP_SUCCESS_URL)
 
-	error = control.errors()
+	error = form.errors()
 	if request.is_ajax():
 		return JsonResponse({'status':401, 'message': 'Signup Failed!!', 'data':error})
 	else:
 		request.session['form_errors'] = error
-		request.session['form_values'] = control.values()
+		request.session['form_values'] = form.data()
 		return App_Redirect(request, settings.USER_SIGNUP_URL)
 
 
