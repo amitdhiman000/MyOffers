@@ -1,9 +1,5 @@
-from functools import wraps
-from django.http import HttpResponse, HttpResponseRedirect
-from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
-from user.models import User, Guest
-import traceback
+from user.models import (User, Guest)
 
 USER_UID_KEY = '_user_uid'
 USER_EMAIL_KEY = '_user_name'

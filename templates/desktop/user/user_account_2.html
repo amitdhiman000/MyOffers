@@ -36,11 +36,17 @@ function beforeSaveReq(e) {
 function afterSaveResponse(e) {
 	console.log("+afterSaveResponse");
 	if (e.status) {
-		var val = e.resp.data;
-		console.log(val);
-		e.$src.find('.ui-input').attr('data-value', val);
-		e.$src.find('input[type=reset]').click();
-		console.log(e.$src.find('.ui-input').attr('data-value'));
+		var vals = e.resp.data;
+		var $src = e.$src;
+		for (var key in vals) {
+			var val = vals[key];
+			console.log(key+' : '+val);
+			var inp = $src.find('.ui-input[name='+key+']');
+			if (inp.exists()) {
+				inp.attr('data-value', val);
+				$src.find('input[type=button]').click();
+			}
+		}
 		Noti.info({title:e.resp.message, text:''});
 	} else {
 		var errors = '';
@@ -78,7 +84,7 @@ function afterSaveResponse(e) {
 						</div>
 						<div class="ui-hide item_controls" >
 							<input type="submit" value="Save" class="ui-btn" />
-							<input type="reset" value="Cancel" onclick="editText(event,this)" class="ui-btn" />
+							<input type="button" value="Cancel" onclick="editText(event,this)" class="ui-btn" />
 						</div>
 						</form>
 					</td>
@@ -94,7 +100,7 @@ function afterSaveResponse(e) {
 						</div>
 						<div class="ui-hide item_controls" >
 							<input type="submit" value="Save" class="ui-btn" />
-							<input type="reset" value="Cancel" onclick="editText(event,this)" class="ui-btn" />
+							<input type="button" value="Cancel" onclick="editText(event,this)" class="ui-btn" />
 						</div>
 						</form>
 					</td>
@@ -110,7 +116,7 @@ function afterSaveResponse(e) {
 						</div>
 						<div class="ui-hide item_controls" >
 							<input type="submit" value="Save" class="ui-btn" />
-							<input type="reset" value="Cancel" onclick="editText(event,this)" class="ui-btn" />
+							<input type="button" value="Cancel" onclick="editText(event,this)" class="ui-btn" />
 						</div>
 						</form>
 					</td>
@@ -125,13 +131,15 @@ function afterSaveResponse(e) {
 							<input readonly type="password" name="U_pass" value="xxxxxxxx" data-value="xxxxxxxx" placeholder="Old Password" class="ui-input" />
 						</div>
 						<div class="ui-hide item_controls" >
+							<div>
 							<br />
 							<input type="password" name="U_pass1" value="" placeholder="New Password" class="ui-input" />
 							<br />
-							<input type="password" name="U_pass2" value="" placeholder="Repeat New Password" class="ui-input" />
 							<br />
+							<input type="password" name="U_pass2" value="" placeholder="Repeat New Password" class="ui-input" />
+							</div>
 							<input type="submit" value="Save" class="ui-btn" />
-							<input type="reset" value="Cancel" onclick="changePass(event,this)" class="ui-btn" />
+							<input type="button" value="Cancel" onclick="changePass(event,this)" class="ui-btn" />
 						</div>
 						</form>
 					</td>

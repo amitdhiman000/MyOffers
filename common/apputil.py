@@ -1,11 +1,11 @@
 import os
-from django.utils import timezone
+from functools import wraps
 from django.conf import settings
 from django.shortcuts import render
-from django.http import (HttpResponseRedirect,
-HttpResponse, JsonResponse)
-from user_agents import parse
+from django.http import (HttpResponseRedirect, HttpResponse, JsonResponse)
+from django.utils import timezone
 from datetime import (datetime, timedelta)
+from user_agents import parse
 
 
 

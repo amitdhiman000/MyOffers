@@ -1,23 +1,20 @@
 from django.conf import settings
-from django.shortcuts import render
 from django.forms.models import model_to_dict
-from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
-from django.template.context_processors import csrf
-from django.views.decorators.csrf import csrf_exempt
+from django.http import (HttpResponse, JsonResponse, HttpResponseRedirect)
+from django.views.decorators.csrf import (csrf_protect, csrf_exempt)
 
 ## custom authentication
 from . import backends
-from user.models import User
+from .models import User
 from locus.models import Address
-from business.models import Category
-from business.models import Business
-from user.forms import UserRegForm
-from user.controls import *
-from common.apputil import *
+from business.models import (Category, Business)
 
+
+from common.apputil import *
 from api.views import RestApiView
 from .services import UserService
-from .forms import UserRegForm
+from .forms import (UserRegForm, UserUpdateForm, UserSignInForm)
+
 ## debugging
 from pprint import pprint
 import logging
@@ -58,7 +55,6 @@ class UserView(RestApiView):
 
 
 
-
 def home_view(request):
 	return user_account_view(request)
 
@@ -68,14 +64,12 @@ def signin_view(request):
 	data = {'title':'Login'}
 	if 'form_errors' in request.session:
 		data['form_errors'] = request.session['form_errors']
-		data['form_values'] = request.session['form_values']
+		data['form_data'] = request.session['form_data']
 		del request.session['form_errors']
-		del request.session['form_values']
+		del request.session['form_data']
 
-	data.update(csrf(request))
 	data.update({settings.USER_LOGIN_NEXT:request.GET.get(settings.USER_LOGIN_NEXT, '')})
 	return App_Render(request, 'user/user_signin_1.html', data)
-
 
 
 #functions for registration
@@ -83,27 +77,24 @@ def signin_view(request):
 def signup_view(request):
 	logging.debug('Hello');
 	data = {'title':'Signup'}
-	data.update(csrf(request))
 	data.update({settings.USER_LOGIN_NEXT: request.POST.get(settings.USER_LOGIN_NEXT, '')})
 	if 'form_errors' in request.session:
 		data['form_errors'] = request.session['form_errors']
-		data['form_values'] = request.session['form_values']
+		data['form_data'] = request.session['form_data']
 		del request.session['form_errors']
-		del request.session['form_values']
+		del request.session['form_data']
 
 	return App_Render(request, 'user/user_signup_1.html', data)
 
 
-
-@App_RedirectIfLoggedin
 @App_PostRequired
 def signin_auth(request):
 	pprint(request.POST)
-	control = UserSignInControl()
-	if (control.parseRequest(request)
-			and control.clean()
-			and control.validate()):
-		user = control.execute()
+	form = UserSignInForm()
+	if (form.parseForm(request)
+			and form.clean()
+			and form.validate()):
+		user = form.commit()
 		if user != None:
 			redirect_url = request.POST.get(settings.USER_LOGIN_NEXT, settings.HOME_URL)
 			print('redirect amit : '+redirect_url)
@@ -111,14 +102,13 @@ def signin_auth(request):
 
 	## Only error case will reach here.
 	if request.is_ajax():
-		error = control.errors()
+		error = form.errors()
 		return JsonResponse({'status':401, 'message':'SignIn failed', 'data':error})
 	else:
 		redirect_url = request.META.get('HTTP_REFERER', settings.USER_LOGIN_URL)
-		request.session['form_errors'] = control.errors()
-		request.session['form_values'] = control.values()
+		request.session['form_errors'] = form.errors()
+		request.session['form_data'] = form.data()
 		return App_Redirect(request, redirect_url)
-
 
 
 @App_PostRequired
@@ -139,9 +129,8 @@ def signup_auth(request):
 		return JsonResponse({'status':401, 'message': 'Signup Failed!!', 'data':error})
 	else:
 		request.session['form_errors'] = error
-		request.session['form_values'] = form.data()
+		request.session['form_data'] = form.data()
 		return App_Redirect(request, settings.USER_SIGNUP_URL)
-
 
 
 @App_LoginRequired
@@ -151,11 +140,9 @@ def signup_success_view(request):
 	return App_Render(request, 'user/user_registered_1.html', data)
 
 
-
 def signout(request):
 	backends.logout(request)
 	return App_Redirect(request, settings.USER_LOGIN_URL)
-
 
 
 @App_LoginRequired
@@ -164,9 +151,7 @@ def user_account_view(request):
 	address = Address.fetch_by_user(user)
 	user.address = address
 	data = {'title':'Account', 'user': user}
-	data.update(csrf(request))
 	return App_Render(request, 'user/user_account_1.html', data)
-
 
 
 @App_LoginRequired
@@ -176,12 +161,10 @@ def user_mails_view(request):
 	return App_Render(request, 'user/user_mails_1.html', data)
 
 
-
 @App_LoginRequired
 def user_stats_view(request):
 	data = {'title': 'User stats'};
 	return App_Render(request, 'user/user_stats_1.html', data)
-
 
 
 @App_LoginRequired
@@ -190,32 +173,28 @@ def user_wishlist_view(request):
 	return App_Render(request, 'user/user_wishlist_1.html', data)
 
 
-
 @App_LoginRequired
 def user_settings_view(request):
 	data = {'title': 'User settings'};
 	return App_Render(request, 'user/user_settings_1.html', data)
 
 
-
 @App_LoginRequired
 def user_update(request):
 	data = None
-	control = UserControlFactory.getControl(request)
-	if (control.parseRequest(request)
-			and control.clean()
-			and control.validate()):
-		data = control.execute()
-		#pass
+	form = UserUpdateForm()
+	if (form.parseForm(request)
+			and form.clean()
+			and form.validate()):
+		data = form.commit()
 
-	if request.is_ajax:
+	if request.is_ajax():
 		if data == None:
-			return JsonResponse({'status': 400, 'message': 'Save Failed', 'data':control.errors()})
+			return JsonResponse({'status': 400, 'message': 'Save Failed', 'data':form.errors()})
 		else:
-			return JsonResponse({'status': 200, 'message': 'Saved Successfully', 'data':data})
+			return JsonResponse({'status': 200, 'message': 'Saved Successfully', 'data':form.result()})
 	else:
-		return App_Redirect(request, '/user/account/')
-
+		return App_Redirect(request, request.META.get('HTTP_REFERER'))
 
 
 @App_LoginRequired

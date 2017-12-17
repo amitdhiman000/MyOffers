@@ -1,9 +1,7 @@
-from business.models import Category
-from business.models import Business
+from business.models import (Category, Business)
 
 from locus.controls import AddressControl
 from business.controls import *
-from user.controls import *
 from common.apputil import *
 
 # Create your views here.

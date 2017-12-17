@@ -10,6 +10,7 @@ from common.apputil import App_UserFilesDir
 
 ## debug
 import traceback
+import logging
 from pprint import pprint
 
 
@@ -34,13 +35,23 @@ class User(models.Model):
 		fields = ('id', 'name', 'email', 'phone')
 		return klass.objects.values(*fields)
 
+
 	@classmethod
 	def create(klass, values):
 		try:
 			return klass.objects.create(level=9, **values)
 		except:
-			print('failed to create user')
-			traceback.print_exc()
+			logging.error(ex)
+			return None
+
+
+	@classmethod
+	def update(klass, values):
+		try:
+			user_id = values['id']
+			return klass.objects.filter(id=user_id).update(**values)
+		except Exception as ex:
+			logging.error(ex)
 			return None
 
 
@@ -53,9 +64,8 @@ class User(models.Model):
 	def fetch_user(klass, user):
 		try:
 			return klass.objects.get(email=user.email)
-		except:
-			print("failed to get user")
-			traceback.print_exc()
+		except Exception as ex:
+			logging.error(ex)
 			return None
 
 
@@ -107,9 +117,8 @@ class User(models.Model):
 		try:
 			return klass.objects.get(email=email, password=password)
 			#return klass.objects.filter(email=email, password=password).first()
-		except:
-			print("user creds do not match")
-			traceback.print_exc()
+		except Exception as ex:
+			logging.error(ex)
 			return None
 
 
