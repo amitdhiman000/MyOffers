@@ -23,8 +23,6 @@ class Country(models.Model):
 
 	@classmethod
 	def create(klass, name):
-		if name == None or name == '':
-			raise ValueError('Invalid value')
 		return klass.objects.get_or_create(name=name)[0]
 
 
@@ -35,8 +33,6 @@ class Country(models.Model):
 
 	@classmethod
 	def remove(klass, name):
-		if name == None or name == '':
-			raise ValueError('Invalid value')
 		try:
 			obj = klass.objects.get(name=name)[0]
 			return True
@@ -59,6 +55,14 @@ class Country(models.Model):
 			logging.error(e)
 			return None
 
+	@classmethod
+	def fetch_by_filter(klass, values):
+		try:
+			return klass.objects.filter(**values)
+		except Exception as e:
+			logging.error(e)
+			return None
+
 
 
 class State(models.Model):
@@ -73,16 +77,12 @@ class State(models.Model):
 
 	@classmethod
 	def create(klass, state_name, country):
-		if state_name == None or state_name == '':
-			raise ValueError('Invalid value')
 		obj = klass.objects.get_or_create(name=state_name, fk_country=country)[0]
 		return obj
 
 
 	@classmethod
 	def create0(klass, state_name, country_name = 'India'):
-		if state_name == None or state_name == '':
-			raise ValueError('Invalid value')
 		try:
 			country = Country.objects.get(country_name=country_name)
 			obj = klass.objects.get_or_create(name=state_name, fk_country=country)[0]
@@ -137,6 +137,7 @@ class State(models.Model):
 			return None
 
 
+
 class City(models.Model):
 	id = models.AutoField(primary_key=True)
 	name = models.CharField(max_length=50)
@@ -150,8 +151,6 @@ class City(models.Model):
 
 	@classmethod
 	def create(klass, city_name, state, country):
-		if city_name == None or city_name == '':
-			raise ValueError('Invalid value')
 		obj = klass.objects.get_or_create(name=city_name, fk_state=state, fk_country=country)[0]
 		return obj
 
@@ -233,33 +232,27 @@ class Area(models.Model):
 
 
 	@classmethod
-	def create(klass, area_name, area_pin, city, state, country):
-		obj = klass.objects.get_or_create(name=area_name, pincode=area_pin, fk_city=city, fk_state=state, fk_country=country)[0]
+	def create(klass, values):
+		obj = klass.objects.get_or_create(**values)[0]
 		return obj
 
 
 	@classmethod
-	def create0(klass, area_name, area_pin, city_name, state_name, country_name):
-		try:
-			country = Country.objects.get(name=country_name)
-			state = State.objects.get(name=state_name)
-			city = City.objects.get(name=city_name)
-			obj = klass.objects.get_or_create(name=area_name, pincode=area_pin, fk_country=country, fk_state=state, fk_city=city)[0]
-			return (obj != None)
-		except Exception as e:
-			logging.error(e)
-			return None
-
-
-	@classmethod
 	def fetch_or_create(klass, area_name, area_pin, city, state, country):
-		return klass.create(area_name, area_pin, city, state, country)
+		values = {
+			'name':area_name,
+			'pincode':area_pin,
+			'fk_city':city,
+			'fk_state':state,
+			'fk_country':country
+		}
+		return klass.create(values)
 
 
 	@classmethod
-	def remove(klass, name):
+	def remove(klass, values):
 		try:
-			obj = klass.objects.get(name=name)[0]
+			obj = klass.objects.filter(**values)
 			obj.delete()
 			return True
 		except Exception as e:
@@ -296,7 +289,7 @@ class Area(models.Model):
 	@classmethod
 	def fetch_by_pincode(klass, area_pin):
 		try:
-			return klass.objects.filter(pincode=area_pin).first()
+			return klass.objects.filter(pincode=area_pin)
 		except Exception as e:
 			logging.error(e)
 			return None
@@ -320,8 +313,8 @@ class Area(models.Model):
 
 
 
-class Address(models.Model):
-	id = models.BigAutoField(primary_key=True)
+from common.models import BaseModel
+class Address(BaseModel):
 	name = models.CharField(max_length=50, blank=False)
 	phone = models.CharField(max_length=10, blank=True)
 	address = models.CharField(max_length=50, blank=False)
@@ -338,6 +331,7 @@ class Address(models.Model):
 	def absolute_url(self):
 		return '/locus/address/'+ str(self.id) + '/'
 
+
 	@classmethod
 	def queryset(klass):
 		fields = ('id', 'name', 'pincode', 'address', 'area', 'city', 'state', 'country')
@@ -347,52 +341,6 @@ class Address(models.Model):
 		city=models.F('fk_area__fk_city__name'),
 		state=models.F('fk_area__fk_state__name'),
 		country=models.F('fk_area__fk_country__name')).values(*fields)
-
-
-	@classmethod
-	def create(klass, values):
-		try:
-			obj = klass.objects.get_or_create(
-			name=values['name'],
-			phone=values['phone'],
-			address=values['address'],
-			landmark=values['landmark'],
-			latitude=values['latitude'],
-			longitude=values['longitude'],
-			fk_area=values['area'],
-			fk_user=values['user'])[0]
-			return obj
-		except Exception as e:
-			logging.error(e)
-			return None
-
-
-	@classmethod
-	def create(klass, ad, user):
-		try:
-			obj = klass.objects.get_or_create(
-			name=ad.name,
-			phone=ad.phone,
-			address=ad.address,
-			latitude=ad.latitude,
-			longitude=ad.longitude,
-			fk_area=ad.area,
-			fk_user=ad.user)[0]
-			return obj
-		except Exception as e:
-			logging.error(e)
-			return None
-
-
-	@classmethod
-	def remove(klass, id, user):
-		try:
-			obj = klass.objects.get(id=id, fk_user=user)
-			obj.delete()
-			return True
-		except Exception as e:
-			logging.error(e)
-			return False
 
 
 	@classmethod
@@ -418,11 +366,9 @@ class Location(models.Model):
 	longitude = models.CharField(max_length=10)
 
 	@classmethod
-	def create(klass, loc_name, landmark, logitude, latitude, user, area):
-		if loc_name == None or loc_name == '':
-			raise ValueError('Invalid value')
+	def create(klass, values):
 		try:
-			obj = klass.objects.get_or_create(name=loc_name, landmark=landmark, longitude=longitude, latitude=latitude, fk_area=area)[0]
+			obj = klass.objects.get_or_create(**values)[0]
 			return obj
 		except Exception as e:
 			logging.error(e)
@@ -430,11 +376,9 @@ class Location(models.Model):
 
 
 	@classmethod
-	def remove(klass, name, user):
-		if name == None or name == '':
-			raise ValueError('Invalid value')
+	def remove(klass, **values):
 		try:
-			obj = klass.objects.get(name=name)[0]
+			obj = klass.objects.filter(**values)
 			obj.delete()
 			return True
 		except Exception as e:
@@ -443,11 +387,11 @@ class Location(models.Model):
 
 
 	@classmethod
-	def fetch_location_by_geo(klass, latitude, longitude):
+	def fetch_by_geo(klass, latitude, longitude):
 		obj = klass.objects.get_or_create(latitude=latitude, longitude=longitude)
 		return obj
 
 
 	@classmethod
-	def fetch(klass, user):
+	def fetch_by_user(klass, user):
 		return klass.objects.filter(fk_user=user)

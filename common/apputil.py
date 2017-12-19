@@ -175,7 +175,10 @@ def App_Template(request, file):
 	return (base_tpl, file_path)
 
 
-def App_Redirect(request, url):
+def App_Redirect(request, url=None):
+	if url == None:
+		url = request.META.get('HTTP_REFERER', '/')
+
 	if request.is_ajax():
 		return JsonResponse({'status':302, 'url': url})
 	return HttpResponseRedirect(url)

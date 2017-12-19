@@ -29,7 +29,7 @@
         console.log(e.resp);
         if (e.status) {
             $("#business-items").append(e.resp);
-			$('.info_item form').data('handlers', {before: beforeSaveReq, after: afterSaveResponse});
+			$('.info_item form').data('handlers', {before: beforeUpdateReq, after: afterUpdateRes});
         }
     }
 
@@ -40,23 +40,19 @@
 		item.fadeOut(600, function(){ $(this).remove(); });
 	}
 
-    $(function() {
+	$(function() {
 		$('#business-form').data('handlers', {before: beforeBReq, after: afterBRes});
-		$('.info_item form').data('handlers', {before: beforeSaveReq, after: afterSaveResponse});
-    });
+		$('.info_item form').data('handlers', {before: beforeUpdateReq, after: afterUpdateRes});
+  	});
 
-	function editText(e,pThis) {
+	function editText(e,pThis)
+	{
 		e.stopPropagation();
 		e.preventDefault();
 		console.log('+editText');
 		var root = $(pThis).parents('.info_item');
 		var inputs = root.find('.ui-input');
 		var controls = root.find('.item_controls');
-		/*if (controls.exists()) {
-			controls.remove();
-		} else {
-			item.after('<div class="item_controls" ><input type="submit" value="Save" class="ui-btn" /><input type="button" value="Cancel" onclick="editTextF(event,this)" class="ui-btn" /></div>');
-		}*/
 		if (inputs.attr('readonly')) {
 			inputs.removeAttr('readonly');
 		} else {
@@ -66,18 +62,25 @@
 		controls.toggleClass('ui-hide');
 	}
 
-	function beforeSaveReq(e) {
-		console.log("+beforeSaveReq");
+	function beforeUpdateReq(e) {
+		console.log("+beforeUpdateReq");
 		return true;
 	}
 
-	function afterSaveResponse(e) {
-		console.log("+afterSaveResponse");
+	function afterUpdateRes(e) {
+		console.log("+afterUpdateRes");
 		if (e.status) {
-			var val = e.resp.data;
-			console.log(val);
-			e.$src.find('.ui-input').attr('data-value', val);
-			e.$src.find('input[type=button]').click();
+			var vals = e.resp.data;
+			var $src = e.$src;
+			for (var key in vals) {
+				var val = vals[key];
+				console.log(key+' : '+val);
+				var inp = $src.find('.ui-input[name='+key+']');
+				if (inp.exists()) {
+					inp.attr('data-value', val);
+					$src.find('input[type=button]').click();
+				}
+			}
 			Noti.info({title:e.resp.message, text:''});
 		} else {
 			var errors = '';
@@ -87,8 +90,8 @@
 			Noti.info({title:e.resp.message, text:errors});
 		}
 	}
-
 	</script>
+
 	<div id="delete-dialog" title="Delete" style="display: none;">
 		<p>Are you sure want to delete this business ?</p>
 	</div>
@@ -127,7 +130,7 @@
 			</div>
 
 			<div id="address_add_box" >
-				<form method="POST" action="/business/address-create/" class="ajax-form" id="business-form" >
+				<form method="POST" action="/business/address/create/" class="ajax-form" id="business-form" >
 					<table class="ui-form-table" >
 						{% csrf_token %}
 						<input type="hidden" name="BA_id" class="ui-input" value="{{business.address.id}}" />

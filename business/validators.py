@@ -17,7 +17,7 @@ class BusinessNameValidator(Validator):
 
 
 
-def BusinessCategoryValidator(Validator):
+class BusinessCategoryValidator(Validator):
     def __call__(self, value, *args):
         error = None
         if value == None or value == '':

@@ -1,65 +1,125 @@
-import json
-from .models import Area, Address
+from common.forms import *
+from locus.models import (Area, Address)
 from user.models import User
-from common.apputil import Klass
-from common.forms import Form
 
-class AddressForm(Form):
+import logging
+
+model_fields = [
+    {'name':'id', 'validator': None},
+    {'name':'name', 'validator': None},
+    {'name':'phone', 'validator': None},
+    {'name':'pincode', 'validator': None},
+    {'name':'address', 'validator': None},
+    {'name':'landmark', 'validator': None},
+    {'name':'location', 'validator': None},
+]
+
+form_fields = {
+    ## form fields
+    'A_id': model_fields[0],
+    'A_name': model_fields[1],
+    'A_phone': model_fields[2],
+    'A_pincode': model_fields[3],
+    'A_address': model_fields[4],
+    'A_landmark': model_fields[5],
+    'A_location': model_fields[6],
+
+    ## json fields
+    'id': model_fields[0],
+    'name': model_fields[1],
+    'phone': model_fields[2],
+    'pincode': model_fields[3],
+    'address': model_fields[4],
+    'landmark': model_fields[5],
+    'location': model_fields[6],
+}
+
+
+class AddressRegForm(CreateForm):
     model = Address
-    form_fields = {'A_name': 'name',
-        'A_location':'location',
-        'A_phone':'phone',
-        'A_address':'address',
-        'A_pincode':'pincode',
-        'A_landmark':'landmark'
-        }
 
-
-    def parseHtml(self, request):
-        content = request.META.get('CONTENT_TYPE')
-        print(content)
-        data = request.POST
-        for key,val in self.form_fields.items():
-            self._values[val] = data[key]
-
-
-    def parseJson(self, request):
-        content = request.META.get('CONTENT_TYPE')
-        #content = request.META.get('HTTP_ACCEPT')
-        print(content)
-        self._values = {'pincode': 0, 'phone': '',
-                        'name': '', 'pincode': '',
-                        'landmark': '', 'latitude':'',
-                        'longitude':'', 'area': None,
-                        'user': None,
-                        }
-        data = json.loads(request.body.decode('utf-8'))
-        for key,val in self.form_fields.items():
-            if val in data:
-                self._values[val] = data[val]
-
-        print(self._values)
-        area = Area.fetch_by_pincode(self._values['pincode'])
-        print(area.pincode)
-        if (area != None):
-            self._values['area'] = area
-
-        user = User.fetch_user(Klass(email='amitdhiman000@gmail.com'))
-        if (user != None):
-            self._values['user'] = user
-
-        return True
-
-
-    def clean(self):
-        return True
+    def __init__(self):
+        super().__init__()
+        self.m_fields = form_fields
 
 
     def validate(self):
-        self._cleaned_values = Address().__dict__
-        print(self._cleaned_values)
-        return True
+        super().validate()
+
+        location = self.model_value('location')
+        if location != '':
+            self.del_model_value('location')
+            try:
+                loc = location.split(',')
+                if len(loc) == 2:
+                    self.add_model_value('latitude', loc[0])
+                    self.add_model_value('longitude', loc[1])
+            except Exception as ex:
+                logging.error(ex)
+                self.set_error('location', 'Failed to parse location')
+                self.m_valid = False
+
+        pincode = self.model_value('pincode')
+        address = self.model_value('address')
+        if pincode != '':
+            areas = Area.fetch_by_pincode(pincode)
+            final_area = areas.first()
+            for area in areas:
+                print(area.name, area.pincode)
+                if address.find(area.name):
+                    final_area = area
+            self.add_model_value('fk_area', final_area)
+            self.del_model_value('pincode')
+        else:
+            self.set_error('pincode', 'Pincode is required')
+
+
+        self.add_model_value('fk_user', self.request().user)
+
+        return self.valid()
 
 
     def save(self):
-        return self.model.create(self._values)
+        print(self.model_values())
+        return self.model.create(self.model_values())
+
+
+
+class AddressUpdateForm(Form):
+    model = Address
+
+    def __init__(self):
+        super().__init__()
+        self.m_fields = form_fields
+
+
+    def validate(self):
+        super().validate()
+        return self.valid()
+
+
+    def update(self):
+        return self.model.update(self.model_values())
+
+
+
+class AddressDeleteForm(DeleteForm):
+    model = Address
+
+    def __init__(self):
+        super().__init__()
+        self.m_fields = {
+			'A_id': {'name':'id', 'validator':None},
+			'id': {'name':'id', 'validator':None},
+		}
+
+
+    def validate(self):
+        super().validate()
+        self.add_model_value('fk_user', self.request().user)
+        return self.valid()
+
+
+    def delete(self):
+        print(self.model_values())
+        return self.model.remove(self.model_values())

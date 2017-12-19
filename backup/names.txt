@@ -1,0 +1,28 @@
+good names practices.
+
+Type Names: 
+Factory
+Provider
+Mediator
+Adapter
+Manager
+Handler
+Controller
+Model
+Builder
+Writer
+Reader
+Handler
+Container
+Dispatcher
+Helper
+
+Variable Names:
+m_members
+m_dataset
+m_properties
+m_attributes
+m_attrs
+m_values
+m_items
+m_fields

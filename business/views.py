@@ -1,7 +1,6 @@
 from business.models import (Category, Business)
 
-from locus.controls import AddressControl
-from business.controls import *
+from business.forms import *
 from common.apputil import *
 
 # Create your views here.
@@ -17,11 +16,12 @@ def business_home_view(request):
 @App_LoginRequired
 def business_create(request):
 	data = None
-	control = BusinessControl()
-	if (control.parseRequest(request)
-			and control.clean()
-			and control.validate()):
-		data = control.execute()
+	print(request.POST)
+	form = BusinessRegForm()
+	if (form.parseForm(request)
+			and form.clean()
+			and form.validate()):
+		data = form.commit()
 		#data = model_to_dict(data)
 
 	if request.is_ajax:
@@ -33,27 +33,27 @@ def business_create(request):
 			data = control.errors()
 			return JsonResponse({'status':401, 'message':'Business save failed', 'data':data});
 	else:
-		return App_Redirect(request, '/business/')
+		return App_Redirect(request)
 
 
 @App_LoginRequired
 def business_update(request):
+	print(request.POST)
 	data = None
-	control = BusinessControlsFactory.getControl(request)
-	if (control.parseRequest(request)
-			and control.clean()
-			and control.validate()):
-		data = control.execute()
-		#data = model_to_dict(data)
+	form = BusinessUpdateForm()
+	if (form.parseForm(request)
+			and form.clean()
+			and form.validate()):
+		data = form.commit()
 
 	if request.is_ajax:
 		if data != None:
-			return JsonResponse({'status':200, 'message':'Business saved', 'data':data});
+			return JsonResponse({'status':200, 'message':'Business updated', 'data':data});
 		else:
-			data = control.errors()
-			return JsonResponse({'status':401, 'message':'Business save failed', 'data':data});
+			data = form.errors()
+			return JsonResponse({'status':401, 'message':'Business update failed', 'data':data});
 	else:
-		return App_Redirect(request, '/business/')
+		return App_Redirect(request)
 
 
 @App_LoginRequired
@@ -81,7 +81,7 @@ def business_address_create(request):
 			data = control.errors()
 			return JsonResponse({'status':401, 'message':'Business save failed', 'data':data});
 	else:
-		return App_Redirect(request, '/business/')
+		return App_Redirect(request)
 
 
 @App_LoginRequired
@@ -103,7 +103,7 @@ def business_address_update(request):
 			data = control.errors()
 			return JsonResponse({'status':401, 'message':'Business save failed', 'data':data});
 	else:
-		return App_Redirect(request, '/business/')
+		return App_Redirect(request)
 
 
 @App_LoginRequired
@@ -125,4 +125,4 @@ def business_address_delete(request):
 			data = control.errors()
 			return JsonResponse({'status':401, 'message':'Business save failed', 'data':data});
 	else:
-		return App_Redirect(request, '/business/')
+		return App_Redirect(request)

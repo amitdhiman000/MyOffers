@@ -1,20 +1,18 @@
 from django.template.context_processors import csrf
-from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from django.views.decorators.csrf import (csrf_protect, csrf_exempt)
 from django.utils.decorators import method_decorator
 from django.http import HttpResponse, JsonResponse
 
 from common.apputil import *
-from locus.controls import *
-from locus.models import Address
-
-from locus.forms import AddressForm
+from locus.forms import (AddressRegForm, AddressUpdateForm, AddressDeleteForm)
 from locus.services import AddressService
-
-from django.views import View
 from api.views import RestApiView
 
+import logging
+
+
 class AddressView(RestApiView):
-    form = AddressForm
+    form = AddressRegForm
     service = AddressService
 
     def head(self, request, key, **kwargs):
@@ -78,86 +76,87 @@ class AddressView(RestApiView):
 
 @App_LoginRequired
 def home_view(request):
-    addresses = Address.fetch_by_user(request.user)
-    data = {'title': 'Address', 'addresses': addresses}
-    data.update(csrf(request))
-    return App_Render(request, 'locus/address_1.html', data)
+    return address_view(request)
 
 
 @App_LoginRequired
 def address_view(request):
-    addresses = Address.fetch_by_user(request.user)
+    addresses = AddressService.address_by_user(request.user)
+    print(len(addresses))
+    print(addresses)
     data = {'title': 'Address', 'addresses': addresses}
-    data.update(csrf(request))
     return App_Render(request, 'locus/address_1.html', data)
 
 
 @App_LoginRequired
 def address_create(request):
     data = None
-    control = AddressControl()
-    if (control.parseRequest(request)
-        and control.clean()
-        and control.validate()):
-        data = control.execute()
+    form = AddressRegForm()
+    if (form.parseForm(request)
+        and form.clean()
+        and form.validate()):
+        data = form.commit()
 
     if request.is_ajax():
         if data != None:
-            return JsonResponse({'status': 204, 'message': 'Saved Successfully'})
+            resp = App_Render(request, '/locus/address_item_1.html', {'addresses': list(data)})
+            return JsonResponse({'status': 204, 'message': 'Saved Successfully', 'data': resp})
         else:
-            data = control.errors()
+            data = form.errors()
             return JsonResponse({'status': 400, 'message': 'Saving Failed', 'data': data})
-    return App_Redirect(request, '/locus/address/')
+    return App_Redirect(request)
 
 
 @App_LoginRequired
 def address_update(request):
     data = None
-    control = AddressControl()
-    if (control.parseRequest(request)
-        and control.clean()
-        and control.validate()):
-        data = control.execute()
+    form = AddressUpdateForm()
+    if (form.parseForm(request)
+        and form.clean()
+        and form.validate()):
+        data = form.commit()
 
-    data = control.errors()
+    data = form.errors()
     if request.is_ajax():
         if data != None:
             return JsonResponse({'status': 200, 'message': 'Saved Successfully', 'data': data})
         else:
-            data = control.errors()
+            data = form.errors()
             return JsonResponse({'status': 400, 'message': 'Saving Failed', 'data': data})
-    return App_Redirect(request, '/locus/address/')
+    return App_Redirect(request)
 
 
 @App_LoginRequired
 def address_patch(request):
     data = None
-    control = AddressControl()
-    if (control.parseRequest(request)
-        and control.clean()
-        and control.validate()):
-        data = control.execute()
+    form = AddressUpdateForm()
+    if (form.parseForm(request)
+        and form.clean()
+        and form.validate()):
+        data = form.commit()
 
-    data = control.errors()
     if request.is_ajax():
         if data != None:
             return JsonResponse({'status': 200, 'message': 'Saved Successfully', 'data': data})
         else:
-            data = control.errors()
+            data = form.errors()
             return JsonResponse({'status': 400, 'message': 'Saving Failed', 'data': data})
-    return App_Redirect(request, '/locus/address/')
+    return App_Redirect(request)
 
 
 @App_LoginRequired
 def address_delete(request):
     logging.error(request.POST)
-    error = None
-    id = request.POST.get('id', -1)
-    if Address.remove(id, request.user) == False:
-        error = {'error': 'Failed to delete'}
+    form = AddressDeleteForm()
+    if (form.parseForm(request)
+        and form.clean()
+        and form.validate()):
+        data = form.commit()
+
     if request.is_ajax():
-        if error == None:
+        if data == True:
             return JsonResponse({'status': 204, 'message': 'Deleted Successfully'})
         else:
-            return JsonResponse({'status': 400, 'message': 'Deletion Failed', 'data': error})
-    return App_Redirect(request, '/locus/address/')
+            data = form.errors()
+            return JsonResponse({'status': 400, 'message': 'Deletion Failed', 'data': data})
+    return App_Redirect(request)

@@ -242,11 +242,8 @@ function postRequest(pUrl, pData, pCallback)
 						location.href = jsonObj.url;
 						break;
 					case 200:
-						pCallback(true, jsonObj);
-						break;
 					case 204:
-						Toast.show(jsonObj.message);
-						//pCallback(true, jsonObj.data);
+						pCallback(true, jsonObj);
 						break;
 					case 401:
 					default:

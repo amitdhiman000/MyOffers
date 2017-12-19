@@ -38,7 +38,7 @@ class UserRegForm(CreateForm):
 		is_valid = super().validate()
 		if not is_valid:
 			return is_valid
-		email = self.values().get('email', '')
+		email = self.model_values().get('email', '')
 		if User.check_email(email):
 			self.set_error('email', 'Email already in use')
 			return False
@@ -47,7 +47,7 @@ class UserRegForm(CreateForm):
 
 	def save(self):
 		print('saving ....')
-		return User.create(self.values())
+		return User.create(self.model_values())
 
 
 
@@ -63,14 +63,14 @@ class UserUpdateForm(UpdateForm):
 		is_valid = super().validate()
 		if not is_valid:
 			return is_valid
-		self.set_value('id', self.m_request.user.id)
+		self.set_model_value('id', self.m_request.user.id)
 		print(self.m_values)
 		return True
 
 
 	def update(self):
 		print('saving ....')
-		if User.update(self.values()):
+		if User.update(self.model_values()):
 			return self.result()
 		else:
 			return None
@@ -93,8 +93,11 @@ class UserSignInForm(Form):
 
 
 	def commit(self):
-		email = self.m_values['email']
-		passw = self.m_values['password']
+		print('commiting....')
+		model_values = self.model_values()
+		email = model_values['email']
+		passw = model_values['password']
+		print(email, passw)
 		user = backends.auth_user(email, passw)
 		if (user != None):
 			backends.login(self.request(), user)

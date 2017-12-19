@@ -93,7 +93,7 @@ class PriceValidator(Validator):
 
 
 
-def DiscountValidator(Validator):
+class DiscountValidator(Validator):
 	def __call__(self, value, *args):
 		discount = value
 		error = None
@@ -111,7 +111,7 @@ def DiscountValidator(Validator):
 
 
 
-def DescriptionValidator(Validator):
+class DescriptionValidator(Validator):
 	def __call__(self, value, *args):
 		desc = value
 		error = None
@@ -127,11 +127,11 @@ def DescriptionValidator(Validator):
 
 
 
-def WebsiteValidator(Validator):
+class WebsiteValidator(Validator):
 	def __call__(self, value, *args):
-		name = value
+		website = value
 		error = None
-		if value == None or value == '':
+		if website == None or website == '':
 			pass
 			#error = '*Website is required'
 		else:

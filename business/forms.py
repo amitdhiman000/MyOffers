@@ -1,13 +1,13 @@
 from common.forms import *
 from common.validators import *
-from user.models import User
-from user import backends
+from business.validators import *
+from business.models import (Business, Category)
 
 
 model_fields = [
 	{'name': 'id', 'validator': NoValidator},
 	{'name': 'name', 'validator': BusinessNameValidator},
-	{'name': 'about', 'validator': DesctiptionValidator},
+	{'name': 'about', 'validator': DescriptionValidator},
 	{'name': 'website', 'validator': WebsiteValidator},
 	{'name': 'fk_category', 'validator': BusinessCategoryValidator},
 ]
@@ -34,16 +34,26 @@ class BusinessRegForm(CreateForm):
 		super().__init__()
 		self.m_fields = form_fields
 
+
 	def validate(self):
 		is_valid = super().validate()
 		if not is_valid:
 			return is_valid
+
+		cat = Category.fetch_by_id(self.model_values()['fk_category'])
+		if cat != None:
+			self.add_model_value('fk_category', cat)
+		else:
+			self.set_error('fk_category', 'Category not found')
+			return False
+		self.add_model_value('fk_user', self.m_request.user)
 		return True
 
 
 	def save(self):
 		print('saving ....')
-		return User.create(self.values())
+		print(self.model_values())
+		return Business.create(self.model_values())
 
 
 
@@ -51,22 +61,20 @@ class BusinessUpdateForm(UpdateForm):
 
 	def __init__(self):
 		super().__init__()
-		self.m_form_fields = form_fields
-		self.m_model_fields = model_fields
+		self.m_fields = form_fields
 
 
 	def validate(self):
 		is_valid = super().validate()
 		if not is_valid:
 			return is_valid
-		self.set_value('id', self.m_request.user.id)
-		print(self.m_values)
+		print(self.m_model_values)
 		return True
 
 
 	def update(self):
 		print('saving ....')
-		if User.update(self.values()):
+		if Business.update(self.model_values()):
 			return self.result()
 		else:
 			return None
@@ -77,21 +85,20 @@ class BusinessDeleteForm(Form):
 
 	def __init__(self):
 		super().__init__()
-		self.m_form_fields = {
-			'U_id': 'id',
-			'id': 'id'
-		}
-		self.m_model_fields = {
+		self.m_fields = {
+			'U_id': {'name':'id', 'validator':None},
 			'id': {'name':'id', 'validator':None},
 		}
 
+
 	def validate(self):
-		return super().validate()
+		super().validate()
+		self.add_model_value('fk_user', self.request().user)
+		return self.valid()
 
 
 	def commit(self):
-		business_id = self.m_values['id']
-		if Business.remove(business_id):
+		if Business.remove(self.model_values()):
 			return False
 		else:
 			self.set_error('id', 'Failed to delete Bunisess!!')

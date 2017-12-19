@@ -86,53 +86,31 @@ class Business(models.Model):
 
 
 	@classmethod
-	def create(klass, b, user):
-		obj = klass.objects.get_or_create(name=b.name, about=b.about, website=b.website, fk_category=b.category, fk_user=user)[0]
+	def create(klass, values):
+		obj = klass.objects.get_or_create(**values)[0]
 		return obj
 
 
 	@classmethod
-	def remove(klass, id, name, user):
-		if name == None or name == '':
-			raise ValueError('Invalid value')
+	def update(klass, values):
 		try:
-			obj = klass.objects.get(id=id, name=name, fk_user=user)[0]
-			obj.delete()
-			return True
-		except Exception as e:
-			logging.debug(e)
-			return False
-
-
-	@classmethod
-	def update_name(klass, business, value):
-		business.name = value;
-		business.save()
-		return business.name
-
-
-	@classmethod
-	def update_about(klass, business, value):
-		business.about = value;
-		business.save()
-		return business.about
-
-
-	@classmethod
-	def update_category(klass, business, value):
-		cat = Category.fetch_by_id(value)
-		if cat != None:
-			business.fk_category = cat;
-			business.save()
-			return business.fk_category.id
+			business_id = values['id']
+			obj = klass.objects.filter(id=business_id).update(**values)
+			return obj
+		except Exception as ex:
+			logging.error(ex)
 		return None
 
 
 	@classmethod
-	def update_website(klass, business, value):
-		business.website = value;
-		business.save()
-		return business.website
+	def remove(klass, values):
+		try:
+			obj = klass.objects.filter(**values)
+			obj.delete()
+			return True
+		except Exception as ex:
+			logging.error(ex)
+			return False
 
 
 	@classmethod

@@ -194,7 +194,7 @@ def user_update(request):
 		else:
 			return JsonResponse({'status': 200, 'message': 'Saved Successfully', 'data':form.result()})
 	else:
-		return App_Redirect(request, request.META.get('HTTP_REFERER'))
+		return App_Redirect(request)
 
 
 @App_LoginRequired
@@ -224,4 +224,4 @@ def user_topic_selected(request):
 		else:
 			return JsonResponse({'status':401, 'message': 'Server Error', 'data': error})
 	else:
-		return App_Redirect(request, settings.HOME_PAGE_URL)
+		return App_Redirect(request)
