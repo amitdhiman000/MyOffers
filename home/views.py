@@ -1,6 +1,6 @@
 from offer.models import Offer
 from offer.views import offer_home_view
-from common.apputil import App_Render
+from base.apputil import App_Render
 
 from pprint import pprint
 # Create your views here.

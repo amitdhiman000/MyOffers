@@ -2,8 +2,8 @@ import re
 from user.models import User
 from public.models import UserMessage
 from public.models import GuestMessage
-from common.controls import BaseControl
-from common.validators import *
+from base.controls import BaseControl
+from base.validators import *
 
 def is_number(s):
 	try:

@@ -3058,7 +3058,7 @@ if (jQuery) {
     // Textarea Auto Resize
     var hiddenDiv = $('.hiddendiv').first();
     if (!hiddenDiv.length) {
-      hiddenDiv = $('<div class="hiddendiv common"></div>');
+      hiddenDiv = $('<div class="hiddendiv base"></div>');
       $('body').append(hiddenDiv);
     }
     var text_area_selector = '.materialize-textarea';

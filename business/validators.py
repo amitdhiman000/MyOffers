@@ -1,4 +1,4 @@
-from common.validators import Validator
+from base.validators import Validator
 
 class BusinessNameValidator(Validator):
     def __call__(self, value, *args):

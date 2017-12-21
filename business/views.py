@@ -1,7 +1,7 @@
 from business.models import (Category, Business)
 
 from business.forms import *
-from common.apputil import *
+from base.apputil import *
 
 # Create your views here.
 

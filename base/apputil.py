@@ -143,7 +143,14 @@ def App_Slugify(text):
 	return re.sub(r'\W+', '-', text)
 
 
-## helper functions common to all views
+def App_Base64(file_path):
+	filedata = open(file_path, "rb").read()
+	text = "{0}{1}".format('data:image/svg+xml;base64,', base64.b64encode(filedata).decode('utf8'))
+	#text = "data:image/svg+xml;base64,%s" % base64.b64encode(imgdata).decode('utf8')
+	return text
+
+
+## helper functions base to all views
 ##
 def App_Template(request, file):
 	page_id  = request.GET.get('pid', '1')

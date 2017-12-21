@@ -1,4 +1,5 @@
 import re
+from django.utils import timezone
 
 class Validator(object):
 	def __call__(self, value, *args):
@@ -137,4 +138,20 @@ class WebsiteValidator(Validator):
 		else:
 			pass
 			#some more checks required
+		return error
+
+
+
+class DateValidator(Validator):
+	def __call__(self, value, *args):
+		date = value
+		error = None
+		if date == None or date == '':
+			error = '*Date value is missing'
+		else:
+			try:
+				tz = timezone.get_current_timezone()
+				start = tz.localize(datetime.strptime(date, "%Y/%m/%d"))
+			except:
+				error = 'Invalid date format'
 		return error

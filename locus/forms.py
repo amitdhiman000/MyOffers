@@ -1,4 +1,4 @@
-from common.forms import *
+from base.forms import *
 from locus.models import (Area, Address)
 from user.models import User
 

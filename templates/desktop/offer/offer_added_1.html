@@ -1,6 +1,18 @@
 {% extends base_template %}
 
+{% block pagenav %}
+{% include './offer_page_nav.html' %}
+{% endblock %}
+
 {% block pagecontent %}
-<h2>Offer Added Successfuly</h2>
-<h4>Your offer has been successfully registered. and will be diplayed to the user</h4>
+<div class="ui-content">
+    <div class="ui-block">
+        <div class="ui-block-bar">
+        </div>
+        <div class="ui-block-body">
+            <h2>Offer Added Successfuly</h2>
+            <h4>Your offer has been successfully registered. and will be diplayed to the user</h4>
+        </div>
+    </div>
+</div>
 {% endblock %}

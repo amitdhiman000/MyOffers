@@ -6,7 +6,7 @@ from django.utils.translation import ugettext as _
 from django.core.mail import send_mail
 #from time import timezone
 from datetime import datetime
-from common.apputil import App_UserFilesDir
+from base.apputil import App_UserFilesDir
 
 ## debug
 import traceback

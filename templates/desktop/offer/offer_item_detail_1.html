@@ -1,6 +1,10 @@
 {% extends base_template %}
 
 
+{% block pagenav %}
+{% include './offer_page_nav.html' %}
+{% endblock %}
+
 {% block pagecontent %}
 <div class="ui-content" >
 	{% if offer %}

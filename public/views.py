@@ -5,7 +5,7 @@ from django.template.context_processors import csrf
 from django.views.decorators.csrf import csrf_exempt
 
 from public.controls import MessageControl
-from common.apputil import *
+from base.apputil import *
 
 from pprint import pprint
 # Create your views here.

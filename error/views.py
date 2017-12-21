@@ -1,4 +1,4 @@
-from common.apputil import App_Render
+from base.apputil import App_Render
 # Create your views here.
 
 def index(request):

@@ -13,7 +13,7 @@ from public.models import GuestMessage
 from public.models import UserMessage
 from myadmin.preload_data import gCountries
 from myadmin.preload_data import gCategories
-from common.apputil import *
+from base.apputil import *
 # Create your views here.
 
 from pprint import pprint

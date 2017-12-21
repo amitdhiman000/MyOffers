@@ -1,6 +1,6 @@
 import json
 from django.conf import settings
-from common.cleaners import ValueCleaner
+from base.cleaners import ValueCleaner
 
 
 class Form(object):

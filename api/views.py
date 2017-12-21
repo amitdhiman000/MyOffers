@@ -6,7 +6,7 @@ from django.views import View
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from common.apputil import *
+from base.apputil import *
 
 @csrf_exempt
 def token_create(request):

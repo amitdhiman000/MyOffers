@@ -135,12 +135,8 @@ function beforeAdSaveReq(e) {
 function afterAdSaveRes(e) {
 	console.log("+afterAdSaveRes");
 	if (e.status) {
-		var val = e.resp.data;
-		console.log(val);
-		e.$src.find('.ui-input').attr('data-value', val);
-		e.$src.find('input[type=reset]').click();
-		console.log(e.$src.find('.ui-input').attr('data-value'));
-		Noti.info({title:e.resp.message, text:''});
+		var val = e.resp;
+		$('#address_cont').prepend(val);
 	} else {
 		var errors = '';
 		for (var err in e.resp.data) {
@@ -196,7 +192,11 @@ $(function(){
 			</div>
 		</div>
 	</div>
-	{% include './address_item_1.html' %}
+    <div id="address_cont" >
+        {% for address in addresses %}
+            {% include './address_item_1.html' %}
+        {% endfor %}
+    </div>
 
 </div>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMz94217XzpYaxnQRagzgCwpy4dfBM1Ho&callback=initMap">

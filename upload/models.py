@@ -3,7 +3,7 @@ from django.db import models
 from django.utils import timezone
 
 from user.models import User
-from common.apputil import App_UserFilesDir
+from base.apputil import App_UserFilesDir
 ## debug
 import traceback
 from pprint import pprint

@@ -3,7 +3,7 @@ from django.views.decorators.csrf import (csrf_protect, csrf_exempt)
 from django.utils.decorators import method_decorator
 from django.http import HttpResponse, JsonResponse
 
-from common.apputil import *
+from base.apputil import *
 from locus.forms import (AddressRegForm, AddressUpdateForm, AddressDeleteForm)
 from locus.services import AddressService
 from api.views import RestApiView
@@ -99,8 +99,8 @@ def address_create(request):
 
     if request.is_ajax():
         if data != None:
-            resp = App_Render(request, '/locus/address_item_1.html', {'addresses': list(data)})
-            return JsonResponse({'status': 204, 'message': 'Saved Successfully', 'data': resp})
+            data = AddressService.fetch_by_id(data.id)
+            return App_Render(request, 'locus/address_item_1.html', {'address': data})
         else:
             data = form.errors()
             return JsonResponse({'status': 400, 'message': 'Saving Failed', 'data': data})

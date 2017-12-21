@@ -1,4 +1,4 @@
-from common.serializers import ModelValueSerializer
+from base.serializers import ModelValueSerializer
 from .models import User
 
 

@@ -1,4 +1,5 @@
-from common.validators import Validator
+from base.validators import Validator
+from django.utils import timezone
 
 class OfferNameValidator(Validator):
 	def __call__(self, value, *args):

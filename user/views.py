@@ -10,7 +10,7 @@ from locus.models import Address
 from business.models import (Category, Business)
 
 
-from common.apputil import *
+from base.apputil import *
 from api.views import RestApiView
 from .services import UserService
 from .forms import (UserRegForm, UserUpdateForm, UserSignInForm)

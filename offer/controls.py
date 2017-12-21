@@ -8,8 +8,8 @@ from offer.models import Offer
 from business.models import Category
 from business.models import Business
 
-from common.controls import BaseControl
-from common.apputil import App_Slugify
+from base.controls import BaseControl
+from base.apputil import App_Slugify
 from offer.validators import *
 
 ## debug

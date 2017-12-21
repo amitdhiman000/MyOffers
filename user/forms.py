@@ -1,5 +1,5 @@
-from common.forms import *
-from common.validators import *
+from base.forms import *
+from base.validators import *
 from user.models import User
 from user import backends
 

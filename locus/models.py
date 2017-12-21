@@ -313,7 +313,7 @@ class Area(models.Model):
 
 
 
-from common.models import BaseModel
+from base.models import BaseModel
 class Address(BaseModel):
 	name = models.CharField(max_length=50, blank=False)
 	phone = models.CharField(max_length=10, blank=True)

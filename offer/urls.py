@@ -19,12 +19,16 @@ from . import views
 
 urlpatterns = [
 	url(r'^$', views.offer_home_view, name='offer_home_view'),
-	url(r'^create-new/$', views.offer_create_view, name='offer_create_view'),
-	url(r'^create-new/auth/$', views.offer_create, name='offer_create'),
+	url(r'^form/$', views.offer_form_view, name='offer_form_view'),
+	url(r'^create/$', views.offer_create, name='offer_create'),
+	url(r'^update/$', views.offer_update, name='offer_update'),
+	url(r'^patch/$', views.offer_patch, name='offer_patch'),
+	url(r'^delete/$', views.offer_delete, name='offer_delete'),
+	url(r'^new1/$', views.new1_view, name='new1_view'),
 	url(r'^online/$', views.online_view, name='online_view'),
 	url(r'^nearby/$', views.nearby_view, name='nearby_view'),
 	url(r'^bulk/$', views.bulk_view, name='bulk_view'),
 	url(r'^food/$', views.food_view, name='food_view'),
 	#url('^(?P<offer_id>\w{0,50})/$', views.offer_detail_view, name='offer_detail_view'),
-	url(r'^(?P<slug>[\w-]+)/$', views.offer_detail_view1, name="offer_detail_view1"),
+	url(r'^(?P<slug>[\w-]+)/$', views.offer_detail_view, name="offer_detail_view"),
 ]

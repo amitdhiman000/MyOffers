@@ -19,6 +19,7 @@ unmigrate()
 {
 	find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
 	find . -path "*/migrations/*.pyc"  -delete
+	rm -f devel.sqlite3
 }
 
 if [[ $1 == "migrate" ]]

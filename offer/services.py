@@ -1,8 +1,8 @@
-from locus.models import Address
+from locus.models import Offer
 from base.serializers import *
 
-class AddressService(object):
-    model = Address
+class OfferService(object):
+    model = Offer
 
     @classmethod
     def timestamp(klass, key):

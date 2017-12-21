@@ -8,9 +8,10 @@ import traceback
 
 class UserMessage(models.Model):
 	id = models.BigAutoField(primary_key=True)
-	title = models.CharField(max_length=200, default="blank")
+	title = models.CharField(max_length=200)
 	text = models.TextField()
-	created = models.DateTimeField(default=timezone.now)
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
 	fk_user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 
 	@classmethod

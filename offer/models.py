@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db import models
-from datetime import datetime
-from datetime import timedelta
+from base.models import BaseModel
+from datetime import (datetime, timedelta)
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 
@@ -9,11 +9,8 @@ from user.models import User
 from locus.models import Address
 from business.models import Category
 from business.models import Business
-from common.apputil import App_UserFilesDir
+from base.apputil import App_UserFilesDir
 
-## debug
-import traceback
-from pprint import pprint
 
 # Create your models here.
 def days_ahead(days=1):
@@ -21,7 +18,7 @@ def days_ahead(days=1):
 
 
 # offers table for new offers
-class Offer(models.Model):
+class Offer(BaseModel):
 	id = models.BigAutoField(primary_key=True)
 	slug = models.SlugField(unique=True)
 	name = models.CharField(max_length=30, blank=False)
@@ -30,8 +27,9 @@ class Offer(models.Model):
 	price = models.IntegerField(default=100) ## MRP
 	discount = models.IntegerField(default=0)
 	discount_price = models.IntegerField(default=100)
-	created_at = models.DateTimeField(default=timezone.now)
-	start_at = models.DateTimeField(default=timezone.now)
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+	start_at = models.DateTimeField(default=timezone.now())
 	expire_at = models.DateTimeField(default=days_ahead(5))
 	fk_user = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -43,24 +41,6 @@ class Offer(models.Model):
 
 	def __str__(self):
 		return self.name
-
-
-	@classmethod
-	def create(klass, obj):
-		obj.save()
-		return obj
-
-
-	@classmethod
-	def remove(klass, obj):
-		try:
-			db_obj = klass.objects.get(obj)
-			db_obj.delete()
-			return True
-		except:
-			print('failed to delete')
-			traceback.print_exc()
-			return False
 
 
 	@classmethod
@@ -151,7 +131,6 @@ class OfferCategoryMap(models.Model):
 class OfferLocationMap(models.Model):
 	id = models.BigAutoField(primary_key=True)
 	fk_offer = models.ForeignKey(Offer, on_delete=models.CASCADE)
-#	fk_location = models.ForeignKey(Location, db_index=True, on_delete=models.CASCADE)
 	fk_address = models.ForeignKey(Address, db_index=True, on_delete=models.CASCADE)
 
 	@classmethod
