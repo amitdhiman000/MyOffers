@@ -30,6 +30,10 @@ class User(models.Model):
 	image = models.FileField(upload_to=App_UserFilesDir, default=settings.DEFAULT_USER_IMAGE)
 
 
+	def url(self):
+		return '/user/%s/' % urlquote(self.email)
+
+
 	@classmethod
 	def queryset(klass):
 		fields = ('id', 'name', 'email', 'phone')
@@ -64,6 +68,15 @@ class User(models.Model):
 	def fetch_user(klass, user):
 		try:
 			return klass.objects.get(email=user.email)
+		except Exception as ex:
+			logging.error(ex)
+			return None
+
+
+	@classmethod
+	def fetch_by_id(klass, id):
+		try:
+			return klass.objects.get(id=id)
 		except Exception as ex:
 			logging.error(ex)
 			return None
@@ -122,14 +135,6 @@ class User(models.Model):
 			return None
 
 
-	def fetch_url(self):
-		return '/user/%s/' % urlquote(self.email)
-
-
-	def fetch_name(self):
-		return self.name
-
-
 	## Always return True, user object is created means loggedin.
 	def is_loggedin(self):
 		return True
@@ -141,12 +146,16 @@ class User(models.Model):
 
 
 class Guest(object):
+
 	def __init__(self):
-		#self.email = ''
+		self.id = -1
 		self.name = 'Guest'
+		self.email = 'guest@'
+
 
 	def fetch_name(self):
 		return self.name
+
 
 	def is_loggedin(self):
 		return False

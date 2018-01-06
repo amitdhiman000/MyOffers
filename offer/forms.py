@@ -1,13 +1,17 @@
+from django.utils import timezone
+from datetime import datetime
 from base.forms import *
+
+from business.models import Business
 from locus.models import (Area, Address)
+from offer.models import (Offer, OfferCategoryMap)
+from upload.models import FileUpload
 from user.models import User
-from offer.models import Offer
 
 from base.validators import *
 from offer.validators import OfferNameValidator
 
-from django.utils import timezone
-from datetime import datetime
+from base.apputil import App_Slugify
 
 import logging
 
@@ -21,7 +25,7 @@ model_fields = [
 	{'name':'discount_price', 'validator': None},
 	{'name':'start_at', 'validator': DateValidator},
 	{'name':'expire_at', 'validator': DateValidator},
-	{'name':'business', 'validator': None},
+	{'name':'fk_business', 'validator': None},
 	{'name':'fk_user', 'validator': None},
 ]
 
@@ -66,7 +70,6 @@ class OfferRegForm(CreateForm):
 		error = None
 		start = self.model_value('start_at')
 		end = self.model_value('expire_at')
-		error = None
 		if start == None or start == '':
 			error = ('start_at', '*Date value is missing')
 		elif end == None or end == '':
@@ -84,20 +87,50 @@ class OfferRegForm(CreateForm):
 			if start > end:
 				error = ('start_at', '*Start date cannot be before expire date')
 
-		if error != None:
+		if error == None:
+			self.add_model_value('start_at', start)
+			self.add_model_value('expire_at', start)
+		else:
 			self.set_error(*error)
 
+
+		files = self.m_values.get('files', '')
+		if files != '':
+			images = files.split(',')
+			# FIXME later :: fetch support for multiple images
+			upload = FileUpload.fetch_file(images[0], self.request().user)
+			if upload != None:
+				self.add_model_value('image', upload.file)
+		else:
+			self.set_error('fk_business', 'Image not uploaded')
+
 		self.add_model_value('fk_user', self.request().user)
+		business_id = self.model_value('fk_business')
+		business = Business.fetch_by_id(business_id)
+		if business != None:
+			self.add_model_value('fk_business', business)
+		else:
+			self.set_error('fk_business', 'Business does not exist')
+
+		## compute the slug
+		slug = self.model_value('name')+'-by-'+self.request().user.name
+		slug = App_Slugify(slug)
+		if Offer.fetch_by_slug(slug) == None:
+			self.add_model_value('slug', slug)
+		else:
+			self.set_error('name', '*Offer with same name is already posted by you')
 
 		return self.valid()
 
 
 	def save(self):
+		print('saving ....')
 		print(self.model_values())
 		offer = self.model.create(self.model_values())
-		#if offer != None:
-			#OfferCategoryMap.create(offer, self.m_category)
-			#OfferLocationMap.create(offer, self.m_location)
+		if offer != None:
+			pass
+			#OfferCategoryMap.create({'fk_offer':offer, 'fk_category':offer.fk_business.fk_category})
+			#OfferAddressMap.create(offer, offer.fk_business.fk_address)
 			#FileUpload.mark_used(self.m_files[0], self.m_user)
 		return offer
 

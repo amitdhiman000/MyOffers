@@ -99,7 +99,7 @@ def address_create(request):
 
     if request.is_ajax():
         if data != None:
-            data = AddressService.fetch_by_id(data.id)
+            data = AddressService.address_by_id(data.id)
             return App_Render(request, 'locus/address_item_1.html', {'address': data})
         else:
             data = form.errors()

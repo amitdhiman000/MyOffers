@@ -620,7 +620,7 @@ function wfileupload(Elem, opts)
 		_uploadFile: function(lThis, file) {
 			console.log('+_uploadFile');
 			var fdata = new FormData();
-			fdata.append(file.name, file);
+			fdata.append('image', file);
 			var fileName = file.name;
 			//(fileName.length > 20 && (fileName = fileName.substring(0, 20)));
 

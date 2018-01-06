@@ -3,23 +3,28 @@ from django.db import models
 from django.utils import timezone
 
 from user.models import User
-from base.apputil import App_UserFilesDir
+from base.apputil import App_UserFilePath
 ## debug
-import traceback
-from pprint import pprint
+import logging
+
+
+def file_upload_path(inst, filename):
+	return App_UserFilePath(inst.fk_user, filename)
+
 
 class FileUpload(models.Model):
 	id = models.BigAutoField(primary_key=True)
-	file = models.FileField(upload_to=App_UserFilesDir)
+	file = models.FileField(upload_to=file_upload_path)
 	used = models.IntegerField(default=0)
-	created = models.DateTimeField(default=timezone.now)
+	created_at = models.DateTimeField(default=timezone.now)
 	fk_user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+
 	@classmethod
-	def create(klass, file_data, user):
-		obj = klass(file=file_data, fk_user=user)
-		obj.save()
+	def create(klass, values):
+		obj = klass.objects.create(**values)
 		return obj
+
 
 	@classmethod
 	def remove(klass, file_id, user):
@@ -30,20 +35,20 @@ class FileUpload(models.Model):
 				obj.file.delete()
 			obj.delete()
 			return True
-		except:
-			print('Failed to delete file')
-			traceback.print_exc()
+		except Exception as ex:
+			logging.error(ex)
 			return False
+
 
 	@classmethod
 	def fetch_file(klass, file_id, user):
 		try:
 			obj = klass.objects.get(id=file_id, fk_user=user)
 			return obj
-		except:
-			print('Failed to get file name')
-			traceback.print_exc()
+		except Exception as ex:
+			logging.error(ex)
 			return None
+
 
 	@classmethod
 	def mark_used(klass, file_id, user):
@@ -52,7 +57,6 @@ class FileUpload(models.Model):
 			obj.used = 1
 			obj.save()
 			return True
-		except:
-			print('Failed to mark as used')
-			traceback.print_exc()
+		except Exception as ex:
+			logging.error(ex)
 			return False

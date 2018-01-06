@@ -93,7 +93,8 @@ def insert_custom_areas(p_city_name, p_state_name, p_country_name):
 
 def insert_category(parent, items):
 	for item in items:
-		cat = Category.create(parent=parent, name=item['name'], desc=item['desc'])
+		values = {'parent':parent, 'name':item['name'], 'details':item['desc']}
+		cat = Category.create(values)
 		if 'sub' in item:
 			insert_category(cat, item['sub'])
 

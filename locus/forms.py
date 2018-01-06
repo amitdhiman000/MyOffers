@@ -46,9 +46,9 @@ class AddressRegForm(CreateForm):
     def validate(self):
         super().validate()
 
-        location = self.model_value('location')
-        if location != '':
-            self.del_model_value('location')
+        #location = self.model_value('location')
+        location = self.del_model_value('location')
+        if location != None and location != '':
             try:
                 loc = location.split(',')
                 if len(loc) == 2:
@@ -85,7 +85,7 @@ class AddressRegForm(CreateForm):
 
 
 
-class AddressUpdateForm(Form):
+class AddressUpdateForm(UpdateForm):
     model = Address
 
     def __init__(self):

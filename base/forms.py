@@ -42,6 +42,7 @@ class Form(object):
 	def set_error(self, key, err):
 		rkey = self.m_rfields.get(key, key)
 		self.m_errors[rkey] = err
+		self.m_valid = False
 		if key == rkey:
 			logging.warning('key not found in request', key)
 
@@ -71,9 +72,10 @@ class Form(object):
 	## del new value for model
 	def del_model_value(self, key):
 		try:
-			self.m_model_values.pop(key)
+			return self.m_model_values.pop(key)
 		except Exception as ex:
 			logging.error(ex)
+		return None
 
 
 	## get model value for key
@@ -125,7 +127,6 @@ class Form(object):
 				error = validator()(self.m_model_values[key])
 				if error != None:
 					self.set_error(key, error)
-					self.m_valid = False
 		return self.valid()
 
 

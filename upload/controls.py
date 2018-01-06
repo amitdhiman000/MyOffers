@@ -9,7 +9,7 @@ from pprint import pprint
 @background(schedule=1*60)
 def clear_file_upload(user_id, upload_id):
 	print('clear_file_upload :: start')
-	user = User.get_user_by_id(user_id)
+	user = User.fetch_by_id(user_id)
 	FileUpload.remove(upload_id, user)
 	print('clear_file_upload :: done')
 	#user.email_user('Here is a notification', 'You have been notified')
@@ -39,7 +39,7 @@ class FileUploadControl(BaseControl):
 		print('validating')
 		valid = True
 
-		user = User.get_user(self.m_user)
+		user = User.fetch_user(self.m_user)
 		if user != None:
 			self.m_user = user
 		else:
@@ -56,7 +56,8 @@ class FileUploadControl(BaseControl):
 
 		upload = FileUpload.create(self.m_file, self.m_user)
 		if upload != None:
-			clear_file_upload(self.m_user.id, upload.id)
+			pass
+			#clear_file_upload(self.m_user.id, upload.id)
 		else:
 			self.m_errors['upload'] = 'File upload server error, try again'
 		return upload

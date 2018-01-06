@@ -40,14 +40,14 @@ class BusinessRegForm(CreateForm):
 		if not is_valid:
 			return is_valid
 
-		cat = Category.fetch_by_id(self.model_values()['fk_category'])
+		cat = Category.fetch_by_id(self.model_value('fk_category'))
 		if cat != None:
 			self.add_model_value('fk_category', cat)
 		else:
 			self.set_error('fk_category', 'Category not found')
-			return False
-		self.add_model_value('fk_user', self.m_request.user)
-		return True
+
+		self.add_model_value('fk_user', self.request().user)
+		return self.valid()
 
 
 	def save(self):

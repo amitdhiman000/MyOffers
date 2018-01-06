@@ -30,7 +30,7 @@ def business_create(request):
 			return App_Render(request, 'business/business_item_1.html', {'b':data, 'categories':categories})
 			##return JsonResponse({'status':200, 'message':'Business saved', 'data':data});
 		else:
-			data = control.errors()
+			data = form.errors()
 			return JsonResponse({'status':401, 'message':'Business save failed', 'data':data});
 	else:
 		return App_Redirect(request)

@@ -6,19 +6,5 @@
 {% endblock %}
 
 {% block pagecontent %}
-<style type="text/css">
-	.P_item { width:250px; height:350px; background: #f9f9f9; border: 1px solid #ddd; display: inline-block; vertical-align: top; margin: 0.7em 0em 0em 0.5em; }
-	.P_image { width: 100%; height: 65%; }
-	.P_image img { display:block; margin:0 auto; max-width:98%; max-height:98%; min-width:98%; min-height:98%; }
-	.P_details { width:100%; min-height: 35%; padding: 0.3em; /*background: #e9e9e9;*/ }
-	.P_name { width: 100%; /*background: #888;*/  }
-	.P_discount {}
-	.P_price {}
-</style>
-
-<div class="ui-content" >
-{% for offer in offers_list  %}
-	{% include './offer_item_1.html' %}
-{% endfor %}
-</div>
+{% include './offer_home_2.html' %}
 {% endblock %}

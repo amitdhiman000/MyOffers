@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 from django.utils import timezone
 
 class Validator(object):
@@ -152,6 +153,7 @@ class DateValidator(Validator):
 			try:
 				tz = timezone.get_current_timezone()
 				start = tz.localize(datetime.strptime(date, "%Y/%m/%d"))
-			except:
+			except Exception as ex:
+				print(ex)
 				error = 'Invalid date format'
 		return error

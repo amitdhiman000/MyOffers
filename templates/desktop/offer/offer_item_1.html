@@ -13,10 +13,10 @@
         <div class="P_price">
             <span>&#8377; {{offer.discount_price}}</span> <span>&#8377; &nbsp;<strike>{{offer.price}}</strike></span>
         </div>
-        <div class="ui-line-s" ></div>
+        <div class="ui-sline" ></div>
         <div>
-            <b>Validity: </b> {{offer.start_date | date:"d M Y D"}}<br />
-            <b>To : </b> {{offer.expire_date | date:"d M Y D"}}
+            <b>From : </b> {{offer.start_at | date:"d M Y D"}}<br />
+            <b>To : </b> {{offer.expire_at | date:"d M Y D"}}
         </div>
     </div>
 </div>

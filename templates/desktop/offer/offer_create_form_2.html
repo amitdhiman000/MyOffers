@@ -81,8 +81,9 @@ function beforeOfferSaveReq(e) {
 function afterOfferSaveRes(e) {
 	console.log("+afterOfferSaveRes");
 	if (e.status) {
-		var val = e.resp;
-		$('#address_cont').prepend(val);
+		//var val = e.resp;
+		//$('#address_cont').prepend(val);
+		Noti.info({title:'Success', e.resp.message});
 	} else {
 		var errors = '';
 		for (var err in e.resp.data) {

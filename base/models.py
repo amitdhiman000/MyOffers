@@ -19,8 +19,8 @@ class BaseModel(models.Model):
 		try:
 			obj = klass.objects.get_or_create(**values)[0]
 			return obj
-		except Exception as e:
-			logging.error(e)
+		except Exception as ex:
+			logging.error(ex)
 		return None
 
 
@@ -51,6 +51,16 @@ class BaseModel(models.Model):
 	def fetch(klass, filters, start=0, count=10):
 		try:
 			return klass.objects.filter(**filters)[:start:(start+count)]
-		except Exception as e:
-			logging.error(e)
+		except Exception as ex:
+			logging.error(ex)
 		return None
+
+
+	@classmethod
+	def fetch_all(klass):
+		return klass.objects.all()
+
+
+	@classmethod
+	def fetch_by_id(klass, id_):
+		return klass.objects.filter(id=id_).first()

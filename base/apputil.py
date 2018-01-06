@@ -8,6 +8,12 @@ from datetime import (datetime, timedelta)
 from user_agents import parse
 
 
+## class for mocking any object
+##
+class Klass:
+	def __init__(self, **kwargs):
+		self.__dict__.update(kwargs)
+
 
 ## JSON Web Token
 ##
@@ -123,18 +129,49 @@ def App_Time(funct):
 	return _decorator
 
 
-## class for mocking any object
-##
-class Klass:
-	def __init__(self, **kwargs):
-		self.__dict__.update(kwargs)
+## return directory path relative media_root
+def App_UserFilesDir(user):
+	# directory path relative from MEDIA_ROOT  /files/user_<id>/
+	directory = os.path.join(settings.MEDIA_USER_FILES_DIR_NAME,
+		'user_{0}/'.format(user.id))
+	#if not os.path.exists(directory):
+	#	os.makedirs(directory)
+	#print(directory)
+	return directory
 
 
-def App_UserFilesDir(inst, filename):
-	# file will be uploaded to MEDIA_ROOT/products/user_<id>/<filename>
-	path = os.path.join(settings.MEDIA_USER_FILES_DIR_NAME, 'user_{0}/{1}_{2}'.format(inst.fk_user.id, timezone.now(), filename))
-	print(path)
-	return path
+## return file path relative to media_root
+def App_UserFilePath(user, filename):
+	filepath = os.path.join(App_UserFilesDir(user),
+	'{0}_{1}'.format(timezone.now(), filename))
+	print(filepath)
+	return filepath
+
+
+## older way of saving uploaded file
+def App_SaveUploadedFileOld(request, f):
+	directory = App_UserFilesDir(request.user)
+	if not os.path.exists(directory):
+		os.makedirs(directory)
+
+	filepath = os.path.join(settings.MEDIA_ROOT,
+		App_UserFilePath(request.user, f.name))
+
+	with open(filepath, 'wb+') as destination:
+	    for chunk in f.chunks():
+	        destination.write(chunk)
+	return filepath
+
+
+## new way of saving uploaded file
+def App_SaveUploadedFile(request, f):
+	from django.core.files.storage import FileSystemStorage
+	filedir = os.path.join(settings.MEDIA_ROOT, App_UserFilesDir(request.user))
+	fs = FileSystemStorage(location=filedir)
+	filename = '{0}_{1}'.format(timezone.now(), f.name)
+	fs.save(filename, f)
+	#print(filename)
+	return filename
 
 
 def App_Slugify(text):
@@ -143,7 +180,7 @@ def App_Slugify(text):
 	return re.sub(r'\W+', '-', text)
 
 
-def App_Base64(file_path):
+def App_Base64Image(file_path):
 	filedata = open(file_path, "rb").read()
 	text = "{0}{1}".format('data:image/svg+xml;base64,', base64.b64encode(filedata).decode('utf8'))
 	#text = "data:image/svg+xml;base64,%s" % base64.b64encode(imgdata).decode('utf8')
