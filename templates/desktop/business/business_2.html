@@ -1,95 +1,26 @@
 <div class="ui-content" >
 	<style type="text/css" >
 		#business_add_box { display: none; }
-		#address_add_box {display: none; }
+		#address_add_box { display: none; }
 	</style>
 	<script type="text/javascript" >
-	function showBusinessBox(e, pThis) {
-		console.log("+showBusinessBox");
-		e.stopPropagation();
-		$("#business_add_box").toggle();
-		console.log("-showBusinessBox");
-	}
-
-	function showAddressBox(e, pThis) {
-		console.log("+showAddressBox");
-		e.stopPropagation();
-		$("#address_add_box").toggle();
-		$("#address_add_box").insertAfter(pThis);
-		console.log("-showAddressBox");
-	}
-
-    function beforeBReq() {
-        console.log('+beforeBRequest');
-        return true;
-    }
-
-    function afterBRes(e) {
-        console.log('+afterBResponse');
-        console.log(e.resp);
-        if (e.status) {
-            $("#business-items").append(e.resp);
-			$('.info_item form').data('handlers', {before: beforeUpdateReq, after: afterUpdateRes});
-        }
-    }
-
-	function deleteBusiness(pLink, data) {
-		console.log('+deleteBusiness');
-		var item = $(pLink).parents('.business-item');
-		//item.hide('slow', function(){ item.remove(); });
-		item.fadeOut(600, function(){ $(this).remove(); });
-	}
-
-	$(function() {
-		$('#business-form').data('handlers', {before: beforeBReq, after: afterBRes});
-		$('.info_item form').data('handlers', {before: beforeUpdateReq, after: afterUpdateRes});
-  	});
-
-	function editText(e,pThis)
-	{
-		e.stopPropagation();
-		e.preventDefault();
-		console.log('+editText');
-		var root = $(pThis).parents('.info_item');
-		var inputs = root.find('.ui-input');
-		var controls = root.find('.item_controls');
-		if (inputs.attr('readonly')) {
-			inputs.removeAttr('readonly');
-		} else {
-			inputs.attr('readonly', 'readonly');
-			inputs.val(inputs.attr('data-value'));
+		function showBusinessBox(e, pThis) {
+			console.log("+showBusinessBox");
+			e.stopPropagation();
+			$("#business_add_box").toggle();
+			console.log("-showBusinessBox");
 		}
-		controls.toggleClass('ui-hide');
-	}
 
-	function beforeUpdateReq(e) {
-		console.log("+beforeUpdateReq");
-		return true;
-	}
+		function showAddressBox(e, pThis) {
+			console.log("+showAddressBox");
+			e.stopPropagation();
 
-	function afterUpdateRes(e) {
-		console.log("+afterUpdateRes");
-		if (e.status) {
-			var vals = e.resp.data;
-			var $src = e.$src;
-			for (var key in vals) {
-				var val = vals[key];
-				console.log(key+' : '+val);
-				var inp = $src.find('.ui-input[name='+key+']');
-				if (inp.exists()) {
-					inp.attr('data-value', val);
-					$src.find('input[type=button]').click();
-				}
-			}
-			Noti.info({title:e.resp.message, text:''});
-		} else {
-			var errors = '';
-			for (var err in e.resp.data) {
-				errors += e.resp.data[err] + '<br />';
-			}
-			Noti.info({title:e.resp.message, text:errors});
+			var modal = $('#wt-overlay');
+			modal.find('.wt-overlay-content').append($('#address_picker').show());
+			modal.show();
+			modal.find('.wt-closebtn').on('click', function(){ console.log('CLOSE'); modal.hide(); });
+			console.log("-showAddressBox");
 		}
-	}
 	</script>
 
 	<div id="delete-dialog" title="Delete" style="display: none;">
@@ -128,40 +59,14 @@
 					</table>
 				</form>
 			</div>
-
-			<div id="address_add_box" >
-				<form method="POST" action="/business/address/create/" class="ajax-form" id="business-form" >
-					<table class="ui-form-table" >
-						{% csrf_token %}
-						<input type="hidden" name="BA_id" class="ui-input" value="{{business.address.id}}" />
-						<tr><td>NAME*</td><td>
-						<input type="text" name="BA_name" class="ui-input" value="{{business.address.name}}" />
-						</td></tr>
-						<tr><td>COUNTRY</td><td>
-						<input type="text" name="BA_country" class="ui-input" value="{{business.address.country}}" />
-						</td></tr>
-						<tr><td>PHONE</td><td>
-						<input type="text" name="BA_phone" class="ui-input" value="{{business.address.phone}}" />
-						</td></tr>
-						<tr><td>PINCODE</td><td>
-						<input type="text" name="BA_pincode" class="ui-input" value="{{business.address.pincode}}" />
-						</td></tr>
-						<tr><td>LANDMARK</td><td>
-						<input type="text" name="BA_landmark" class="ui-input" value="{{business.address.landmark}}" />
-						</td></tr>
-						<tr><td style="vertical-align:top;">ADDRESS</td><td>
-						<textarea name="BA_address" class="ui-textarea" > {{business.address.address}} </textarea>
-						</td></tr>
-						<tr><td></td><td><input type="submit" value="Save" class="ui-btn ui-btn-input" /></td></tr>
-					</table>
-				</form>
-			</div>
 		</div>
 	</div>
 
-	<div class="ui-content" id="business-items">
+	<div class="ui-content" id="business_items">
 		{% for b in business %}
 			{% include './business_item_1.html' %}
 		{% endfor %}
 	</div>
 </div>
+
+{% include '../locus/address_picker_1.html' %}

@@ -137,6 +137,8 @@ function initApp()
         $(this).parent().toggleClass("expanded");
     });
 
+	$('.wt-closebtn').on('click', function(){ $(this).parent().hide(); });
+
 	// Close the dropdown if the user clicks outside of it
 	$(window).on("click", function(event) {
 		console.log("window clicked");

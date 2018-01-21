@@ -38,7 +38,7 @@ class UserRegForm(CreateForm):
 		is_valid = super().validate()
 		if not is_valid:
 			return is_valid
-		email = self.model_values().get('email', '')
+		email = self.model_value('email')
 		if User.check_email(email):
 			self.set_error('email', 'Email already in use')
 			return False
@@ -55,15 +55,14 @@ class UserUpdateForm(UpdateForm):
 
 	def __init__(self):
 		super().__init__()
-		self.m_form_fields = form_fields
-		self.m_model_fields = model_fields
+		self.m_fields = form_fields
 
 
 	def validate(self):
 		is_valid = super().validate()
 		if not is_valid:
 			return is_valid
-		self.set_model_value('id', self.m_request.user.id)
+		self.add_model_value('id', self.m_request.user.id)
 		print(self.m_values)
 		return True
 

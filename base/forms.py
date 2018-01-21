@@ -110,10 +110,6 @@ class Form(object):
 		for key in self.m_model_values:
 			#cleaner = self.m_fields[key].get('cleaner', None)
 			self.m_model_values[key] = cleaner(self.m_model_values[key])
-
-		## remove empty id
-		if 'id' in self.m_model_values and self.m_model_values['id'] == '':
-			self.m_model_values.pop('id')
 		return True
 
 
@@ -138,18 +134,29 @@ class Form(object):
 	def result(self):
 		result = {}
 		for key in self.m_model_values:
-			result[self.m_rfields[key]] = self.m_model_values[key]
+			if key in self.m_rfields:
+				result[self.m_rfields[key]] = self.m_model_values[key]
 		return result
 
 
 
 class CreateForm(Form):
 
+	def clean(self):
+		super().clean()
+		## remove empty id
+		if 'id' in self.m_model_values and self.m_model_values['id'] == '':
+			self.m_model_values.pop('id')
+		return True
+
+
 	def commit(self):
 		return self.save()
 
+
 	def save(self):
 		return None
+
 
 
 class UpdateForm(Form):
@@ -157,14 +164,17 @@ class UpdateForm(Form):
 	def commit(self):
 		return self.update()
 
+
 	def update(self):
 		return None
+
 
 
 class DeleteForm(Form):
 
 	def commit(self):
 		return self.delete()
+
 
 	def delete(self):
 		return None
