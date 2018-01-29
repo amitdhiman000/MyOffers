@@ -18,6 +18,7 @@
 			var modal = $('#wt-overlay');
 			modal.find('.wt-overlay-content').append($('#address_picker').show());
 			modal.show();
+			updateMap();
 			modal.find('.wt-closebtn').on('click', function(){ console.log('CLOSE'); modal.hide(); });
 			console.log("-showAddressBox");
 		}

@@ -3,6 +3,16 @@
     var _gMarker;
     var _gGeocoder;
     var _gTimeout;
+    function updateMap()
+    {
+        if (_gMap) {
+            google.maps.event.trigger(_gMap, 'resize');
+            if (_gMarker) {
+                _gMap.setCenter(_gMarker.getPosition());
+            }
+        }
+    }
+
     function initMap()
     {
         console.log("+initMap");
@@ -148,7 +158,7 @@
     	$('#addr_form').data('handlers', {before: beforeAdSaveReq, after: afterAdSaveRes});
     });
 </script>
-<div class="ui-hide" id="address_picker" style="margin:0px auto; width:80%; padding:0.5em; overflow-y:auto;">
+<div id="address_picker" class="ui-hide" style="margin:0px auto; width:80%; padding:0.5em;">
 	<div class="ui-block" >
 		<div class="ui-block-bar">
 			<div>
