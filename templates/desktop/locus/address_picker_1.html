@@ -45,8 +45,21 @@
                 updateCurrLoc(myLatLng.lat(), myLatLng.lng());
             }, 50);
         });
+        // init place search
+        initPlaceSearch();
         // trigger locate address
         locateAddress();
+    }
+
+    function initPlaceSearch()
+    {
+        console.log('+initPlaceSearch');
+        var input = document.getElementById('gmap_search');
+        var searchBox = new google.maps.places.SearchBox(input);
+        //_gMap.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+        _gMap.addListener('bounds_changed', function() {
+            searchBox.setBounds(_gMap.getBounds());
+        });
     }
 
     function locateAddress()
@@ -109,6 +122,7 @@
         $('#A_address').val(faddr);
         $('#A_pincode').val(pincode);
         $('#A_location').val(loc);
+        $('#gmap_search').val(faddr);
     }
 
     function defaultAddress(pThis,id)
@@ -161,7 +175,7 @@
 <div id="address_picker" class="ui-hide" style="margin:0px auto; width:80%; padding:0.5em;">
 	<div class="ui-block" >
 		<div class="ui-block-bar">
-			<div>
+			<div style="text-align: center;">
 				<h3>ADDRESS</h3>
 			</div>
 			<div>
@@ -170,12 +184,23 @@
 		<div class="ui-block-body">
 			<div style="width: 90%; margin: 0 auto; border: 1px solid #ddd; ">
                 <div style="display:table-cell; width: 50%;">
-                    <h1 style="font-size: 1.5em; font-weight:bold;">Google Map Location</h1>
-                    <h2 style="font-size: 1em; font-weight:bold;">Choose your business location from map to increase Visibility on Internet</h2>
-                    <br /><br />
-                    <div id="gmap" style="width: 90%; height: 300px; border: 2px solid #bbb;" >
-                        <h1>&nbps;</h1>
-                    </div>
+                    <table class="ui-info-table">
+                        <tr><td>LOCATION</td></tr>
+                        <tr><td>
+                            <input type="text" name="gmap_search" id="gmap_search" class="ui-input" style="max-width:50em; padding-right:7em;" />
+                            <a class="ui-btn-a" style="width:7em; margin-left: -7em;" onclick="locateAddress()"> Locate Me </a>
+                        </td></tr>
+                        <tr><td>
+                        <div id="gmap" style="width: 95%; height: 300px; border: 2px solid #bbb;" >
+                            <h1>&nbps;</h1>
+                        </div>
+                        </td></tr>
+                        <tr><td>
+                            <h2 style="font-size: 1em; font-weight:bold;">
+                                Choose your business location from map to increase Visibility of your business on Internet
+                            </h2>
+                        </td></tr>
+                    </table>
                 </div>
                 <div style="display:table-cell; width: 50%;" >
                     <form action="/locus/address/create/" method="POST" id="addr_form" class="ajax-form" >
@@ -183,8 +208,7 @@
                         {% csrf_token %}
                         <input type="hidden" name="A_location" id="A_location" value="" />
                         <tr><td>NAME</td></tr>
-                        <tr><td><input type="text" name="A_name" id="A_name" class="ui-input" style="padding-right:7em;" placeholder="House / Office Building Number" />
-                        <a class="ui-btn-a" style="width:7em; margin-left: -7em;" onclick="locateAddress()"> Locate Me </a>
+                        <tr><td><input type="text" name="A_name" id="A_name" class="ui-input" placeholder="House / Office Building Number" />
                         </td></tr>
                         <tr><td>PINCODE / ZIPCODE</td></tr>
                         <tr><td><input type="text" name="A_pincode" id="A_pincode" class="ui-input" placeholder="176039"/> </td></tr>
@@ -200,5 +224,5 @@
 		</div>
 	</div>
 </div>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMz94217XzpYaxnQRagzgCwpy4dfBM1Ho&callback=initMap">
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMz94217XzpYaxnQRagzgCwpy4dfBM1Ho&libraries=places&callback=initMap">
 </script>
