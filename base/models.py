@@ -2,7 +2,7 @@ from django.db import models
 import logging
 
 
-class BaseModel(models.Model):
+class CRUDModel(models.Model):
 	id = models.BigAutoField(primary_key=True)
 
 	class Meta:
@@ -10,8 +10,12 @@ class BaseModel(models.Model):
 
 
 	def url(self):
-		return "/{0}/{1}/{1}/".format(self.__module__, self.__class__.__name__, self.id)
-		#return '/locus/address/'+ str(self.id) + '/'
+		if self.__module__ == self.__class__.__name__:
+			return "/{0}/{1}/".format(self.__module__, self.id)
+			#return '/locus/' + (self.id)+ '/'
+		else:
+			return "/{0}/{1}/{1}/".format(self.__module__, self.__class__.__name__, self.id)
+			#return '/locus/address/'+ str(self.id) + '/'
 
 
 	@classmethod
@@ -48,9 +52,12 @@ class BaseModel(models.Model):
 
 
 	@classmethod
-	def fetch(klass, filters, start=0, count=10):
+	def fetch(klass, filters, start=0, count=0):
 		try:
-			return klass.objects.filter(**filters)[:start:(start+count)]
+			if count > 0:
+				return klass.objects.filter(**filters)[:start:(start+count)]
+			else:
+				return klass.objects.filter(**filters)
 		except Exception as ex:
 			logging.error(ex)
 		return None

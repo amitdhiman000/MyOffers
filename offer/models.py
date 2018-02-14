@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.db import models
-from base.models import BaseModel
+from base.models import CRUDModel
 from datetime import (datetime, timedelta)
 from django.utils import timezone
 from django.utils.translation import ugettext as _
@@ -17,7 +17,7 @@ def days_ahead(days=1):
 
 
 # offers table for new offers
-class Offer(BaseModel):
+class Offer(CRUDModel):
 	slug = models.SlugField(unique=True)
 	name = models.CharField(max_length=30, blank=False)
 	details = models.TextField()
@@ -77,12 +77,12 @@ class Offer(BaseModel):
 
 
 
-class OfferCategoryMap(BaseModel):
+class OfferCategoryMap(CRUDModel):
 	fk_offer = models.ForeignKey(Offer, on_delete=models.CASCADE)
 	fk_category = models.ForeignKey(Category, db_index=True, on_delete=models.CASCADE)
 
 
 
-class OfferAddressMap(BaseModel):
+class OfferAddressMap(CRUDModel):
 	fk_offer = models.ForeignKey(Offer, on_delete=models.CASCADE)
 	fk_address = models.ForeignKey(Address, db_index=True, on_delete=models.CASCADE)

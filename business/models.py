@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.db import models
-from base.models import BaseModel
+from base.models import CRUDModel
 from datetime import datetime
 from django.utils.translation import ugettext as _
 
@@ -11,7 +11,7 @@ import logging
 
 
 # Business types
-class Category(BaseModel):
+class Category(CRUDModel):
 	name = models.CharField(max_length=30)
 	details = models.CharField(max_length=50)
 	parent = models.ForeignKey("self", null=True, on_delete=models.DO_NOTHING)
@@ -46,7 +46,7 @@ class Category(BaseModel):
 
 
 # Business
-class Business(BaseModel):
+class Business(CRUDModel):
 	name = models.CharField(max_length=50, blank=False)
 	about = models.CharField(max_length=100, blank=False)
 	website = models.CharField(max_length=100, blank=True)
@@ -71,6 +71,6 @@ class Business(BaseModel):
 
 
 
-class BusinessAddressMap(BaseModel):
+class BusinessAddressMap(CRUDModel):
 	fk_business = models.ForeignKey(Business, on_delete=models.CASCADE)
 	fk_address = models.ForeignKey(Address, on_delete=models.CASCADE)

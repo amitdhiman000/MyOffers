@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from base.models import CRUDModel
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.apps import apps
@@ -12,7 +13,7 @@ from pprint import pprint
 
 
 
-class Country(models.Model):
+class Country(CRUDModel):
 	id = models.AutoField(primary_key=True)
 	name = models.CharField(max_length=50, blank=False)
 
@@ -22,50 +23,12 @@ class Country(models.Model):
 
 
 	@classmethod
-	def create(klass, name):
-		return klass.objects.get_or_create(name=name)[0]
-
-
-	@classmethod
 	def fetch_or_create(klass, name):
-		return klass.create(name)
-
-
-	@classmethod
-	def remove(klass, name):
-		try:
-			obj = klass.objects.get(name=name)[0]
-			return True
-		except Exception as e:
-			logging.error(e)
-			return False
-
-
-	@classmethod
-	def fetch_all(klass):
-		objs = klass.objects.all()
-		return objs;
-
-
-	@classmethod
-	def fetch_by_name(klass, name):
-		try:
-			return klass.objects.get(name=name)
-		except Exception as e:
-			logging.error(e)
-			return None
-
-	@classmethod
-	def fetch_by_filter(klass, values):
-		try:
-			return klass.objects.filter(**values)
-		except Exception as e:
-			logging.error(e)
-			return None
+		return klass.create({'name':name})
 
 
 
-class State(models.Model):
+class State(CRUDModel):
 	id = models.AutoField(primary_key=True)
 	name = models.CharField(max_length=50, blank=True)
 	fk_country = models.ForeignKey(Country, on_delete=models.CASCADE)
@@ -76,69 +39,13 @@ class State(models.Model):
 
 
 	@classmethod
-	def create(klass, state_name, country):
-		obj = klass.objects.get_or_create(name=state_name, fk_country=country)[0]
-		return obj
-
-
-	@classmethod
-	def create0(klass, state_name, country_name = 'India'):
-		try:
-			country = Country.objects.get(country_name=country_name)
-			obj = klass.objects.get_or_create(name=state_name, fk_country=country)[0]
-			return obj
-		except Exception as e:
-			logging.error(e)
-			return False
-
-
-	@classmethod
 	def fetch_or_create(klass, state_name, country):
-		return klass.create(state_name=state_name, country=country)
-
-
-	@classmethod
-	def remove(klass, name):
-		try:
-			obj = klass.objects.get(name=name)[0]
-			obj.delete()
-			return True
-		except Exception as e:
-			logging.error(e)
-			return False
-
-
-	@classmethod
-	def fetch_all(klass, country_name):
-		try:
-			country = Country.objects.get(name=country_name)
-			objs = klass.objects.filter(fk_country=country)
-			return objs
-		except Exception as e:
-			logging.error(e)
-			return None
-
-
-	@classmethod
-	def fetch(klass, name):
-		try:
-			return klass.objects.get(name=name)
-		except Exception as e:
-			logging.error(e)
-			return None
-
-
-	@classmethod
-	def fetch_by_objs(klass, name, country):
-		try:
-			return klass.objects.get(name=name, fk_country=country)
-		except Exception as e:
-			logging.error(e)
-			return None
+		print('Amit Dhiman', state_name, country)
+		return klass.create({'name':state_name, 'fk_country':country})
 
 
 
-class City(models.Model):
+class City(CRUDModel):
 	id = models.AutoField(primary_key=True)
 	name = models.CharField(max_length=50)
 	fk_state = models.ForeignKey(State, on_delete=models.CASCADE)
@@ -150,62 +57,8 @@ class City(models.Model):
 
 
 	@classmethod
-	def create(klass, city_name, state, country):
-		obj = klass.objects.get_or_create(name=city_name, fk_state=state, fk_country=country)[0]
-		return obj
-
-
-	@classmethod
-	def create0(klass, city_name, country_name='India', state_name='Karnataka'):
-		if city_name == None or city_name == '':
-			raise ValueError('Invalid value')
-		try:
-			country = Country.objects.get(name=country_name)
-			state = State.objects.get(name=state_name)
-			obj = klass.objects.get_or_create(name=city_name, fk_state=state, fk_country=country,)[0]
-			return obj
-		except Exception as e:
-			logging.error(e)
-			return None
-
-
-	@classmethod
 	def fetch_or_create(klass, city_name, state, country):
-		return klass.create(city_name, state, country)
-
-
-	@classmethod
-	def remove(klass, name):
-		if name == None or name == '':
-			raise ValueError('Invalid value')
-		try:
-			obj = klass.objects.get(name=name)[0]
-			obj.delete()
-			return True
-		except Exception as e:
-			logging.error(e)
-			return False
-
-
-	@classmethod
-	def fetch_all(klass, state_name, country_name):
-		try:
-			country = Country.objects.get(name=country_name)
-			state = State.objects.get(name=state_name)
-			objs = klass.objects.filter(fk_country=country, fk_state=state)
-			return objs
-		except Exception as e:
-			logging.error(e)
-			return None
-
-
-	@classmethod
-	def fetch(klass, name):
-		try:
-			return klass.objects.get(name=name)
-		except Exception as e:
-			logging.error(e)
-			return None
+		return klass.create({'name':city_name, 'fk_state':state, 'fk_country':country})
 
 
 	@classmethod
@@ -218,7 +71,7 @@ class City(models.Model):
 
 
 
-class Area(models.Model):
+class Area(CRUDModel):
 	id = models.BigAutoField(primary_key=True)
 	name = models.CharField(max_length=50, blank=True)
 	pincode = models.CharField(max_length=10, blank=True)
@@ -232,12 +85,6 @@ class Area(models.Model):
 
 
 	@classmethod
-	def create(klass, values):
-		obj = klass.objects.get_or_create(**values)[0]
-		return obj
-
-
-	@classmethod
 	def fetch_or_create(klass, area_name, area_pin, city, state, country):
 		values = {
 			'name':area_name,
@@ -247,43 +94,6 @@ class Area(models.Model):
 			'fk_country':country
 		}
 		return klass.create(values)
-
-
-	@classmethod
-	def remove(klass, values):
-		try:
-			obj = klass.objects.filter(**values)
-			obj.delete()
-			return True
-		except Exception as e:
-			logging.error(e)
-			return False
-
-
-	@classmethod
-	def fetch_all(klass, city_name, state_name, country_name):
-		try:
-			country = Country.objects.get(name=country_name)
-			state = State.objects.get(name=state_name)
-			city = City.objects.get(name=city_name)
-			objs = klass.objects.filter(fk_country=country, fk_state=state, fk_city=city)
-			return objs
-		except Exception as e:
-			logging.error(e)
-			return None
-
-
-	@classmethod
-	def fetch_by_name(klass, area_name, city_name, state_name, country_name):
-		try:
-			country = Country.objects.get(name=country_name)
-			state = State.objects.get(name=state_name)
-			city = City.objects.get(name=city_name)
-			objs = klass.objects.filter(name=area_name, fk_country=country, fk_state=state, fk_city=city)
-			return objs
-		except Exception as e:
-			logging.error(e)
-			return None
 
 
 	@classmethod
@@ -313,8 +123,7 @@ class Area(models.Model):
 
 
 
-from base.models import BaseModel
-class Address(BaseModel):
+class Address(CRUDModel):
 	name = models.CharField(max_length=50, blank=False)
 	phone = models.CharField(max_length=10, blank=True)
 	address = models.CharField(max_length=50, blank=False)
@@ -359,31 +168,11 @@ class Address(BaseModel):
 
 
 
-class Location(models.Model):
+class Location(CRUDModel):
 	id = models.BigAutoField(primary_key=True)
 	name = models.CharField(max_length=50, blank=False)
 	latitude = models.CharField(max_length=10)
 	longitude = models.CharField(max_length=10)
-
-	@classmethod
-	def create(klass, values):
-		try:
-			obj = klass.objects.get_or_create(**values)[0]
-			return obj
-		except Exception as e:
-			logging.error(e)
-			return None
-
-
-	@classmethod
-	def remove(klass, **values):
-		try:
-			obj = klass.objects.filter(**values)
-			obj.delete()
-			return True
-		except Exception as e:
-			logging.error(e)
-			return False
 
 
 	@classmethod

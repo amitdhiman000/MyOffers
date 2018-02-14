@@ -1,22 +1,12 @@
 from django.conf import settings
-from django.shortcuts import render
-from myadmin.backenddb import insert_default_areas
-from myadmin.backenddb import insert_custom_areas
-from myadmin.backenddb import insert_default_categories
+from myadmin.backenddb import (insert_default_areas, insert_custom_areas, insert_default_categories)
 
-from locus.models import Country
-from locus.models import State
-from locus.models import City
-from locus.models import Area
 from offer.models import Category
-from public.models import GuestMessage
-from public.models import UserMessage
-from myadmin.preload_data import gCountries
-from myadmin.preload_data import gCategories
+from locus.models import (Country ,State, City, Area)
+from public.models import (GuestMessage, UserMessage)
+from myadmin.preload_data import (gCountries, gCategories)
 from base.apputil import *
 # Create your views here.
-
-from pprint import pprint
 
 @App_AdminRequired
 def home(request):
@@ -35,7 +25,8 @@ def locus_area_view(request, country, state, city, area):
 @App_AdminRequired
 def locus_city_view(request, country, state, city):
 	print(city)
-	areas = Area.fetch_all(city, state, country)
+	filter = {'fk_city__name':city, 'fk_state__name':state, 'fk_country__name':country}
+	areas = Area.fetch(filter)
 	data = {'title': 'MyAdmin', 'country': country, 'state': state, 'city':city, 'areas': areas}
 	return App_Render(request, 'admin/admin_locus_city_1.html', data)
 
@@ -43,7 +34,8 @@ def locus_city_view(request, country, state, city):
 @App_AdminRequired
 def locus_state_view(request, country, state):
 	print(state)
-	cities = City.fetch_all(state, country)
+	filter = {'fk_state__name':state, 'fk_country__name':country}
+	cities = City.fetch(filter)
 	data = {'title': 'MyAdmin', 'country': country, 'state': state, 'cities':cities}
 	return App_Render(request, 'admin/admin_locus_state_1.html', data)
 
@@ -51,7 +43,7 @@ def locus_state_view(request, country, state):
 @App_AdminRequired
 def locus_country_view(request, country):
 	print(country)
-	states = State.fetch_all(country)
+	states = State.fetch({'fk_country__name':country})
 	data = {'title': 'MyAdmin', 'country': country, 'states': states}
 	return App_Render(request, 'admin/admin_locus_country_1.html', data)
 
@@ -59,7 +51,7 @@ def locus_country_view(request, country):
 @App_AdminRequired
 def locus_view0(request):
 	countries = Country.fetch_all()
-	states = State.fetch_all('India')
+	states = State.fetch({'fk_country__name':'India'})
 	data = {'title': 'MyAdmin', 'countries': countries, 'states': states}
 	return App_Render(request, 'admin/admin_locus_view_1.html', data)
 
@@ -167,7 +159,7 @@ def category_add_view0(request):
 
 @App_AdminRequired
 def category_add_view1(request, params, length):
-	pprint(request)
+	print(request)
 	index = 0;
 	cat_list = gCategories
 	while index < length:
@@ -196,7 +188,7 @@ def category_add_view1(request, params, length):
 		for cat in cat_list:
 			categories.append({ key:value for key,value in cat.items() if key in desired_attrs })
 		print(len(categories))
-		pprint(categories)
+		print(categories)
 		data.update({'categories': categories})
 	else:
 		data.update({'category':cat_list})
