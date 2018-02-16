@@ -1,156 +1,69 @@
 {% load tz %}
 {% load staticfiles %}
-<script type="text/javascript">
-var _gMap;
-var _gMarker;
-var _gGeocoder;
-var _gTimeout;
-function initMap()
-{
-    console.log("+initMap");
-    var myLatlng = new google.maps.LatLng(12.972132,77.594010);
-    var mapOpts = {
-        zoom: 15,
-        center: myLatlng,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
+
+<script type="text/javascript" >
+    function defaultAddress(pThis,id)
+    {
+        console.log('+defaultAddress');
     }
 
-    _gMap = new google.maps.Map(document.getElementById("gmap"), mapOpts);
-    _gMarker = new google.maps.Marker({
-        position: myLatlng,
-        map: _gMap,
-        draggable: true,
-        title: "Your Location"
-    });
-
-    google.maps.event.addListener(_gMarker, 'dragend', function (e) {
-        var lat = e.latLng.lat();
-        var lng = e.latLng.lng();
-        updateCurrLoc(lat,lng);
-    });
-
-    google.maps.event.addListener(_gMap, 'drag', function (e) {
-        var myLatLng = this.getCenter();
-        clearTimeout(_gTimeout);
-        _gTimeout = setTimeout(function(){
-            _gMarker.setPosition(myLatLng);
-            updateCurrLoc(myLatLng.lat(), myLatLng.lng());
-        }, 50);
-    });
-    // trigger locate address
-    locateAddress();
-}
-
-function locateAddress()
-{
-    console.log("+fetchAddress");
-    navigator.geolocation.getCurrentPosition(function(pos, err) {
-        var lat = pos.coords.latitude.toFixed(8);
-        var lng = pos.coords.longitude.toFixed(8);
-        var ts = pos.timestamp;
-        var acc = pos.coords.accuracy;
-        updateCurrLoc(lat, lng);
-    });
-}
-
-function updateCurrLoc(lat, lng)
-{
-    _gGeocoder = new google.maps.Geocoder();
-    console.log(lat + "-- ######## --" + lng);
-    if (lat != '' && lng != '') {
-        var myLatlng = new google.maps.LatLng(lat, lng);
-        _gMarker.setPosition(myLatlng);
-        _gMap.panTo(myLatlng);
-        return getCurrentAddress(myLatlng, OnAddressFound);
+    function editAddress(pThis,id)
+    {
+        console.log('+editAddress');
     }
-}
 
-//Get current address
-function getCurrentAddress(loc, OnFound)
-{
-  _gGeocoder.geocode({
-		'location': loc
-  }, function(results, status) {
-	  if (status == google.maps.GeocoderStatus.OK) {
-		  console.log(results[0]);
-		  OnFound(true, results[0]);
-	  } else {
-		  console.log('Geocode failed reason: ' + status);
-		  OnFound(false, "");
-	  }
-  });
-}
+    function deleteAddress(pThis,id)
+    {
+        console.log('+deleteAddress');
+        data = get_csrf();
+        data['A_id'] = id;
+        postRequest('/locus/address/delete/', data, function(status, resp){
+            if (status) {
+                $(pThis).parents(".addr_item").remove();
+            } else {
+                Noti.error({title:resp.message, text:JSON.stringify(resp.data)});
+            }
+        });
+    }
 
-function OnAddressFound(status, address)
-{
-    console.log("+OnAddressFound");
-    var faddr = address.formatted_address;
-    var loc = address.geometry.location;
-    loc = loc.lat() + "," + loc.lng();
-    console.log('loc : '+loc);
-    $("#address").html(faddr);
-    var parts = faddr.split(",");
-    var len = parts.length;
-    var name = parts[0];
-    var stateStr = parts[len - 2];
-    var index = stateStr.lastIndexOf(" ");
-    var state = stateStr.substr(0, index);
-    var pincode = stateStr.substr(index + 1);
-    var country = parts[len - 1];
-    $('#A_name').val(name);
-    $('#A_address').val(faddr);
-    $('#A_pincode').val(pincode);
-    $('#A_location').val(loc);
-}
+    function showAddressBox(e, pThis) {
+        console.log("+showAddressBox");
+        e.stopPropagation();
 
-function defaultAddress(pThis,id)
-{
-	console.log('+defaultAddress');
-}
+        var modal = $('#wt-overlay');
+        modal.find('.wt-overlay-content').append($('#address_picker').show());
+        modal.show();
+        updateMap();
+        modal.find('.wt-closebtn').on('click', function(){ console.log('CLOSE'); modal.hide(); });
+        console.log("-showAddressBox");
+    }
 
-function editAddress(pThis,id)
-{
-	console.log('+editAddress');
-}
+    function beforeAdSaveReq(e) {
+    	console.log("+beforeAdSaveReq");
+        if (_gBeforeAddressSave) {
+            return _gBeforeAddressSave(e);
+        }
+    	return true;
+    }
 
-function deleteAddress(pThis,id)
-{
-	console.log('+deleteAddress');
-	data = get_csrf();
-	data['A_id'] = id;
-	postRequest('/locus/address/delete/', data, function(status, resp){
-		if (status) {
-			$(pThis).parents(".addr_item").remove();
-		} else {
-			Noti.error({title:resp.message, text:JSON.stringify(resp.data)});
-		}
-	});
-}
-
-function beforeAdSaveReq(e) {
-	console.log("+beforeAdSaveReq");
-	return true;
-}
-
-function afterAdSaveRes(e) {
-	console.log("+afterAdSaveRes");
-	if (e.status) {
-		var val = e.resp;
-		$('#address_cont').prepend(val);
-	} else {
-		var errors = '';
-		for (var err in e.resp.data) {
-			errors += e.resp.data[err] + '<br />';
-		}
-		Noti.info({title:e.resp.message, text:errors});
-	}
-}
-
-$(function(){
-	$('#addr_form').data('handlers', {before: beforeAdSaveReq, after: afterAdSaveRes});
-});
-
+    function afterAdSaveRes(e) {
+    	console.log("+afterAdSaveRes");
+    	if (e.status) {
+    		var val = e.resp;
+    		$('#address_cont').prepend(val);
+    	} else {
+    		var errors = '';
+    		for (var err in e.resp.data) {
+    			errors += e.resp.data[err] + '<br />';
+    		}
+    		Noti.info({title:e.resp.message, text:errors});
+    	}
+        if (_gAfterAddressSave) {
+            __gAfterAddressSave(e);
+        }
+    }
 </script>
+
 <div class="ui-content" style="height: 1000px;">
 	<div class="ui-block" >
 		<div class="ui-block-bar">
@@ -161,35 +74,7 @@ $(function(){
 			</div>
 		</div>
 		<div class="ui-block-body">
-			<div style="width: 90%; margin: 0 auto; border: 1px solid #ddd; ">
-                <div style="display:table-cell; width: 50%;">
-                    <h1 style="font-size: 1.5em; font-weight:bold;">Google Map Location</h1>
-                    <h2 style="font-size: 1em; font-weight:bold;">Choose your business location from map to increase Visibility on Internet</h2>
-                    <br /><br />
-                    <div id="gmap" style="width: 90%; height: 300px; border: 2px solid #bbb;" >
-                        <h1>&nbps;&nbps;&nbps;&nbps;&nbps;&nbps;&nbps;&nbps;&nbps;&nbps;</h1>
-                    </div>
-                </div>
-                <div style="display:table-cell; width: 50%;" >
-                    <form action="/locus/address/create/" method="POST" id="addr_form" class="ajax-form" >
-                    <table class="ui-info-table">
-                        {% csrf_token %}
-                        <input type="hidden" name="A_location" id="A_location" value="" />
-                        <tr><td>NAME</td></tr>
-                        <tr><td><input type="text" name="A_name" id="A_name" class="ui-input" style="padding-right:7em;" placeholder="House / Office Building Number" />
-                        <a class="ui-btn-a" style="width:7em; margin-left: -7em;" onclick="locateAddress()"> Locate Me </a>
-                        </td></tr>
-                        <tr><td>PINCODE / ZIPCODE</td></tr>
-                        <tr><td><input type="text" name="A_pincode" id="A_pincode" class="ui-input" placeholder="176039"/> </td></tr>
-                        <tr><td>ADDRESS</td></tr>
-                        <tr><td><textarea name="A_address" id="A_address" class="ui-textarea"> </textarea> </td></tr>
-                        <tr><td>PHONE</td></tr>
-                        <tr><td><input type="text" name="A_phone" id="A_phone" class="ui-input" placeholder="+91 9876543210" /> </td></tr>
-                        <tr><td><input type="submit" value="Save" class="ui-btn" /></td></tr>
-                    </table>
-                    </form>
-                </div>
-			</div>
+			<a onclick="showAddressBox(event, this);" class="ui-btn-a" >New Address</a>
 		</div>
 	</div>
     <div id="address_cont" >
@@ -197,7 +82,6 @@ $(function(){
             {% include './address_item_1.html' %}
         {% endfor %}
     </div>
-
 </div>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMz94217XzpYaxnQRagzgCwpy4dfBM1Ho&callback=initMap">
-</script>
+
+{% include './address_picker_1.html' %}
