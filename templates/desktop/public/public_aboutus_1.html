@@ -1,5 +1,6 @@
 {% extends base_template %}
 {% load staticfiles %}
+{% load includesettings %}
 
 {% block style %}
 <style>
@@ -13,57 +14,65 @@
 
 {% block pagecontent %}
 <div class="ui-content" >
-	<div class="ui-bar-tbb">
-		<h2>ABOUT US &amp; MyOffers</h2>
-	</div>
-	<div class="ui-content" >
-		<div class="ui-body" >
-			<p>MyOffers is about connecting Customers with Vendors directly.
-				This website provide interface for Consumers to search, browse Offers based on Location.
-				You can find different sales, discounts, coupons alerts on MyOffers.
-				We keep in touch with various dealers and vendors in market to give you best deals available.
-			<p>
+	<div class="ui-block" >
+		<div class="ui-block-bar">
+			<div>
+				<h3>ABOUT US &amp; {% includesettings 'SITE_NAME' %}</h3>
+			</div>
+			<div>
+			</div>
 		</div>
-	</div>
-	<div class="ui-body" >
-		<div class="abtus-box">
-			<div class="abtus-box-title" >
-				<div class="abtus-box-title-image" >
-					<img src="{% static 'images/icons-svg/people.svg' %}" />
-				</div>
-				<div class="abtus-box-title-text" >
-					<strong> WHO ARE WE ? </strong>
+		<div class="ui-block-body">
+			<div class="ui-content" >
+				<div class="ui-body" >
+					<p>{% includesettings 'SITE_NAME' %} is about connecting Customers with Vendors directly.
+						This website provide interface for Consumers to search, browse Offers based on Location.
+						You can find different sales, discounts, coupons alerts on MyOffers.
+						We keep in touch with various dealers and vendors in market to give you best deals available.
+					<p>
 				</div>
 			</div>
-			<p>
-				 We are a team of web developers who are driven by passion and urge to create something that our customers love.
-			</p>
-		</div>
-		<div class="abtus-box">
-			<div class="abtus-box-title" >
-				<div class="abtus-box-title-image" >
-					<img src="{% static 'images/icons-svg/tools.svg' %}" />
+
+			<div class="abtus-box">
+				<div class="abtus-box-title" >
+					<div class="abtus-box-title-image" >
+						<img src="{% static 'images/icons-svg/people.svg' %}" />
+					</div>
+					<div class="abtus-box-title-text" >
+						<strong> WHO ARE WE ? </strong>
+					</div>
 				</div>
-				<div class="abtus-box-title-text" >
-					<strong> WHAT WE DO ? </strong>
-				</div>
+				<p>
+					 We are a team of web developers who are driven by passion and urge to create something that our customers love.
+				</p>
 			</div>
-			<p>
-				We build user friendly powerful and easy to use interfaces. Which helps a million of users to get what they want.
-			</p>
-		</div>
-		<div class="abtus-box">
-			<div class="abtus-box-title" >
-				<div class="abtus-box-title-image" >
-					<img src="{% static 'images/icons-svg/clock.svg' %}" />
+			<div class="abtus-box">
+				<div class="abtus-box-title" >
+					<div class="abtus-box-title-image" >
+						<img src="{% static 'images/icons-svg/tools.svg' %}" />
+					</div>
+					<div class="abtus-box-title-text" >
+						<strong> WHAT WE DO ? </strong>
+					</div>
 				</div>
-				<div class="abtus-box-title-text" >
-					<strong> SINCE WHEN ? </strong>
-				</div>
+				<p>
+					We build user friendly powerful and easy to use interfaces. Which helps a million of users to get what they want.
+				</p>
 			</div>
-			<p>
-				We are in the market since Jan 2014, and continusely improving the interfaces which helps the customers.
-			</p>
+			<div class="abtus-box">
+				<div class="abtus-box-title" >
+					<div class="abtus-box-title-image" >
+						<img src="{% static 'images/icons-svg/clock.svg' %}" />
+					</div>
+					<div class="abtus-box-title-text" >
+						<strong> SINCE WHEN ? </strong>
+					</div>
+				</div>
+				<p>
+					We are in the market since Jan 2014, and continusely improving the interfaces which helps the customers.
+				</p>
+			</div>
+
 		</div>
 	</div>
 </div>

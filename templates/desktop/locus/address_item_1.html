@@ -14,8 +14,12 @@
         </div>
     </div>
     <div class="ui-block-body">
-        <table class="ui-form-table" >
+        <style>
+            .address-table tr td:first-child { text-align: right; width: 15%; }
+        </style>
+        <table class="ui-form-table address-table" >
             <tr><td>NAME </td><td>{{address.name}}</td></tr>
+            <tr><td>PERSON </td><td>{{address.person}}</td></tr>
             <tr><td>PHONE </td><td>{{address.phone}}</td></tr>
             <tr><td>PINCODE </td><td>{{address.pincode}}</td></tr>
             <tr><td>AREA </td><td>{{address.area}}</td></tr>

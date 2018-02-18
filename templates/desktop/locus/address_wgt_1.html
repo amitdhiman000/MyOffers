@@ -3,8 +3,8 @@
     var _gMarker;
     var _gGeocoder;
     var _gTimeout;
-    var _gBeforeAddressSave;
-    var _gAfterAddressSave;
+    var _gBeforeAddrSaveEvent;
+    var _gAfterAddrSaveEvent;
     function updateMap()
     {
         if (_gMap) {
@@ -129,27 +129,27 @@
 
     function AddressSaveEvent(before, after)
     {
-        _gBeforeAddressSave = before;
-        _gAfterAddressSave = after;
+        _gBeforeAddrSaveEvent = before;
+        _gAfterAddrSaveEvent = after;
     }
 
-    function beforeAdSaveReq(e) {
-    	console.log("+beforeAdSaveReq");
-        if (_gBeforeAddressSave) {
-            return _gBeforeAddressSave(e);
+    function __BeforeAdrReq(e) {
+        if (_gBeforeAddrSaveEvent) {
+            return _gBeforeAddrSaveEvent(e);
         }
-    	return true;
+    	return false;
     }
 
-    function afterAdSaveRes(e) {
-    	console.log("+afterAdSaveRes");
-        if (_gAfterAddressSave) {
-            __gAfterAddressSave(e);
+    function __AfterAdrRes(e) {
+        console.log('__AfterAdrRes');
+        if (_gAfterAddrSaveEvent) {
+            return _gAfterAddrSaveEvent(e);
         }
+        return false;
     }
 
     $(function(){
-    	$('#addr_form').data('handlers', {before: beforeAdSaveReq, after: afterAdSaveRes});
+    	$('#addr_form').data('handlers', {before: __BeforeAdrReq, after: __AfterAdrRes});
     });
 </script>
 
@@ -185,7 +185,9 @@
             <tr><td>PINCODE / ZIPCODE</td></tr>
             <tr><td><input type="text" name="A_pincode" id="A_pincode" class="ui-input" placeholder="176039"/> </td></tr>
             <tr><td>ADDRESS</td></tr>
-            <tr><td><textarea name="A_address" id="A_address" class="ui-textarea"> </textarea> </td></tr>
+            <tr><td><textarea name="A_address" id="A_address" class="ui-input" placeholder="Full Address" > </textarea> </td></tr>
+            <tr><td>PERSON / INCHARGE</td></tr>
+            <tr><td><input type="text" name="A_pname" id="A_pname" class="ui-input" placeholder="Ramesh Kumar" /> </td></tr>
             <tr><td>PHONE</td></tr>
             <tr><td><input type="text" name="A_phone" id="A_phone" class="ui-input" placeholder="+91 9876543210" /> </td></tr>
             <tr><td><input type="submit" value="Save" class="ui-btn" /></td></tr>

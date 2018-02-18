@@ -125,6 +125,7 @@ class Area(CRUDModel):
 
 class Address(CRUDModel):
 	name = models.CharField(max_length=50, blank=False)
+	person = models.CharField(max_length=20, blank=True)
 	phone = models.CharField(max_length=10, blank=True)
 	address = models.CharField(max_length=50, blank=False)
 	landmark = models.CharField(max_length=50, blank=True)

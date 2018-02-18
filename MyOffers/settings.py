@@ -225,6 +225,7 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 MEDIA_USER_FILES_DIR_NAME = 'files'
 MEDIA_TMP_FILES_DIR_NAME = 'tmp'
 
+SITE_NAME = "Trader"
 
 # some custom settings
 BASE_TEMPLATE = 'base_1.html'

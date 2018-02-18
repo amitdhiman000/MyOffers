@@ -18,6 +18,7 @@
         data = get_csrf();
         data['A_id'] = id;
         postRequest('/locus/address/delete/', data, function(status, resp){
+            console.log(resp);
             if (status) {
                 $(pThis).parents(".addr_item").remove();
             } else {
@@ -31,18 +32,29 @@
         e.stopPropagation();
 
         var modal = $('#wt-overlay');
-        modal.find('.wt-overlay-content').append($('#address_picker').show());
+        var ap = $('#address_picker');
+        modal.find('.wt-overlay-content').append(ap.show());
         modal.show();
         updateMap();
-        modal.find('.wt-closebtn').on('click', function(){ console.log('CLOSE'); modal.hide(); });
+        modal.find('.wt-closebtn').on('click',
+            function() {
+                console.log('CLOSE');
+                ap.detach().hide();
+                modal.hide();
+                setTimeout(function(){ ap.appendTo('body'); }, 300);
+            }
+        );
         console.log("-showAddressBox");
+    }
+
+    function hideAddressBox()
+    {
+        console.log('+hideAddressBox');
+        $('.wt-closebtn').click();
     }
 
     function beforeAdSaveReq(e) {
     	console.log("+beforeAdSaveReq");
-        if (_gBeforeAddressSave) {
-            return _gBeforeAddressSave(e);
-        }
     	return true;
     }
 
@@ -51,6 +63,7 @@
     	if (e.status) {
     		var val = e.resp;
     		$('#address_cont').prepend(val);
+            hideAddressBox();
     	} else {
     		var errors = '';
     		for (var err in e.resp.data) {
@@ -58,10 +71,12 @@
     		}
     		Noti.info({title:e.resp.message, text:errors});
     	}
-        if (_gAfterAddressSave) {
-            __gAfterAddressSave(e);
-        }
+        return true;
     }
+
+    $(function(){
+    	AddressSaveEvent(beforeAdSaveReq, afterAdSaveRes);
+    });
 </script>
 
 <div class="ui-content" style="height: 1000px;">
