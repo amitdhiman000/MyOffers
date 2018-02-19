@@ -6,7 +6,7 @@ import logging
 
 model_fields = {
     'id':{'name':'id', 'validator': None},
-    'title':{'name':'name', 'validator': None},
+    'name':{'name':'name', 'validator': None},
     'person':{'name':'person', 'validator': None},
     'phone':{'name':'phone', 'validator': None},
     'pincode':{'name':'pincode', 'validator': None},
@@ -18,7 +18,7 @@ model_fields = {
 form_fields = {
     ## form fields
     'A_id': model_fields['id'],
-    'A_title': model_fields['title'],
+    'A_name': model_fields['name'],
     'A_pname': model_fields['person'],
     'A_phone': model_fields['phone'],
     'A_pincode': model_fields['pincode'],
@@ -28,7 +28,7 @@ form_fields = {
 
     ## json fields
     'id': model_fields['id'],
-    'title': model_fields['title'],
+    'name': model_fields['name'],
     'pname': model_fields['person'],
     'phone': model_fields['phone'],
     'pincode': model_fields['pincode'],
@@ -78,7 +78,6 @@ class AddressRegForm(CreateForm):
                 self.set_error('pincode', "We don't serve this area yet")
         else:
             self.set_error('pincode', 'Pincode is required')
-
 
         self.add_model_value('fk_user', self.request().user)
 

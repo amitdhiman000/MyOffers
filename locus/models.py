@@ -144,7 +144,7 @@ class Address(CRUDModel):
 
 	@classmethod
 	def queryset(klass):
-		fields = ('id', 'name', 'pincode', 'address', 'area', 'city', 'state', 'country')
+		fields = ('id', 'name', 'person', 'phone', 'pincode', 'address', 'area', 'city', 'state', 'country')
 		return klass.objects.annotate(
 		pincode=models.F('fk_area__pincode'),
 		area=models.F('fk_area__name'),

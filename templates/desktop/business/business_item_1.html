@@ -87,33 +87,7 @@
         </table>
         {% if b.address %}
             {% for address in b.address %}
-            <div class="ui-body" >
-                <form method="POST" action="/business/address-create/" class="ajax-form" id="business-form" >
-					<table class="ui-form-table" >
-						{% csrf_token %}
-						<input type="hidden" name="BA_id" class="ui-input" value="{{business.address.id}}" />
-						<tr><td>NAME*</td><td>
-						<input readonly type="text" name="BA_name" class="ui-input" value="{{business.address.name}}" data-value="{{business.address.name}}" />
-						</td></tr>
-						<tr><td>COUNTRY</td><td>
-						<input readonly type="text" name="BA_country" class="ui-input" value="{{business.address.country}}" data-value="{{business.address.country}}" />
-						</td></tr>
-						<tr><td>PHONE</td><td>
-						<input readonly type="text" name="BA_phone" class="ui-input" value="{{business.address.phone}}" data-value="{{business.address.phone}}" />
-						</td></tr>
-						<tr><td>PINCODE</td><td>
-						<input readonly type="text" name="BA_pincode" class="ui-input" value="{{business.address.pincode}}"  data-value="{{business.address.pincode}}" />
-						</td></tr>
-						<tr><td>LANDMARK</td>
-                        <td><input readonly type="text" name="BA_landmark" class="ui-input" value="{{business.address.landmark}}" data-value="{{business.address.landmark}}" />
-						</td></tr>
-						<tr><td style="vertical-align:top;">ADDRESS</td>
-                        <td><textarea readonly name="BA_address" class="ui-textarea" data-value="{{business.address.address}}" > {{business.address.address}} </textarea>
-						</td></tr>
-						<tr><td></td><td><input type="submit" value="Save" class="ui-btn ui-btn-input" /> <input type="button" value="Cancel" class="ui-btn ui-btn-input" /></td></tr>
-					</table>
-				</form>
-            </div>
+                {% include '../locus/address_item_1.html' %}
             {% endfor %}
         {% else %}
             <div class="ui-body" >

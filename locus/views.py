@@ -82,7 +82,6 @@ def home_view(request):
 @App_LoginRequired
 def address_view(request):
     addresses = AddressService.address_by_user(request.user)
-    print(len(addresses))
     print(addresses)
     data = {'title': 'Address', 'addresses': addresses}
     return App_Render(request, 'locus/address_1.html', data)

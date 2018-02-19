@@ -1,5 +1,6 @@
 {% load tz %}
 {% load staticfiles %}
+{% include './address_picker_1.html' %}
 
 <script type="text/javascript" >
     function defaultAddress(pThis,id)
@@ -18,7 +19,6 @@
         data = get_csrf();
         data['A_id'] = id;
         postRequest('/locus/address/delete/', data, function(status, resp){
-            console.log(resp);
             if (status) {
                 $(pThis).parents(".addr_item").remove();
             } else {
@@ -98,5 +98,3 @@
         {% endfor %}
     </div>
 </div>
-
-{% include './address_picker_1.html' %}
