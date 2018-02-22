@@ -78,11 +78,12 @@ class AddressView(RestApiView):
 def home_view(request):
     return address_view(request)
 
-
+@App_RunTime
 @App_LoginRequired
 def address_view(request):
     addresses = AddressService.address_by_user(request.user)
     print(addresses)
+    #print(addresses[0]['url'])
     data = {'title': 'Address', 'addresses': addresses}
     return App_Render(request, 'locus/address_1.html', data)
 

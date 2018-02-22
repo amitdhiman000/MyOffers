@@ -1,4 +1,4 @@
-import os
+import os, time
 from functools import wraps
 from django.conf import settings
 from django.shortcuts import render
@@ -48,6 +48,7 @@ def App_VerifyToken(request):
 
 
 def App_TokenRequired(funct):
+	@wraps(funct)
 	def _decorator(self, request, *args, **kwargs):
 		if App_VerifyToken(request) == False:
 			return JsonResponse({'result': {'message': 'Token expired'}}, status=401)
@@ -59,6 +60,7 @@ def App_TokenRequired(funct):
 ## decorator function check for request method, if not GET redirect to invalid reguest page.
 ##
 def App_GetRequired(funct):
+	@wraps(funct)
 	def _decorator(request, *args, **kwargs):
 		if request.method != 'GET':
 			return App_Redirect(request, settings.ERROR_INVALID_REQUEST_URL)
@@ -71,6 +73,7 @@ def App_GetRequired(funct):
 ## decorator function check for request method, if not POST redirect to invalid reguest page.
 ##
 def App_PostRequired(funct):
+	@wraps(funct)
 	def _decorator(request, *args, **kwargs):
 		if request.method != 'POST':
 			return App_Redirect(request, settings.ERROR_INVALID_REQUEST_URL)
@@ -83,7 +86,7 @@ def App_PostRequired(funct):
 ## Decorator function for chekcing the login status and redirect to login page
 ##
 def App_LoginRequired(funct):
-	#@warps(funct)
+	@wraps(funct)
 	def _decorator(request, *args, **kwargs):
 		if request.user.is_loggedin() == False:
 			redirect_url = settings.USER_LOGIN_URL + "?"+settings.USER_LOGIN_NEXT+"="+request.path
@@ -97,7 +100,7 @@ def App_LoginRequired(funct):
 ## Decorator function for checking the login user is admin or not
 ##
 def App_AdminRequired(funct):
-	#@warps(funct)
+	@wraps(funct)
 	def _decorator(request, *args, **kwargs):
 		if request.user.is_loggedin() == False:
 			return App_Redirect(request, settings.USER_LOGIN_URL)
@@ -112,6 +115,7 @@ def App_AdminRequired(funct):
 ## Decorator function for chekcing the login status and redirect to home page
 ##
 def App_RedirectIfLoggedin(funct):
+	@wraps(funct)
 	def _decorator(request, *args, **kwargs):
 		if request.user.is_loggedin() == True:
 			return App_Redirect(request, settings.USER_PROFILE_URL)
@@ -119,10 +123,11 @@ def App_RedirectIfLoggedin(funct):
 	return _decorator
 
 
-def App_Time(funct):
+def App_RunTime(funct):
+	@wraps(funct)
 	def _decorator(*args, **kwargs):
 		t1 = time.time()
-		retv = funct(request, *args, **kwargs)
+		retv = funct(*args, **kwargs)
 		t2 = time.time() - t1
 		print('{} ran in {} sec'.format(funct.__name__, t2))
 		return retv

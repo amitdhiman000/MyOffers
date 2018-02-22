@@ -2,11 +2,36 @@ from django.db import models
 import logging
 
 
+class CRUDQueryset(models.query.QuerySet):
+	def withurl(self):
+		print('This is called from custom query set')
+		for item in self:
+			item.url = item.url()
+			print(item.url)
+		return self
+
+
+
+class CRUDManager(models.Manager):
+	def get_queryset(self):
+		return CRUDQueryset(self.model, using=self._db)
+
+	def withurl(self):
+		return self.get_queryset().withurl()
+
+
 
 class CRUDModel(models.Model):
 	id = models.BigAutoField(primary_key=True)
 
-	json_fields = {'url': 'url'}
+	objects = CRUDManager()
+
+	'''
+	def __init__(self, *args, **kwargs):
+		print('Called init')
+		super().__init__(self, *args, **kwargs)
+		self.url = self.url()
+	'''
 
 	class Meta:
 		abstract = True
@@ -68,13 +93,3 @@ class CRUDModel(models.Model):
 		except Exception as ex:
 			logging.error(ex)
 		return None
-
-
-	@classmethod
-	def fetch_all(klass):
-		return klass.objects.all()
-
-
-	@classmethod
-	def fetch_by_id(klass, id_):
-		return klass.objects.filter(id=id_).first()

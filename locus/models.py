@@ -138,19 +138,24 @@ class Address(CRUDModel):
 	flags = models.CharField(max_length=10, default='')
 
 
-	def absolute_url(self):
+	class Meta:
+		verbose_name = _('address')
+		verbose_name_plural= _('address')
+
+
+	def url(self):
 		return '/locus/address/'+ str(self.id) + '/'
 
 
 	@classmethod
 	def queryset(klass):
-		fields = ('id', 'name', 'person', 'phone', 'pincode', 'address', 'area', 'city', 'state', 'country')
+		#fields = ('id', 'name', 'person', 'phone', 'pincode', 'address', 'area', 'city', 'state', 'country')
 		return klass.objects.annotate(
 		pincode=models.F('fk_area__pincode'),
 		area=models.F('fk_area__name'),
 		city=models.F('fk_area__fk_city__name'),
 		state=models.F('fk_area__fk_state__name'),
-		country=models.F('fk_area__fk_country__name')).values(*fields)
+		country=models.F('fk_area__fk_country__name'))
 
 
 	@classmethod

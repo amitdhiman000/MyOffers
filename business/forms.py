@@ -4,27 +4,27 @@ from business.validators import *
 from business.models import (Business, Category)
 
 
-model_fields = [
-	{'name': 'id', 'validator': NoValidator},
-	{'name': 'name', 'validator': BusinessNameValidator},
-	{'name': 'about', 'validator': DescriptionValidator},
-	{'name': 'website', 'validator': WebsiteValidator},
-	{'name': 'fk_category', 'validator': BusinessCategoryValidator},
-]
+model_fields = {
+	'id':{'name': 'id', 'validator': NoValidator},
+	'name':{'name': 'name', 'validator': BusinessNameValidator},
+	'about':{'name': 'about', 'validator': DescriptionValidator},
+	'website':{'name': 'website', 'validator': WebsiteValidator},
+	'category':{'name': 'fk_category', 'validator': BusinessCategoryValidator},
+}
 
 form_fields = {
 	## for html form
-	'B_id': model_fields[0],
-	'B_name': model_fields[1],
-	'B_about': model_fields[2],
-	'B_website': model_fields[3],
-	'B_category': model_fields[4],
+	'B_id': model_fields['id'],
+	'B_name': model_fields['name'],
+	'B_about': model_fields['about'],
+	'B_website': model_fields['website'],
+	'B_category': model_fields['category'],
 	## for json
-	'id': model_fields[0],
-	'name': model_fields[1],
-	'about': model_fields[2],
-	'website': model_fields[3],
-	'category': model_fields[4],
+	'id': model_fields['id'],
+	'name': model_fields['name'],
+	'about': model_fields['about'],
+	'website': model_fields['website'],
+	'category': model_fields['category'],
 }
 
 
@@ -81,7 +81,7 @@ class BusinessUpdateForm(UpdateForm):
 
 
 
-class BusinessDeleteForm(Form):
+class BusinessDeleteForm(DeleteForm):
 
 	def __init__(self):
 		super().__init__()
@@ -103,3 +103,30 @@ class BusinessDeleteForm(Form):
 		else:
 			self.set_error('id', 'Failed to delete Bunisess!!')
 		return True
+
+
+
+business_address_fields = {
+	'business_id':{'name': 'id', 'validator': NoValidator},
+	'address_id':{'name': 'id', 'validator': NoValidator},
+}
+
+class BusinessAddressLinkForm(CreateForm):
+	def __init__(self):
+		super().__init__()
+		self.m_fields = business_address_fields
+
+
+	def validate(self):
+		is_valid = super().validate()
+		if not is_valid:
+			return is_valid
+
+		self.add_model_value('fk_user', self.request().user)
+		return self.valid()
+
+
+	def save(self):
+		print('saving ....')
+		print(self.model_values())
+		return Business.create(self.model_values())

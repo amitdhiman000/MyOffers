@@ -144,7 +144,7 @@ def signout(request):
 	backends.logout(request)
 	return App_Redirect(request, settings.USER_LOGIN_URL)
 
-
+@App_RunTime
 @App_LoginRequired
 def user_account_view(request):
 	user = User.fetch_user(request.user)

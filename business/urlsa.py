@@ -22,7 +22,6 @@ urlpatterns = [
 	url(r'^create/$', views.business_create, name='business_create'),
 	url(r'^update/$', views.business_update, name='business_update'),
     url(r'^delete/$', views.business_delete, name='business_delete'),
-	url(r'^address-create/$', views.business_address_create, name='business_address_create'),
-	url(r'^address-update/$', views.business_address_update, name='business_address_update'),
-	url(r'^address-delete/$', views.business_address_delete, name='business_address_delete'),
+	url(r'^address/link/$', views.business_address_link, name='business_address_link'),
+	url(r'^address/unlink/$', views.business_address_unlink, name='business_address_unlink'),
 ]

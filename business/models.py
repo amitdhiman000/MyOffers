@@ -21,10 +21,6 @@ class Category(CRUDModel):
 		verbose_name_plural= _('categories')
 
 
-	def __str__(self):
-		return self.name
-
-
 	@classmethod
 	def fetch_by_name(klass, name):
 		try:

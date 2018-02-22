@@ -3,6 +3,7 @@ from base.serializers import *
 
 class AddressService(object):
     model = Address
+    fields = ('id', 'name', 'person', 'phone', 'pincode', 'address', 'area', 'city', 'state', 'country', 'landmark', 'url')
 
     @classmethod
     def timestamp(klass, key):
@@ -18,10 +19,12 @@ class AddressService(object):
     @classmethod
     def address_by_id(klass, id_):
         data = klass.model.fetch_by_id(id_)
-        return ModelValueSerializer.json(data)
+        print(data)
+        return ModelValueSerializer.json(data, klass.fields)
 
 
     @classmethod
     def address_by_user(klass, user):
         data = klass.model.fetch_by_user(user)
-        return ModelValuesSerializer.json(data)
+        #return data
+        return ModelValuesSerializer.json(data, klass.fields)
