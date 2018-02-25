@@ -18,11 +18,11 @@
         console.log('+deleteAddress');
         data = get_csrf();
         data['A_id'] = id;
-        postRequest('/locus/address/delete/', data, function(status, resp){
+        $AppRequest.post('/locus/address/delete/', data, function(status, resp){
             if (status) {
                 $(pThis).parents(".addr_item").remove();
             } else {
-                Noti.error({title:resp.message, text:JSON.stringify(resp.data)});
+                $AppNoti.error({title:resp.message, text:JSON.stringify(resp.data)});
             }
         });
     }
@@ -31,26 +31,14 @@
         console.log("+showAddressBox");
         e.stopPropagation();
 
-        var modal = $('#wt-overlay');
-        var ap = $('#address_picker');
-        modal.find('.wt-overlay-content').append(ap.show());
-        modal.show();
-        updateMap();
-        modal.find('.wt-closebtn').on('click',
-            function() {
-                console.log('CLOSE');
-                ap.detach().hide();
-                modal.hide();
-                setTimeout(function(){ ap.appendTo('body'); }, 300);
-            }
-        );
-        console.log("-showAddressBox");
+        $AppOverlay.show($('#address_picker'));
+        //updateMap();
     }
 
     function hideAddressBox()
     {
         console.log('+hideAddressBox');
-        $('.wt-closebtn').click();
+        $AppOverlay.close();
     }
 
     function beforeAdSaveReq(e) {
@@ -69,7 +57,7 @@
     		for (var err in e.resp.data) {
     			errors += e.resp.data[err] + '<br />';
     		}
-    		Noti.info({title:e.resp.message, text:errors});
+    		$AppNoti.info({title:e.resp.message, text:errors});
     	}
         return true;
     }

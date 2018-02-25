@@ -45,7 +45,7 @@ $(function(){
 	$("#OF_address").suggestions({
 		minLength: 2,
 		_source: function(key, resp) {
-			postRequest('/search/location/', {'key': key}, function(status, result){
+			$AppRequest.post('/search/location/', {'key': key}, function(status, result){
 				if (true == status) {
 					resp(result.data);
 				} else {
@@ -83,13 +83,13 @@ function afterOfferSaveRes(e) {
 	if (e.status) {
 		//var val = e.resp;
 		//$('#address_cont').prepend(val);
-		Noti.info({title:'Success', e.resp.message});
+		$AppNoti.info({title:'Success', e.resp.message});
 	} else {
 		var errors = '';
 		for (var err in e.resp.data) {
 			errors += e.resp.data[err] + '<br />';
 		}
-		Noti.info({title:e.resp.message, text:errors});
+		$AppNoti.info({title:e.resp.message, text:errors});
 	}
 }
 

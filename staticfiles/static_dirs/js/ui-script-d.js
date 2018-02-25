@@ -1,4 +1,4 @@
-var KEY_ESCAPE = 27
+var KEY_ESCAPE = 27;
 var KEY_ENTER = 13;
 var KEY_LEFT = 37;
 var KEY_UP = 38;
@@ -8,18 +8,48 @@ var KEY_DOWN = 40;
 $(function() {
 	console.log("+init");
 
-	$(document).on('submit', 'form.ajax-form', ajaxFormSubmit);
+	/*Initialize App*/
+	initApp();
 	/*Initialize History*/
 	initHistory();
 	/*Initialize search*/
 	initSearch();
 	/*Initialize switchTabs*/
 	initSwitchTabs();
-	/*Initialize App*/
-	initApp();
 
 	console.log("-init");
 });
+
+function initApp()
+{
+	console.log("+initApp");
+	$(document).on('submit', 'form.ajax-form', ajaxFormSubmit);
+
+	$("#app_main_nav li:first-child").on('click' , function(e) {
+		e.stopPropagation();
+		$('#app_sub_nav_content').fadeToggle(100);
+	});
+	$("#app_main_nav").on('click', function(e) {
+		$('#app_sub_nav_content').fadeOut(100);
+	});
+
+	$(".app_vlist_exp_item > a").on("click", function(e) {
+		e.preventDefault();
+		$(this).parent().toggleClass("expanded");
+	});
+
+	$AppOverlay.init();
+
+	// Close the dropdown if the user clicks outside of it
+	$(window).on("click", function(event) {
+		console.log("window clicked");
+		if (!event.target.matches('.ui-dropbtn')) {
+			$(".ui-dropcontent").each(function(i, elm){
+				elm.classList.remove("ui-show");
+			});
+		}
+	});
+}
 
 function dumpObject(obj)
 {
@@ -45,8 +75,8 @@ function initHistory()
 				//$(state.dest[0]).html("<h1>Failed to load page</h1>"+"<br />"+JSON.stringify(data));
 			}
 		}
-		function makeGetRequest(state) {
-			getRequest(state.url, 'pid='+state.dest[1],
+		function makeRequest(state) {
+			$AppRequest.get(state.url, 'pid='+state.dest[1],
 				function(status, data) {
 					afterGetResponse(status, data, state);
 				});
@@ -59,14 +89,14 @@ function initHistory()
 			dest = This.attr("data-dest").split(':');
 			title = This.text()+' | My Offers';
 			state = {url:url, title:title, dest:dest,};
-			makeGetRequest(state);
+			makeRequest(state);
 		});
 
 		window.addEventListener('popstate', function(e) {
 			console.log('+popstate');
 			console.log(JSON.stringify(state));
 			if (e.state !== null) {
-				makeGetRequest(e.state);
+				makeRequest(e.state);
 			} else {
 				console.log("no history to load");
 				location.reload();
@@ -82,7 +112,7 @@ function initSearch()
 	$("#app_search_input").suggestions({
 		minLength: 2,
 		_source: function(key, resp) {
-			postRequest('/search/offer/', {'key': key}, function(status, json){
+			$AppRequest.post('/search/offer/', {'key': key}, function(status, json){
 				if (true == status) {
 					resp(json.data);
 				} else {
@@ -121,35 +151,6 @@ function initSwitchTabs()
 	});
 }
 
-function initApp()
-{
-	console.log("+initApp");
-	$("#app_main_nav li:first-child").on('click' , function(e) {
-		e.stopPropagation();
-		$('#app_sub_nav_content').fadeToggle(100);
-	});
-	$("#app_main_nav").on('click', function(e) {
-		$('#app_sub_nav_content').fadeOut(100);
-	});
-
-    $(".app_vlist_exp_item > a").on("click", function(e) {
-        e.preventDefault();
-        $(this).parent().toggleClass("expanded");
-    });
-
-	$('.wt-closebtn').on('click', function(){ $(this).parent().hide(); });
-
-	// Close the dropdown if the user clicks outside of it
-	$(window).on("click", function(event) {
-		console.log("window clicked");
-		if (!event.target.matches('.ui-dropbtn')) {
-			$(".ui-dropcontent").each(function(i, elm){
-				elm.classList.remove("ui-show");
-			});
-		}
-	});
-}
-
 function dropToggle(e, pThis)
 {
 	console.log("+dropToggle");
@@ -160,6 +161,7 @@ function dropToggle(e, pThis)
 	pThis.parentElement.getElementsByClassName("ui-dropcontent")[0].classList.toggle("ui-show");
 }
 
+
 function navClicked()
 {
 	console.log("+navClicked");
@@ -168,14 +170,10 @@ function navClicked()
 	if (appleft && apppage) {
 		console.log("marginLeft: "+appleft.style.marginLeft)
 		if (appleft.style.marginLeft !== "-20%") {
-			//appleft.style.width = "0";
-			//apppage.style.marginLeft = "0";
 			appleft.style.marginLeft = "-20%";
 			apppage.style.width = "95%";
 			apppage.style.margin = "0 auto";
 		} else {
-			//appleft.style.width = "18%";
-			//apppage.style.marginLeft = "18%";
 			appleft.style.marginLeft = "0";
 			apppage.style.marginLeft = "20%";
 			apppage.style.width = "80%";
@@ -196,14 +194,14 @@ function ajaxFormSubmit(e)
 		if (handle.before(e) === false)
 			return;
 
-	postRequest(action, form.serialize(), (status, json) => {
+	$AppRequest.post(action, form.serialize(), (status, json) => {
 		if (handle && handle.after) {
 			e.status = status;
 			e.resp = json;
 			e.$src = form;
 			handle.after(e);
 		} else {
-			Toast.show(JSON.stringify(json.message));
+			$AppToast.show(JSON.stringify(json.message));
 		}
 	});
 }
@@ -211,94 +209,73 @@ function ajaxFormSubmit(e)
 function afterResponse(e) {
 	console.log("+afterResponse");
 	if (e.status) {
-		Noti.info({title:"Successful", text:e.resp.message});
+		$AppNoti.info({title:"Successful", text:e.resp.message});
 	} else {
 		var errors = '';
 		for (var key in e.resp.data) {
 			console.log(key + ' : '+ e.resp.data[key]);
 			errors += e.resp.data[key]+'<br />';
 		}
-		Noti.error({title:e.resp.message, text:errors});
+		$AppNoti.error({title:e.resp.message, text:errors});
 	}
 }
 
-function postRequest(pUrl, pData, pCallback)
-{
-	console.log("+postRequest");
-	$.ajax({url: pUrl,
-		data: pData,
-		type: 'POST',
-		async: true,
-		dataType: 'text',
-		complete: function(res) {
-			console.log('+comeplete :'+ res.status);
-		},
-		success: function (data, status, xhr) {
-			mimeType = xhr.getResponseHeader("content-type");
-			if (mimeType.indexOf('json') > -1) {
-				console.log('response : ' + data);
-				jsonObj = jQuery.parseJSON(data);
-				switch(jsonObj.status) {
-					case 302:
-						console.log('redirect');
-						location.href = jsonObj.url;
-						break;
-					case 200:
-					case 204:
-						pCallback(true, jsonObj);
-						break;
-					case 401:
-					default:
-						pCallback(false, jsonObj);
-						break;
+var $AppRequest = {
+	get: function(pUrl, pData, pCallback) {
+		console.log('+get');
+		this._request('GET', pUrl, pData, pCallback);
+	},
+	post: function (pUrl, pData, pCallback) {
+		console.log("+post");
+		this._request('POST', pUrl, pData, pCallback);
+	},
+	_request: function(pType='POST', pUrl, pData, pCallback) {
+		$.ajax({url: pUrl,
+			data: pData,
+			type: pType,
+			async: true,
+			dataType: 'text',
+			complete: function(res) {
+				console.log('+comeplete :'+ res.status);
+			},
+			success: function (data, status, xhr) {
+				mimeType = xhr.getResponseHeader("content-type");
+				if (mimeType.indexOf('json') > -1) {
+					console.log('response : ' + data);
+					jsonObj = jQuery.parseJSON(data);
+					switch(jsonObj.status) {
+						case 302:
+							console.log('redirect');
+							location.href = jsonObj.url;
+							break;
+						case 200:
+						case 204:
+							pCallback(true, jsonObj);
+							break;
+						case 401:
+						default:
+							pCallback(false, jsonObj);
+							break;
+					}
+				} else if (mimeType.indexOf('html') > -1) {
+					console.log('html response');
+					pCallback(true, data);
+				} else {
+					console.log('unknown response');
+					pCallback(false, {'message': 'Unknown response', 'data':'unexpected content type'});
 				}
-			} else if (mimeType.indexOf('html') > -1) {
-				console.log('html response');
-				pCallback(true, data);
-			} else {
-				console.log('unknown response');
-				pCallback(false, {'message': 'Unknown response', 'data':'unexpected content type'});
+			},
+			error: function (xhr,error) {
+				console.log('status : '+xhr.status);
+				$AppToast.show('Network error occured');
+				pCallback(false, {'message': 'Network failed', 'data': {error} });
 			}
-		},
-		error: function (xhr,error) {
-			console.log('status : '+xhr.status);
-			Toast.show('Network error occured');
-			pCallback(false, {'message': 'Network failed', 'data': {error} });
-		}
-	});
-}
-
-function getRequest(pUrl, pData, pCallback)
-{
-	$.ajax({url: pUrl,
-		data: pData,
-		type: 'GET',
-		async: true,
-		dataType: 'text',
-		success: function (data, status, xhr) {
-			mimeType = xhr.getResponseHeader("content-type");
-			if (mimeType.indexOf('json') > -1) {
-				console.log('response : ' + data);
-				jsonObj = jQuery.parseJSON(data);
-				switch(jsonObj.status) {
-				case 302:
-					console.log('redirect');
-					location.href = jsonObj.url;
-					break;
-				}
-			}
-		},
-	}).done(function(data) {
-		console.log('html response');
-		pCallback(true, data);
-	}).fail(function(error) {
-		console.log('unknown response');
-		pCallback(false, error);
-	});
+		});
+	}
 }
 
 /****************** Cookie API ***********************/
-var Cookie = {
+var $AppCookie = {
 	get: function(name) {
 		var cv = null;
 		if (document.cookie != 'undefined' && document.cookie !== '') {
@@ -332,16 +309,45 @@ function get_csrf()
 /*****************************************************/
 /******************** Widgets ************************/
 /****************** UI API ************************/
-var Popup = {
-	show: function() {
-
+var $AppOverlay = {
+	init: function() {
+		this.$overlay = $('#wt-overlay');
+		this.$content_def = $('<div style="width:80% height:50%;" data-type="none"></div>');
+		this.$content = this.$content_def;
+		this.$overlay.find('.wt-closebtn').on('click', this, this._onclose);
+	},
+	show: function($content=this.$content_def) {
+		return this.update($content);
 	},
 	hide: function() {
-
+		this.$overlay.hide();
+		return this;
+	},
+	update: function($content) {
+		this.$content = $($content);
+		this.$overlay.find('.wt-overlay-content').html(this.$content.show());
+		this.$overlay.show();
+		return this;
+	},
+	close: function(e) {
+		console.log("CLOSE OVERLAY");
+		this.$overlay.find('.wt-closebtn').click();
+	},
+	_onclose: function(e) {
+		console.log("ON CLOSE OVERLAY");
+		pThis = e.data;
+		var $content = pThis.$content.hide();
+		if ($content.attr('data-type') == 'persist') {
+			setTimeout(function(){ $content.appendTo('body'); }, 100);
+		} else {
+			$content.remove();
+		}
+		pThis.hide();
 	}
 };
 
-var Noti = {
+
+var $AppNoti = {
 	_defaults: {
 		link: window.location,
 		title: 'Alert',
@@ -380,9 +386,8 @@ var Noti = {
 	}
 };
 
-var Toast = {
+var $AppToast = {
 	show: function(text='Error', timeout=1800) {
-		//$('.wt-toast').text(text).fadeIn(500).delay(timeout).fadeOut(500);
 		$('.wt-toast').fadeIn({duration: 500, start: function() {$(this).text(text);}}).delay(timeout).fadeOut(500);
 	},
 	hide: function() {
@@ -391,8 +396,7 @@ var Toast = {
 };
 
 var wsuggest = function(Elem, opts) {
-	console.log('+wsuggest');
-	console.log('element : '+Elem.prop("tagName"));
+	console.log('+wsuggest element : '+Elem.prop("tagName"));
 	var Inst = $(Elem);
 	Inst.kd = {
 		_name: 'suggest',
@@ -567,8 +571,7 @@ var wsuggest = function(Elem, opts) {
 
 function wfileupload(Elem, opts)
 {
-	console.log('+wfileupload');
-	console.log('element : '+Elem.prop('tagName'));
+	console.log('+wfileupload element : '+Elem.prop('tagName'));
 	var Inst = $(Elem);
 	// klass data
 	Inst.kd = {
@@ -733,8 +736,7 @@ function wfileupload(Elem, opts)
 
 function wswitchtab(Elem, opts)
 {
-	console.log('+wswitchtab');
-	console.log('element : '+Elem.prop('tagName'));
+	console.log('+wswitchtab element : '+Elem.prop('tagName'));
 	var Inst = $(Elem);
 	// klass data
 	Inst.kd = {
@@ -782,70 +784,8 @@ function wswitchtab(Elem, opts)
 	kf._create();
 }
 
-function onSwipe(el,func) {
-      swipe_det = new Object();
-      swipe_det.sX = 0;
-      swipe_det.sY = 0;
-      swipe_det.eX = 0;
-      swipe_det.eY = 0;
-      var min_x = 20;  //min x swipe for horizontal swipe
-      var max_x = 40;  //max x difference for vertical swipe
-      var min_y = 40;  //min y swipe for vertical swipe
-      var max_y = 50;  //max y difference for horizontal swipe
-      var direc = "";
-      ele = document.getElementById(el);
-      ele.addEventListener('touchstart',function(e){
-        var t = e.touches[0];
-        swipe_det.sX = t.screenX;
-        swipe_det.sY = t.screenY;
-      },false);
-      ele.addEventListener('touchmove',function(e){
-        e.preventDefault();
-        var t = e.touches[0];
-        swipe_det.eX = t.screenX;
-        swipe_det.eY = t.screenY;
-      },false);
-      ele.addEventListener('touchend',function(e){
-        //horizontal detection
-        if ((((swipe_det.eX - min_x > swipe_det.sX) || (swipe_det.eX + min_x < swipe_det.sX)) && ((swipe_det.eY < swipe_det.sY + max_y) && (swipe_det.sY > swipe_det.eY - max_y)))) {
-          if(swipe_det.eX > swipe_det.sX) direc = "r";
-          else direc = "l";
-        }
-        //vertical detection
-        if ((((swipe_det.eY - min_y > swipe_det.sY) || (swipe_det.eY + min_y < swipe_det.sY)) && ((swipe_det.eX < swipe_det.sX + max_x) && (swipe_det.sX > swipe_det.eX - max_x)))) {
-          if(swipe_det.eY > swipe_det.sY) direc = "d";
-          else direc = "u";
-        }
-
-        if (direc != "") {
-          if(typeof func == 'function') func(el,direc);
-        }
-        direc = "";
-      },false);
-}
-
-function hcenter(pThis) {
-	pThis.css("left", Math.max(0, (($(window).width() - $(this).width()) / 2) +
-                                                $(window).scrollLeft()) + "px");
-}
-
-function vcenter(pThis) {
-	pThis.css("top", Math.max(0, (($(window).height() - $(this).height()) / 2) +
-                                                $(window).scrollTop()) + "px");
-}
-
-function wcenter () {
-    //this.css("position","absolute");
-    //this.css("top", Math.max(0, (($(window).height() - $(this).height()) / 2) + $(window).scrollTop()) + "px");
-    //this.css("left", Math.max(0, (($(window).width() - $(this).width()) / 2) + $(window).scrollLeft()) + "px");
-	//vcenter(this);
-	hcenter(this);
-    return this;
-}
-
 /****************** Exteded Jquery *******************/
 jQuery.fn.exists = function(){return this.length>0;}
 jQuery.fn.switchtab = function(options) { new wswitchtab(this, options); }
 jQuery.fn.fileupload = function(options) { new wfileupload(this, options); }
 jQuery.fn.suggestions = function(options) { new wsuggest(this, options); }
-jQuery.fn.center = wcenter;

@@ -1,4 +1,4 @@
-var KEY_ESCAPE = 27
+var KEY_ESCAPE = 27;
 var KEY_ENTER = 13;
 var KEY_LEFT = 37;
 var KEY_UP = 38;
@@ -8,18 +8,58 @@ var KEY_DOWN = 40;
 $(function() {
 	console.log("+init");
 
-	$(document).on('submit', 'form.ajax-form', ajaxFormSubmit);
+	/*Initialize App*/
+	initApp();
 	/*Initialize History*/
 	initHistory();
 	/*Initialize search*/
 	initSearch();
 	/*Initialize switchTabs*/
 	initSwitchTabs();
-	/*Initialize App*/
-	initApp();
 
 	console.log("-init");
 });
+
+function initApp()
+{
+	console.log("+initApp");
+	$(document).on('submit', 'form.ajax-form', ajaxFormSubmit);
+
+	$("#app_main_nav li:first-child").on('click' , function(e) {
+		e.stopPropagation();
+		$('#app_sub_nav_content').fadeToggle(100);
+	});
+	$("#app_main_nav").on('click', function(e) {
+		$('#app_sub_nav_content').fadeOut(100);
+	});
+
+	$(".app_vlist_exp_item > a").on("click", function(e) {
+		e.preventDefault();
+		$(this).parent().toggleClass("expanded");
+	});
+
+	$("#app_close").on("click", function(e) {
+		console.log("+ui-close clicked");
+		navClicked();
+	});
+
+	$("#app_leftnav li").not(".app_vlist_exp_item").on("click", function(e){
+		console.log("+app_leftnav");
+		navClicked();
+	});
+
+	$AppOverlay.init();
+
+	// Close the dropdown if the user clicks outside of it
+	$(window).on("click", function(event) {
+		console.log("window clicked");
+		if (!event.target.matches('.ui-dropbtn')) {
+			$(".ui-dropcontent").each(function(i, elm){
+				elm.classList.remove("ui-show");
+			});
+		}
+	});
+}
 
 function dumpObject(obj)
 {
@@ -45,8 +85,8 @@ function initHistory()
 				//$(state.dest[0]).html("<h1>Failed to load page</h1>"+"<br />"+JSON.stringify(data));
 			}
 		}
-		function makeGetRequest(state) {
-			getRequest(state.url, 'pid='+state.dest[1],
+		function makeRequest(state) {
+			$AppRequest.get(state.url, 'pid='+state.dest[1],
 				function(status, data) {
 					afterGetResponse(status, data, state);
 				});
@@ -59,14 +99,14 @@ function initHistory()
 			dest = This.attr("data-dest").split(':');
 			title = This.text()+' | My Offers';
 			state = {url:url, title:title, dest:dest,};
-			makeGetRequest(state);
+			makeRequest(state);
 		});
 
 		window.addEventListener('popstate', function(e) {
 			console.log('+popstate');
 			console.log(JSON.stringify(state));
 			if (e.state !== null) {
-				makeGetRequest(e.state);
+				makeRequest(e.state);
 			} else {
 				console.log("no history to load");
 				location.reload();
@@ -82,11 +122,11 @@ function initSearch()
 	$("#app_search_input").suggestions({
 		minLength: 2,
 		_source: function(key, resp) {
-			postRequest('/search/offer/', {'key': key}, function(status, result){
+			$AppRequest.post('/search/offer/', {'key': key}, function(status, json){
 				if (true == status) {
-					resp(result.data);
+					resp(json.data);
 				} else {
-					console.log('data : '+JSON.stringify(result.data));
+					console.log('data : '+JSON.stringify(json.data));
 				}
 			});
 		},
@@ -121,26 +161,19 @@ function initSwitchTabs()
 	});
 }
 
-function initApp()
+function dropToggle(e, pThis)
 {
-	console.log("+initApp");
-	$("#app_close").on("click", function(e) {
-		console.log("+ui-close clicked");
-		navClicked();
-	});
-
-	$(".app_vlist_exp_item > a").on("click", function(e) {
-        e.preventDefault();
-        $(this).parent().toggleClass("expanded");
-    });
-
-	$("#app_leftnav li").not(".app_vlist_exp_item").on("click", function(e){
-		console.log("+app_leftnav");
-		navClicked();
-	});
+	console.log("+dropToggle");
+	e = e || window.event;
+	//dumpObject(e);
+	//e.preventDefault();
+	e.stopPropagation();
+	pThis.parentElement.getElementsByClassName("ui-dropcontent")[0].classList.toggle("ui-show");
 }
 
-function navClicked() {
+
+function navClicked()
+{
 	console.log("+navClicked");
 	var appleft = document.getElementById("app_leftnav");
 	var appclose = document.getElementById("app_close");
@@ -171,112 +204,88 @@ function ajaxFormSubmit(e)
 		if (handle.before(e) === false)
 			return;
 
-	postRequest(action, form.serialize(), (status, data) => {
+	$AppRequest.post(action, form.serialize(), (status, json) => {
 		if (handle && handle.after) {
 			e.status = status;
-			e.data = data;
+			e.resp = json;
+			e.$src = form;
 			handle.after(e);
 		} else {
-			if (status === true) {
-				Toast.show(data.message);
-			} else {
-				Toast.show(JSON.stringify(data));
-			}
+			$AppToast.show(JSON.stringify(json.message));
 		}
 	});
 }
 
 function afterResponse(e) {
 	console.log("+afterResponse");
-	if (e.status == false) {
-		var errors = '';
-		for (var key in e.data) {
-			console.log(key + ' : '+ e.data[key]);
-			errors += e.data[key]+'<br />';
-		}
-		$('.ui-errors').html(errors);
+	if (e.status) {
+		$AppNoti.info({title:"Successful", text:e.resp.message});
 	} else {
-		$('.ui-errors').html('');
+		var errors = '';
+		for (var key in e.resp.data) {
+			console.log(key + ' : '+ e.resp.data[key]);
+			errors += e.resp.data[key]+'<br />';
+		}
+		$AppNoti.error({title:e.resp.message, text:errors});
 	}
 }
 
-function postRequest(pUrl, pData, pCallback)
-{
-	console.log("+postRequest");
-	$.ajax({url: pUrl,
-		data: pData,
-		type: 'POST',
-		async: true,
-		dataType: 'text',
-		complete: function(res) {
-			console.log('+comeplete :'+ res.status);
-		},
-		success: function (data, status, xhr) {
-			mimeType = xhr.getResponseHeader("content-type");
-			if (mimeType.indexOf('json') > -1) {
-				console.log('response : ' + data);
-				jsonObj = jQuery.parseJSON(data);
-				switch(jsonObj.status) {
-					case 302:
-						console.log('redirect');
-						location.href = jsonObj.url;
-						break;
-					case 200:
-					case 204:
-						pCallback(true, jsonObj.data);
-						break;
-					case 401:
-					default:
-						pCallback(false, jsonObj.data);
-						break;
+var $AppRequest = {
+	get: function(pUrl, pData, pCallback) {
+		console.log('+get');
+		this._request('GET', pUrl, pData, pCallback);
+	},
+	post: function (pUrl, pData, pCallback) {
+		console.log("+post");
+		this._request('POST', pUrl, pData, pCallback);
+	},
+	_request: function(pType='POST', pUrl, pData, pCallback) {
+		$.ajax({url: pUrl,
+			data: pData,
+			type: pType,
+			async: true,
+			dataType: 'text',
+			complete: function(res) {
+				console.log('+comeplete :'+ res.status);
+			},
+			success: function (data, status, xhr) {
+				mimeType = xhr.getResponseHeader("content-type");
+				if (mimeType.indexOf('json') > -1) {
+					console.log('response : ' + data);
+					jsonObj = jQuery.parseJSON(data);
+					switch(jsonObj.status) {
+						case 302:
+							console.log('redirect');
+							location.href = jsonObj.url;
+							break;
+						case 200:
+						case 204:
+							pCallback(true, jsonObj);
+							break;
+						case 401:
+						default:
+							pCallback(false, jsonObj);
+							break;
+					}
+				} else if (mimeType.indexOf('html') > -1) {
+					console.log('html response');
+					pCallback(true, data);
+				} else {
+					console.log('unknown response');
+					pCallback(false, {'message': 'Unknown response', 'data':'unexpected content type'});
 				}
-			} else if (mimeType.indexOf('html') > -1) {
-				console.log('html response');
-				pCallback(true, data);
-			} else {
-				console.log('unknown response');
-				pCallback(false, {'error':'unexpected content type'});
+			},
+			error: function (xhr,error) {
+				console.log('status : '+xhr.status);
+				$AppToast.show('Network error occured');
+				pCallback(false, {'message': 'Network failed', 'data': {error} });
 			}
-		},
-		error: function (xhr,error) {
-			console.log('status : '+xhr.status);
-			Toast.show('Network error occured');
-			pCallback(false, {'data': error});
-		}
-	});
-}
-
-function getRequest(pUrl, pData, pCallback)
-{
-	$.ajax({url: pUrl,
-		data: pData,
-		type: 'GET',
-		async: true,
-		dataType: 'text',
-		success: function (data, status, xhr) {
-			mimeType = xhr.getResponseHeader("content-type");
-			if (mimeType.indexOf('json') > -1) {
-				console.log('response : ' + data);
-				jsonObj = jQuery.parseJSON(data);
-				switch(jsonObj.status) {
-				case 302:
-					console.log('redirect');
-					location.href = jsonObj.url;
-					break;
-				}
-			}
-		},
-	}).done(function(data) {
-		console.log('html response');
-		pCallback(true, data);
-	}).fail(function(error) {
-		console.log('unknown response');
-		pCallback(false, error);
-	});
+		});
+	}
 }
 
 /****************** Cookie API ***********************/
-var Cookie = {
+var $AppCookie = {
 	get: function(name) {
 		var cv = null;
 		if (document.cookie != 'undefined' && document.cookie !== '') {
@@ -300,31 +309,104 @@ var Cookie = {
 	}
 };
 
+function get_csrf()
+{
+	var $mt = $('meta[name=csrf-token]');
+	var data = {};
+	data[$mt.attr("key")] = $mt.attr("content");
+	return data;
+}
 /*****************************************************/
 /******************** Widgets ************************/
-/****************** Toast API ************************/
-var Popup = {
-	show: function() {
-
+/****************** UI API ************************/
+var $AppOverlay = {
+	init: function() {
+		this.$overlay = $('#wt-overlay');
+		this.$content_def = $('<div style="width:80% height:50%;" data-type="none"></div>');
+		this.$content = this.$content_def;
+		this.$overlay.find('.wt-closebtn').on('click', this, this._onclose);
+	},
+	show: function($content=this.$content_def) {
+		return this.update($content);
 	},
 	hide: function() {
-
+		this.$overlay.hide();
+		return this;
+	},
+	update: function($content) {
+		this.$content = $($content);
+		this.$overlay.find('.wt-overlay-content').html(this.$content.show());
+		this.$overlay.show();
+		return this;
+	},
+	close: function(e) {
+		console.log("CLOSE OVERLAY");
+		this.$overlay.find('.wt-closebtn').click();
+	},
+	_onclose: function(e) {
+		console.log("ON CLOSE OVERLAY");
+		pThis = e.data;
+		var $content = pThis.$content.hide();
+		if ($content.attr('data-type') == 'persist') {
+			setTimeout(function(){ $content.appendTo('body'); }, 100);
+		} else {
+			$content.remove();
+		}
+		pThis.hide();
 	}
 };
 
-var Toast =  {
-	show: function(text='Error', timeout=1200) {
-		//$('.ui-toast').text(text).fadeIn(500).delay(timeout).fadeOut(500);
-		$('.ui-toast').fadeIn({duration: 500, start: function() {$(this).text(text);}}).delay(timeout).fadeOut(500);
+
+var $AppNoti = {
+	_defaults: {
+		link: window.location,
+		title: 'Alert',
+		text: 'Alert',
+		timeout: 5000,
+	},
+	options: function(p) {
+		var finalOpts = this._defaults;
+		for (var key in p) {
+			finalOpts[key] = p[key];
+		}
+		return finalOpts;
+	},
+	info: function(p) {
+		var opts = this.options(p);
+		console.log(JSON.stringify(opts));
+		var $elm = $('#wt-noti').clone().removeAttr('id');
+		$elm.fadeIn({duration: 500,
+			start: function() {
+				$(this).find('.wt-notititle').html(opts.title);
+				$(this).find('.wt-notibody').html(opts.text);
+				$(this).find('.wt-notilink').attr('href', opts.link);
+			}
+		}).delay(opts.timeout).fadeOut({duration:500,
+			always: function() {
+				$(this).remove();
+			}
+		});
+		$('.wt-notibox').append($elm);
+	},
+	error: function(p) {
+		this.info(p);
+	},
+	warn: function(p) {
+		this.info(p);
+	}
+};
+
+var $AppToast = {
+	show: function(text='Error', timeout=1800) {
+		$('.wt-toast').fadeIn({duration: 500, start: function() {$(this).text(text);}}).delay(timeout).fadeOut(500);
 	},
 	hide: function() {
-		$('.ui-toast').hide();
+		$('.wt-toast').hide();
 	}
 };
 
 var wsuggest = function(Elem, opts) {
-	console.log('+wsuggest');
-	console.log('element : '+Elem.prop("tagName"));
+	console.log('+wsuggest element : '+Elem.prop("tagName"));
 	var Inst = $(Elem);
 	Inst.kd = {
 		_name: 'suggest',
@@ -501,8 +583,7 @@ var wsuggest = function(Elem, opts) {
 
 function wfileupload(Elem, opts)
 {
-	console.log('+wfileupload');
-	console.log('element : '+Elem.prop('tagName'));
+	console.log('+wfileupload element : '+Elem.prop('tagName'));
 	var Inst = $(Elem);
 	// klass data
 	Inst.kd = {
@@ -556,7 +637,7 @@ function wfileupload(Elem, opts)
 		_uploadFile: function(lThis, file) {
 			console.log('+_uploadFile');
 			var fdata = new FormData();
-			fdata.append(file.name, file);
+			fdata.append('image', file);
 			var fileName = file.name;
 			//(fileName.length > 20 && (fileName = fileName.substring(0, 20)));
 
@@ -667,8 +748,7 @@ function wfileupload(Elem, opts)
 
 function wswitchtab(Elem, opts)
 {
-	console.log('+wswitchtab');
-	console.log('element : '+Elem.prop('tagName'));
+	console.log('+wswitchtab element : '+Elem.prop('tagName'));
 	var Inst = $(Elem);
 	// klass data
 	Inst.kd = {
@@ -758,18 +838,8 @@ function onSwipe(el,func) {
       },false);
 }
 
-function wcenter () {
-    this.css("position","absolute");
-    this.css("top", Math.max(0, (($(window).height() - $(this).height()) / 2) +
-                                                $(window).scrollTop()) + "px");
-    this.css("left", Math.max(0, (($(window).width() - $(this).width()) / 2) +
-                                                $(window).scrollLeft()) + "px");
-    return this;
-}
-
 /****************** Exteded Jquery *******************/
 jQuery.fn.exists = function(){return this.length>0;}
 jQuery.fn.switchtab = function(options) { new wswitchtab(this, options); }
 jQuery.fn.fileupload = function(options) { new wfileupload(this, options); }
 jQuery.fn.suggestions = function(options) { new wsuggest(this, options); }
-jQuery.fn.center = wcenter;

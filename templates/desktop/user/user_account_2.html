@@ -47,17 +47,17 @@ function afterSaveResponse(e) {
 				$src.find('input[type=button]').click();
 			}
 		}
-		Noti.info({title:e.resp.message, text:''});
+		$AppNoti.info({title:e.resp.message, text:''});
 	} else {
 		var errors = '';
 		for (var err in e.resp.data) {
 			errors += e.resp.data[err] + '<br />';
 		}
-		Noti.info({title:e.resp.message, text:errors});
+		$AppNoti.info({title:e.resp.message, text:errors});
 	}
 }
 </script>
-<div class="ui-content" style="height: 2000px;">
+<div class="ui-content" >
 	<div class="ui-block" >
 		<div class="ui-block-bar">
 			<div>

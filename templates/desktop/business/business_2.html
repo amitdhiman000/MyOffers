@@ -1,5 +1,6 @@
 {% include '../locus/address_picker_1.html' %}
 
+
 <div class="ui-content" >
 	<style type="text/css" >
 		#business_add_box { display: none; }
@@ -10,19 +11,33 @@
 			console.log("+showBusinessBox");
 			e.stopPropagation();
 			$("#business_add_box").toggle();
-			console.log("-showBusinessBox");
 		}
 
 		function showAddressBox(e, pThis) {
 			console.log("+showAddressBox");
 			e.stopPropagation();
+			$AppOverlay.show($('#address_picker'));
+		}
 
-			var modal = $('#wt-overlay');
-			modal.find('.wt-overlay-content').append($('#address_picker').show());
-			modal.show();
-			updateMap();
-			modal.find('.wt-closebtn').on('click', function(){ console.log('CLOSE'); modal.hide(); });
-			console.log("-showAddressBox");
+		function showAddressSelectBox(e, pThis) {
+			console.log("+showAddressSelectBox");
+			e.stopPropagation();
+
+			var data_id = $(pThis).find('business-item').attr('data-id');
+			data = get_csrf();
+			data['business_id'] = data_id;
+			data['pid'] = 2;
+			$AppOverlay.show();
+
+			$AppRequest.get('/business/address/', data, function(status, data){
+				if (true == status) {
+					$AppOverlay.update(data);
+				} else {
+					console.log('data : '+JSON.stringify(json.data));
+					$AppOverlay.update(JSON.stringify(json.data));
+				}
+			});
+
 		}
 	</script>
 

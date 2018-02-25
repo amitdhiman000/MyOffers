@@ -1,5 +1,5 @@
 from business.models import (Category, Business)
-
+from business.services import BusinessService
 from business.forms import *
 from base.apputil import *
 
@@ -61,6 +61,21 @@ def business_update(request):
 def business_delete(request):
 	data = {'title': 'My Business'};
 	return App_Render(request, 'business/business_1.html', data)
+
+
+@App_LoginRequired
+def business_address_view(request):
+
+	b_id = request.POST.get('business_id', -1)
+	data = BusinessService.fetch_by_business(b_id, request.user)
+	print(data)
+	if request.is_ajax:
+		if data != None:
+			return App_Render(request, 'business/business_address_2.html', {'addresses':data})
+		else:
+			return JsonResponse({'status':401, 'message':'Business save failed', 'data':{'error': 'Failed to fetch addresses'}});
+	else:
+		return App_Redirect(request)
 
 
 @App_LoginRequired
