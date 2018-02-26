@@ -1,16 +1,16 @@
-<div class="ui-block ui-shadow business_item" data-id="{{b.id}}"  >
-    <div class="ui-block-bar">
+<div class="ui-block ui-shadow business_addr_item" data-id="{{b.id}}" {% if address.linked %} style="border:1px solid #36F;" {% endif %} >
+    <div class="ui-block-bar business_addr_title" onclick="toggleSelect(event,this);">
         <div class="ui-content" >
             <table>
                 <tr>
-                    <td><input type="checkbox" onchange="toggleCheck(event, this)" name="item_check" style="width:20px; height:20x;" /></td>
+                    <td><input type="checkbox" name="item_check" style="width:30px; height:30px; border-radius:2px; background:#36F;" /></td>
                     <td style="vertical-align:middle;" ><h3> {{address.name}}</h3></td>
                 </tr>
             </table>
         </div>
         <div class="ui-content" style="text-transform: none;" >
             <div class="ui-right" >
-                <a onclick="toggleAddress(this,null)" >[+]</a>
+                <a onclick="toggleBoxSize(event,this)" >[+]</a>
             </div>
         </div>
     </div>

@@ -5,26 +5,52 @@
         </div>
     </div>
     <div class="ui-block-body" >
-        <div style="display: table-row; ">
-            <style>
-            .business_item { margin-top:2.5em; width:30%; height:200px; overflow:hidden; }
-            </style>
-            <script>
-            function toggleCheck(e, pThis)
+        <style>
+            .business_addr_title:hover { cursor: pointer; }
+            .business_addr_item { overflow:hidden; height: 100%; }
+            .business_addr_item_w { display: inline-block; width:30%; height:250px; vertical-align:top; overflow:hidden; }
+            .business_addr_item_w_expanded { height:100%; }
+        </style>
+        <script>
+            function toggleSelect(e, pThis)
             {
                 console.log('+toggleCheck');
-                var $This = $(pThis);
-                var $Root = $This.parents('.business_item');
-                if ($This.is(':checked')) {
-                    $Root.css({'border': '2px solid #36F'});
+                $This = $(pThis);
+                var $Check = $This.find('input[type="checkbox"]');
+                var $Root = $This.parents('.business_addr_item');
+                if (e.target != $Check.get(0)) {
+                    $Check.prop('checked', function() { return !$Check.is(':checked'); });
+                }
+                if ($Check.is(':checked')) {
+                    $Root.css({'border': '1px solid #36F'});
                 } else {
                     $Root.css({'border': '1px solid #ddd'});
                 }
             }
-            </script>
+            function toggleBoxSize(e, pThis)
+            {
+                console.log('+toggleBoxSize');
+                e.preventDefault();
+                e.stopPropagation();
+                $wrapper = $(pThis).parents('.business_addr_item_w');
+                $wrapper.toggleClass('business_addr_item_w_expanded');
+            }
+            function handlers(){
+                handlers1 = {before: function(){ console.log("BEFORE");} };
+                return handlers1;
+            }
+        </script>
+        <form action="/business/address/link/" method="POST" class="ajax-form" data-handlers=handlers() >
+            {% csrf_token %}
             {% for address in addresses %}
-            {% include './business_address_item_1.html' %}
+                <div  class="business_addr_item_w" >
+                {% include './business_address_item_1.html' %}
+                </div>
             {% endfor %}
-        </div>
+            <div style="width: 50%; margin:10px auto;">
+                <input type="button" value="Cancel" class="ui-btn" />
+                <input type="submit" value="Save" class="ui-btn" data="" />
+            </div>
+        </form>
     </div>
 </div>

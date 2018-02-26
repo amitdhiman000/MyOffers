@@ -107,11 +107,13 @@ class BusinessDeleteForm(DeleteForm):
 
 
 business_address_fields = {
-	'business_id':{'name': 'id', 'validator': NoValidator},
-	'address_id':{'name': 'id', 'validator': NoValidator},
+	'B_id':{'name': 'fk_business', 'validator': NoValidator},
+	'A_id':{'name': 'fk_address', 'validator': NoValidator},
+	'business_id':{'name': 'fk_business', 'validator': NoValidator},
+	'address_id':{'name': 'fk_address', 'validator': NoValidator},
 }
 
-class BusinessAddressLinkForm(CreateForm):
+class BALinkForm(CreateForm):
 	def __init__(self):
 		super().__init__()
 		self.m_fields = business_address_fields
@@ -122,7 +124,6 @@ class BusinessAddressLinkForm(CreateForm):
 		if not is_valid:
 			return is_valid
 
-		self.add_model_value('fk_user', self.request().user)
 		return self.valid()
 
 
@@ -130,3 +131,24 @@ class BusinessAddressLinkForm(CreateForm):
 		print('saving ....')
 		print(self.model_values())
 		return Business.create(self.model_values())
+
+
+
+class BAUnLinkForm(CreateForm):
+	def __init__(self):
+		super().__init__()
+		self.m_fields = business_address_fields
+
+
+	def validate(self):
+		is_valid = super().validate()
+		if not is_valid:
+			return is_valid
+
+		return self.valid()
+
+
+	def delete(self):
+		print('saving ....')
+		print(self.model_values())
+		return Business.remove(self.model_values())

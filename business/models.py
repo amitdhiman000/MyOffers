@@ -79,6 +79,7 @@ class BusinessAddressMap(CRUDModel):
 		address_ids = set(klass.objects.filter(fk_business=b_id))
 		for address in addresses:
 			if address in address_ids:
-				address.present = True
+				print('yes linked')
+				address.linked = True
 
 		return addresses

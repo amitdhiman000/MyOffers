@@ -1,3 +1,4 @@
+from django.views.decorators.csrf import (csrf_protect, csrf_exempt)
 from business.models import (Category, Business)
 from business.services import BusinessService
 from business.forms import *
@@ -36,7 +37,7 @@ def business_create(request):
 	else:
 		return App_Redirect(request)
 
-
+@csrf_protect
 @App_LoginRequired
 def business_update(request):
 	print(request.POST)
@@ -80,21 +81,17 @@ def business_address_view(request):
 
 @App_LoginRequired
 def business_address_link(request):
-	data = None
-	control = AddressControl()
-	if (control.parseRequest(request)
-			and control.clean()
-			and control.validate()):
-		data = control.execute()
-		#data = model_to_dict(data)
+	print(request)
+	print(request.POST)
+
+	form = BACreateForm()
 
 	if request.is_ajax:
 		if data != None:
 			categories = Category.fetch_first_level()
-			return App_Render(request, 'business/business_item_1.html', {'b':data, 'categories':categories})
-			##return JsonResponse({'status':200, 'message':'Business saved', 'data':data});
+			return JsonResponse({'status':200, 'message':'Business saved', 'data':data});
 		else:
-			data = control.errors()
+			data = form.errors()
 			return JsonResponse({'status':401, 'message':'Business save failed', 'data':data});
 	else:
 		return App_Redirect(request)
