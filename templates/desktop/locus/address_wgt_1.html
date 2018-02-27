@@ -3,8 +3,6 @@
     var _gMarker;
     var _gGeocoder;
     var _gTimeout;
-    var _gBeforeAddrSaveEvent;
-    var _gAfterAddrSaveEvent;
     function updateMap()
     {
         if (_gMap) {
@@ -127,30 +125,19 @@
         $('#gmap_search').val(faddr);
     }
 
-    function AddressSaveEvent(before, after)
-    {
-        _gBeforeAddrSaveEvent = before;
-        _gAfterAddrSaveEvent = after;
-    }
+
+    var BeforeAddrSaveEvent = $AppEvent.new();
+    var AfterAddrSaveEvent = $AppEvent.new();
 
     function __BeforeAdrReq(e) {
-        if (_gBeforeAddrSaveEvent) {
-            return _gBeforeAddrSaveEvent(e);
-        }
-    	return false;
+        console.log('+__BeforeAdrReq');
+        return BeforeAddrSaveEvent.call(e);
     }
 
     function __AfterAdrRes(e) {
-        console.log('__AfterAdrRes');
-        if (_gAfterAddrSaveEvent) {
-            return _gAfterAddrSaveEvent(e);
-        }
-        return false;
+        console.log('+__AfterAdrRes');
+        return AfterAddrSaveEvent.call(e);
     }
-
-    $(function(){
-    	$('#addr_form').data('handlers', {before: __BeforeAdrReq, after: __AfterAdrRes});
-    });
 </script>
 
 <div style="width: 90%; margin: 0 auto; border: 1px solid #ddd; ">
@@ -174,7 +161,7 @@
         </table>
     </div>
     <div style="display:table-cell; width: 50%;" >
-        <form action="/locus/address/create/" method="POST" id="addr_form" class="ajax-form" >
+        <form action="/locus/address/create/" method="POST" id="addr_form" class="ajax-form" data-delegates='{"before": "__BeforeAdrReq", "after": "__AfterAdrRes"}' >
         <table class="ui-info-table">
             {% csrf_token %}
             <input type="hidden" name="A_location" id="A_location" value="" />

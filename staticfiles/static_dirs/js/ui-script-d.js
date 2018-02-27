@@ -156,7 +156,6 @@ function dropToggle(e, pThis)
 	console.log("+dropToggle");
 	e = e || window.event;
 	//dumpObject(e);
-	//e.preventDefault();
 	e.stopPropagation();
 	pThis.parentElement.getElementsByClassName("ui-dropcontent")[0].classList.toggle("ui-show");
 }
@@ -185,21 +184,25 @@ function ajaxFormSubmit(e)
 {
 	console.log("+ajaxFormSubmit");
 	e.preventDefault();
-	var form = $(this);
-	var handle = form.data('handlers');
-	var action = form.attr('action');
+	var $form = $(this);
+	var action = $form.attr('action');
 	console.log('action : '+ action);
+	var dg = JSON.parse($form.attr('data-delegates'));
+	var dgs = {
+		"before": (dg && dg.before)? window[dg.before] || null : null,
+		"after": (dg && dg.after)? window[dg.after] || null : null,
+	};
 
-	if (handle && handle.before)
-		if (handle.before(e) === false)
+	if (dgs.before)
+		if (dgs.before(e) === false)
 			return;
 
-	$AppRequest.post(action, form.serialize(), (status, json) => {
-		if (handle && handle.after) {
+	$AppRequest.post(action, $form.serialize(), (status, json) => {
+		if (dgs.after) {
 			e.status = status;
 			e.resp = json;
-			e.$src = form;
-			handle.after(e);
+			e.$src = $form;
+			dgs.after(e);
 		} else {
 			$AppToast.show(JSON.stringify(json.message));
 		}
@@ -219,6 +222,38 @@ function afterResponse(e) {
 		$AppNoti.error({title:e.resp.message, text:errors});
 	}
 }
+
+var $AppEvent = {
+	'new': function() {
+		console.log("+Event new");
+		copy = {'_set': new Array()};
+		for (var key in this) {
+			if (this.hasOwnProperty(key))
+				copy[key] = this[key];
+		}
+		return copy;
+	},
+	'add': function(p) {
+		console.log("+Event add");
+		if (this._set.indexOf(p) == -1)
+			this._set.push(p);
+	},
+	'del': function(p) {
+		console.log("+Event del");
+		var pos = this._set.indexOf(p);
+		if (pos > 1)
+			this._set.splice(pos, 1);
+
+	},
+	'call': function(e) {
+		console.log("+Event call");
+		var ret = true;
+		for (i in this._set) {
+			ret = ret && this._set[i](e);
+		}
+		return ret;
+	}
+};
 
 var $AppRequest = {
 	get: function(pUrl, pData, pCallback) {

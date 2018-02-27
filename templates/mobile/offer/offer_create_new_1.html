@@ -80,6 +80,26 @@ $(function(){
 
 	$('.ajax-file-upload').fileupload({maxFiles:2});
 });
+
+function OnOfferSaveReq__(e) {
+	console.log("+beforeOfferSaveReq");
+	return true;
+}
+
+function OnOfferSaveRes__(e) {
+	console.log("+afterOfferSaveRes");
+	if (e.status) {
+		//var val = e.resp;
+		//$('#address_cont').prepend(val);
+		$AppNoti.info({title:'Success', e.resp.message});
+	} else {
+		var errors = '';
+		for (var err in e.resp.data) {
+			errors += e.resp.data[err] + '<br />';
+		}
+		$AppNoti.info({title:e.resp.message, text:errors});
+	}
+}
 </script>
 
 		<div class="ui-bar-tbb">
@@ -87,7 +107,7 @@ $(function(){
 		</div>
 		<div class="ui-body" >
 			<div class="ui-errors">{{form_errors.request}}</div>
-			<form action="/offer/create-new/auth/" method="POST" enctype="multipart/form-data" class="ajax-form">
+			<form action="/offer/create/" method="POST" enctype="multipart/form-data" class="ajax-form" data-delegates='{"before": "OnOfferSaveReq__", "after": "OnOfferSaveRes__"}'>
 				{% csrf_token %}
 				<table class="form_table">
 					<tr><td>Product Image : </td></tr>

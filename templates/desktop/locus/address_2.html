@@ -41,13 +41,13 @@
         $AppOverlay.close();
     }
 
-    function beforeAdSaveReq(e) {
-    	console.log("+beforeAdSaveReq");
+    function OnAddrSaveReq__(e) {
+    	console.log("+OnAdSaveReq__");
     	return true;
     }
 
-    function afterAdSaveRes(e) {
-    	console.log("+afterAdSaveRes");
+    function OnAddrSaveRes__(e) {
+    	console.log("+OnAddrSaveRes__");
     	if (e.status) {
     		var val = e.resp;
     		$('#address_cont').prepend(val);
@@ -62,8 +62,9 @@
         return true;
     }
 
-    $(function(){
-    	AddressSaveEvent(beforeAdSaveReq, afterAdSaveRes);
+    $(function() {
+        BeforeAddrSaveEvent.add(OnAddrSaveReq__);
+        AfterAddrSaveEvent.add(OnAddrSaveRes__);
     });
 </script>
 

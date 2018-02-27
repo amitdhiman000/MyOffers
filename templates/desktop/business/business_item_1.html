@@ -85,15 +85,17 @@
                 <td><a onclick="editText(event,this)" >Edit</a></td>
             </tr>
         </table>
-        {% if b.address %}
-            {% for address in b.address %}
-                {% include '../locus/address_item_1.html' %}
-            {% endfor %}
-        {% else %}
-            <div class="ui-body" >
-                <h3>No Business Address</h3>
-            </div>
-        {% endif %}
+        <div id="business_addr_cont" >
+            {% if b.address %}
+                {% for address in b.address %}
+                    {% include '../locus/address_item_1.html' %}
+                {% endfor %}
+            {% else %}
+                <div class="ui-body" >
+                    <h3>No Business Address</h3>
+                </div>
+            {% endif %}
+        </div>
         <div style="margin-top: 1em;">
             <a class="ui-btn-a" onclick="showAddressSelectBox(event, this)" >[+] Add From Address Book</a>
             <a class="ui-btn-a" onclick="showAddressBox(event, this)" >[+] Add New Address</a>

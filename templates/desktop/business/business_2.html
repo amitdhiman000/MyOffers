@@ -17,7 +17,15 @@
 			console.log("+showAddressBox");
 			e.stopPropagation();
 			$AppOverlay.show($('#address_picker'));
+			BeforeAddrSaveEvent.add(OnBAddrSaveReq__);
+	        AfterAddrSaveEvent.add(OnBAddrSaveRes__);
 		}
+
+		function hideAddressBox()
+	    {
+	        console.log('+hideAddressBox');
+	        $AppOverlay.close();
+	    }
 
 		function showAddressSelectBox(e, pThis) {
 			console.log("+showAddressSelectBox");
@@ -37,8 +45,28 @@
 					$AppOverlay.update(JSON.stringify(json.data));
 				}
 			});
-
 		}
+
+		function OnBAddrSaveReq__(e) {
+	    	console.log("+OnAdSaveReq__");
+	    	return true;
+	    }
+
+	    function OnBAddrSaveRes__(e) {
+	    	console.log("+OnAddrSaveRes__");
+	    	if (e.status) {
+	    		var val = e.resp;
+	    		$('#business_addr_cont').prepend(val);
+	            hideAddressBox();
+	    	} else {
+	    		var errors = '';
+	    		for (var err in e.resp.data) {
+	    			errors += e.resp.data[err] + '<br />';
+	    		}
+	    		$AppNoti.info({title:e.resp.message, text:errors});
+	    	}
+	        return true;
+	    }
 	</script>
 
 	<div id="delete-dialog" title="Delete" style="display: none;">

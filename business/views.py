@@ -84,15 +84,15 @@ def business_address_link(request):
 	print(request)
 	print(request.POST)
 
-	form = BACreateForm()
+	data = None
+	form = BALinkForm()
 
 	if request.is_ajax:
 		if data != None:
-			categories = Category.fetch_first_level()
-			return JsonResponse({'status':200, 'message':'Business saved', 'data':data});
+			return JsonResponse({'status':200, 'message':'Address linked', 'data':data});
 		else:
 			data = form.errors()
-			return JsonResponse({'status':401, 'message':'Business save failed', 'data':data});
+			return JsonResponse({'status':401, 'message':'Address linking failed', 'data':data});
 	else:
 		return App_Redirect(request)
 

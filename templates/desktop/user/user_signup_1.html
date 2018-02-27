@@ -14,7 +14,7 @@
 			{% endfor %}
 			{% endif %}
 			</div>
-			<form action="/user/signup-auth/" method="POST" class="ajax-form" id="signup-form" >
+			<form action="/user/signup-auth/" method="POST" class="ajax-form" id="signup-form" data-delegates='{"before": "OnSignUpReq__"}'  >
 				{% csrf_token %}
 				<table class="ui-form-table" >
 					<tr><td>NAME* </td><td><input type="text" name="U_name" class="ui-input" placeholder="Full Name" />
@@ -36,13 +36,8 @@
 	</div>
 </div>
 <script type="text/javascript">
-$(function() {
-	console.log('fetching login handler');
-	$('#signup-form').data('handlers', {before: beforeSignUpReq, after: afterResponse});
-});
-
-function beforeSignUpReq(e) {
-	console.log("+beforeSignUp");
+function OnSignUpReq__(e) {
+	console.log("+OnSignUpReq__");
 	return true;
 }
 </script>

@@ -21,7 +21,7 @@
 			</style>
 			<div id="contact-left" >
 				<div class="ui-errors"></div>
-				<form action="/public/contacts/" method="POST" class="contact-form ajax-form" >
+				<form action="/public/contacts/" method="POST" class="contact-form ajax-form" data-delegates='{"before":"OnMessageSendReq__", "after": "OnMessageSendRes__"}' >
 					{% csrf_token %}
 					<table class="form-table">
 						<tr><td>NAME* </td><td><input type="text" name="name" class="ui-input" placeholder="Name" /></td>
@@ -56,16 +56,12 @@
 </div>
 
 <script type="text/javascript">
-$(function() {
-	$('.contact-form').data('handlers', {before: beforeMessage, after: afterMessage});
-});
-
-function beforeMessage(e) {
-	console.log("+beforeMessage");
+function OnMessageSendReq__(e) {
+	console.log("+OnMessageSendReq__");
 	return true;
 }
-function afterMessage(e) {
-	console.log("+afterMessage");
+function OnMessageSendRes__(e) {
+	console.log("+OnMessageSendRes__");
 	if (e.status)
 	Toast.show("Message sent!!");
 	return true;

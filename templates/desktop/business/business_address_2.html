@@ -35,12 +35,18 @@
                 $wrapper = $(pThis).parents('.business_addr_item_w');
                 $wrapper.toggleClass('business_addr_item_w_expanded');
             }
-            function handlers(){
-                handlers1 = {before: function(){ console.log("BEFORE");} };
-                return handlers1;
+            function OnAddrLinkReq__(e)
+            {
+                console.log("+OnAddrLinkReq__");
+                return true;
+            }
+            function OnAddrLinkRes__(e)
+            {
+                console.log("+OnAddrLinkRes__");
+                return true;
             }
         </script>
-        <form action="/business/address/link/" method="POST" class="ajax-form" data-handlers=handlers() >
+        <form action="/business/address/link/" method="POST" class="ajax-form" data-delegates='{"before":"OnAddrLinkReq__", "after":"OnAddrLinkRes__"}' >
             {% csrf_token %}
             {% for address in addresses %}
                 <div  class="business_addr_item_w" >
@@ -49,7 +55,7 @@
             {% endfor %}
             <div style="width: 50%; margin:10px auto;">
                 <input type="button" value="Cancel" class="ui-btn" />
-                <input type="submit" value="Save" class="ui-btn" data="" />
+                <input type="submit" value="Save" class="ui-btn" />
             </div>
         </form>
     </div>
