@@ -24,6 +24,8 @@
 		function hideAddressBox()
 	    {
 	        console.log('+hideAddressBox');
+			BeforeAddrSaveEvent.del(OnBAddrSaveReq__);
+	        AfterAddrSaveEvent.del(OnBAddrSaveRes__);
 	        $AppOverlay.close();
 	    }
 
@@ -32,7 +34,7 @@
 			e.stopPropagation();
 
 			var data_id = $(pThis).find('business-item').attr('data-id');
-			data = get_csrf();
+			data = $AppData.csrf();
 			data['business_id'] = data_id;
 			data['pid'] = 2;
 			$AppOverlay.show();

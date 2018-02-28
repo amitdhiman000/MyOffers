@@ -14,8 +14,6 @@ $(function() {
 	initHistory();
 	/*Initialize search*/
 	initSearch();
-	/*Initialize switchTabs*/
-	initSwitchTabs();
 
 	console.log("-init");
 });
@@ -24,14 +22,6 @@ function initApp()
 {
 	console.log("+initApp");
 	$(document).on('submit', 'form.ajax-form', ajaxFormSubmit);
-
-	$("#app_main_nav li:first-child").on('click' , function(e) {
-		e.stopPropagation();
-		$('#app_sub_nav_content').fadeToggle(100);
-	});
-	$("#app_main_nav").on('click', function(e) {
-		$('#app_sub_nav_content').fadeOut(100);
-	});
 
 	$(".app_vlist_exp_item > a").on("click", function(e) {
 		e.preventDefault();
@@ -49,15 +39,6 @@ function initApp()
 			});
 		}
 	});
-}
-
-function dumpObject(obj)
-{
-	var output = '';
-	for (var property in obj) {
-		output += property + ': ' + obj[property]+'; ';
-	}
-	console.log(output);
 }
 
 function initHistory()
@@ -133,22 +114,23 @@ function initSearch()
 		},
 		_onEnter: function(e) {
 			console.log('+_onEnter');
-			var Inst = e.data;
-			Inst.kf._onunfocus();
-			if (Inst.kd._count > 0) {
-				var item = Inst.kd._jsonObj[Inst.kd._selectedIndex];
+			var $Inst = e.data;
+			$Inst.kf._onunfocus();
+			if ($Inst.this._count > 0) {
+				var item = $Inst.this._jsonObj[$Inst.this._selectedIndex];
 				location.href = item.url
 			}
 		}
 	});
 }
 
-function initSwitchTabs()
+function dumpObject(obj)
 {
-	console.log("+initSwitchTabs");
-	$(".wt-switchtab").each(function(i, elm) {
-		$(elm).switchtab({});
-	});
+	var output = '';
+	for (var key in obj) {
+		output += key + ': ' + obj[key]+'; ';
+	}
+	console.log(output);
 }
 
 function dropToggle(e, pThis)
@@ -159,7 +141,6 @@ function dropToggle(e, pThis)
 	e.stopPropagation();
 	pThis.parentElement.getElementsByClassName("ui-dropcontent")[0].classList.toggle("ui-show");
 }
-
 
 function navClicked()
 {
@@ -188,21 +169,21 @@ function ajaxFormSubmit(e)
 	var action = $form.attr('action');
 	console.log('action : '+ action);
 	var dg = JSON.parse($form.attr('data-delegates'));
-	var dgs = {
+	var dlgs = {
 		"before": (dg && dg.before)? window[dg.before] || null : null,
 		"after": (dg && dg.after)? window[dg.after] || null : null,
 	};
 
-	if (dgs.before)
-		if (dgs.before(e) === false)
+	if (dlgs.before)
+		if (dlgs.before(e) === false)
 			return;
 
 	$AppRequest.post(action, $form.serialize(), (status, json) => {
-		if (dgs.after) {
+		if (dlgs.after) {
 			e.status = status;
 			e.resp = json;
 			e.$src = $form;
-			dgs.after(e);
+			dlgs.after(e);
 		} else {
 			$AppToast.show(JSON.stringify(json.message));
 		}
@@ -223,8 +204,12 @@ function afterResponse(e) {
 	}
 }
 
+
+/*******************************************************/
+/******************** App Library **********************/
+/*******************************************************/
 var $AppEvent = {
-	'new': function() {
+	new: function() {
 		console.log("+Event new");
 		copy = {'_set': new Array()};
 		for (var key in this) {
@@ -233,19 +218,19 @@ var $AppEvent = {
 		}
 		return copy;
 	},
-	'add': function(p) {
+	add: function(p) {
 		console.log("+Event add");
 		if (this._set.indexOf(p) == -1)
 			this._set.push(p);
 	},
-	'del': function(p) {
+	del: function(p) {
 		console.log("+Event del");
 		var pos = this._set.indexOf(p);
 		if (pos > 1)
 			this._set.splice(pos, 1);
 
 	},
-	'call': function(e) {
+	call: function(e) {
 		console.log("+Event call");
 		var ret = true;
 		for (i in this._set) {
@@ -307,43 +292,55 @@ var $AppRequest = {
 			}
 		});
 	}
-}
+};
 
-/****************** Cookie API ***********************/
-var $AppCookie = {
-	get: function(name) {
-		var cv = null;
-		if (document.cookie != 'undefined' && document.cookie !== '') {
-			var c = document.cookie.split(';');
-			for (var i = 0; i < c.length; i++) {
-				var c = jQuery.trim(c[i]);
-				// Does this cookie string begin with the name we want?
-				if (c.substring(0, name.length + 1) === (name + '=')) {
-					cv = decodeURIComponent(c.substring(name.length + 1));
-					break;
+
+var $AppData = {
+	Cookie: {
+		get: function(cname) {
+			var cv = null;
+			if (document.cookie != 'undefined' && document.cookie !== '') {
+				var cks = document.cookie.split(';');
+				for (var i = 0; i < cks.length; i++) {
+					var c = cks[i].trim();
+					// Does this cookie string begin with the name we want?
+					if (c.substring(0, cname.length + 1) === (name + '=')) {
+						cv = decodeURIComponent(c.substring(cname.length + 1));
+						break;
+					}
 				}
 			}
+			return cv;
+		},
+		set: function(cname, cvalue, exdays) {
+			var d = new Date();
+			d.setTime(d.getTime() + (exdays*24*60*60*1000));
+			var expires = "expires="+d.toUTCString();
+			document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+		},
+		has: function(cname) {
+			return (this.get(cname) != null);
 		}
-		return cv;
 	},
-	set: function (cname, cvalue, exdays) {
-		var d = new Date();
-		d.setTime(d.getTime() + (exdays*24*60*60*1000));
-		var expires = "expires="+d.toUTCString();
-		document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+	Storage: {
+		get: function(key) {
+			if (typeof(Storage) !== "undefined")
+				return localStorage.getItem(key);
+			return "";
+		},
+		set: function(key, val) {
+			if (typeof(Storage) !== "undefined")
+				localStorage.setItem(key, val);
+		},
+	},
+	csrf: function() {
+		var $mt = $('meta[name=csrf-token]');
+		var data = {};
+		data[$mt.attr("key")] = $mt.attr("content");
+		return data;
 	}
 };
 
-function get_csrf()
-{
-	var $mt = $('meta[name=csrf-token]');
-	var data = {};
-	data[$mt.attr("key")] = $mt.attr("content");
-	return data;
-}
-/*****************************************************/
-/******************** Widgets ************************/
-/****************** UI API ************************/
 var $AppOverlay = {
 	init: function() {
 		this.$overlay = $('#wt-overlay');
@@ -381,7 +378,6 @@ var $AppOverlay = {
 	}
 };
 
-
 var $AppNoti = {
 	_defaults: {
 		link: window.location,
@@ -406,10 +402,9 @@ var $AppNoti = {
 				$(this).find('.wt-notibody').html(opts.text);
 				$(this).find('.wt-notilink').attr('href', opts.link);
 			}
-		}).delay(opts.timeout).fadeOut({duration:500,
-			always: function() {
-				$(this).remove();
-			}
+		}).delay(opts.timeout).fadeOut({
+			duration:500,
+			always: function() { $(this).remove();}
 		});
 		$('.wt-notibox').append($elm);
 	},
@@ -423,17 +418,23 @@ var $AppNoti = {
 
 var $AppToast = {
 	show: function(text='Error', timeout=1800) {
-		$('.wt-toast').fadeIn({duration: 500, start: function() {$(this).text(text);}}).delay(timeout).fadeOut(500);
+		$('.wt-toast').fadeIn({
+			duration: 500,
+			start: function() { $(this).text(text); },
+		}).delay(timeout).fadeOut(500);
 	},
 	hide: function() {
 		$('.wt-toast').hide();
 	}
 };
 
-var wsuggest = function(Elem, opts) {
-	console.log('+wsuggest element : '+Elem.prop("tagName"));
-	var Inst = $(Elem);
-	Inst.kd = {
+/*******************************************************/
+/******************** UI Widgets **********************/
+/*******************************************************/
+
+var wsuggest = function($Inst, opts) {
+	console.log('+wsuggest element : '+$Inst.prop("tagName"));
+	$Inst.kd = {
 		_name: 'suggest',
 		_ui: null,
 		_count: 0,
@@ -442,19 +443,19 @@ var wsuggest = function(Elem, opts) {
 		_selectedIndex: 0,
 	};
 
-	Inst.kf = {
+	$Inst.kf = {
 		minLength: 1,
 		delay: 0,
 		_create: function(e) {
 			console.log('+_create['+kd._name+']');
 			kd._ui = $('<ul class="wt-search-list wt-search-list-app" >');
-			kd._ui.css({width: Elem.css('width')});
-			Elem.after(kd._ui);
+			kd._ui.css({width: $Inst.css('width')});
+			$Inst.after(kd._ui);
 			kd._ui.on('mouseenter', 'li', kf._itemHover);
-			Elem.on("keyup", kf._keyUp);
-			Elem.on("keypress", kf._keyPress);
-			Elem.on("focus", kf._onfocus);
-			Elem.on("blur", kf._onunfocus);
+			$Inst.on("keyup", kf._keyUp);
+			$Inst.on("keypress", kf._keyPress);
+			$Inst.on("focus", kf._onfocus);
+			$Inst.on("blur", kf._onunfocus);
 		},
 		_destroy: function(e) {
 			kd._ui.remove();
@@ -504,7 +505,7 @@ var wsuggest = function(Elem, opts) {
 				kd._selectedIndex = index;
 				kd._ui.children().eq(kd._selectedIndex).addClass('wt-search-item-a');
 				if (kd._jsonObj) {
-					kf._itemSelect(Elem, kd._jsonObj[index]);
+					kf._itemSelect($Inst, kd._jsonObj[index]);
 				}
 			}
 		},
@@ -516,7 +517,7 @@ var wsuggest = function(Elem, opts) {
 			if (kd._jsonData) {
 				kd._ui.children().eq(kd._selectedIndex).removeClass('wt-search-item-a');
 				kd._ui.children().eq(index).addClass('wt-search-item-a');
-				kf._itemSelect(Elem, kd._jsonData[index]);
+				kf._itemSelect($Inst, kd._jsonData[index]);
 				kd._selectedIndex = index;
 			}
 		},
@@ -525,7 +526,7 @@ var wsuggest = function(Elem, opts) {
 		},
 		_itemSelectCurrent: function() {
 			if (kd._count > 0 && kd._jsonObj) {
-				kf._itemSelect(Elem, kd._jsonObj[kd._selectedIndex]);
+				kf._itemSelect($Inst, kd._jsonObj[kd._selectedIndex]);
 			}
 		},
 		_onEnter: function(e) {
@@ -537,7 +538,7 @@ var wsuggest = function(Elem, opts) {
 			console.log('+_keyPress : '+ e.keyCode);
 			if (e.keyCode === 10 || e.keyCode === 13) {
 				e.preventDefault();
-				e.data = Inst;
+				e.data = $Inst;
 				kf._onEnter(e);
 			}
 		},
@@ -554,7 +555,7 @@ var wsuggest = function(Elem, opts) {
 					cont.scrollTop(child.position().top + cont.scrollTop());
 					//cont.scrollTop(child.offset().top - cont.offset().top + cont.scrollTop());
 					if (kd._jsonObj) {
-						kf._itemSelect(Elem, kd._jsonObj[kd._selectedIndex]);
+						kf._itemSelect($Inst, kd._jsonObj[kd._selectedIndex]);
 					}
 				}
 				handled = true;
@@ -569,7 +570,7 @@ var wsuggest = function(Elem, opts) {
 					//console.log("scroll top : "+ cont.scrollTop());
 					cont.scrollTop(child.position().top + cont.scrollTop());
 					if (kd._jsonObj) {
-						kf._itemSelect(Elem, kd._jsonObj[kd._selectedIndex]);
+						kf._itemSelect($Inst, kd._jsonObj[kd._selectedIndex]);
 					}
 				}
 				handled = true;
@@ -588,13 +589,13 @@ var wsuggest = function(Elem, opts) {
 				e.preventDefault();
 				return;
 			}
-			var key = Elem.val();
+			var key = $Inst.val();
 			(key.length >= kf.minLength && kf._source(key, kf._parse));
 		},
 	};
 
-	var kf = Inst.kf;
-	var kd = Inst.kd;
+	var kf = $Inst.kf;
+	var kd = $Inst.kd;
 
 	/* merge the options */
 	for (var key in opts) {
@@ -604,30 +605,29 @@ var wsuggest = function(Elem, opts) {
 };
 
 
-function wfileupload(Elem, opts)
+function wfileupload($Inst, opts)
 {
-	console.log('+wfileupload element : '+Elem.prop('tagName'));
-	var Inst = $(Elem);
+	console.log('+wfileupload element : '+$Inst.prop('tagName'));
 	// klass data
-	Inst.kd = {
+	$Inst.kd = {
 		_name: 'fileupload',
 		_ui: null,
 		_uploads: [],
 		_hidden: null,
 	};
 	// klass functors
-	Inst.kf =  {
+	$Inst.kf =  {
 		maxFiles: 1,
 		mimeType: 'image',
 		maxSize: 1024, // 1KB
 		_create: function(e) {
 			console.log('+_create['+kd._name+']');
 			kd._ui = $('<div class="wt-progress-div" ></div>');
-			kd._ui.css({width: Elem.css('width')});
+			kd._ui.css({width: $Inst.css('width')});
 			kd._hidden = $('<input type="hidden" name="files" value="" >');
-			Elem.before(kd._hidden);
-			Elem.after(kd._ui);
-			Elem.on('change', kf._upload);
+			$Inst.before(kd._hidden);
+			$Inst.after(kd._ui);
+			$Inst.on('change', kf._upload);
 		},
 		_destroy: function(e) {
 			console.log('+_destroy['+kd._name+']');
@@ -759,8 +759,8 @@ function wfileupload(Elem, opts)
 		}
 	};
 
-	var kd = Inst.kd;
-	var kf = Inst.kf;
+	var kd = $Inst.kd;
+	var kf = $Inst.kf;
 
 	/* merge the options */
 	for (var key in opts) {
@@ -769,38 +769,37 @@ function wfileupload(Elem, opts)
 	kf._create();
 }
 
-function wswitchtab(Elem, opts)
+function wswitchtab($Inst, opts)
 {
-	console.log('+wswitchtab element : '+Elem.prop('tagName'));
-	var Inst = $(Elem);
+	console.log('+wswitchtab element : '+$Inst.prop('tagName'));
 	// klass data
-	Inst.kd = {
+	$Inst.kd = {
 		_name: 'switchtab',
 		_total: 2,
 		_active: null,
 	};
 	// klass functors
-	Inst.kf =  {
+	$Inst.kf =  {
 		_activeIndex: 0,
 		_create: function(e) {
 			console.log('+_create['+kd._name+']');
-			//Inst.find('.wt-switchtab-nav > a:nth-child(2)').
-			var elems = Inst.find(".wt-switchtab-nav > li > a[rel]");
-			kd._total = elems.length;
+			//$Inst.find('.wt-switchtab-nav > a:nth-child(2)').
+			var $elems = $Inst.find(".wt-switchtab-nav > li > a[rel]");
+			kd._total = $elems.length;
 			console.log("length : "+ kd._total);
-			kd._active = elems.eq(kf._activeIndex);
+			kd._active = $elems.eq(kf._activeIndex);
 			var rel = kd._active.prop("rel");
-			Inst.find(rel).show();
-			elems.on("click", function(e){
+			$Inst.find(rel).show();
+			$elems.on("click", function(e){
 				console.log("+tabClicked");
 				e.preventDefault();
 				var rel = kd._active.prop("rel");
 				kd._active.removeClass("wt-switchtab-a");
-				Inst.find(rel).hide();
+				$Inst.find(rel).hide();
 				kd._active = $(this);
 				rel = kd._active.prop("rel");
 				kd._active.prop("class", "wt-switchtab-a");
-				Inst.find(rel).show();
+				$Inst.find(rel).show();
 			});
 		},
 		_destroy: function(e) {
@@ -809,8 +808,8 @@ function wswitchtab(Elem, opts)
 		},
 	};
 
-	var kd = Inst.kd;
-	var kf = Inst.kf;
+	var kd = $Inst.kd;
+	var kf = $Inst.kf;
 
 	/* merge the options */
 	for (var key in opts) {
@@ -818,6 +817,221 @@ function wswitchtab(Elem, opts)
 	}
 	kf._create();
 }
+
+var $WgtTabs = {
+	_$Inst: null,
+	_name: 'stab',
+	_total: 2,
+	_active: null,
+	_activeIndex: 0,
+
+	new: function() {
+		//return $AppWidgets.copy(this);
+		return $.extend({}, {}, this);
+	},
+	attach: function($Inst, options) {
+		console.log('+_create['+this._name+']');
+		this._$Inst = $Inst;
+		var $elems = $Inst.find(".wt-switchtab-nav > li > a[rel]");
+		this._total = $elems.length;
+		console.log("length : "+ this._total);
+		this._active = $elems.eq(this._activeIndex);
+		var rel = this._active.prop("rel");
+		$Inst.find(rel).show();
+		$elems.on("click", this, function(e){
+			console.log("+tabClicked");
+			e.preventDefault();
+			var This = e.data;
+			var rel = This._active.prop("rel");
+			This._active.removeClass("wt-switchtab-a");
+			$Inst.find(rel).hide();
+			This._active = $(this);
+			rel = This._active.prop("rel");
+			This._active.prop("class", "wt-switchtab-a");
+			$Inst.find(rel).show();
+		});
+		$Inst.on('unload', this._onremove);
+	},
+	detach: function() {
+		console.log('+detach['+this._name+']');
+		var $elems = this._$Inst.find(".wt-switchtab-nav > li > a[rel]");
+		$elems.off("click");
+	},
+	_onremove: function(e) {
+		console.log("+_onremove");
+	},
+};
+
+var $WgtSuggesions = {
+	_name: 'suggest',
+	_$ui: null,
+	_count: 0,
+	_jsonObj: null,
+	_selectedItem: null,
+	_selectedIndex: 0,
+
+	new: function() {
+		return $.extend({}, {}, this);
+	},
+	attach: function($Inst, options) {
+		console.log('+attach['+this._name+']');
+		this._$ui = $('<ul class="wt-search-list wt-search-list-app" >');
+		this._$ui.css({width: $Inst.css('width')});
+		$Inst.after(this._$ui);
+		this._$ui.on('mouseenter', 'li', this, this.onitemhover);
+		$Inst.on("keyup", this, this.onkeyup);
+		$Inst.on("keypress", this, this.onkeypress);
+		$Inst.on("focus", this, this.onfocus);
+		$Inst.on("blur", this, this.onunfocus);
+		$Inst.on("unload", this, this.onunfocus);
+	},
+	detach: function() {
+		this._$ui.remove();
+		this._$ui = null;
+	},
+	_onremove: function(e) {
+		var This = e.data;
+		This.detach();
+	},
+	onfocus: function(e) {
+		var This = e.data;
+		This._$ui.show();
+	},
+	onunfocus: function(e) {
+		var This = e.data;
+		This._$ui.hide();
+	},
+	source: function(key, resp) {
+		console.log('implement source function');
+	},
+	_parse: function(jsonObj) {
+		console.log('+_parse');
+		this._$ui.html('');
+		if (jsonObj.length > 0) {
+			var count = 0;
+			for (i in jsonObj) {
+				this._$ui.append(this._itemCreate(jsonObj[i]));
+				count++;
+			}
+			this._jsonObj = jsonObj;
+			this._count = count;
+			this._selectedIndex = 0;
+			this._selectedItem = this._$ui.children().eq(this._selectedIndex).addClass('wt-search-item-a');
+			this._$ui.show();
+		} else {
+			this._count = 0;
+			this._selectedIndex = 0;
+			this._$ui.html('<div class="wt-search-item">No search results</div>');
+			this._$ui.show();
+		}
+	},
+	itemcreate: function(item) {
+		console.log('implement itemcreate function');
+		return '';
+	},
+	onitemhover: function(e) {
+		console.log('+onitemhover');
+		var index = $(this).index();
+		console.log('old : '+ this._selectedIndex+ ' new: '+ index);
+		if (this._selectedIndex != index) {
+			this._$ui.children().eq(this._selectedIndex).removeClass('wt-search-item-a');
+			this._selectedIndex = index;
+			this._$ui.children().eq(this._selectedIndex).addClass('wt-search-item-a');
+			if (this._jsonObj) {
+				this.itemselect($Inst, this._jsonObj[index]);
+			}
+		}
+	},
+	onitemclick: function(e) {
+		console.log('+onitemclick');
+		var index = $(this).index();
+		console.log('old : '+ this._selectedIndex+ ' new : '+ index);
+		if (this._jsonData) {
+			this._$ui.children().eq(this._selectedIndex).removeClass('wt-search-item-a');
+			this._$ui.children().eq(index).addClass('wt-search-item-a');
+			this.itemselect($Inst, this._jsonData[index]);
+			this._selectedIndex = index;
+		}
+	},
+	onitemselect: function(input, item) {
+		 console.log('implement onitemselect function');
+	},
+	_onitemselectcurrent: function() {
+		if (this._count > 0 && this._jsonObj) {
+			this.onitemselect($Inst, this._jsonObj[this._selectedIndex]);
+		}
+	},
+	onenter: function(e) {
+		console.log('+onenter');
+		this.itemselectcurrent();
+		this.onunfocus();
+	},
+	onkeypress: function(e) {
+		console.log('+_keyPress : '+ e.keyCode);
+		if (e.keyCode === 10 || e.keyCode === 13) {
+			e.preventDefault();
+			e.data = $Inst;
+			this.onenter(e);
+		}
+	},
+	onkeyup: function(e) {
+		console.log('+onkeyup');
+		var handled = false;
+		switch(e.keyCode) {
+		case KEY_UP:
+			if (this._selectedIndex > 0) {
+				this._$ui.children().eq(this._selectedIndex).removeClass('wt-search-item-a');
+				this._selectedIndex--;
+				var child = this._$ui.children().eq(this._selectedIndex).addClass('wt-search-item-a');
+				var cont = this._$ui;
+				cont.scrollTop(child.position().top + cont.scrollTop());
+				//cont.scrollTop(child.offset().top - cont.offset().top + cont.scrollTop());
+				if (this._jsonObj) {
+					this.itemselect($Inst, this._jsonObj[this._selectedIndex]);
+				}
+			}
+			handled = true;
+			break;
+		case KEY_DOWN:
+			if (this._selectedIndex < this._count - 1) {
+				this._$ui.children().eq(this._selectedIndex).removeClass('wt-search-item-a');
+				this._selectedIndex++;
+				var child = this._$ui.children().eq(this._selectedIndex).addClass('wt-search-item-a');
+				var cont = this._$ui;
+				//console.log("child top : "+ child.position().top);
+				//console.log("scroll top : "+ cont.scrollTop());
+				cont.scrollTop(child.position().top + cont.scrollTop());
+				if (this._jsonObj) {
+					this.itemselect($Inst, this._jsonObj[this._selectedIndex]);
+				}
+			}
+			handled = true;
+			break;
+		case KEY_ENTER:
+			handled = true;
+			break;
+		case KEY_LEFT:
+		case KEY_RIGHT:
+		default:
+			console.log('keycode : '+e.keyCode);
+			handled = false;
+		}
+
+		if (handled) {
+			e.preventDefault();
+			return;
+		}
+		var key = $Inst.val();
+		(key.length >= this.minLength && this._source(key, this._parse));
+	},
+};
+
+var $AppWidgets = {
+	copy: function(obj) {
+		return $.extend( {}, {}, obj);
+	},
+	stabs: $WgtTabs,
+};
 
 /****************** Exteded Jquery *******************/
 jQuery.fn.exists = function(){return this.length>0;}
