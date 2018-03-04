@@ -18,57 +18,97 @@
 			e.stopPropagation();
 			$AppOverlay.show($('#address_picker'));
 			BeforeAddrSaveEvent.add(OnBAddrSaveReq__);
-	        AfterAddrSaveEvent.add(OnBAddrSaveRes__);
+			AfterAddrSaveEvent.add(OnBAddrSaveRes__);
 		}
 
 		function hideAddressBox()
-	    {
-	        console.log('+hideAddressBox');
+		{
+			console.log('+hideAddressBox');
 			BeforeAddrSaveEvent.del(OnBAddrSaveReq__);
-	        AfterAddrSaveEvent.del(OnBAddrSaveRes__);
-	        $AppOverlay.close();
-	    }
+			AfterAddrSaveEvent.del(OnBAddrSaveRes__);
+			$AppOverlay.close();
+		}
 
-		function showAddressSelectBox(e, pThis) {
-			console.log("+showAddressSelectBox");
-			e.stopPropagation();
-
-			var data_id = $(pThis).find('business-item').attr('data-id');
-			data = $AppData.csrf();
-			data['business_id'] = data_id;
-			data['pid'] = 2;
-			$AppOverlay.show();
-
-			$AppRequest.get('/business/address/', data, function(status, data){
-				if (true == status) {
-					$AppOverlay.update(data);
+		function deleteBusiness(e, This)
+		{
+			var $item = $(This).parents('.business_item');
+			var b_id = $item.attr('data-id');
+			var data = $AppData.csrf();
+			data["B_id"] = b_id;
+			$AppRequest.post('/business/delete/', data, function(status, resp) {
+				if (status) {
+					$item.remove();
 				} else {
-					console.log('data : '+JSON.stringify(json.data));
-					$AppOverlay.update(JSON.stringify(json.data));
+					var errors = '';
+					for (var err in resp.data) {
+						errors += resp.data[err] + '<br />';
+					}
+					$AppNoti.info({title:e.message, text:errors});
 				}
 			});
 		}
 
-		function OnBAddrSaveReq__(e) {
-	    	console.log("+OnAdSaveReq__");
-	    	return true;
-	    }
+		function showAddressSelectBox(e, This) {
+			console.log("+showAddressSelectBox");
+			e.stopPropagation();
 
-	    function OnBAddrSaveRes__(e) {
-	    	console.log("+OnAddrSaveRes__");
-	    	if (e.status) {
-	    		var val = e.resp;
-	    		$('#business_addr_cont').prepend(val);
-	            hideAddressBox();
-	    	} else {
-	    		var errors = '';
-	    		for (var err in e.resp.data) {
-	    			errors += e.resp.data[err] + '<br />';
-	    		}
-	    		$AppNoti.info({title:e.resp.message, text:errors});
-	    	}
-	        return true;
-	    }
+			var $item = $(This).parents('.business_item');
+			var b_id = $item.attr('data-id');
+			var data = $AppData.csrf();
+			data["B_id"] = b_id;
+			$AppOverlay.show();
+
+			$AppRequest.get('/business/address/', data, function(status, resp){
+				if (true == status) {
+					$AppOverlay.update(resp);
+				} else {
+					console.log('data : '+JSON.stringify(resp.data));
+					$AppOverlay.update(JSON.stringify(resp.data));
+				}
+			});
+		}
+
+		function OnBusinessSaveReq__(e) {
+			console.log("+OnBusinessSaveReq__");
+			return true;
+		}
+
+		function OnBusinessSaveRes__(e) {
+			console.log("+OnBusinessSaveRes__");
+			if (e.status) {
+				var val = e.resp;
+				$('#business_items_cont').prepend(val);
+				hideAddressBox();
+			} else {
+				var errors = '';
+				for (var err in e.resp.data) {
+					errors += e.resp.data[err] + '<br />';
+				}
+				$AppNoti.info({title:e.resp.message, text:errors});
+			}
+			return true;
+		}
+
+		function OnBAddrSaveReq__(e) {
+			console.log("+OnAdSaveReq__");
+			return true;
+		}
+
+		function OnBAddrSaveRes__(e) {
+			console.log("+OnAddrSaveRes__");
+			if (e.status) {
+				var val = e.resp;
+				$('#business_addr_cont').prepend(val);
+				hideAddressBox();
+			} else {
+				var errors = '';
+				for (var err in e.resp.data) {
+					errors += e.resp.data[err] + '<br />';
+					}
+				$AppNoti.info({title:e.resp.message, text:errors});
+			}
+			return true;
+		}
 	</script>
 
 	<div id="delete-dialog" title="Delete" style="display: none;">
@@ -83,7 +123,7 @@
 		<div class="ui-block-body" >
 			<a href="javascript:void(0)" class="ui-btn-a" onclick="showBusinessBox(event, this);" >[+] ADD BUSINESS</a>
 			<div id="business_add_box" >
-				<form method="POST" action="/business/create/" class="ajax-form" id="business-form" >
+				<form method="POST" action="/business/create/" class="ajax-form" id="business-form" data-delegates='{"before":"OnBusinessSaveReq__", "after":"OnBusinessSaveRes__"}' >
 					<table class="ui-form-table" >
 						{% csrf_token %}
 						<input type="hidden" name="B_id" class="ui-input" value="{{business.id}}" />
@@ -110,7 +150,7 @@
 		</div>
 	</div>
 
-	<div class="ui-content" id="business_items">
+	<div class="ui-content" id="business_items_cont">
 		{% for b in business %}
 			{% include './business_item_1.html' %}
 		{% endfor %}

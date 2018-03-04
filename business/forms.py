@@ -99,10 +99,10 @@ class BusinessDeleteForm(DeleteForm):
 
 	def commit(self):
 		if Business.remove(self.model_values()):
-			return False
+			return True
 		else:
 			self.set_error('id', 'Failed to delete Bunisess!!')
-		return True
+		return False
 
 
 

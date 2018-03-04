@@ -133,13 +133,13 @@ function dumpObject(obj)
 	console.log(output);
 }
 
-function dropToggle(e, pThis)
+function dropToggle(e, This)
 {
 	console.log("+dropToggle");
 	e = e || window.event;
 	//dumpObject(e);
 	e.stopPropagation();
-	pThis.parentElement.getElementsByClassName("ui-dropcontent")[0].classList.toggle("ui-show");
+	This.parentElement.getElementsByClassName("ui-dropcontent")[0].classList.toggle("ui-show");
 }
 
 function navClicked()
@@ -256,12 +256,14 @@ var $AppRequest = {
 			async: true,
 			dataType: 'text',
 			complete: function(res) {
-				console.log('+comeplete :'+ res.status);
+				console.log('+comeplete : '+ res.status);
 			},
 			success: function (data, status, xhr) {
+				console.log('+success');
 				mimeType = xhr.getResponseHeader("content-type");
 				if (mimeType.indexOf('json') > -1) {
-					console.log('response : ' + data);
+					console.log('json');
+					console.log('data : ' + data);
 					jsonObj = jQuery.parseJSON(data);
 					switch(jsonObj.status) {
 						case 302:
@@ -278,15 +280,15 @@ var $AppRequest = {
 							break;
 					}
 				} else if (mimeType.indexOf('html') > -1) {
-					console.log('html response');
+					console.log('html');
 					pCallback(true, data);
 				} else {
-					console.log('unknown response');
+					console.log('unknown');
 					pCallback(false, {'message': 'Unknown response', 'data':'unexpected content type'});
 				}
 			},
 			error: function (xhr,error) {
-				console.log('status : '+xhr.status);
+				console.log('+error : '+xhr.status);
 				$AppToast.show('Network error occured');
 				pCallback(false, {'message': 'Network failed', 'data': {error} });
 			}
@@ -367,14 +369,14 @@ var $AppOverlay = {
 	},
 	_onclose: function(e) {
 		console.log("ON CLOSE OVERLAY");
-		pThis = e.data;
-		var $content = pThis.$content.hide();
+		This = e.data;
+		var $content = This.$content.hide();
 		if ($content.attr('data-type') == 'persist') {
 			setTimeout(function(){ $content.appendTo('body'); }, 100);
 		} else {
 			$content.remove();
 		}
-		pThis.hide();
+		This.hide();
 	}
 };
 

@@ -1,9 +1,9 @@
-<div class="ui-block ui-shadow business_addr_item" data-id="{{b.id}}" {% if address.linked %} style="border:1px solid #36F;" {% endif %} >
+<div class="ui-block ui-shadow business_addr_item {% if address.id in linked %} business_addr_item_selected {% endif %}" data-id="{{b.id}}">
     <div class="ui-block-bar business_addr_title" onclick="toggleSelect(event,this);">
         <div class="ui-content" >
             <table>
                 <tr>
-                    <td><input type="checkbox" name="item_check" style="width:30px; height:30px; border-radius:2px; background:#36F;" /></td>
+                    <td><input type="checkbox" name="item_check" style="width:30px; height:30px; border-radius:2px; background:#36F;" {% if address.id in linked %} checked="checked" {% endif %} /></td>
                     <td style="vertical-align:middle;" ><h3> {{address.name}}</h3></td>
                 </tr>
             </table>

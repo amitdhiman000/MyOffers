@@ -64,7 +64,6 @@ def App_GetRequired(funct):
 	def _decorator(request, *args, **kwargs):
 		if request.method != 'GET':
 			return App_Redirect(request, settings.ERROR_INVALID_REQUEST_URL)
-			#if 'application/json' in request.META.get('HTTP_ACCEPT'):
 		else:
 			return funct(request, *args, **kwargs)
 	return _decorator;
@@ -91,7 +90,6 @@ def App_LoginRequired(funct):
 		if request.user.is_loggedin() == False:
 			redirect_url = settings.USER_LOGIN_URL + "?"+settings.USER_LOGIN_NEXT+"="+request.path
 			return App_Redirect(request, redirect_url)
-			#if 'application/json' in request.META.get('HTTP_ACCEPT'):
 		else:
 			return funct(request, *args, **kwargs)
 	return _decorator;

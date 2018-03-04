@@ -20,11 +20,17 @@ class BusinessService(object):
     @classmethod
     def address_by_id(klass, id_):
         data = klass.model.fetch_by_id(id_)
-        print(data)
         return ModelValueSerializer.json(data, klass.fields)
 
 
     @classmethod
     def fetch_by_business(klass, b_id, user):
-        data = klass.model.fetch_by_business(b_id, user)
-        return ModelValuesSerializer.json(data, klass.fields)
+        addresses = Address.fetch_by_user(user)
+        linked = klass.model.fetch_by_business(b_id, user)
+        json = ModelValuesSerializer.json(addresses, klass.fields)
+        return (json, linked)
+
+
+    @classmethod
+    def delete_by_id(klass, b_id, user):
+        return klass.model.remove({'id':b_id, 'fk_user':user})

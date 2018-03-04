@@ -8,31 +8,29 @@
         <style>
             .business_addr_title:hover { cursor: pointer; }
             .business_addr_item { overflow:hidden; height: 100%; }
+            .business_addr_item_selected { border: 1px solid #36F; }
             .business_addr_item_w { display: inline-block; width:30%; height:250px; vertical-align:top; overflow:hidden; }
             .business_addr_item_w_expanded { height:100%; }
         </style>
         <script>
-            function toggleSelect(e, pThis)
+            function toggleSelect(e, This)
             {
                 console.log('+toggleCheck');
-                $This = $(pThis);
+                $This = $(This);
                 var $Check = $This.find('input[type="checkbox"]');
                 var $Root = $This.parents('.business_addr_item');
                 if (e.target != $Check.get(0)) {
                     $Check.prop('checked', function() { return !$Check.is(':checked'); });
                 }
-                if ($Check.is(':checked')) {
-                    $Root.css({'border': '1px solid #36F'});
-                } else {
-                    $Root.css({'border': '1px solid #ddd'});
-                }
+                $Root.toggleClass('business_addr_item_selected');
             }
-            function toggleBoxSize(e, pThis)
+
+            function toggleBoxSize(e, This)
             {
                 console.log('+toggleBoxSize');
                 e.preventDefault();
                 e.stopPropagation();
-                $wrapper = $(pThis).parents('.business_addr_item_w');
+                $wrapper = $(This).parents('.business_addr_item_w');
                 $wrapper.toggleClass('business_addr_item_w_expanded');
             }
             function OnAddrLinkReq__(e)

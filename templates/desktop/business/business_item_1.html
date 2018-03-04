@@ -1,12 +1,12 @@
-<div class="ui-block ui-shadow business-item" data-id="{{b.id}}" style="margin-top:2.5em;" >
+<div class="ui-block ui-shadow business_item" data-id="{{b.id}}" style="margin-top:2.5em;" >
     <div class="ui-block-bar">
         <div class="ui-content" >
             <strong>{{b.name}}</strong>
         </div>
         <div class="ui-content" style="text-transform: none;" >
             <div class="ui-right" >
-                <a onclick="deafaultBusiness(this,null)" >Default</a>
-                &nbsp;|&nbsp;<a onclick="deleteBusiness(this,null)" >Delete</a>
+                <a onclick="deafaultBusiness(event,this)" >Default</a>
+                &nbsp;|&nbsp;<a onclick="deleteBusiness(event,this)" >Delete</a>
             </div>
         </div>
     </div>

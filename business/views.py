@@ -3,8 +3,8 @@ from business.models import (Category, Business)
 from business.services import BusinessService
 from business.forms import *
 from base.apputil import *
-
 # Create your views here.
+
 
 @App_RunTime
 @App_LoginRequired
@@ -17,14 +17,14 @@ def business_home_view(request):
 
 @App_LoginRequired
 def business_create(request):
-	data = None
 	print(request.POST)
+	data = None
+
 	form = BusinessRegForm()
 	if (form.parseForm(request)
 			and form.clean()
 			and form.validate()):
 		data = form.commit()
-		#data = model_to_dict(data)
 
 	if request.is_ajax:
 		if data != None:
@@ -37,11 +37,13 @@ def business_create(request):
 	else:
 		return App_Redirect(request)
 
+
 @csrf_protect
 @App_LoginRequired
 def business_update(request):
 	print(request.POST)
 	data = None
+
 	form = BusinessUpdateForm()
 	if (form.parseForm(request)
 			and form.clean()
@@ -61,18 +63,33 @@ def business_update(request):
 @App_LoginRequired
 def business_delete(request):
 	data = {'title': 'My Business'};
+	status = False
+
+	form = BusinessDeleteForm()
+	if (form.parseForm(request)
+			and form.clean()
+			and form.validate()):
+		status = form.commit()
+
+	if request.is_ajax:
+		if status:
+			return JsonResponse({'status':204, 'message': 'Deleted Successfully'})
+		else:
+			data = form.errors()
+			return JsonResponse({'status':204, 'message': 'Delete Failed', 'data':data})
 	return App_Render(request, 'business/business_1.html', data)
 
 
+@App_GetRequired
 @App_LoginRequired
 def business_address_view(request):
-
-	b_id = request.POST.get('business_id', -1)
+	print(request.GET)
+	b_id = request.GET.get('B_id', -1)
 	data = BusinessService.fetch_by_business(b_id, request.user)
 	print(data)
 	if request.is_ajax:
 		if data != None:
-			return App_Render(request, 'business/business_address_2.html', {'addresses':data})
+			return App_Render(request, 'business/business_address_2.html', {'addresses':data[0], 'linked': data[1]})
 		else:
 			return JsonResponse({'status':401, 'message':'Business save failed', 'data':{'error': 'Failed to fetch addresses'}});
 	else:
@@ -81,9 +98,7 @@ def business_address_view(request):
 
 @App_LoginRequired
 def business_address_link(request):
-	print(request)
 	print(request.POST)
-
 	data = None
 	form = BALinkForm()
 
@@ -100,20 +115,13 @@ def business_address_link(request):
 @App_LoginRequired
 def business_address_unlink(request):
 	data = None
-	control = AddressControl()
-	if (control.parseRequest(request)
-			and control.clean()
-			and control.validate()):
-		data = control.execute()
-		#data = model_to_dict(data)
+	form = BAUnLinkForm()
 
 	if request.is_ajax:
 		if data != None:
-			categories = Category.fetch_first_level()
-			return App_Render(request, 'business/business_item_1.html', {'b':data, 'categories':categories})
-			##return JsonResponse({'status':200, 'message':'Business saved', 'data':data});
+			return JsonResponse({'status':200, 'message':'Address unlinked', 'data':data});
 		else:
-			data = control.errors()
-			return JsonResponse({'status':401, 'message':'Business save failed', 'data':data});
+			data = form.errors()
+			return JsonResponse({'status':401, 'message':'Address unlinked', 'data':data});
 	else:
 		return App_Redirect(request)
