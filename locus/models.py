@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.db import models
-from base.models import CRUDModel
+from base.models import (CRUDModel, CRUDModelWithUrl)
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.apps import apps
@@ -14,7 +14,6 @@ from pprint import pprint
 
 
 class Country(CRUDModel):
-	id = models.AutoField(primary_key=True)
 	name = models.CharField(max_length=50, blank=False)
 
 	class Meta:
@@ -29,7 +28,6 @@ class Country(CRUDModel):
 
 
 class State(CRUDModel):
-	id = models.AutoField(primary_key=True)
 	name = models.CharField(max_length=50, blank=True)
 	fk_country = models.ForeignKey(Country, on_delete=models.CASCADE)
 
@@ -46,7 +44,6 @@ class State(CRUDModel):
 
 
 class City(CRUDModel):
-	id = models.AutoField(primary_key=True)
 	name = models.CharField(max_length=50)
 	fk_state = models.ForeignKey(State, on_delete=models.CASCADE)
 	fk_country = models.ForeignKey(Country, on_delete=models.CASCADE)
@@ -72,7 +69,6 @@ class City(CRUDModel):
 
 
 class Area(CRUDModel):
-	id = models.BigAutoField(primary_key=True)
 	name = models.CharField(max_length=50, blank=True)
 	pincode = models.CharField(max_length=10, blank=True)
 	fk_city = models.ForeignKey(City, on_delete=models.CASCADE)
@@ -123,7 +119,7 @@ class Area(CRUDModel):
 
 
 
-class Address(CRUDModel):
+class Address(CRUDModelWithUrl):
 	name = models.CharField(max_length=50, blank=False)
 	person = models.CharField(max_length=20, blank=True)
 	phone = models.CharField(max_length=10, blank=True)
@@ -131,8 +127,6 @@ class Address(CRUDModel):
 	landmark = models.CharField(max_length=50, blank=True)
 	latitude = models.CharField(max_length=10, blank=True)
 	longitude = models.CharField(max_length=10, blank=True)
-	created_at = models.DateTimeField(default=timezone.now)
-	updated_at = models.DateTimeField(default=timezone.now)
 	fk_area = models.ForeignKey(Area, on_delete=models.CASCADE)
 	fk_user = models.ForeignKey(User, on_delete=models.CASCADE)
 	flags = models.CharField(max_length=10, default='')
@@ -175,7 +169,6 @@ class Address(CRUDModel):
 
 
 class Location(CRUDModel):
-	id = models.BigAutoField(primary_key=True)
 	name = models.CharField(max_length=50, blank=False)
 	latitude = models.CharField(max_length=10)
 	longitude = models.CharField(max_length=10)

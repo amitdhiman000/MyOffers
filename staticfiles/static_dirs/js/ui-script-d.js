@@ -166,6 +166,7 @@ function ajaxFormSubmit(e)
 	console.log("+ajaxFormSubmit");
 	e.preventDefault();
 	var $form = $(this);
+	e.$src = $form;
 	var action = $form.attr('action');
 	console.log('action : '+ action);
 	var dg = JSON.parse($form.attr('data-delegates'));
@@ -182,7 +183,6 @@ function ajaxFormSubmit(e)
 		if (dlgs.after) {
 			e.status = status;
 			e.resp = json;
-			e.$src = $form;
 			dlgs.after(e);
 		} else {
 			$AppToast.show(JSON.stringify(json.message));

@@ -7,13 +7,13 @@
 		#address_add_box { display: none; }
 	</style>
 	<script type="text/javascript" >
-		function showBusinessBox(e, pThis) {
+		function showBusinessBox(e, This) {
 			console.log("+showBusinessBox");
 			e.stopPropagation();
 			$("#business_add_box").toggle();
 		}
 
-		function showAddressBox(e, pThis) {
+		function showAddressBox(e, This) {
 			console.log("+showAddressBox");
 			e.stopPropagation();
 			$AppOverlay.show($('#address_picker'));
@@ -56,6 +56,7 @@
 			var b_id = $item.attr('data-id');
 			var data = $AppData.csrf();
 			data["B_id"] = b_id;
+			data["pid"] = 2;
 			$AppOverlay.show();
 
 			$AppRequest.get('/business/address/', data, function(status, resp){

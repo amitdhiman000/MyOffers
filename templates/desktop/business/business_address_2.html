@@ -19,10 +19,16 @@
                 $This = $(This);
                 var $Check = $This.find('input[type="checkbox"]');
                 var $Root = $This.parents('.business_addr_item');
+                var bid = $Root.attr('data-bid');
                 if (e.target != $Check.get(0)) {
                     $Check.prop('checked', function() { return !$Check.is(':checked'); });
                 }
                 $Root.toggleClass('business_addr_item_selected');
+                if ($Check.prop('checked') === true) {
+                    $Check.val($Check.attr('data-value'));
+                } else {
+                    $Check.val(-1);
+                }
             }
 
             function toggleBoxSize(e, This)
@@ -33,6 +39,7 @@
                 $wrapper = $(This).parents('.business_addr_item_w');
                 $wrapper.toggleClass('business_addr_item_w_expanded');
             }
+
             function OnAddrLinkReq__(e)
             {
                 console.log("+OnAddrLinkReq__");
@@ -41,20 +48,22 @@
             function OnAddrLinkRes__(e)
             {
                 console.log("+OnAddrLinkRes__");
+                $AppOverlay.close();
                 return true;
             }
         </script>
         <form action="/business/address/link/" method="POST" class="ajax-form" data-delegates='{"before":"OnAddrLinkReq__", "after":"OnAddrLinkRes__"}' >
             {% csrf_token %}
+            <input type="hidden" name="B_id" value="{{business}}" />
+            <input type='hidden' name="A_ids" value="-1" />
+            <div class="ui-right" style="width: 100%; margin:10px auto;">
+                <input type="submit" value="Save" class="ui-btn" />
+            </div>
             {% for address in addresses %}
                 <div  class="business_addr_item_w" >
                 {% include './business_address_item_1.html' %}
                 </div>
             {% endfor %}
-            <div style="width: 50%; margin:10px auto;">
-                <input type="button" value="Cancel" class="ui-btn" />
-                <input type="submit" value="Save" class="ui-btn" />
-            </div>
         </form>
     </div>
 </div>

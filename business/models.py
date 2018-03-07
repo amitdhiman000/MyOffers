@@ -71,23 +71,9 @@ class BusinessAddressMap(CRUDModel):
 	fk_business = models.ForeignKey(Business, on_delete=models.CASCADE)
 	fk_address = models.ForeignKey(Address, on_delete=models.CASCADE)
 
-	json_fields = {}
-
 
 	@classmethod
 	def fetch_by_business(klass, b_id, user):
 		linked = klass.objects.filter(fk_business=b_id).annotate(
 		a_id=models.F('fk_address__id')).values_list('a_id', flat=True)
 		return set(linked)
-
-
-	@classmethod
-	def fetch_by_business_old(klass, b_id, user):
-		addresses = Address.fetch_by_user(user)
-		address_ids = set(klass.objects.filter(fk_business=b_id))
-		for address in addresses:
-			if address in address_ids:
-				print('yes linked')
-				address.linked = True
-
-		return addresses

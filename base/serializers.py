@@ -10,7 +10,7 @@ class ModelValueSerializer(object):
             return None
 
         obj = query_set.first()
-        for key, val in obj.json_fields.items():
+        for key, val in obj.ExtraFields.items():
             prop_method = getattr(obj, val)
             if isinstance(prop_method, types.MethodType):
                 obj.__dict__[key] = prop_method()
@@ -37,7 +37,7 @@ class ModelValuesSerializer(object):
         #unwanted = set(query_set.first().__dict__.keys()) - set(fields)
         #print(unwanted)
         for obj in query_set:
-            for key, val in obj.json_fields.items():
+            for key, val in obj.ExtraFields.items():
                 prop_method = getattr(obj, val)
                 if isinstance(prop_method, types.MethodType):
                     print('method found')

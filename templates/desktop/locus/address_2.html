@@ -41,6 +41,15 @@
         $AppOverlay.close();
     }
 
+    function toggleBoxSize(e, This)
+    {
+        console.log('+toggleBoxSize');
+        e.preventDefault();
+        e.stopPropagation();
+        $wrapper = $(This).parents('.business_addr_item_w');
+        $wrapper.toggleClass('business_addr_item_w_expanded');
+    }
+
     function OnAddrSaveReq__(e) {
     	console.log("+OnAdSaveReq__");
     	return true;
@@ -67,6 +76,12 @@
         AfterAddrSaveEvent.add(OnAddrSaveRes__);
     });
 </script>
+<style>
+    .business_addr_item { overflow:hidden; height: 100%; }
+    .business_addr_item_selected { border: 1px solid #36F; }
+    .business_addr_item_w { display: inline-block; width:30%; height:250px; vertical-align:top; overflow:hidden; }
+    .business_addr_item_w_expanded { height:100%; }
+</style>
 
 <div class="ui-content" >
 	<div class="ui-block" >
@@ -83,7 +98,9 @@
 	</div>
     <div id="address_cont" >
         {% for address in addresses %}
+        <div  class="business_addr_item_w" >
             {% include './address_item_1.html' %}
+        </div>
         {% endfor %}
     </div>
 </div>

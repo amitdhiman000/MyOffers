@@ -1,9 +1,20 @@
 *.pyc
+__pycache__/*.pyc
+MyOffers/*.pyc
+MyOffers/__pycache__/*.pyc
 
-ajax/*.pyc
-ajax/__pycache__/*.pyc
-ajax/migrations/*.pyc
-ajax/migrations/__pycache__/*.pyc
+api/*.pyc
+api/__pycache__/*.pyc
+api/migrations/*.pyc
+api/migrations/__pycache__/*.pyc
+
+base/*.pyc
+base/__pycache__/*.pyc
+
+business/*.pyc
+business/__pycache__/*.pyc
+business/migrations/*.pyc
+business/migrations/__pycache__/*.pyc
 
 error/*.pyc
 error/__pycache__/*.pyc
@@ -35,6 +46,11 @@ search/__pycache__/*.pyc
 search/migrations/*.pyc
 search/migrations/__pycache__/*.pyc
 
+public/*.pyc
+public/__pycache__/*.pyc
+public/migrations/*.pyc
+public/migrations/__pycache__/*.pyc
+
 upload/*.pyc
 upload/__pycache__/*.pyc
 upload/migrations/*.pyc
@@ -45,8 +61,6 @@ user/__pycache__/*.pyc
 user/migrations/*.pyc
 user/migrations/__pycache__/*.pyc
 
-MyOffers/*.pyc
-MyOffers/__pycache__/*.pyc
 
 # development files
 staticfiles/static_root

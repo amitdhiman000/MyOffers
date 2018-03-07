@@ -1,7 +1,10 @@
 from base.forms import *
 from base.validators import *
+from locus.models import Address
 from business.validators import *
+from business.services import *
 from business.models import (Business, Category)
+import logging
 
 
 model_fields = {
@@ -106,7 +109,7 @@ class BusinessDeleteForm(DeleteForm):
 
 
 
-business_address_fields = {
+ba_fields = {
 	'B_id':{'name': 'fk_business', 'validator': NoValidator},
 	'A_id':{'name': 'fk_address', 'validator': NoValidator},
 	'business_id':{'name': 'fk_business', 'validator': NoValidator},
@@ -116,7 +119,7 @@ business_address_fields = {
 class BALinkForm(CreateForm):
 	def __init__(self):
 		super().__init__()
-		self.m_fields = business_address_fields
+		self.m_fields = ba_fields
 
 
 	def validate(self):
@@ -137,7 +140,7 @@ class BALinkForm(CreateForm):
 class BAUnLinkForm(CreateForm):
 	def __init__(self):
 		super().__init__()
-		self.m_fields = business_address_fields
+		self.m_fields = ba_fields
 
 
 	def validate(self):
@@ -152,3 +155,72 @@ class BAUnLinkForm(CreateForm):
 		print('saving ....')
 		print(self.model_values())
 		return Business.remove(self.model_values())
+
+
+
+ba_fields = {
+	'B_id':{'name': 'fk_business', 'validator': NoValidator},
+	'A_ids':{'name': 'addresses', 'validator': NoValidator},
+	'business_id':{'name': 'fk_business', 'validator': NoValidator},
+	'address_ids':{'name': 'addresses', 'validator': NoValidator},
+}
+
+class BALinkBulkForm(CreateForm):
+	def __init__(self):
+		super().__init__()
+		self.m_fields = ba_fields
+
+
+	# overriding parse for special case of list
+	def parse(self, request, is_json=True):
+		super().parse(request, is_json)
+		rkey = self.m_rfields.get('addresses', None)
+		values_set = self.m_values.getlist(rkey)
+		self.make_model_value(rkey, values_set)
+		return True
+
+
+	def clean(self):
+		try:
+			addresses = self.model_value('addresses')
+			addresses.remove('-1')
+			addresses = set(map(int, addresses))
+			self.add_model_value('addresses', addresses)
+			return True
+		except:
+			logging.error('failed to clean data')
+			self.set_error('addresses', 'Invalid address references')
+		return False
+
+
+	def save(self):
+		print('saving ....')
+		try:
+			b_id = self.model_value('fk_business')
+			addresses = self.del_model_value('addresses')
+
+			old_set = set(addresses)
+			new_set = BusinessService.fetch_by_linked(b_id, self.request().user)
+			insert_set = old_set - new_set
+			delete_set = new_set - old_set
+
+			print('insert_set : ', insert_set)
+			print('delete_set : ', delete_set)
+
+			business = Business(id=int(b_id))
+			self.add_model_value('fk_business', business)
+
+			for item in insert_set:
+				self.add_model_value('fk_address', Address(id=int(item)))
+				print(self.model_values())
+				BusinessAddressMap.create(self.model_values())
+
+			for item in delete_set:
+				self.add_model_value('fk_address', Address(id=int(item)))
+				print(self.model_values())
+				BusinessAddressMap.remove(self.model_values())
+			return True
+		except Exception as ex:
+			logging.error(ex)
+			self.set_error('addresses', 'Failed to link/unlink address')
+		return False

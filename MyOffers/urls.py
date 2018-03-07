@@ -18,7 +18,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 urlpatterns = [
-	url(r'^$', include('home.urls')),
+	url(r'', include('home.urls')),
     url(r'^api/', include('api.urls')),
     url(r'^business/', include('business.urls')),
 	url(r'^error/', include('error.urls')),

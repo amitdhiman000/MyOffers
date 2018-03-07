@@ -89,18 +89,24 @@ def business_address_view(request):
 	print(data)
 	if request.is_ajax:
 		if data != None:
-			return App_Render(request, 'business/business_address_2.html', {'addresses':data[0], 'linked': data[1]})
+			return App_Render(request, 'business/business_address_2.html', {'business':b_id, 'addresses':data})
 		else:
 			return JsonResponse({'status':401, 'message':'Business save failed', 'data':{'error': 'Failed to fetch addresses'}});
 	else:
 		return App_Redirect(request)
 
 
+@App_PostRequired
 @App_LoginRequired
 def business_address_link(request):
 	print(request.POST)
 	data = None
-	form = BALinkForm()
+	form = BALinkBulkForm()
+
+	if (form.parseForm(request)
+			and form.clean()
+			and form.validate()):
+		data = form.commit()
 
 	if request.is_ajax:
 		if data != None:

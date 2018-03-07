@@ -1,17 +1,23 @@
-<div class="ui-block addr_item" style="margin-top: 1em;" >
+<div class="ui-block addr_item" style="margin-top: 1em;" data-aid="{{address.id}}" >
     <div class="ui-block-bar">
         <div>
             <h2>{{address.name}}</h2>
         </div>
         <div>
             <div class="ui-right" >
-            <a onclick="defaultAddress(this, {{address.id}})" >Default</a>
-            &nbsp;|&nbsp;
-            <a onclick="editAddress(this, {{address.id}})" >Edit</a>
-            &nbsp;|&nbsp;
-            <a onclick="deleteAddress(this, {{address.id}})" >Delete</a>
-            &nbsp;|&nbsp;
-            <a onmouseover="addrItemOptions()" style="font-size:1.5em; text-decoration:none;" >&#8230;</a>
+                <a onclick="toggleBoxSize(event, this)" >[+]</a>
+                &nbsp;&nbsp;
+                <div class="ui-dropdown" >
+                    <div class="ui-dropbtn" >
+                        <a onmouseover="addrItemOptions()" style="font-size:1.5em; text-decoration:none;" >&#8230;</a>
+                    </div>
+                    <div class="ui-dropcontent" >
+                        <ul class="ui-vlist" >
+                            <li><a onclick="editAddress(this, {{address.id}})" >Edit</a></li>
+                            <li><a onclick="deleteAddress(this, {{address.id}})" >Delete</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

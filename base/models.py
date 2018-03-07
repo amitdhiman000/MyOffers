@@ -5,8 +5,10 @@ import logging
 
 class CRUDModel(models.Model):
 	id = models.BigAutoField(primary_key=True)
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
 
-	json_fields = {'url': 'url'}
+	ExtraFields = {}
 
 	class Meta:
 		abstract = True
@@ -78,3 +80,11 @@ class CRUDModel(models.Model):
 	@classmethod
 	def fetch_by_id(klass, id_):
 		return klass.objects.filter(id=id_).first()
+
+
+
+class CRUDModelWithUrl(CRUDModel):
+	ExtraFields = {'url': 'url'}
+
+	class Meta:
+		abstract = True

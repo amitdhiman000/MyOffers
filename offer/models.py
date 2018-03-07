@@ -25,9 +25,7 @@ class Offer(CRUDModel):
 	price = models.IntegerField(default=100) ## MRP
 	discount = models.IntegerField(default=0)
 	discount_price = models.IntegerField(default=100)
-	created_at = models.DateTimeField(auto_now_add=True)
-	updated_at = models.DateTimeField(auto_now=True)
-	start_at = models.DateTimeField(default=timezone.now())
+	start_at = models.DateTimeField(default=timezone.now)
 	expire_at = models.DateTimeField(default=days_ahead(5))
 	fk_user = models.ForeignKey(User, on_delete=models.CASCADE)
 	fk_business = models.ForeignKey(Business, db_index=True, on_delete=models.CASCADE)

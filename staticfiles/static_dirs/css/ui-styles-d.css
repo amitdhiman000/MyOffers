@@ -51,7 +51,7 @@ overflow: auto; height: 100%
 .ui-input[readonly]:hover { border:none; }
 select.ui-input[readonly] { pointer-events: none; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
 textarea.ui-input { width:95%; max-width: 30em; height: 6em; border: 1px solid #ddd; padding: 0.5em 1.0em; border-radius: 0.3em; }
-//checkbox.ui-input { width: 80%; height: 80%; }
+.ui-input[type=checkbox] { width: 30px; height: 30px; }
 .ui-input:focus::-webkit-input-placeholder { color:transparent; }
 .ui-input:focus:-moz-placeholder { color:transparent; } /* FF 4-18 */
 .ui-input:focus::-moz-placeholder { color:transparent; } /* FF 19+ */
