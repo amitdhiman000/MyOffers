@@ -19,7 +19,7 @@ def offer_home_view(request):
 
 
 def new1_view(request):
-	return offer_home_view(request)
+	return offer_form_view(request)
 
 
 def online_view(request):
@@ -37,20 +37,12 @@ def bulk_view(request):
 def food_view(request):
 	return offer_home_view(request)
 
-'''
-def offer_detail_view(request, offer_id):
-	print('offer_id : '+offer_id)
-	offer = Offer.fetch_by_id(offer_id)
-	data = {'title':'View Offers', 'offer': offer}
-	return App_Render(request, 'offer/offer_detail_view_1.html', data)
-'''
 
 def offer_detail_view(request, slug):
 	print('slug : '+slug)
 	offer = Offer.fetch_by_slug(slug)
 	data = {'title':'View Offers', 'offer': offer}
 	return App_Render(request, 'offer/offer_item_detail_1.html', data)
-
 
 
 @App_LoginRequired

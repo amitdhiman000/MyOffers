@@ -1,0 +1,82 @@
+<div data-type="persist" style="margin:0px auto; width:80%; padding:0.5em; border: 1px solid #444;" >
+<div class="ui-block" >
+    <div class="ui-block-bar" >
+        <div style="text-align: center;">
+            <strong>BUSINESS ADDRESSES</strong>
+        </div>
+    </div>
+    <div class="ui-block-body" >
+        <style>
+            .business_addr_title:hover { cursor: pointer; }
+            .business_addr_item { overflow:hidden; height: 100%; }
+            .business_addr_item_selected { border: 1px solid #36F; }
+            .business_addr_item_w { display: inline-block; width:30%; height:250px; vertical-align:top; overflow:hidden; }
+            .business_addr_item_w_expanded { height:100%; }
+        </style>
+        <script>
+            function toggleSelect(e, This)
+            {
+                console.log('+toggleCheck');
+                $This = $(This);
+                var $Check = $This.find('input[type="checkbox"]');
+                var $Root = $This.parents('.business_addr_item');
+                var bid = $Root.attr('data-bid');
+                if (e.target != $Check.get(0)) {
+                    $Check.prop('checked', function() { return !$Check.is(':checked'); });
+                }
+                $Root.toggleClass('business_addr_item_selected');
+                if ($Check.prop('checked') === true) {
+                    $Check.val($Check.attr('data-value'));
+                } else {
+                    $Check.val(-1);
+                }
+            }
+
+            function toggleBoxSize(e, This)
+            {
+                console.log('+toggleBoxSize');
+                e.preventDefault();
+                e.stopPropagation();
+                $wrapper = $(This).parents('.business_addr_item_w');
+                $wrapper.toggleClass('business_addr_item_w_expanded');
+            }
+
+            function OnAddrLinkReq__(e)
+            {
+                console.log("+OnAddrLinkReq__");
+                return true;
+            }
+            function OnAddrLinkRes__(e)
+            {
+                console.log("+OnAddrLinkRes__");
+                $AppOverlay.close();
+                return true;
+            }
+            $(function(){
+                console.log("AMIT DHIMAN LOADED");
+
+                $('#main_cont').css('height', function(){
+                    var $content = $(this).parents('.wt-overlay-content');
+                    console.log($content.height());
+                    return $content.height() - 150;
+                });
+            });
+        </script>
+        <form action="/business/address/link/" method="POST" class="ajax-form" data-delegates='{"before":"OnAddrLinkReq__", "after":"OnAddrLinkRes__"}' >
+            {% csrf_token %}
+            <input type="hidden" name="B_id" value="{{business}}" />
+            <input type='hidden' name="A_ids" value="-1" />
+            <div class="ui-right" style="width: 100%; margin:10px auto;">
+                <input type="submit" value="Save" class="ui-btn" />
+            </div>
+            <div id="main_cont" style="overflow-y: auto; min-height:400px;">
+            {% for address in addresses %}
+                <div  class="business_addr_item_w" >
+                {% include './business_address_item_1.html' %}
+                </div>
+            {% endfor %}
+            </div>
+        </form>
+    </div>
+</div>
+</div>

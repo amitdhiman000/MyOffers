@@ -1,0 +1,22 @@
+<div class="P_item" >
+    <a href="{{offer.url}}" >
+    <div class="P_image">
+        <img src="{{offer.image.url}}" alt="{{offer.name}} | {{offer.discount}}% Off" />
+    </div>
+    </a>
+    <div class="P_details" >
+        <div class="P_name" >
+            <a href="{{offer.url}}" ><strong title="{{offer.name}}" >{{offer.name | truncatechars:70}}</strong></a>
+        </div>
+        <div class="ui-line-s" ></div>
+        <div class="P_discount"><h4>{{offer.discount}}% Off</h4></div>
+        <div class="P_price">
+            <span>&#8377; {{offer.discount_price}}</span> <span>&#8377; &nbsp;<strike>{{offer.price}}</strike></span>
+        </div>
+        <div class="ui-sline" ></div>
+        <div>
+            <b>From : </b> {{offer.start_at | date:"d M Y D"}}<br />
+            <b>To : </b> {{offer.expire_at | date:"d M Y D"}}
+        </div>
+    </div>
+</div>

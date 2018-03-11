@@ -1,0 +1,26 @@
+{% extends base_template %}
+
+
+{% block pagenav %}
+{% include './offer_page_nav.html' %}
+{% endblock %}
+
+{% block pagecontent %}
+<div class="ui-content" >
+	{% if offer %}
+	<div class="ui-block">
+		<div class="ui-block-bar">
+			<h3>{{offer.name}}</h3>
+		</div>
+		<div class="ui-block-body" >
+			<img src="{{offer.image.url}}" alt="{{offer.name}} | {{offer.discount}}% Off" title="{{offer.name}} | {{offer.discount}}% Off" />
+
+			<div class="ui-line-s"></div>
+			<h4>{{offer.discount}}% Off</h4>
+			<h4>&#8377; {{offer.discount_price}} <strike>&#8377; {{offer.price}}</strike></h4>
+			<h5>From {{offer.start_at}} to {{offer.expire_at}}</h5>
+		</div>
+	</div>
+	{% endif %}
+</div>
+{% endblock %}

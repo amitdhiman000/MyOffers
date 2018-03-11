@@ -5,14 +5,15 @@
 		<span style="font-size:1.5em; cursor:pointer;" class="open" onclick="navClicked()">&#9776;</span>
 	</div>
 	<div id="app_logo_div" >
-		<div id="app_logo" style="margin-left: 1em;">
-			<a href="/" ><img src="{% static 'images/logo.png' %}" style="width:50px; height:30px;" /></a>
+		<div id="app_logo" style="margin-left: 1em;" >
+			<a href="/" style="display: block; font-size:1.5em; color:#9966FF; text-decoration:none;">
+				Trader
+			</a>
 		</div>
-		<!--<h5>MyOffers</h5>-->
 	</div>
 	<div style="text-align:right;">
 		{% if user.is_loggedin %}
-		<a href="/user/profile/">
+		<a href="/user/account/">
 			<img src="{{user.image.url}}" class="ui-dselect" style="width:24px; height:24px;" />
 		</a>
 		{% else %}
@@ -33,7 +34,7 @@
 	<ul class="ui-hlist-resp">
 		<li><a href="/" >Home</a></li>
 		<li><a href="/offer/" >Offers</a></li>
-		<li><a href="/offer/create-new/">Add Offer</a></li>
+		<li><a href="/offer/new/">Add Offer</a></li>
 		<li><a href="/public/aboutus/">About</a></li>
 		<li><a href="/public/contacts/">Contact</a></li>
 	</ul>

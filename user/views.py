@@ -64,11 +64,11 @@ def signin_view(request):
 	data = {'title':'Login'}
 	if 'form_errors' in request.session:
 		data['form_errors'] = request.session['form_errors']
-		data['form_data'] = request.session['form_data']
+		data['form_values'] = request.session['form_values']
 		del request.session['form_errors']
-		del request.session['form_data']
+		del request.session['form_values']
 
-	data.update({settings.USER_LOGIN_NEXT:request.GET.get(settings.USER_LOGIN_NEXT, '')})
+	data.update({settings.USER_LOGIN_NEXT:request.GET.get(settings.USER_LOGIN_NEXT, settings.HOME_URL)})
 	return App_Render(request, 'user/user_signin_1.html', data)
 
 
@@ -77,12 +77,12 @@ def signin_view(request):
 def signup_view(request):
 	logging.debug('Hello');
 	data = {'title':'Signup'}
-	data.update({settings.USER_LOGIN_NEXT: request.POST.get(settings.USER_LOGIN_NEXT, '')})
+	data.update({settings.USER_LOGIN_NEXT: request.POST.get(settings.USER_LOGIN_NEXT, settings.HOME_URL)})
 	if 'form_errors' in request.session:
 		data['form_errors'] = request.session['form_errors']
-		data['form_data'] = request.session['form_data']
+		data['form_values'] = request.session['form_values']
 		del request.session['form_errors']
-		del request.session['form_data']
+		del request.session['form_values']
 
 	return App_Render(request, 'user/user_signup_1.html', data)
 
@@ -96,8 +96,10 @@ def signin_auth(request):
 			and form.validate()):
 		user = form.commit()
 		if user != None:
+			print(settings.USER_LOGIN_NEXT)
+			print(settings.HOME_URL)
 			redirect_url = request.POST.get(settings.USER_LOGIN_NEXT, settings.HOME_URL)
-			print('redirect amit : '+redirect_url)
+			print('redirect_url : ', redirect_url)
 			return App_Redirect(request, redirect_url)
 
 	## Only error case will reach here.
@@ -107,7 +109,7 @@ def signin_auth(request):
 	else:
 		redirect_url = request.META.get('HTTP_REFERER', settings.USER_LOGIN_URL)
 		request.session['form_errors'] = form.errors()
-		request.session['form_data'] = form.data()
+		request.session['form_values'] = form.values()
 		return App_Redirect(request, redirect_url)
 
 
@@ -129,7 +131,7 @@ def signup_auth(request):
 		return JsonResponse({'status':401, 'message': 'Signup Failed!!', 'data':error})
 	else:
 		request.session['form_errors'] = error
-		request.session['form_data'] = form.data()
+		request.session['form_values'] = form.values()
 		return App_Redirect(request, settings.USER_SIGNUP_URL)
 
 

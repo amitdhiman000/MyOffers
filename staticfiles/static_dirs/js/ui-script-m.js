@@ -161,16 +161,14 @@ function initSwitchTabs()
 	});
 }
 
-function dropToggle(e, pThis)
+function dropToggle(e, This)
 {
 	console.log("+dropToggle");
 	e = e || window.event;
 	//dumpObject(e);
-	//e.preventDefault();
 	e.stopPropagation();
-	pThis.parentElement.getElementsByClassName("ui-dropcontent")[0].classList.toggle("ui-show");
+	This.parentElement.getElementsByClassName("ui-dropcontent")[0].classList.toggle("ui-show");
 }
-
 
 function navClicked()
 {
@@ -195,21 +193,25 @@ function ajaxFormSubmit(e)
 {
 	console.log("+ajaxFormSubmit");
 	e.preventDefault();
-	var form = $(this);
-	var handle = form.data('handlers');
-	var action = form.attr('action');
+	var $form = $(this);
+	e.$src = $form;
+	var action = $form.attr('action');
 	console.log('action : '+ action);
+	var dg = JSON.parse($form.attr('data-delegates'));
+	var dlgs = {
+		"before": (dg && dg.before)? window[dg.before] || null : null,
+		"after": (dg && dg.after)? window[dg.after] || null : null,
+	};
 
-	if (handle && handle.before)
-		if (handle.before(e) === false)
+	if (dlgs.before)
+		if (dlgs.before(e) === false)
 			return;
 
-	$AppRequest.post(action, form.serialize(), (status, json) => {
-		if (handle && handle.after) {
+	$AppRequest.post(action, $form.serialize(), (status, json) => {
+		if (dlgs.after) {
 			e.status = status;
 			e.resp = json;
-			e.$src = form;
-			handle.after(e);
+			dlgs.after(e);
 		} else {
 			$AppToast.show(JSON.stringify(json.message));
 		}
@@ -230,6 +232,42 @@ function afterResponse(e) {
 	}
 }
 
+
+/*******************************************************/
+/******************** App Library **********************/
+/*******************************************************/
+var $AppEvent = {
+	new: function() {
+		console.log("+Event new");
+		copy = {'_set': new Array()};
+		for (var key in this) {
+			if (this.hasOwnProperty(key))
+				copy[key] = this[key];
+		}
+		return copy;
+	},
+	add: function(p) {
+		console.log("+Event add");
+		if (this._set.indexOf(p) == -1)
+			this._set.push(p);
+	},
+	del: function(p) {
+		console.log("+Event del");
+		var pos = this._set.indexOf(p);
+		if (pos > 1)
+			this._set.splice(pos, 1);
+
+	},
+	call: function(e) {
+		console.log("+Event call");
+		var ret = true;
+		for (i in this._set) {
+			ret = ret && this._set[i](e);
+		}
+		return ret;
+	}
+};
+
 var $AppRequest = {
 	get: function(pUrl, pData, pCallback) {
 		console.log('+get');
@@ -246,12 +284,14 @@ var $AppRequest = {
 			async: true,
 			dataType: 'text',
 			complete: function(res) {
-				console.log('+comeplete :'+ res.status);
+				console.log('+comeplete : '+ res.status);
 			},
 			success: function (data, status, xhr) {
+				console.log('+success');
 				mimeType = xhr.getResponseHeader("content-type");
 				if (mimeType.indexOf('json') > -1) {
-					console.log('response : ' + data);
+					console.log('json');
+					console.log('data : ' + data);
 					jsonObj = jQuery.parseJSON(data);
 					switch(jsonObj.status) {
 						case 302:
@@ -268,75 +308,93 @@ var $AppRequest = {
 							break;
 					}
 				} else if (mimeType.indexOf('html') > -1) {
-					console.log('html response');
+					console.log('html');
 					pCallback(true, data);
 				} else {
-					console.log('unknown response');
+					console.log('unknown');
 					pCallback(false, {'message': 'Unknown response', 'data':'unexpected content type'});
 				}
 			},
 			error: function (xhr,error) {
-				console.log('status : '+xhr.status);
+				console.log('+error : '+xhr.status);
 				$AppToast.show('Network error occured');
 				pCallback(false, {'message': 'Network failed', 'data': {error} });
 			}
 		});
 	}
-}
+};
 
-/****************** Cookie API ***********************/
-var $AppCookie = {
-	get: function(name) {
-		var cv = null;
-		if (document.cookie != 'undefined' && document.cookie !== '') {
-			var c = document.cookie.split(';');
-			for (var i = 0; i < c.length; i++) {
-				var c = jQuery.trim(c[i]);
-				// Does this cookie string begin with the name we want?
-				if (c.substring(0, name.length + 1) === (name + '=')) {
-					cv = decodeURIComponent(c.substring(name.length + 1));
-					break;
+
+var $AppData = {
+	Cookie: {
+		get: function(cname) {
+			var cv = null;
+			if (document.cookie != 'undefined' && document.cookie !== '') {
+				var cks = document.cookie.split(';');
+				for (var i = 0; i < cks.length; i++) {
+					var c = cks[i].trim();
+					// Does this cookie string begin with the name we want?
+					if (c.substring(0, cname.length + 1) === (name + '=')) {
+						cv = decodeURIComponent(c.substring(cname.length + 1));
+						break;
+					}
 				}
 			}
+			return cv;
+		},
+		set: function(cname, cvalue, exdays) {
+			var d = new Date();
+			d.setTime(d.getTime() + (exdays*24*60*60*1000));
+			var expires = "expires="+d.toUTCString();
+			document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+		},
+		has: function(cname) {
+			return (this.get(cname) != null);
 		}
-		return cv;
 	},
-	set: function (cname, cvalue, exdays) {
-		var d = new Date();
-		d.setTime(d.getTime() + (exdays*24*60*60*1000));
-		var expires = "expires="+d.toUTCString();
-		document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+	Storage: {
+		get: function(key) {
+			if (typeof(Storage) !== "undefined")
+				return localStorage.getItem(key);
+			return "";
+		},
+		set: function(key, val) {
+			if (typeof(Storage) !== "undefined")
+				localStorage.setItem(key, val);
+		},
+	},
+	csrf: function() {
+		var $mt = $('meta[name=csrf-token]');
+		var data = {};
+		data[$mt.attr("key")] = $mt.attr("content");
+		return data;
 	}
 };
 
-function get_csrf()
-{
-	var $mt = $('meta[name=csrf-token]');
-	var data = {};
-	data[$mt.attr("key")] = $mt.attr("content");
-	return data;
-}
-/*****************************************************/
-/******************** Widgets ************************/
-/****************** UI API ************************/
 var $AppOverlay = {
 	init: function() {
 		this.$overlay = $('#wt-overlay');
 		this.$content_def = $('<div style="width:80% height:50%;" data-type="none"></div>');
 		this.$content = this.$content_def;
 		this.$overlay.find('.wt-closebtn').on('click', this, this._onclose);
+		this._shown = false;
 	},
 	show: function($content=this.$content_def) {
-		return this.update($content);
+		this.update($content);
+		this.$overlay.show();
+		this._is_shown = true;
+		$('body').toggleClass('ui-noscroll', this._shown);
+		return this;
 	},
 	hide: function() {
 		this.$overlay.hide();
+		this._is_shown = false;
+		$('body').toggleClass('ui-noscroll', this._shown);
 		return this;
 	},
 	update: function($content) {
 		this.$content = $($content);
 		this.$overlay.find('.wt-overlay-content').html(this.$content.show());
-		this.$overlay.show();
 		return this;
 	},
 	close: function(e) {
@@ -344,18 +402,17 @@ var $AppOverlay = {
 		this.$overlay.find('.wt-closebtn').click();
 	},
 	_onclose: function(e) {
-		console.log("ON CLOSE OVERLAY");
-		pThis = e.data;
-		var $content = pThis.$content.hide();
+		console.log("ONCLOSE OVERLAY");
+		This = e.data;
+		var $content = This.$content.hide();
 		if ($content.attr('data-type') == 'persist') {
 			setTimeout(function(){ $content.appendTo('body'); }, 100);
 		} else {
 			$content.remove();
 		}
-		pThis.hide();
+		This.hide();
 	}
 };
-
 
 var $AppNoti = {
 	_defaults: {
@@ -381,10 +438,9 @@ var $AppNoti = {
 				$(this).find('.wt-notibody').html(opts.text);
 				$(this).find('.wt-notilink').attr('href', opts.link);
 			}
-		}).delay(opts.timeout).fadeOut({duration:500,
-			always: function() {
-				$(this).remove();
-			}
+		}).delay(opts.timeout).fadeOut({
+			duration:500,
+			always: function() { $(this).remove();}
 		});
 		$('.wt-notibox').append($elm);
 	},
@@ -398,17 +454,23 @@ var $AppNoti = {
 
 var $AppToast = {
 	show: function(text='Error', timeout=1800) {
-		$('.wt-toast').fadeIn({duration: 500, start: function() {$(this).text(text);}}).delay(timeout).fadeOut(500);
+		$('.wt-toast').fadeIn({
+			duration: 500,
+			start: function() { $(this).text(text); },
+		}).delay(timeout).fadeOut(500);
 	},
 	hide: function() {
 		$('.wt-toast').hide();
 	}
 };
 
-var wsuggest = function(Elem, opts) {
-	console.log('+wsuggest element : '+Elem.prop("tagName"));
-	var Inst = $(Elem);
-	Inst.kd = {
+/*******************************************************/
+/******************** UI Widgets **********************/
+/*******************************************************/
+
+var wsuggest = function($Inst, opts) {
+	console.log('+wsuggest element : '+$Inst.prop("tagName"));
+	$Inst.kd = {
 		_name: 'suggest',
 		_ui: null,
 		_count: 0,
@@ -417,21 +479,21 @@ var wsuggest = function(Elem, opts) {
 		_selectedIndex: 0,
 	};
 
-	Inst.kf = {
+	$Inst.kf = {
 		minLength: 1,
 		delay: 0,
 		_create: function(e) {
 			console.log('+_create['+kd._name+']');
 			kd._ui = $('<ul class="wt-search-list wt-search-list-app" >');
-			kd._ui.css({width: Elem.css('width')});
-			Elem.after(kd._ui);
+			kd._ui.css({width: $Inst.css('width')});
+			$Inst.after(kd._ui);
 			//kd._ui.on('touchstart click', 'li', kf._itemClick);
 			//kd._ui.on('mouseenter', 'li', kf._itemHover);
 			kd._ui.on('touchend', 'li', kf._itemClick);
-			Elem.on("keyup", kf._keyUp);
-			Elem.on("keypress", kf._keyPress);
-			Elem.on("focus", kf._onfocus);
-			Elem.on("blur", kf._onunfocus);
+			$Inst.on("keyup", kf._keyUp);
+			$Inst.on("keypress", kf._keyPress);
+			$Inst.on("focus", kf._onfocus);
+			$Inst.on("blur", kf._onunfocus);
 		},
 		_destroy: function(e) {
 			kd._ui.remove();
@@ -481,7 +543,7 @@ var wsuggest = function(Elem, opts) {
 				kd._selectedIndex = index;
 				kd._ui.children().eq(kd._selectedIndex).addClass('wt-search-item-a');
 				if (kd._jsonObj) {
-					kf._itemSelect(Elem, kd._jsonObj[index]);
+					kf._itemSelect($Inst, kd._jsonObj[index]);
 				}
 			}
 		},
@@ -493,7 +555,7 @@ var wsuggest = function(Elem, opts) {
 			if (kd._jsonData) {
 				kd._ui.children().eq(kd._selectedIndex).removeClass('wt-search-item-a');
 				kd._ui.children().eq(index).addClass('wt-search-item-a');
-				kf._itemSelect(Elem, kd._jsonData[index]);
+				kf._itemSelect($Inst, kd._jsonData[index]);
 				kd._selectedIndex = index;
 			}
 		},
@@ -502,7 +564,7 @@ var wsuggest = function(Elem, opts) {
 		},
 		_itemSelectCurrent: function() {
 			if (kd._count > 0 && kd._jsonObj) {
-				kf._itemSelect(Elem, kd._jsonObj[kd._selectedIndex]);
+				kf._itemSelect($Inst, kd._jsonObj[kd._selectedIndex]);
 			}
 		},
 		_onEnter: function(e) {
@@ -514,7 +576,7 @@ var wsuggest = function(Elem, opts) {
 			console.log('+_keyPress : '+ e.keyCode);
 			if (e.keyCode === 10 || e.keyCode === 13) {
 				e.preventDefault();
-				e.data = Inst;
+				e.data = $Inst;
 				kf._onEnter(e);
 			}
 		},
@@ -531,7 +593,7 @@ var wsuggest = function(Elem, opts) {
 					cont.scrollTop(child.position().top + cont.scrollTop());
 					//cont.scrollTop(child.offset().top - cont.offset().top + cont.scrollTop());
 					if (kd._jsonObj) {
-						kf._itemSelect(Elem, kd._jsonObj[kd._selectedIndex]);
+						kf._itemSelect($Inst, kd._jsonObj[kd._selectedIndex]);
 					}
 				}
 				handled = true;
@@ -546,7 +608,7 @@ var wsuggest = function(Elem, opts) {
 					//console.log("scroll top : "+ cont.scrollTop());
 					cont.scrollTop(child.position().top + cont.scrollTop());
 					if (kd._jsonObj) {
-						kf._itemSelect(Elem, kd._jsonObj[kd._selectedIndex]);
+						kf._itemSelect($Inst, kd._jsonObj[kd._selectedIndex]);
 					}
 				}
 				handled = true;
@@ -565,13 +627,13 @@ var wsuggest = function(Elem, opts) {
 				e.preventDefault();
 				return;
 			}
-			var key = Elem.val();
+			var key = $Inst.val();
 			(key.length >= kf.minLength && kf._source(key, kf._parse));
 		},
 	};
 
-	var kf = Inst.kf;
-	var kd = Inst.kd;
+	var kf = $Inst.kf;
+	var kd = $Inst.kd;
 
 	/* merge the options */
 	for (var key in opts) {
@@ -581,30 +643,29 @@ var wsuggest = function(Elem, opts) {
 };
 
 
-function wfileupload(Elem, opts)
+function wfileupload($Inst, opts)
 {
-	console.log('+wfileupload element : '+Elem.prop('tagName'));
-	var Inst = $(Elem);
+	console.log('+wfileupload element : '+$Inst.prop('tagName'));
 	// klass data
-	Inst.kd = {
+	$Inst.kd = {
 		_name: 'fileupload',
 		_ui: null,
 		_uploads: [],
 		_hidden: null,
 	};
 	// klass functors
-	Inst.kf =  {
+	$Inst.kf =  {
 		maxFiles: 1,
 		mimeType: 'image',
 		maxSize: 1024, // 1KB
 		_create: function(e) {
 			console.log('+_create['+kd._name+']');
 			kd._ui = $('<div class="wt-progress-div" ></div>');
-			kd._ui.css({width: Elem.css('width')});
+			kd._ui.css({width: $Inst.css('width')});
 			kd._hidden = $('<input type="hidden" name="files" value="" >');
-			Elem.before(kd._hidden);
-			Elem.after(kd._ui);
-			Elem.on('change', kf._upload);
+			$Inst.before(kd._hidden);
+			$Inst.after(kd._ui);
+			$Inst.on('change', kf._upload);
 		},
 		_destroy: function(e) {
 			console.log('+_destroy['+kd._name+']');
@@ -736,8 +797,8 @@ function wfileupload(Elem, opts)
 		}
 	};
 
-	var kd = Inst.kd;
-	var kf = Inst.kf;
+	var kd = $Inst.kd;
+	var kf = $Inst.kf;
 
 	/* merge the options */
 	for (var key in opts) {
@@ -746,38 +807,37 @@ function wfileupload(Elem, opts)
 	kf._create();
 }
 
-function wswitchtab(Elem, opts)
+function wswitchtab($Inst, opts)
 {
-	console.log('+wswitchtab element : '+Elem.prop('tagName'));
-	var Inst = $(Elem);
+	console.log('+wswitchtab element : '+$Inst.prop('tagName'));
 	// klass data
-	Inst.kd = {
+	$Inst.kd = {
 		_name: 'switchtab',
 		_total: 2,
 		_active: null,
 	};
 	// klass functors
-	Inst.kf =  {
+	$Inst.kf =  {
 		_activeIndex: 0,
 		_create: function(e) {
 			console.log('+_create['+kd._name+']');
-			//Inst.find('.wt-switchtab-nav > a:nth-child(2)').
-			var elems = Inst.find(".wt-switchtab-nav > li > a[rel]");
-			kd._total = elems.length;
+			//$Inst.find('.wt-switchtab-nav > a:nth-child(2)').
+			var $elems = $Inst.find(".wt-switchtab-nav > li > a[rel]");
+			kd._total = $elems.length;
 			console.log("length : "+ kd._total);
-			kd._active = elems.eq(kf._activeIndex);
+			kd._active = $elems.eq(kf._activeIndex);
 			var rel = kd._active.prop("rel");
-			Inst.find(rel).show();
-			elems.on("click", function(e){
+			$Inst.find(rel).show();
+			$elems.on("click", function(e){
 				console.log("+tabClicked");
 				e.preventDefault();
 				var rel = kd._active.prop("rel");
 				kd._active.removeClass("wt-switchtab-a");
-				Inst.find(rel).hide();
+				$Inst.find(rel).hide();
 				kd._active = $(this);
 				rel = kd._active.prop("rel");
 				kd._active.prop("class", "wt-switchtab-a");
-				Inst.find(rel).show();
+				$Inst.find(rel).show();
 			});
 		},
 		_destroy: function(e) {
@@ -786,8 +846,8 @@ function wswitchtab(Elem, opts)
 		},
 	};
 
-	var kd = Inst.kd;
-	var kf = Inst.kf;
+	var kd = $Inst.kd;
+	var kf = $Inst.kf;
 
 	/* merge the options */
 	for (var key in opts) {
@@ -837,6 +897,8 @@ function onSwipe(el,func) {
         direc = "";
       },false);
 }
+
+
 
 /****************** Exteded Jquery *******************/
 jQuery.fn.exists = function(){return this.length>0;}

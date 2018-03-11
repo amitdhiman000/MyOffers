@@ -1,0 +1,178 @@
+{% include '../locus/address_picker_1.html' %}
+
+
+<div class="ui-content" >
+	<style type="text/css" >
+		#business_add_box { display: none; }
+	</style>
+	<script type="text/javascript" >
+		function toggleBusinessBox(e, This) {
+			console.log("+showBusinessBox");
+			$("#business_add_box").toggle();
+			$("#business_add_box").find('form').trigger("reset");
+		}
+
+		function editText(e, This)
+		{
+			console.log('+editText');
+			e.stopPropagation();
+			e.preventDefault();
+
+			var $root = $(This).parents('.info_item');
+			var $inputs = $root.find('.ui-input');
+			var $controls = $root.find('.item_controls');
+			if ($inputs.attr('readonly')) {
+				$inputs.removeAttr('readonly');
+			} else {
+				$inputs.attr('readonly', 'readonly');
+				$inputs.val($inputs.attr('data-value'));
+			}
+			$controls.toggleClass('ui-hide');
+		}
+
+		function showAddressBox(e, This) {
+			console.log("+showAddressBox");
+			e.stopPropagation();
+			$AppOverlay.show($('#address_picker'));
+			BeforeAddrSaveEvent.add(OnBAddrSaveReq__);
+			AfterAddrSaveEvent.add(OnBAddrSaveRes__);
+		}
+
+		function hideAddressBox()
+		{
+			console.log('+hideAddressBox');
+			BeforeAddrSaveEvent.del(OnBAddrSaveReq__);
+			AfterAddrSaveEvent.del(OnBAddrSaveRes__);
+			$AppOverlay.close();
+		}
+
+		function deleteBusiness(e, This)
+		{
+			var $item = $(This).parents('.business_item');
+			var b_id = $item.attr('data-id');
+			var data = $AppData.csrf();
+			data["B_id"] = b_id;
+			$AppRequest.post('/business/delete/', data, function(status, resp) {
+				if (status == true) {
+					$item.remove();
+				} else {
+					var errors = '';
+					for (var err in resp.data) {
+						errors += resp.data[err] + '<br />';
+					}
+					$AppNoti.info({title:e.message, text:errors});
+				}
+			});
+		}
+
+		function showAddressSelectBox(e, This) {
+			console.log("+showAddressSelectBox");
+			e.stopPropagation();
+
+			var $item = $(This).parents('.business_item');
+			var b_id = $item.attr('data-id');
+			var data = $AppData.csrf();
+			data["B_id"] = b_id;
+			data["pid"] = 2;
+			$AppOverlay.show();
+
+			$AppRequest.get('/business/address/', data, function(status, resp) {
+				if (true == status) {
+					$AppOverlay.update(resp);
+				} else {
+					console.log('data : '+JSON.stringify(resp.data));
+					$AppOverlay.update(JSON.stringify(resp.data));
+				}
+			});
+		}
+
+		function OnBusinessSaveReq__(e) {
+			console.log("+OnBusinessSaveReq__");
+			return true;
+		}
+
+		function OnBusinessSaveRes__(e) {
+			console.log("+OnBusinessSaveRes__");
+			if (e.status) {
+				var val = e.resp;
+				$('#business_items_cont').prepend(val);
+				toggleBusinessBox();
+				$AppNoti.info({title:"Saved", text:"Business save Successfully!!"});
+			} else {
+				var errors = '';
+				for (var err in e.resp.data) {
+					errors += e.resp.data[err] + '<br />';
+				}
+				$AppNoti.info({title:e.resp.message, text:errors});
+			}
+			return true;
+		}
+
+		function OnBAddrSaveReq__(e) {
+			console.log("+OnAdSaveReq__");
+			return true;
+		}
+
+		function OnBAddrSaveRes__(e) {
+			console.log("+OnAddrSaveRes__");
+			if (e.status) {
+				var val = e.resp;
+				$('#business_addr_cont').prepend(val);
+				hideAddressBox();
+				$AppNoti.info({title:"Saved", text:e.resp.message});
+			} else {
+				var errors = '';
+				for (var err in e.resp.data) {
+					errors += e.resp.data[err] + '<br />';
+					}
+				$AppNoti.info({title:e.resp.message, text:errors});
+			}
+			return true;
+		}
+	</script>
+
+	<div id="delete-dialog" title="Delete" style="display: none;">
+		<p>Are you sure want to delete this business ?</p>
+	</div>
+	<div class="ui-block">
+		<div class="ui-block-bar">
+			<div>
+				<strong>BUSINESS</strong>
+			</div>
+		</div>
+		<div class="ui-block-body" >
+			<a class="ui-btn-a" onclick="toggleBusinessBox();" >ADD BUSINESS</a>
+			<div id="business_add_box" >
+				<form method="POST" action="/business/create/" class="ajax-form" data-delegates='{"before":"OnBusinessSaveReq__", "after":"OnBusinessSaveRes__"}' >
+					<table class="ui-form-table" >
+						{% csrf_token %}
+						<input type="hidden" name="B_id" class="ui-input" value="{{business.id}}" />
+						<tr><td>CATEGORY*</td><td>
+						<select class="ui-input" name="B_category" >
+							{% for cat in categories %}
+							<option value="{{cat.id}}">{{cat.name}}</option>
+							{% endfor %}
+						</select>
+						</td></tr>
+						<tr><td>NAME*</td><td>
+						<input type="text" name="B_name" class="ui-input" value="{{business.name}}" />
+						</td></tr>
+						<tr><td>ABOUT</td><td>
+						<input type="text" name="B_about" class="ui-input" value="{{business.about}}" />
+						</td></tr>
+						<tr><td>WEBSITE</td><td>
+						<input type="text" name="B_website" class="ui-input" value="{{business.website}}" />
+						</td></tr>
+						<tr><td></td><td><input type="submit" value="Save" class="ui-btn ui-btn-input" /></td></tr>
+					</table>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div class="ui-content" id="business_items_cont">
+		{% for b in business %}
+			{% include './business_item_1.html' %}
+		{% endfor %}
+	</div>
+</div>

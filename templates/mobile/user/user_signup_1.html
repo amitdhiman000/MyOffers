@@ -14,7 +14,7 @@
 				<div class="ui-errors" >
 					{% if form_errors %} {{form_errors.user}} {% endif %}
 				</div>
-				<form action="/user/signin-auth/" method="POST" data-ajax="false" >
+				<form action="/user/signin-auth/" method="POST" class="ajax-form" data-delegates='{"before": "OnSignInReq__"}' >
 					{% csrf_token %}
 					<input type="hidden" name="next" value="{{ next }}">
 					<table class="ui-form-table">
@@ -32,7 +32,7 @@
 				<div class="ui-errors" >
 					{% if form_errors %} {{form_errors.user}} {% endif %}
 				</div>
-				<form action="/user/signup-auth/" method="POST" >
+				<form action="/user/signup-auth/" method="POST" class="ajax-form" data-delegates='{"before": "OnSignUpReq__"}' >
 					{% csrf_token %}
 					<table class="ui-form-table" >
 						<tr><td>NAME* : </td></tr>
@@ -55,4 +55,16 @@
 		</div>
 	</div>
 </div>
+
+<script type="text/javascript">
+function OnSignInReq__(e) {
+	console.log("+OnSignInReq__");
+	return true;
+}
+
+function OnSignUpReq__(e) {
+	console.log("+OnSignUpReq__");
+	return true;
+}
+</script>
 {% endblock %}
