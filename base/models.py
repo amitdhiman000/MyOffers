@@ -26,12 +26,19 @@ class CRUDModel(models.Model):
 			return "/{0}/{1}/{2}/".format(module_name, class_name, self.id)
 			#return '/locus/address/'+ str(self.id) + '/'
 
+	@classmethod
+	def insert(klass, values):
+		try:
+			obj = klass.objects.create(**values)
+		except Exception as ex:
+			logging.error(ex)
+		return None
+
 
 	@classmethod
 	def create(klass, values):
 		try:
-			obj = klass.objects.get_or_create(**values)[0]
-			return obj
+			return klass.objects.get_or_create(**values)
 		except Exception as ex:
 			logging.error(ex)
 		return None

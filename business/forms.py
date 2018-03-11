@@ -56,7 +56,11 @@ class BusinessRegForm(CreateForm):
 	def save(self):
 		print('saving ....')
 		print(self.model_values())
-		return Business.create(self.model_values())
+		result = Business.create(self.model_values())
+		if result[1] == False:
+			self.set_error('error', 'Business already exists!!')
+			return None
+		return result[0]
 
 
 

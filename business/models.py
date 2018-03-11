@@ -52,16 +52,6 @@ class Business(CRUDModel):
 
 
 	@classmethod
-	def create(klass, values):
-		try:
-			obj = klass.objects.create(**values)
-			return obj
-		except Exception as ex:
-			logging.error(ex)
-		return None
-
-
-	@classmethod
 	def fetch_by_user(klass, user):
 		return klass.objects.filter(fk_user=user)
 
