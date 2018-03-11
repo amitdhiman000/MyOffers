@@ -73,10 +73,10 @@ class AddressView(RestApiView):
 
 
 
-
 @App_LoginRequired
 def home_view(request):
     return address_view(request)
+
 
 @App_RunTime
 @App_LoginRequired

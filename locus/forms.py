@@ -51,7 +51,7 @@ class AddressRegForm(CreateForm):
 
         #location = self.model_value('location')
         location = self.del_model_value('location')
-        if location != None and location != '':
+        if location != None:
             try:
                 loc = location.split(',')
                 if len(loc) == 2:

@@ -1,7 +1,7 @@
 import json
 from django.conf import settings
 from base.cleaners import ValueCleaner
-
+import logging
 
 class Form(object):
 	def __init__(self):
@@ -80,7 +80,7 @@ class Form(object):
 
 	## get model value for key
 	def model_value(self, key):
-		return self.m_model_values.get(key, '')
+		return self.m_model_values.get(key, None)
 
 
 	## add value to model set/ only for internal usage.

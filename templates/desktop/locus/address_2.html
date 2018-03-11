@@ -3,34 +3,32 @@
 {% include './address_picker_1.html' %}
 
 <script type="text/javascript" >
-    function defaultAddress(pThis,id)
-    {
-        console.log('+defaultAddress');
-    }
 
-    function editAddress(pThis,id)
+    function editAddress(e, This)
     {
         console.log('+editAddress');
     }
 
-    function deleteAddress(pThis,id)
+    function deleteAddress(e, This)
     {
         console.log('+deleteAddress');
-        data = get_csrf();
-        data['A_id'] = id;
+        var $item = $(This).parents(".locus_addr_item");
+        data = $AppData.csrf();
+        data['A_id'] = $item.attr('data-aid');
+        console.log(data['A_id']);
+
         $AppRequest.post('/locus/address/delete/', data, function(status, resp){
             if (status) {
-                $(pThis).parents(".addr_item").remove();
+                $item.parent('.locus_addr_item_w').hide(500, function(){ $(this).remove(); });
             } else {
                 $AppNoti.error({title:resp.message, text:JSON.stringify(resp.data)});
             }
         });
     }
 
-    function showAddressBox(e, pThis) {
+    function showAddressBox(e, This) {
         console.log("+showAddressBox");
         e.stopPropagation();
-
         $AppOverlay.show($('#address_picker'));
         //updateMap();
     }
@@ -44,10 +42,10 @@
     function toggleBoxSize(e, This)
     {
         console.log('+toggleBoxSize');
-        e.preventDefault();
-        e.stopPropagation();
-        $wrapper = $(This).parents('.business_addr_item_w');
-        $wrapper.toggleClass('business_addr_item_w_expanded');
+        $(This).toggleClass('locus_addr_item_w_expanded');
+        var top = $(This).offset().top;
+        if ($(window).scrollTop() > top)
+            $(window).scrollTop(top);
     }
 
     function OnAddrSaveReq__(e) {
@@ -59,8 +57,9 @@
     	console.log("+OnAddrSaveRes__");
     	if (e.status) {
     		var val = e.resp;
-    		$('#address_cont').prepend(val);
+            $('#locus_address_cont').prepend(val);
             hideAddressBox();
+            $AppNoti.info({title:"Saved", text:"Address save Successfully!!"});
     	} else {
     		var errors = '';
     		for (var err in e.resp.data) {
@@ -77,10 +76,12 @@
     });
 </script>
 <style>
-    .business_addr_item { overflow:hidden; height: 100%; }
-    .business_addr_item_selected { border: 1px solid #36F; }
-    .business_addr_item_w { display: inline-block; width:30%; height:250px; vertical-align:top; overflow:hidden; }
-    .business_addr_item_w_expanded { height:100%; }
+    .locus_addr_item { overflow:hidden; height: 100%; margin: 2px; }
+    .locus_addr_item_selected { border: 1px solid #36F; }
+    .locus_addr_item_w { display: inline-block; width:30%; height:250px; vertical-align:top; overflow:hidden; cursor: pointer; }
+    .locus_addr_item_w .locus_addr_item:hover { opacity: 0.9; border: 1px solid #aaa;  }
+    .locus_addr_item_w_expanded { height:100%; }
+    .locus_addr_table tr td:first-child { text-align: right; width: 15%; }
 </style>
 
 <div class="ui-content" >
@@ -96,9 +97,9 @@
 			<a onclick="showAddressBox(event, this);" class="ui-btn-a" >New Address</a>
 		</div>
 	</div>
-    <div id="address_cont" >
+    <div id="locus_addr_cont"  /*class="ui-grid"*/ >
         {% for address in addresses %}
-        <div  class="business_addr_item_w" >
+        <div  class="locus_addr_item_w" onclick="toggleBoxSize(event, this)">
             {% include './address_item_1.html' %}
         </div>
         {% endfor %}

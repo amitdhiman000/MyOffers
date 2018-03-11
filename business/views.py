@@ -76,7 +76,7 @@ def business_delete(request):
 			return JsonResponse({'status':204, 'message': 'Deleted Successfully'})
 		else:
 			data = form.errors()
-			return JsonResponse({'status':204, 'message': 'Delete Failed', 'data':data})
+			return JsonResponse({'status':401, 'message': 'Delete Failed', 'data':data})
 	return App_Render(request, 'business/business_1.html', data)
 
 

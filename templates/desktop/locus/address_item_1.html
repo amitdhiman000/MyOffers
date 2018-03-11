@@ -1,20 +1,18 @@
-<div class="ui-block addr_item" style="margin-top: 1em;" data-aid="{{address.id}}" >
+<div class="ui-block locus_addr_item" data-aid="{{address.id}}" >
     <div class="ui-block-bar">
         <div>
             <h2>{{address.name}}</h2>
         </div>
         <div>
             <div class="ui-right" >
-                <a onclick="toggleBoxSize(event, this)" >[+]</a>
-                &nbsp;&nbsp;
-                <div class="ui-dropdown" >
-                    <div class="ui-dropbtn" >
-                        <a onmouseover="addrItemOptions()" style="font-size:1.5em; text-decoration:none;" >&#8230;</a>
+                <div class="ui-hovermenu" >
+                    <div class="ui-hoverbtn" >
+                        <a style="font-size:1.5em; text-decoration:none;" >&#8230;</a>
                     </div>
-                    <div class="ui-dropcontent" >
+                    <div class="ui-hovercontent" >
                         <ul class="ui-vlist" >
-                            <li><a onclick="editAddress(this, {{address.id}})" >Edit</a></li>
-                            <li><a onclick="deleteAddress(this, {{address.id}})" >Delete</a></li>
+                            <li><a onclick="editAddress(event, this)" >Edit</a></li>
+                            <li><a onclick="deleteAddress(event, this)" >Delete</a></li>
                         </ul>
                     </div>
                 </div>
@@ -22,20 +20,17 @@
         </div>
     </div>
     <div class="ui-block-body">
-        <style>
-            .address-table tr td:first-child { text-align: right; width: 15%; }
-        </style>
-        <table class="ui-form-table address-table" >
+        <table class="ui-form-table locus_addr_table" >
             <tr><td>NAME </td><td>{{address.name}}</td></tr>
+            <tr><td>ADDRESS </td><td>{{address.address}}</td></tr>
             <tr><td>PERSON </td><td>{{address.person}}</td></tr>
             <tr><td>PHONE </td><td>{{address.phone}}</td></tr>
             <tr><td>PINCODE </td><td>{{address.pincode}}</td></tr>
+            <tr><td>LANDMARK </td><td>{{address.landmark}}</td></tr>
             <tr><td>AREA </td><td>{{address.area}}</td></tr>
             <tr><td>CITY </td><td>{{address.city}}</td></tr>
             <tr><td>STATE </td><td>{{address.state}}</td></tr>
             <tr><td>COUNTRY </td><td>{{address.country}}</td></tr>
-            <tr><td>LANDMARK </td><td>{{address.landmark}}</td></tr>
-            <tr><td>ADDRESS </td><td>{{address.address}}</td></tr>
         </table>
     </div>
 </div>

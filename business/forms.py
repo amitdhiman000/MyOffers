@@ -89,18 +89,22 @@ class BusinessDeleteForm(DeleteForm):
 	def __init__(self):
 		super().__init__()
 		self.m_fields = {
-			'U_id': {'name':'id', 'validator':None},
+			'B_id': {'name':'id', 'validator':None},
 			'id': {'name':'id', 'validator':None},
 		}
 
 
 	def validate(self):
 		super().validate()
-		self.add_model_value('fk_user', self.request().user)
+		if self.model_value('id') != None:
+			self.add_model_value('fk_user', self.request().user)
+		else:
+			self.set_error('error', 'Invalid request without business id')
 		return self.valid()
 
 
 	def commit(self):
+		print(self.model_values())
 		if Business.remove(self.model_values()):
 			return True
 		else:

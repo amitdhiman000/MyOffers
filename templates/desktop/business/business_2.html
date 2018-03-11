@@ -4,13 +4,30 @@
 <div class="ui-content" >
 	<style type="text/css" >
 		#business_add_box { display: none; }
-		#address_add_box { display: none; }
 	</style>
 	<script type="text/javascript" >
-		function showBusinessBox(e, This) {
+		function toggleBusinessBox(e, This) {
 			console.log("+showBusinessBox");
-			e.stopPropagation();
 			$("#business_add_box").toggle();
+			$("#business_add_box").find('form').trigger("reset");
+		}
+
+		function editText(e, This)
+		{
+			console.log('+editText');
+			e.stopPropagation();
+			e.preventDefault();
+
+			var $root = $(This).parents('.info_item');
+			var $inputs = $root.find('.ui-input');
+			var $controls = $root.find('.item_controls');
+			if ($inputs.attr('readonly')) {
+				$inputs.removeAttr('readonly');
+			} else {
+				$inputs.attr('readonly', 'readonly');
+				$inputs.val($inputs.attr('data-value'));
+			}
+			$controls.toggleClass('ui-hide');
 		}
 
 		function showAddressBox(e, This) {
@@ -36,7 +53,7 @@
 			var data = $AppData.csrf();
 			data["B_id"] = b_id;
 			$AppRequest.post('/business/delete/', data, function(status, resp) {
-				if (status) {
+				if (status == true) {
 					$item.remove();
 				} else {
 					var errors = '';
@@ -59,7 +76,7 @@
 			data["pid"] = 2;
 			$AppOverlay.show();
 
-			$AppRequest.get('/business/address/', data, function(status, resp){
+			$AppRequest.get('/business/address/', data, function(status, resp) {
 				if (true == status) {
 					$AppOverlay.update(resp);
 				} else {
@@ -79,7 +96,8 @@
 			if (e.status) {
 				var val = e.resp;
 				$('#business_items_cont').prepend(val);
-				hideAddressBox();
+				toggleBusinessBox();
+				$AppNoti.info({title:"Saved", text:"Business save Successfully!!"});
 			} else {
 				var errors = '';
 				for (var err in e.resp.data) {
@@ -101,6 +119,7 @@
 				var val = e.resp;
 				$('#business_addr_cont').prepend(val);
 				hideAddressBox();
+				$AppNoti.info({title:"Saved", text:e.resp.message});
 			} else {
 				var errors = '';
 				for (var err in e.resp.data) {
@@ -122,9 +141,9 @@
 			</div>
 		</div>
 		<div class="ui-block-body" >
-			<a href="javascript:void(0)" class="ui-btn-a" onclick="showBusinessBox(event, this);" >[+] ADD BUSINESS</a>
+			<a class="ui-btn-a" onclick="toggleBusinessBox();" >ADD BUSINESS</a>
 			<div id="business_add_box" >
-				<form method="POST" action="/business/create/" class="ajax-form" id="business-form" data-delegates='{"before":"OnBusinessSaveReq__", "after":"OnBusinessSaveRes__"}' >
+				<form method="POST" action="/business/create/" class="ajax-form" data-delegates='{"before":"OnBusinessSaveReq__", "after":"OnBusinessSaveRes__"}' >
 					<table class="ui-form-table" >
 						{% csrf_token %}
 						<input type="hidden" name="B_id" class="ui-input" value="{{business.id}}" />

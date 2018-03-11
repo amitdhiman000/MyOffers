@@ -349,18 +349,24 @@ var $AppOverlay = {
 		this.$content_def = $('<div style="width:80% height:50%;" data-type="none"></div>');
 		this.$content = this.$content_def;
 		this.$overlay.find('.wt-closebtn').on('click', this, this._onclose);
+		this._shown = false;
 	},
 	show: function($content=this.$content_def) {
-		return this.update($content);
+		this.update($content);
+		this.$overlay.show();
+		this._is_shown = true;
+		$('body').toggleClass('ui-noscroll', this._shown);
+		return this;
 	},
 	hide: function() {
 		this.$overlay.hide();
+		this._is_shown = false;
+		$('body').toggleClass('ui-noscroll', this._shown);
 		return this;
 	},
 	update: function($content) {
 		this.$content = $($content);
 		this.$overlay.find('.wt-overlay-content').html(this.$content.show());
-		this.$overlay.show();
 		return this;
 	},
 	close: function(e) {
@@ -368,7 +374,7 @@ var $AppOverlay = {
 		this.$overlay.find('.wt-closebtn').click();
 	},
 	_onclose: function(e) {
-		console.log("ON CLOSE OVERLAY");
+		console.log("ONCLOSE OVERLAY");
 		This = e.data;
 		var $content = This.$content.hide();
 		if ($content.attr('data-type') == 'persist') {
