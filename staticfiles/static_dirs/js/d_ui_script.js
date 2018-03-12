@@ -14,8 +14,6 @@ $(function() {
 	initHistory();
 	/*Initialize search*/
 	initSearch();
-	/*Initialize switchTabs*/
-	initSwitchTabs();
 
 	console.log("-init");
 });
@@ -25,27 +23,9 @@ function initApp()
 	console.log("+initApp");
 	$(document).on('submit', 'form.ajax-form', ajaxFormSubmit);
 
-	$("#app_main_nav li:first-child").on('click' , function(e) {
-		e.stopPropagation();
-		$('#app_sub_nav_content').fadeToggle(100);
-	});
-	$("#app_main_nav").on('click', function(e) {
-		$('#app_sub_nav_content').fadeOut(100);
-	});
-
 	$(".app_vlist_exp_item > a").on("click", function(e) {
 		e.preventDefault();
 		$(this).parent().toggleClass("expanded");
-	});
-
-	$("#app_close").on("click", function(e) {
-		console.log("+ui-close clicked");
-		navClicked();
-	});
-
-	$("#app_leftnav li").not(".app_vlist_exp_item").on("click", function(e){
-		console.log("+app_leftnav");
-		navClicked();
 	});
 
 	$AppOverlay.init();
@@ -54,20 +34,11 @@ function initApp()
 	$(window).on("click", function(event) {
 		console.log("window clicked");
 		if (!event.target.matches('.ui-dropbtn')) {
-			$(".ui-dropcontent").each(function(i, elm){
+			$(".ui-dropcontent").each(function(i, elm) {
 				elm.classList.remove("ui-show");
 			});
 		}
 	});
-}
-
-function dumpObject(obj)
-{
-	var output = '';
-	for (var property in obj) {
-		output += property + ': ' + obj[property]+'; ';
-	}
-	console.log(output);
 }
 
 function initHistory()
@@ -97,7 +68,7 @@ function initHistory()
 			var This = $(this),
 			url = This.attr("href"),
 			dest = This.attr("data-dest").split(':');
-			title = This.text()+' | My Offers';
+			title = This.text()+' | '+$AppData.name();
 			state = {url:url, title:title, dest:dest,};
 			makeRequest(state);
 		});
@@ -143,22 +114,23 @@ function initSearch()
 		},
 		_onEnter: function(e) {
 			console.log('+_onEnter');
-			var Inst = e.data;
-			Inst.kf._onunfocus();
-			if (Inst.kd._count > 0) {
-				var item = Inst.kd._jsonObj[Inst.kd._selectedIndex];
+			var $Inst = e.data;
+			$Inst.kf._onunfocus();
+			if ($Inst.this._count > 0) {
+				var item = $Inst.this._jsonObj[$Inst.this._selectedIndex];
 				location.href = item.url
 			}
 		}
 	});
 }
 
-function initSwitchTabs()
+function dumpObject(obj)
 {
-	console.log("+initSwitchTabs");
-	$(".wt-switchtab").each(function(i, elm) {
-		$(elm).switchtab({});
-	});
+	var output = '';
+	for (var key in obj) {
+		output += key + ': ' + obj[key]+'; ';
+	}
+	console.log(output);
 }
 
 function dropToggle(e, This)
@@ -174,17 +146,17 @@ function navClicked()
 {
 	console.log("+navClicked");
 	var appleft = document.getElementById("app_leftnav");
-	var appclose = document.getElementById("app_close");
-	if (appleft && appclose) {
-		console.log("width: "+appleft.style.width);
-		if (appleft.style.width == "50%") {
-			appleft.style.width = "0";
-			appleft.style.display = "none";
-			appclose.style.display = "none";
+	var apppage = document.getElementById("app_page");
+	if (appleft && apppage) {
+		console.log("marginLeft: "+appleft.style.marginLeft);
+		if (appleft.style.marginLeft !== "-20%") {
+			appleft.style.marginLeft = "-20%";
+			apppage.style.width = "95%";
+			apppage.style.margin = "0 auto";
 		} else {
-			appleft.style.width = "50%";
-			appleft.style.display = "block";
-			appclose.style.display = "block";
+			appleft.style.marginLeft = "0";
+			apppage.style.marginLeft = "20%";
+			apppage.style.width = "80%";
 		}
 	}
 }
@@ -368,6 +340,13 @@ var $AppData = {
 		var data = {};
 		data[$mt.attr("key")] = $mt.attr("content");
 		return data;
+	},
+	name: function() {
+		if (!this._name) {
+			var $mt = $('meta[name=app-name]');
+			this._name = $mt.attr("content") || "/m\\";
+		}
+		return this._name;
 	}
 };
 
@@ -379,16 +358,19 @@ var $AppOverlay = {
 		this.$overlay.find('.wt-closebtn').on('click', this, this._onclose);
 		this._shown = false;
 	},
+	shown: function(){
+		return this._shown;
+	},
 	show: function($content=this.$content_def) {
 		this.update($content);
 		this.$overlay.show();
-		this._is_shown = true;
+		this._shown = true;
 		$('body').toggleClass('ui-noscroll', this._shown);
 		return this;
 	},
 	hide: function() {
 		this.$overlay.hide();
-		this._is_shown = false;
+		this._shown = false;
 		$('body').toggleClass('ui-noscroll', this._shown);
 		return this;
 	},
@@ -487,9 +469,7 @@ var wsuggest = function($Inst, opts) {
 			kd._ui = $('<ul class="wt-search-list wt-search-list-app" >');
 			kd._ui.css({width: $Inst.css('width')});
 			$Inst.after(kd._ui);
-			//kd._ui.on('touchstart click', 'li', kf._itemClick);
-			//kd._ui.on('mouseenter', 'li', kf._itemHover);
-			kd._ui.on('touchend', 'li', kf._itemClick);
+			kd._ui.on('mouseenter', 'li', kf._itemHover);
 			$Inst.on("keyup", kf._keyUp);
 			$Inst.on("keypress", kf._keyPress);
 			$Inst.on("focus", kf._onfocus);
@@ -856,49 +836,220 @@ function wswitchtab($Inst, opts)
 	kf._create();
 }
 
-function onSwipe(el,func) {
-      swipe_det = new Object();
-      swipe_det.sX = 0;
-      swipe_det.sY = 0;
-      swipe_det.eX = 0;
-      swipe_det.eY = 0;
-      var min_x = 20;  //min x swipe for horizontal swipe
-      var max_x = 40;  //max x difference for vertical swipe
-      var min_y = 40;  //min y swipe for vertical swipe
-      var max_y = 50;  //max y difference for horizontal swipe
-      var direc = "";
-      ele = document.getElementById(el);
-      ele.addEventListener('touchstart',function(e){
-        var t = e.touches[0];
-        swipe_det.sX = t.screenX;
-        swipe_det.sY = t.screenY;
-      },false);
-      ele.addEventListener('touchmove',function(e){
-        e.preventDefault();
-        var t = e.touches[0];
-        swipe_det.eX = t.screenX;
-        swipe_det.eY = t.screenY;
-      },false);
-      ele.addEventListener('touchend',function(e){
-        //horizontal detection
-        if ((((swipe_det.eX - min_x > swipe_det.sX) || (swipe_det.eX + min_x < swipe_det.sX)) && ((swipe_det.eY < swipe_det.sY + max_y) && (swipe_det.sY > swipe_det.eY - max_y)))) {
-          if(swipe_det.eX > swipe_det.sX) direc = "r";
-          else direc = "l";
-        }
-        //vertical detection
-        if ((((swipe_det.eY - min_y > swipe_det.sY) || (swipe_det.eY + min_y < swipe_det.sY)) && ((swipe_det.eX < swipe_det.sX + max_x) && (swipe_det.sX > swipe_det.eX - max_x)))) {
-          if(swipe_det.eY > swipe_det.sY) direc = "d";
-          else direc = "u";
-        }
+var $WgtTabs = {
+	_$Inst: null,
+	_name: 'stab',
+	_total: 2,
+	_active: null,
+	_activeIndex: 0,
 
-        if (direc != "") {
-          if(typeof func == 'function') func(el,direc);
-        }
-        direc = "";
-      },false);
-}
+	new: function() {
+		//return $AppWidgets.copy(this);
+		return $.extend({}, {}, this);
+	},
+	attach: function($Inst, options) {
+		console.log('+_create['+this._name+']');
+		this._$Inst = $Inst;
+		var $elems = $Inst.find(".wt-switchtab-nav > li > a[rel]");
+		this._total = $elems.length;
+		console.log("length : "+ this._total);
+		this._active = $elems.eq(this._activeIndex);
+		var rel = this._active.prop("rel");
+		$Inst.find(rel).show();
+		$elems.on("click", this, function(e){
+			console.log("+tabClicked");
+			e.preventDefault();
+			var This = e.data;
+			var rel = This._active.prop("rel");
+			This._active.removeClass("wt-switchtab-a");
+			$Inst.find(rel).hide();
+			This._active = $(this);
+			rel = This._active.prop("rel");
+			This._active.prop("class", "wt-switchtab-a");
+			$Inst.find(rel).show();
+		});
+		$Inst.on('unload', this._onremove);
+	},
+	detach: function() {
+		console.log('+detach['+this._name+']');
+		var $elems = this._$Inst.find(".wt-switchtab-nav > li > a[rel]");
+		$elems.off("click");
+	},
+	_onremove: function(e) {
+		console.log("+_onremove");
+	},
+};
 
+var $WgtSuggesions = {
+	_name: 'suggest',
+	_$ui: null,
+	_count: 0,
+	_jsonObj: null,
+	_selectedItem: null,
+	_selectedIndex: 0,
 
+	new: function() {
+		return $.extend({}, {}, this);
+	},
+	attach: function($Inst, options) {
+		console.log('+attach['+this._name+']');
+		this._$ui = $('<ul class="wt-search-list wt-search-list-app" >');
+		this._$ui.css({width: $Inst.css('width')});
+		$Inst.after(this._$ui);
+		this._$ui.on('mouseenter', 'li', this, this.onitemhover);
+		$Inst.on("keyup", this, this.onkeyup);
+		$Inst.on("keypress", this, this.onkeypress);
+		$Inst.on("focus", this, this.onfocus);
+		$Inst.on("blur", this, this.onunfocus);
+		$Inst.on("unload", this, this.onunfocus);
+	},
+	detach: function() {
+		this._$ui.remove();
+		this._$ui = null;
+	},
+	_onremove: function(e) {
+		var This = e.data;
+		This.detach();
+	},
+	onfocus: function(e) {
+		var This = e.data;
+		This._$ui.show();
+	},
+	onunfocus: function(e) {
+		var This = e.data;
+		This._$ui.hide();
+	},
+	source: function(key, resp) {
+		console.log('implement source function');
+	},
+	_parse: function(jsonObj) {
+		console.log('+_parse');
+		this._$ui.html('');
+		if (jsonObj.length > 0) {
+			var count = 0;
+			for (i in jsonObj) {
+				this._$ui.append(this._itemCreate(jsonObj[i]));
+				count++;
+			}
+			this._jsonObj = jsonObj;
+			this._count = count;
+			this._selectedIndex = 0;
+			this._selectedItem = this._$ui.children().eq(this._selectedIndex).addClass('wt-search-item-a');
+			this._$ui.show();
+		} else {
+			this._count = 0;
+			this._selectedIndex = 0;
+			this._$ui.html('<div class="wt-search-item">No search results</div>');
+			this._$ui.show();
+		}
+	},
+	itemcreate: function(item) {
+		console.log('implement itemcreate function');
+		return '';
+	},
+	onitemhover: function(e) {
+		console.log('+onitemhover');
+		var index = $(this).index();
+		console.log('old : '+ this._selectedIndex+ ' new: '+ index);
+		if (this._selectedIndex != index) {
+			this._$ui.children().eq(this._selectedIndex).removeClass('wt-search-item-a');
+			this._selectedIndex = index;
+			this._$ui.children().eq(this._selectedIndex).addClass('wt-search-item-a');
+			if (this._jsonObj) {
+				this.itemselect($Inst, this._jsonObj[index]);
+			}
+		}
+	},
+	onitemclick: function(e) {
+		console.log('+onitemclick');
+		var index = $(this).index();
+		console.log('old : '+ this._selectedIndex+ ' new : '+ index);
+		if (this._jsonData) {
+			this._$ui.children().eq(this._selectedIndex).removeClass('wt-search-item-a');
+			this._$ui.children().eq(index).addClass('wt-search-item-a');
+			this.itemselect($Inst, this._jsonData[index]);
+			this._selectedIndex = index;
+		}
+	},
+	onitemselect: function(input, item) {
+		 console.log('implement onitemselect function');
+	},
+	_onitemselectcurrent: function() {
+		if (this._count > 0 && this._jsonObj) {
+			this.onitemselect($Inst, this._jsonObj[this._selectedIndex]);
+		}
+	},
+	onenter: function(e) {
+		console.log('+onenter');
+		this.itemselectcurrent();
+		this.onunfocus();
+	},
+	onkeypress: function(e) {
+		console.log('+_keyPress : '+ e.keyCode);
+		if (e.keyCode === 10 || e.keyCode === 13) {
+			e.preventDefault();
+			e.data = $Inst;
+			this.onenter(e);
+		}
+	},
+	onkeyup: function(e) {
+		console.log('+onkeyup');
+		var handled = false;
+		switch(e.keyCode) {
+		case KEY_UP:
+			if (this._selectedIndex > 0) {
+				this._$ui.children().eq(this._selectedIndex).removeClass('wt-search-item-a');
+				this._selectedIndex--;
+				var child = this._$ui.children().eq(this._selectedIndex).addClass('wt-search-item-a');
+				var cont = this._$ui;
+				cont.scrollTop(child.position().top + cont.scrollTop());
+				//cont.scrollTop(child.offset().top - cont.offset().top + cont.scrollTop());
+				if (this._jsonObj) {
+					this.itemselect($Inst, this._jsonObj[this._selectedIndex]);
+				}
+			}
+			handled = true;
+			break;
+		case KEY_DOWN:
+			if (this._selectedIndex < this._count - 1) {
+				this._$ui.children().eq(this._selectedIndex).removeClass('wt-search-item-a');
+				this._selectedIndex++;
+				var child = this._$ui.children().eq(this._selectedIndex).addClass('wt-search-item-a');
+				var cont = this._$ui;
+				//console.log("child top : "+ child.position().top);
+				//console.log("scroll top : "+ cont.scrollTop());
+				cont.scrollTop(child.position().top + cont.scrollTop());
+				if (this._jsonObj) {
+					this.itemselect($Inst, this._jsonObj[this._selectedIndex]);
+				}
+			}
+			handled = true;
+			break;
+		case KEY_ENTER:
+			handled = true;
+			break;
+		case KEY_LEFT:
+		case KEY_RIGHT:
+		default:
+			console.log('keycode : '+e.keyCode);
+			handled = false;
+		}
+
+		if (handled) {
+			e.preventDefault();
+			return;
+		}
+		var key = $Inst.val();
+		(key.length >= this.minLength && this._source(key, this._parse));
+	},
+};
+
+var $AppWidgets = {
+	copy: function(obj) {
+		return $.extend( {}, {}, obj);
+	},
+	stabs: $WgtTabs,
+};
 
 /****************** Exteded Jquery *******************/
 jQuery.fn.exists = function(){return this.length>0;}

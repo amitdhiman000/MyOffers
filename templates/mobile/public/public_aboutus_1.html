@@ -1,6 +1,7 @@
 {% extends base_template %}
 
 {% load staticfiles %}
+{% load includesettings %}
 
 {% block style %}
 <style type="text/css" >
@@ -10,20 +11,17 @@
 </style>
 {% endblock %}
 
-{% block appmenu %}
-{% include 'mobile/left_nav.html' %}
-{% endblock %}
 
 {% block pagecontent %}
 <div class="ui-content" >
 	<div class="ui-bar-tbb">
-		<h2>ABOUT US &amp; MyOffers</h2>
+		<h2>ABOUT US &amp; {% includesettings 'SITE_NAME' %}</h2>
 	</div>
 	<div class="ui-content" >
 		<div class="ui-body" >
-			<p>MyOffers is about connecting Customers with Vendors directly.
+			<p>{% includesettings 'SITE_NAME' %} is about connecting Customers with Vendors directly.
 				This website provide interface for Consumers to search, browse Offers based on Location.
-				You can find different sales, discounts, coupons alerts on MyOffers.
+				You can find different sales, discounts, coupons alerts on {% includesettings 'SITE_NAME' %}.
 				We keep in touch with various dealers and vendors in market to give you best deals available.
 			<p>
 		</div>
