@@ -390,7 +390,7 @@ var $AppOverlay = {
 	},
 	hide: function() {
 		this.$overlay.hide();
-		this._is_shown = false;
+		this._shown = false;
 		$('body').toggleClass('ui-noscroll', this._shown);
 		return this;
 	},

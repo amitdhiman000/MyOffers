@@ -95,10 +95,17 @@ textarea.ui-input { width:95%; max-width: 30em; height: 6em; border: 1px solid #
 .ui-shadow:before { content: ""; transform: rotate(0deg); }
 .ui-shadow:after { transform: rotate(-2deg); }
 
-.wt-popup { position: fixed;  min-width: 40%; min-height: 40%;
-	background: #fff; border: 1px solid #bbb;
-	box-shadow: 0px 2px 2px rgba(0,0,0,0.25);
+.wt-fab { width:50px; height:50px; border-radius:100%; background: #38C;
+	font-size:1.0em; transition:.3s;
+	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
+.wt-fab:focus {	transform:scale(1.1);
+	transform:rotate(45deg);
+	-ms-transform: rotate(45deg);
+	-moz-transform: rotate(45deg);
+	-webkit-transform: rotate(45deg);
+}
+
 .wt-notibox {
 	position: fixed; min-width: 30%; max-width: 30%; min-height: 15%; max-height: 15%;
 	right: 3%; top: 15%; z-index: 100; pointer-events: none; overflow: visible;
@@ -110,20 +117,11 @@ textarea.ui-input { width:95%; max-width: 30em; height: 6em; border: 1px solid #
 	box-shadow: 0px 2px 2px rgba(0,0,0,0.25);
 	transition: 0.5s;
 }
+
 .wt-toast { position: fixed; display: none; min-width: 30%; max-width: 80%; z-index: 100;
 	height: auto; left:50%; margin-left:-20%; bottom:10%; background: #e9e9e9; color: #222;
 	font-family: Calibri; font-size: 1.0em; padding:0.9em; text-align:center; border-radius: 2px;
 	box-shadow: 0px 0px 24px -1px rgba(56, 56, 56, 1);
-}
-.wt-fab { width:50px; height:50px; border-radius:100%; background: #38C;
-	font-size:1.0em; transition:.3s;
-	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-}
-.wt-fab:focus {	transform:scale(1.1);
-	transform:rotate(45deg);
-	-ms-transform: rotate(45deg);
-	-moz-transform: rotate(45deg);
-	-webkit-transform: rotate(45deg);
 }
 
 .wt-modal { display: none; position: fixed; z-index: 99; padding-top: 15%; left: 0; top: 0;
@@ -140,6 +138,16 @@ textarea.ui-input { width:95%; max-width: 30em; height: 6em; border: 1px solid #
 .wt-modal-footer { padding: 1em; background-color: #5cb85c; color: white; }
 .wt-modal .wt-closebtn { color:#bbb; text-decoration: none; float:right; font-size: 2em; cursor: pointer; }
 .wt-modal .wt-closebtn:hover,.wt-closebtn:focus { color:#fff; }
+
+.wt-popup { position: fixed;  min-width: 40%; min-height: 40%;
+	background: #fff; border: 1px solid #bbb;
+	box-shadow: 0px 2px 2px rgba(0,0,0,0.25);
+}
+.wt-popup-content {
+	position: relative; background-color: #fefefe; margin: auto; border: 1px solid #888; width: 80%;
+	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+	transition: .4s;
+}
 
 .wt-overlay { display: none; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
 	z-index: 99;

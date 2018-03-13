@@ -162,7 +162,7 @@
 </script>
 
 <div style="width: 90%; margin: 0 auto; border: 1px solid #ddd; ">
-	<div style="display:table-cell; width: 50%;">
+	<div>
 		<table class="ui-info-table">
 			<tr><td>LOCATION</td></tr>
 			<tr><td>
@@ -181,7 +181,7 @@
 			</td></tr>
 		</table>
 	</div>
-	<div style="display:table-cell; width: 50%;" >
+	<div>
 		<form action="/locus/address/create/" method="POST" id="addr_form" class="ajax-form" data-delegates='{"before": "__BeforeAdrReq", "after": "__AfterAdrRes"}' >
 		<table class="ui-info-table">
 			{% csrf_token %}
