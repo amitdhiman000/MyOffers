@@ -56,7 +56,7 @@ $(function(){
 		},
 		_itemCreate: function(item) {
 			var uiItem = '<li>'
-			+ '<div class="search-item">'
+			+ '<div class="wt-search-item">'
 			+ '<div><img src="{{loc_image}}" /></div>'
 			+ '<div>'
 			+ item.name + '<br />' + item.city + '('+item.pin+')'
@@ -106,7 +106,7 @@ function OnOfferSaveRes__(e) {
 			<form action="/offer/create/" method="POST" enctype="multipart/form-data" class="ajax-form" id="offer_form" data-delegates='{"before": "OnOfferSaveReq__", "after": "OnOfferSaveRes__"}'>
 				{% csrf_token %}
 				<table class="form_table">
-					<td>Business : </td>
+					<td>BUSINESS : </td>
                     <td>
                         <select class="ui-input" name="OF_business" >
                             {% for item in businesses %}
@@ -116,33 +116,33 @@ function OnOfferSaveRes__(e) {
                     </td>
 					</tr>
 					<tr>
-					<td>Product Image : </td>
+					<td>PRODUCT IMAGE : </td>
 					<td><input type="file" name="OF_image" class="ui-input ajax-file-upload" multiple />
 					</tr>
 					<tr>
-					<td>Product Name : </td>
+					<td>PRODUCT NAME : </td>
 					<td><input type="text" name="OF_name" class="ui-input" value="{{form_values.OF_name}}" />
 					</tr>
 					<tr>
-					<td>Price : </td>
+					<td>PRICE : </td>
 					<td><input type="text" name="OF_price" id="OF_price" class="ui-input" value="{{form_values.OF_price}}" />
 					</tr>
 					<tr>
-					<td>Discount (%) : </td>
+					<td>DISCOUNT (%) : </td>
 					<td><input type="text" name="OF_discount" id="OF_discount" class="ui-input" value="{{form_values.OF_discount}}" />
 					<td><p class="errors">{{form_errors.OF_discount}}</p></td>
 					</tr>
 					<tr>
-					<td>Discount price : </td>
+					<td>DISCOUNTED PRICE : </td>
 					<td><input type="text" name="OF_discount_price" class="ui-input" value="{{form_values.OF_discount_price}}" />
 					</tr>
 					<tr>
 					<tr>
-					<td>Start Date : </td>
+					<td>START DATE : </td>
 					<td><input type="text" name="OF_start_date" id="OF_start_date" class="ui-input" value="{{form_values.OF_start_date}}" autocomplete="off" readonly style="border: 1px solid #ddd;" />
 					</tr>
 					<tr>
-					<td>Expire Date : </td>
+					<td>EXPIRE DATE : </td>
 					<td><input type="text" name="OF_expire_date" id="OF_expire_date" class="ui-input" value="{{form_values.OF_expire_date}}" autocomplete="off" readonly style="border: 1px solid #ddd;" />
 					</tr>
 					<tr>

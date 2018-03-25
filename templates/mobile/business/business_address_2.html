@@ -1,4 +1,4 @@
-<div data-type="persist" style="margin:0px auto; width:80%; padding:0.5em; border: 1px solid #444;" >
+<div data-type="persist" style="margin:0px auto; width:90%; padding:2px; border: 1px solid #444;" >
 <div class="ui-block" >
     <div class="ui-block-bar" >
         <div style="text-align: center;">
@@ -10,7 +10,7 @@
             .business_addr_title:hover { cursor: pointer; }
             .business_addr_item { overflow:hidden; height: 100%; }
             .business_addr_item_selected { border: 1px solid #36F; }
-            .business_addr_item_w { display: inline-block; width:30%; height:250px; vertical-align:top; overflow:hidden; }
+            .business_addr_item_w { width:90%; height:250px; margin: 5px auto; overflow:hidden; }
             .business_addr_item_w_expanded { height:100%; }
         </style>
         <script>
@@ -53,8 +53,6 @@
                 return true;
             }
             $(function(){
-                console.log("AMIT DHIMAN LOADED");
-
                 $('#main_cont').css('height', function(){
                     var $content = $(this).parents('.wt-overlay-content');
                     console.log($content.height());
@@ -69,7 +67,7 @@
             <div class="ui-right" style="width: 100%; margin:10px auto;">
                 <input type="submit" value="Save" class="ui-btn" />
             </div>
-            <div id="main_cont" style="overflow-y: auto; min-height:400px;">
+            <div id="main_cont" style="overflow-y: auto; min-height:400px;" class="ui-overlay-scroll" >
             {% for address in addresses %}
                 <div  class="business_addr_item_w" >
                 {% include './business_address_item_1.html' %}

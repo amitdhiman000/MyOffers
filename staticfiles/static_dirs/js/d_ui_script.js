@@ -21,6 +21,9 @@ $(function() {
 function initApp()
 {
 	console.log("+initApp");
+
+	$AppOverlay.init();
+
 	$(document).on('submit', 'form.ajax-form', ajaxFormSubmit);
 
 	$(".app_vlist_exp_item > a").on("click", function(e) {
@@ -28,16 +31,18 @@ function initApp()
 		$(this).parent().toggleClass("expanded");
 	});
 
-	$AppOverlay.init();
+	$(document).on("click", function() {
+		$(".ui-dropcontent").hide();
+	});
+	$(".ui-dropbtn").on("click", function(e) {
+		e.stopPropagation();
+		$(e.target).parents(".ui-dropdown").find(".ui-dropcontent").toggle();
+	});
 
-	// Close the dropdown if the user clicks outside of it
-	$(window).on("click", function(event) {
-		console.log("window clicked");
-		if (!event.target.matches('.ui-dropbtn')) {
-			$(".ui-dropcontent").each(function(i, elm) {
-				elm.classList.remove("ui-show");
-			});
-		}
+	$(".ui-hovermenu").on("click", function(e) {
+		console.log("hovermenu clicked");
+		e.preventDefault();
+		e.stopPropagation();
 	});
 }
 
@@ -92,7 +97,7 @@ function initSearch()
 	console.log('+initSearch');
 	$("#app_search_input").suggestions({
 		minLength: 2,
-		_source: function(key, resp) {
+		source: function(key, resp) {
 			$AppRequest.post('/search/offer/', {'key': key}, function(status, json){
 				if (true == status) {
 					resp(json.data);
@@ -101,7 +106,7 @@ function initSearch()
 				}
 			});
 		},
-		_itemCreate: function(item) {
+		itemCreate: function(item) {
 			var uiItem = '<li>'
 			+ '<div class="wt-search-item">'
 			+ '<a style="display:block; padding: 0.5em;" href="'+item.url+'">'+item.name+'</a>'
@@ -109,37 +114,19 @@ function initSearch()
 			+ '</li>';
 			return uiItem;
 		},
-		_itemSelect: function(input, item) {
+		onItemSelect: function(input, item) {
 			input.val(item.name);
 		},
-		_onEnter: function(e) {
-			console.log('+_onEnter');
+		onEnter: function(e) {
+			console.log('+onEnter');
 			var $Inst = e.data;
 			$Inst.kf._onunfocus();
-			if ($Inst.this._count > 0) {
-				var item = $Inst.this._jsonObj[$Inst.this._selectedIndex];
+			if ($Inst.kd._count > 0) {
+				var item = $Inst.kd._jsonObj[$Inst.kd._selectedIndex];
 				location.href = item.url
 			}
 		}
 	});
-}
-
-function dumpObject(obj)
-{
-	var output = '';
-	for (var key in obj) {
-		output += key + ': ' + obj[key]+'; ';
-	}
-	console.log(output);
-}
-
-function dropToggle(e, This)
-{
-	console.log("+dropToggle");
-	e = e || window.event;
-	//dumpObject(e);
-	e.stopPropagation();
-	This.parentElement.getElementsByClassName("ui-dropcontent")[0].classList.toggle("ui-show");
 }
 
 function navClicked()
@@ -208,6 +195,20 @@ function afterResponse(e) {
 /*******************************************************/
 /******************** App Library **********************/
 /*******************************************************/
+var $AppUtil = {
+	merge: function(a1, a2) {
+		var res = a1;
+		//for (var k in a1) { res[k] = a1[k]; }
+		for (var k in a2) { res[k] = a2[k]; }
+		return res;
+	},
+	dump: function(obj) {
+		var out = '';
+		for (var k in obj) { out += k + ': ' + obj[k]+'; '; }
+		console.log(out);
+	}
+};
+
 var $AppEvent = {
 	new: function() {
 		console.log("+Event new");
@@ -353,17 +354,31 @@ var $AppData = {
 var $AppOverlay = {
 	init: function() {
 		this.$overlay = $('#wt-overlay');
-		this.$content_def = $('<div style="width:80% height:50%;" data-type="none"></div>');
+		this.$closebtn = this.$overlay.find('.wt-closebtn');
+		this.$body = this.$overlay.find('.wt-overlay-content');
+		this.$content_def = $('<div style="width:80%; height:inherit; margin: 0 auto; background:#fff;" data-type="none"></div>');
 		this.$content = this.$content_def;
-		this.$overlay.find('.wt-closebtn').on('click', this, this._onclose);
+		this.$closebtn.on('click', this, this._onclose);
+		this.$overlay.on('click', this, this._onclick);
+		this.$overlay.on('keyup', this, this._onkeyup);
 		this._shown = false;
+		this._options_def = { closeBtn:true, closeOnEscape:true, closeOnClickOutside:true };
+		this._options = $AppUtil.merge(this._options_def, {});
 	},
-	shown: function(){
+	_apply_options: function(options) {
+		this._options = $AppUtil.merge(this._options_def, options);
+		if (this._options['closeBtn'] === false)
+			this.$closebtn.hide();
+		else
+			this.$closebtn.show();
+	},
+	shown: function() {
 		return this._shown;
 	},
-	show: function($content=this.$content_def) {
+	show: function($content=this.$content_def, options={}) {
+		this._apply_options(options);
 		this.update($content);
-		this.$overlay.show();
+		this.$overlay.show().focus();
 		this._shown = true;
 		$('body').toggleClass('ui-noscroll', this._shown);
 		return this;
@@ -376,25 +391,70 @@ var $AppOverlay = {
 	},
 	update: function($content) {
 		this.$content = $($content);
-		this.$overlay.find('.wt-overlay-content').html(this.$content.show());
+		this.$body.html(this.$content.show());
+
+		var h1 = this.$body.outerHeight();
+		var h2 = this.$content.outerHeight();
+		console.log("body : "+ h1);
+		console.log("content : "+ h2);
+
+		var $scroll = this.$content.find(".wt-overlay-scroll");
+		if ($scroll.exists()) {
+			console.log("scrollbody : "+$scroll.outerHeight());
+			if (h2 > h1) {
+				var h3 = h1 - (h2 - h1);
+				console.log("newHeight : "+ h3);
+				$scroll.css('height', h3);
+			}
+		}
 		return this;
 	},
 	close: function(e) {
 		console.log("CLOSE OVERLAY");
-		this.$overlay.find('.wt-closebtn').click();
+		this.$closebtn.click();
 	},
-	_onclose: function(e) {
-		console.log("ONCLOSE OVERLAY");
-		This = e.data;
-		var $content = This.$content.hide();
+	_close: function(e) {
+		var $content = this.$content.hide();
 		if ($content.attr('data-type') == 'persist') {
 			setTimeout(function(){ $content.appendTo('body'); }, 100);
 		} else {
 			$content.remove();
 		}
-		This.hide();
+		this.hide();
+	},
+	_onclose: function(e) {
+		console.log("ONCLOSE OVERLAY");
+		e.data._close();
+	},
+	_onclick: function(e) {
+		console.log("ONCLICK OVERLAY");
+		var This = e.data;
+		if (This._options["closeOnClickOutside"] === true && $(e.target).parent().is(This.$overlay)) {
+			This._close();
+		}
+	},
+	_onkeyup: function(e) {
+		console.log("ONKEYUP OVERLAY");
+		var This = e.data;
+		if (This._options["closeOnEscape"] === true && e.keyCode == KEY_ESCAPE) {
+			This._close();
+		}
 	}
 };
+
+
+var $AppModal = {
+	show: function($content) {
+		$AppOverlay.show($content, {closeOnClickOutside:true});
+	},
+	update: function($content) {
+		$AppOverlay.update($content);
+	},
+	close: function() {
+		$AppOverlay.close();
+	},
+};
+
 
 var $AppNoti = {
 	_defaults: {
@@ -403,15 +463,8 @@ var $AppNoti = {
 		text: 'Alert',
 		timeout: 5000,
 	},
-	options: function(p) {
-		var finalOpts = this._defaults;
-		for (var key in p) {
-			finalOpts[key] = p[key];
-		}
-		return finalOpts;
-	},
 	info: function(p) {
-		var opts = this.options(p);
+		var opts = $AppUtil.merge(this._defaults, p);
 		console.log(JSON.stringify(opts));
 		var $elm = $('#wt-noti').clone().removeAttr('id');
 		$elm.fadeIn({duration: 500,
@@ -451,7 +504,7 @@ var $AppToast = {
 /*******************************************************/
 
 var wsuggest = function($Inst, opts) {
-	console.log('+wsuggest element : '+$Inst.prop("tagName"));
+	console.log('+wsuggest : '+$Inst.prop("tagName"));
 	$Inst.kd = {
 		_name: 'suggest',
 		_ui: null,
@@ -485,8 +538,8 @@ var wsuggest = function($Inst, opts) {
 		_onunfocus: function(e) {
 			kd._ui.hide();
 		},
-		_source: function(key, resp) {
-			console.log('implement _source function');
+		source: function(key, resp) {
+			console.log('implement source function');
 		},
 		_parse: function(jsonObj) {
 			console.log('+_parse');
@@ -494,7 +547,7 @@ var wsuggest = function($Inst, opts) {
 			if (jsonObj.length > 0) {
 				var count = 0;
 				for (i in jsonObj) {
-					kd._ui.append(kf._itemCreate(jsonObj[i]));
+					kd._ui.append(kf.itemCreate(jsonObj[i]));
 					count++;
 				}
 				kd._jsonObj = jsonObj;
@@ -509,8 +562,8 @@ var wsuggest = function($Inst, opts) {
 				kd._ui.show();
 			}
 		},
-		_itemCreate: function(item) {
-			console.log('implement _itemCreate function');
+		itemCreate: function(item) {
+			console.log('implement itemCreate function');
 			return '';
 		},
 		_itemHover: function(e) {
@@ -523,7 +576,7 @@ var wsuggest = function($Inst, opts) {
 				kd._selectedIndex = index;
 				kd._ui.children().eq(kd._selectedIndex).addClass('wt-search-item-a');
 				if (kd._jsonObj) {
-					kf._itemSelect($Inst, kd._jsonObj[index]);
+					kf.onItemSelect($Inst, kd._jsonObj[index]);
 				}
 			}
 		},
@@ -535,21 +588,21 @@ var wsuggest = function($Inst, opts) {
 			if (kd._jsonData) {
 				kd._ui.children().eq(kd._selectedIndex).removeClass('wt-search-item-a');
 				kd._ui.children().eq(index).addClass('wt-search-item-a');
-				kf._itemSelect($Inst, kd._jsonData[index]);
+				kf.onItemSelect($Inst, kd._jsonData[index]);
 				kd._selectedIndex = index;
 			}
 		},
-		_itemSelect: function(input, item) {
-			 console.log('implement _itemSelect function');
+		onItemSelect: function(input, item) {
+			 console.log('implement onItemSelect function');
 		},
-		_itemSelectCurrent: function() {
+		_onItemSelectCurrent: function() {
 			if (kd._count > 0 && kd._jsonObj) {
-				kf._itemSelect($Inst, kd._jsonObj[kd._selectedIndex]);
+				kf.onItemSelect($Inst, kd._jsonObj[kd._selectedIndex]);
 			}
 		},
-		_onEnter: function(e) {
-			console.log('+_onEnter');
-			kf._itemSelectCurrent();
+		onEnter: function(e) {
+			console.log('+onEnter');
+			kf._onItemSelectCurrent();
 			kf._onunfocus();
 		},
 		_keyPress: function(e) {
@@ -557,7 +610,7 @@ var wsuggest = function($Inst, opts) {
 			if (e.keyCode === 10 || e.keyCode === 13) {
 				e.preventDefault();
 				e.data = $Inst;
-				kf._onEnter(e);
+				kf.onEnter(e);
 			}
 		},
 		_keyUp: function(e) {
@@ -573,7 +626,7 @@ var wsuggest = function($Inst, opts) {
 					cont.scrollTop(child.position().top + cont.scrollTop());
 					//cont.scrollTop(child.offset().top - cont.offset().top + cont.scrollTop());
 					if (kd._jsonObj) {
-						kf._itemSelect($Inst, kd._jsonObj[kd._selectedIndex]);
+						kf.onItemSelect($Inst, kd._jsonObj[kd._selectedIndex]);
 					}
 				}
 				handled = true;
@@ -588,7 +641,7 @@ var wsuggest = function($Inst, opts) {
 					//console.log("scroll top : "+ cont.scrollTop());
 					cont.scrollTop(child.position().top + cont.scrollTop());
 					if (kd._jsonObj) {
-						kf._itemSelect($Inst, kd._jsonObj[kd._selectedIndex]);
+						kf.onItemSelect($Inst, kd._jsonObj[kd._selectedIndex]);
 					}
 				}
 				handled = true;
@@ -608,7 +661,7 @@ var wsuggest = function($Inst, opts) {
 				return;
 			}
 			var key = $Inst.val();
-			(key.length >= kf.minLength && kf._source(key, kf._parse));
+			(key.length >= kf.minLength && kf.source(key, kf._parse));
 		},
 	};
 
@@ -625,7 +678,7 @@ var wsuggest = function($Inst, opts) {
 
 function wfileupload($Inst, opts)
 {
-	console.log('+wfileupload element : '+$Inst.prop('tagName'));
+	console.log('+wfileupload : '+$Inst.prop('tagName'));
 	// klass data
 	$Inst.kd = {
 		_name: 'fileupload',
@@ -654,8 +707,8 @@ function wfileupload($Inst, opts)
 		},
 		_upload: function(e) {
 			console.log('+_upload');
-			e.stopPropagation(); // Stop stuff happening
-			e.preventDefault(); // Totally stop stuff happening
+			e.stopPropagation();
+			e.preventDefault();
 			var lThis = this;
 			var lfiles = $(lThis)[0].files;
 			var count = kd._ui.find('.wt-progress-outer').length;
@@ -771,9 +824,9 @@ function wfileupload($Inst, opts)
 		},
 		_progress: function(progress) {
 			console.log('progress : '+progress+'%');
-			var progressbar = kd._ui.find('.wt-progress-bar');
-			progressbar.css({width: progress+'%'});
-			progressbar.html(progress+'%');
+			var pgbar = kd._ui.find('.wt-progress-bar');
+			pgbar.css({width: progress+'%'});
+			pgbar.html(progress+'%');
 		}
 	};
 
@@ -789,7 +842,7 @@ function wfileupload($Inst, opts)
 
 function wswitchtab($Inst, opts)
 {
-	console.log('+wswitchtab element : '+$Inst.prop('tagName'));
+	console.log('+wswitchtab : '+$Inst.prop('tagName'));
 	// klass data
 	$Inst.kd = {
 		_name: 'switchtab',
@@ -928,7 +981,7 @@ var $WgtSuggesions = {
 		if (jsonObj.length > 0) {
 			var count = 0;
 			for (i in jsonObj) {
-				this._$ui.append(this._itemCreate(jsonObj[i]));
+				this._$ui.append(this.itemCreate(jsonObj[i]));
 				count++;
 			}
 			this._jsonObj = jsonObj;
@@ -974,14 +1027,14 @@ var $WgtSuggesions = {
 	onitemselect: function(input, item) {
 		 console.log('implement onitemselect function');
 	},
-	_onitemselectcurrent: function() {
+	onitemselectcurrent: function() {
 		if (this._count > 0 && this._jsonObj) {
 			this.onitemselect($Inst, this._jsonObj[this._selectedIndex]);
 		}
 	},
 	onenter: function(e) {
 		console.log('+onenter');
-		this.itemselectcurrent();
+		this.onitemselectcurrent();
 		this.onunfocus();
 	},
 	onkeypress: function(e) {
@@ -1040,7 +1093,7 @@ var $WgtSuggesions = {
 			return;
 		}
 		var key = $Inst.val();
-		(key.length >= this.minLength && this._source(key, this._parse));
+		(key.length >= this.minLength && this.source(key, this._parse));
 	},
 };
 

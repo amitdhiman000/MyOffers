@@ -74,14 +74,14 @@
 			var data = $AppData.csrf();
 			data["B_id"] = b_id;
 			data["pid"] = 2;
-			$AppOverlay.show();
+			$AppModal.show();
 
 			$AppRequest.get('/business/address/', data, function(status, resp) {
 				if (true == status) {
-					$AppOverlay.update(resp);
+					$AppModal.update(resp);
 				} else {
 					console.log('data : '+JSON.stringify(resp.data));
-					$AppOverlay.update(JSON.stringify(resp.data));
+					$AppModal.update(JSON.stringify(resp.data));
 				}
 			});
 		}
