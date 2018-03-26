@@ -1,9 +1,12 @@
 <div class="ui-content" >
-	<div class="ui-content">
-		<div class="ui-bar ui-bar-a">
-			<strong>Mails <strong>
+	<div class="ui-block">
+		<div class="ui-block-bar">
+			<strong>Mails<strong>
 		</div>
-  		<div class="ui-body ui-body-a">
+  		<div class="ui-block-body">
+  			{% for mail in mails %}
+  				<div class="ui-content"> {{mail.title}} </div>
+  			{% endfor %}
   		</div>
 	</div>
 </div>

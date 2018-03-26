@@ -377,8 +377,10 @@ var $AppOverlay = {
 	},
 	show: function($content=this.$content_def, options={}) {
 		this._apply_options(options);
+		/* ordering matter for correct heights */
+		this.$overlay.show();
 		this.update($content);
-		this.$overlay.show().focus();
+		this.$overlay.focus();
 		this._shown = true;
 		$('body').toggleClass('ui-noscroll', this._shown);
 		return this;
@@ -392,21 +394,21 @@ var $AppOverlay = {
 	update: function($content) {
 		this.$content = $($content);
 		this.$body.html(this.$content.show());
-
-		var h1 = this.$body.outerHeight();
-		var h2 = this.$content.outerHeight();
-		console.log("body : "+ h1);
-		console.log("content : "+ h2);
-
 		var $scroll = this.$content.find(".wt-overlay-scroll");
 		if ($scroll.exists()) {
-			console.log("scrollbody : "+$scroll.outerHeight());
-			if (h2 > h1) {
-				var h3 = h1 - (h2 - h1);
-				console.log("newHeight : "+ h3);
-				$scroll.css('height', h3);
+			var h1 = this.$body.height();
+			var h2 = this.$content.height();
+			var h3 = $scroll.height();
+			if (h1 < h2) {
+				var h4 = h3 - (h2 - h1);
+				console.log("h4 : "+h4);
+				$scroll.height(h4);
 			}
 		}
+		return this;
+	},
+	clear: function() {
+		this.update(this.$content_def);
 		return this;
 	},
 	close: function(e) {

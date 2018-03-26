@@ -10,7 +10,7 @@
             .business_addr_title:hover { cursor: pointer; }
             .business_addr_item { overflow:hidden; height: 100%; }
             .business_addr_item_selected { border: 1px solid #36F; }
-            .business_addr_item_w { width:90%; height:250px; margin: 5px auto; overflow:hidden; }
+            .business_addr_item_w { width:90%; height:50%; margin: 5px auto; overflow:hidden; }
             .business_addr_item_w_expanded { height:100%; }
         </style>
         <script>
@@ -52,13 +52,6 @@
                 $AppOverlay.close();
                 return true;
             }
-            $(function(){
-                $('#main_cont').css('height', function(){
-                    var $content = $(this).parents('.wt-overlay-content');
-                    console.log($content.height());
-                    return $content.height() - 150;
-                });
-            });
         </script>
         <form action="/business/address/link/" method="POST" class="ajax-form" data-delegates='{"before":"OnAddrLinkReq__", "after":"OnAddrLinkRes__"}' >
             {% csrf_token %}
@@ -67,7 +60,7 @@
             <div class="ui-right" style="width: 100%; margin:10px auto;">
                 <input type="submit" value="Save" class="ui-btn" />
             </div>
-            <div id="main_cont" style="overflow-y: auto; min-height:400px;" class="ui-overlay-scroll" >
+            <div id="main_cont" class="wt-overlay-scroll" >
             {% for address in addresses %}
                 <div  class="business_addr_item_w" >
                 {% include './business_address_item_1.html' %}

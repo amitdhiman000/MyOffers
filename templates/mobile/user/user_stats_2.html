@@ -1,9 +1,12 @@
 <div class="ui-content" >
-	<div class="ui-content">
-		<div class="ui-bar ui-bar-a">
-			<strong>Statistics<strong>
+	<div class="ui-block">
+		<div class="ui-block-bar">
+			<strong>Statistics <strong>
 		</div>
-  		<div class="ui-body ui-body-a">
+  		<div class="ui-block-body">
+  			{% for item in history %}
+  				<div class="ui-content"> {{item.title}} </div>
+  			{% endfor %}
   		</div>
 	</div>
 </div>

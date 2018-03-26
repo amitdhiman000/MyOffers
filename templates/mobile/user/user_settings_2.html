@@ -1,11 +1,12 @@
 <div class="ui-content" >
-	<div class="ui-content">
-		<div class="ui-corner-all custom-corners">
-			<div class="ui-bar ui-bar-a">
-				<strong>Settings<strong>
-			</div>
-	  		<div class="ui-body ui-body-a">
-	  		</div>
+	<div class="ui-block" >
+		<div class="ui-block-bar">
+			<strong>Settings <strong>
+		</div>
+		<div class="ui-block-body">
+			{% for topic in topics %}
+				<div class="ui-content"> {{topic.title}} </div>
+			{% endfor %}
 		</div>
 	</div>
 </div>

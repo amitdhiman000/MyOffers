@@ -1,9 +1,14 @@
-<div class="ui-content">
-	<div class="ui-content" >
-		<div class="ui-bar ui-bar-a">
-			<h3>Account details </h3>
+{% load tz %}
+{% load staticfiles %}
+
+<div class="ui-content" >
+	<div class="ui-block" >
+		<div class="ui-block-bar" >
+			<div>
+				<h3>ACCOUNT</h3>
+			</div>
 		</div>
-  		<div class="ui-body">
+  		<div class="ui-block-body">
 			<table class="ui-info-table">
 				<tr><td>NAME</td></tr>
 				<tr><td>{{user.name}}</td></tr>

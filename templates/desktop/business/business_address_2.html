@@ -10,8 +10,9 @@
             .business_addr_title:hover { cursor: pointer; }
             .business_addr_item { overflow:hidden; height: 100%; }
             .business_addr_item_selected { border: 1px solid #36F; }
-            .business_addr_item_w { display: inline-block; width:30%; height:250px; vertical-align:top; overflow:hidden; }
+            .business_addr_item_w { display: inline-block; width:30%; height:60%; vertical-align:top; overflow:hidden; }
             .business_addr_item_w_expanded { height:100%; }
+            .business_addr_table tr td:first-child { text-align: right; width: 15%; }
         </style>
         <script>
             function toggleSelect(e, This)
@@ -66,19 +67,6 @@
                 {% include './business_address_item_1.html' %}
                 </div>
             {% endfor %}
-            </div>
-
-            <div style="border: 1px solid #333;" >
-                <button class="ui-btn" >Button1</button>
-            </div>
-            <div style="border: 1px solid #333;" >
-                <button class="ui-btn" >Button2</button>
-            </div>
-            <div style="border: 1px solid #333;" >
-                <button class="ui-btn" >Button3</button>
-            </div>
-            <div style="border: 1px solid #333;" >
-                <button class="ui-btn" >Button4</button>
             </div>
         </form>
     </div>

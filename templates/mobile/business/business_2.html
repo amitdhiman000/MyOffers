@@ -33,7 +33,7 @@
 		function showAddressBox(e, This) {
 			console.log("+showAddressBox");
 			e.stopPropagation();
-			$AppOverlay.show($('#address_picker'));
+			$AppOverlay.show("#locus_addr_picker");
 			BeforeAddrSaveEvent.add(OnBAddrSaveReq__);
 			AfterAddrSaveEvent.add(OnBAddrSaveRes__);
 		}
@@ -75,7 +75,6 @@
 			data["B_id"] = b_id;
 			data["pid"] = 2;
 			$AppModal.show();
-
 			$AppRequest.get('/business/address/', data, function(status, resp) {
 				if (true == status) {
 					$AppModal.update(resp);

@@ -1,14 +1,15 @@
 {% extends base_template %}
+
 {% load staticfiles %}
 {% load includesettings %}
 
 {% block style %}
 <style>
-.abtus-box { display: inline-block; vertical-align: top; margin-left: 4%; width: 27%; }
-.abtus-box > div { margin: 1px 5px; display: inline-block; vertical-align: top; }
-.abtus-box-title > div { display: inline-block; vertical-align: middle; }
-.abtus-box-title-image img { width: 32px; height: 32px; }
-.abtus-box .abtus-box-title-text { line-height: 32px; }
+.abtus_box { display: inline-block; vertical-align: top; margin-left: 4%; width: 27%; }
+.abtus_box > div { margin: 1px 5px; display: inline-block; vertical-align: top; }
+.abtus_box_title > div { display: inline-block; vertical-align: middle; }
+.abtus_box_title_image img { width: 32px; height: 32px; }
+.abtus_box .abtus_box_title_text { line-height: 32px; }
 </style>
 {% endblock %}
 
@@ -33,12 +34,12 @@
 				</div>
 			</div>
 
-			<div class="abtus-box">
-				<div class="abtus-box-title" >
-					<div class="abtus-box-title-image" >
+			<div class="abtus_box">
+				<div class="abtus_box_title" >
+					<div class="abtus_box_title_image" >
 						<img src="{% static 'images/icons-svg/people.svg' %}" />
 					</div>
-					<div class="abtus-box-title-text" >
+					<div class="abtus_box_title_text" >
 						<strong> WHO ARE WE ? </strong>
 					</div>
 				</div>
@@ -46,12 +47,12 @@
 					 We are a team of web developers who are driven by passion and urge to create something that our customers love.
 				</p>
 			</div>
-			<div class="abtus-box">
-				<div class="abtus-box-title" >
-					<div class="abtus-box-title-image" >
+			<div class="abtus_box">
+				<div class="abtus_box_title" >
+					<div class="abtus_box_title_image" >
 						<img src="{% static 'images/icons-svg/tools.svg' %}" />
 					</div>
-					<div class="abtus-box-title-text" >
+					<div class="abtus_box_title_text" >
 						<strong> WHAT WE DO ? </strong>
 					</div>
 				</div>
@@ -59,12 +60,12 @@
 					We build user friendly powerful and easy to use interfaces. Which helps a million of users to get what they want.
 				</p>
 			</div>
-			<div class="abtus-box">
-				<div class="abtus-box-title" >
-					<div class="abtus-box-title-image" >
+			<div class="abtus_box">
+				<div class="abtus_box_title" >
+					<div class="abtus_box_title_image" >
 						<img src="{% static 'images/icons-svg/clock.svg' %}" />
 					</div>
-					<div class="abtus-box-title-text" >
+					<div class="abtus_box_title_text" >
 						<strong> SINCE WHEN ? </strong>
 					</div>
 				</div>
