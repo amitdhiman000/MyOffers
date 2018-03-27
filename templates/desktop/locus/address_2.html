@@ -39,13 +39,12 @@
 		$AppOverlay.close();
 	}
 
-	function toggleBoxSize(e, This)
+	function toggleBoxSize(e)
 	{
 		console.log('+toggleBoxSize');
-		$(This).toggleClass('locus_addr_item_w_expanded');
-		var top = $(This).offset().top;
-		if ($(window).scrollTop() > top)
-			$(window).scrollTop(top);
+		var $This = $(this);
+		$This.toggleClass('locus_addr_item_w_expanded');
+		$AppUtil.scrollTo($This);
 	}
 
 	function OnAddrSaveReq__(e) {
@@ -56,10 +55,8 @@
 	function OnAddrSaveRes__(e) {
 		console.log("+OnAddrSaveRes__");
 		if (e.status == true) {
-			var val = '<div  class="locus_addr_item_w" onclick="toggleBoxSize(event, this)">'
-						+e.resp
-						+'</div>';
-			$('#locus_addr_cont').prepend(val);
+			var val = '<div  class="locus_addr_item_w" >'+e.resp+'</div>';
+			$("#locus_addr_cont").prepend(val);
 			hideAddressBox();
 			$AppNoti.info({title:"Saved", text:"Address saved Successfully!!"});
 		} else {
@@ -75,6 +72,7 @@
 	$(function() {
 		BeforeAddrSaveEvent.add(OnAddrSaveReq__);
 		AfterAddrSaveEvent.add(OnAddrSaveRes__);
+		$(document).on("click", ".locus_addr_item_w", toggleBoxSize);
 	});
 </script>
 <style>
@@ -101,7 +99,7 @@
 	</div>
 	<div id="locus_addr_cont"  /*class="ui-grid"*/ >
 		{% for address in addresses %}
-		<div  class="locus_addr_item_w" onclick="toggleBoxSize(event, this)">
+		<div  class="locus_addr_item_w" >
 			{% include './address_item_1.html' %}
 		</div>
 		{% endfor %}

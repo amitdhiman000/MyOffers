@@ -24,22 +24,23 @@ function initApp()
 
 	$AppOverlay.init();
 
-	$(document).on('submit', 'form.ajax-form', ajaxFormSubmit);
+	$(document).on("submit", "form.ajax-form", ajaxFormSubmit);
 
-	$(".app_vlist_exp_item > a").on("click", function(e) {
+	$(document).on("click", ".app_vlist_exp_item > a", function(e) {
 		e.preventDefault();
 		$(this).parent().toggleClass("expanded");
 	});
 
-	$(document).on("click", function() {
+	$(document).on("click", function(e) {
+		//e.stopPropagation();
 		$(".ui-dropcontent").hide();
 	});
-	$(".ui-dropbtn").on("click", function(e) {
+	$(document).on("click", ".ui-dropbtn", function(e) {
 		e.stopPropagation();
 		$(e.target).parents(".ui-dropdown").find(".ui-dropcontent").toggle();
 	});
 
-	$(".ui-hovermenu").on("click", function(e) {
+	$(document).on("click", ".ui-hovermenu", function(e) {
 		console.log("hovermenu clicked");
 		e.preventDefault();
 		e.stopPropagation();
@@ -220,6 +221,13 @@ var $AppUtil = {
 		var out = '';
 		for (var k in obj) { out += k + ': ' + obj[k]+'; '; }
 		console.log(out);
+	},
+	scrollTo: function($elm) {
+		var elmTop = $elm.offset().top;
+		var headerH = $("#app_header").height();
+		$('html, body').animate({
+			scrollTop: elmTop - headerH
+		}, 500);
 	}
 };
 
