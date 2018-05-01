@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+import sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,7 +27,7 @@ SECRET_KEY = '!#byfsfle(0g6q^+s12bjtw_2b+jjzxt9@)suhw7rggmu5x-ce'
 DEBUG = True
 
 # don't set this, POST request don't append slash by default
-#APPEND_SLASH=False
+# APPEND_SLASH=False
 
 ALLOWED_HOSTS = ['*']
 
@@ -34,59 +35,60 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-	#'django.contrib.admin',
-	#'django.contrib.auth',
-	'django.contrib.contenttypes',
-	'django.contrib.sessions',
-	'django.contrib.messages',
-	'django.contrib.staticfiles',
-	'background_task',
-	'api',
-	'business',
-	'error',
-	'home',
-	'locus',
-	'offer',
-	'public',
-	'search',
-	'upload',
-	'user',
-	'myadmin',
-	'MyOffers',
+    # 'django.contrib.admin',
+    # 'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'background_task',
+    'api',
+    'business',
+    'error',
+    'home',
+    'locus',
+    'offer',
+    'public',
+    'search',
+    'upload',
+    'user',
+    'myadmin',
+    'MyOffers',
 ]
 
 MIDDLEWARE = [
-	'django.middleware.security.SecurityMiddleware',
-	'django.contrib.sessions.middleware.SessionMiddleware',
-	'django.middleware.common.CommonMiddleware',
-	'django.middleware.csrf.CsrfViewMiddleware',
-	#'django.contrib.auth.middleware.AuthenticationMiddleware',
-	#'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-	'user.middleware.AuthMiddleware', # custom middleware
-	'django.contrib.messages.middleware.MessageMiddleware',
-	'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # 'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+    'user.middleware.AuthMiddleware',  # custom middleware
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 ROOT_URLCONF = 'MyOffers.urls'
 
 TEMPLATES = [
-	{
-		'BACKEND': 'django.template.backends.django.DjangoTemplates',
-		'DIRS': ['templates'],
-		'APP_DIRS': True,
-		'OPTIONS': {
-			'context_processors': [
-				'django.template.context_processors.debug',
-				'django.template.context_processors.request',
-				#'django.contrib.auth.context_processors.auth',
-				'django.template.context_processors.media',
-				'django.contrib.messages.context_processors.messages',
-				'base.context_processors.user',
-				'base.context_processors.ajax',
-			],
-			#'string_if_invalid': '',
-		},
-	},
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': ['templates'],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                # 'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.media',
+                'django.contrib.messages.context_processors.messages',
+                'base.context_processors.user',
+                'base.context_processors.ajax',
+            ],
+            # 'string_if_invalid': '',
+        },
+    },
 ]
 
 WSGI_APPLICATION = 'MyOffers.wsgi.application'
@@ -96,10 +98,10 @@ WSGI_APPLICATION = 'MyOffers.wsgi.application'
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
 DATABASES = {
-	'default': {
-		'ENGINE': 'django.db.backends.sqlite3',
-		'NAME': os.path.join(BASE_DIR, 'devel.sqlite3')
-	}
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'devel.sqlite3')
+    }
 }
 
 
@@ -107,33 +109,32 @@ DATABASES = {
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-	{
-		'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-	},
-	{
-		'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-	},
-	{
-		'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-	},
-	{
-		'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-	},
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
 ]
 
-import sys
-## website logging settings.
+# ## website logging settings.
 LOGGING = {
     'version': 1,
     'formatters': {
         'simple': {
             'format': '%(asctime)s %(levelname)s %(module)s:%(funcName)s(%(lineno)d) %(message)s'
         },
-		'normal': {
-            'format': '%(asctime)s %(levelname)s %(filename)s:%(funcName)s :(%(lineno)d) %(message)s'
+        'normal': {
+            'format': '%(asctime)s %(levelname)s %(filename)s:%(funcName)s : (%(lineno)d) %(message)s'
         },
-		'verbose': {
-            'format': '%(asctime)s %(levelname)s %(pathname)s:%(funcName)s :(%(lineno)d) %(process)d %(thread)d %(message)s'
+        'verbose': {
+            'format': '%(asctime)s %(levelname)s %(pathname)s:%(funcName)s : (%(lineno)d) %(process)d %(thread)d %(message)s'
         },
     },
     'handlers': {
@@ -141,7 +142,7 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'normal',
-			'stream': sys.stdout,
+            'stream': sys.stdout,
         },
         'file': {
             'level': 'DEBUG',
@@ -149,7 +150,7 @@ LOGGING = {
             'filename': 'logs/logs.log',
             'formatter': 'normal'
         },
-		'file_request': {
+        'file_request': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'filename': 'logs/request_logs.log',
@@ -157,22 +158,22 @@ LOGGING = {
         },
     },
     'loggers': {
-		'': {
-			'handlers': ['file'],
-			'level': 'DEBUG',
-			'propagate': True,
-		},
-		'django': {
+        '': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'django': {
             'handlers': ['file'],
             'level': 'INFO',
             'propagate': True,
         },
-		'django.request': {
+        'django.request': {
             'handlers': ['file_request'],
             'level': 'INFO',
             'propagate': True,
         },
-		'django.template': {
+        'django.template': {
             'handlers': ['file_request'],
             'level': 'INFO',
             'propagate': False,
@@ -185,8 +186,8 @@ if DEBUG:
     for logger in LOGGING['loggers']:
         LOGGING['loggers'][logger]['handlers'] = ['console']
 
-#AUTH_USER_MODEL = accounts.User
-#AUTHENTICATION_BACKEND = (accounts.backends.UserAuth,)
+# AUTH_USER_MODEL = accounts.User
+# AUTHENTICATION_BACKEND = (accounts.backends.UserAuth,)
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
@@ -194,8 +195,8 @@ if DEBUG:
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
-#TIME_ZONE = 'Asia/Kolkata'
-#https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+# TIME_ZONE = 'Asia/Kolkata'
+# https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
 USE_I18N = True
 
@@ -204,7 +205,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-## CSRF  middleware token name
+# ## CSRF  middleware token name
 CSRF_MIDDLEWARE_TOKEN = 'csrfmiddlewaretoken'
 
 # Static files (CSS, JavaScript, Images)
@@ -232,20 +233,20 @@ BASE_TEMPLATE = 'base/app_base_1.html'
 BASE_AJAX_TEMPLATE = 'base/app_base_2.html'
 DEFAULT_USER_IMAGE = 'default/user.svg'
 
-## admin pages
-##
+# ## admin pages
+# ##
 ADMIN_LEVEL = 9
 ADMIN_HOME = '/myadmin/'
 ADMIN_CUSTOM_DATA = '/myadmin/fetch-custom/'
 ADMIN_CUSTOM_VIEW = '/myadmin/custom-view/'
 
-## public pages
-##
+# ## public pages
+# ##
 PUBLIC_CONTACTS_URL = '/public/contacts/'
 PUBLIC_ABOUTUS_URL = '/public/aboutus/'
 
-## home pages
-##
+# ## home pages
+# ##
 HOME_URL = '/'
 
 # error urls

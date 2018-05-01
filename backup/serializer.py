@@ -10,7 +10,7 @@ class ModelValueSerializer(object):
         if count <= 1:
             output = {}
             json_obj = {}
-            obj = query_set.first()
+            obj = self.query_set.first()
             for field in self.Meta.fields:
                 json_obj.update({field:getattr(obj, field, '')})
             output = json_obj

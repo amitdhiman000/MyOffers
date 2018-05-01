@@ -1,11 +1,11 @@
 <style>
-	#loc-results { position: absolute; width: 35%; margin-top: 3px; border: 1px solid #aaa; z-index: 4; display: none; background: #fff; }
-	#loc-results ul { list-style: none; }
-	#loc-results li a { display: block; padding: 0.5em 1.5em; }
-	.search-item { padding: 0.5em 1.0em; border-bottom: 1px solid #ddd; }
-	.search-item-a { background: #38f; color: #fff; }
-	.search-item > div { display:inline-block; vertical-align:middle; margin-right: 0.4em; }
-	.search-item img { width: 24px; height: 24px; }
+	#loc_results { position: absolute; width: 35%; margin-top: 3px; border: 1px solid #aaa; z-index: 4; display: none; background: #fff; }
+	#loc_results ul { list-style: none; }
+	#loc_results li a { display: block; padding: 0.5em 1.5em; }
+	.search_item { padding: 0.5em 1.0em; border-bottom: 1px solid #ddd; }
+	.search_item_a { background: #38f; color: #fff; }
+	.search_item > div { display:inline-block; vertical-align:middle; margin-right: 0.4em; }
+	.search_item img { width: 24px; height: 24px; }
 	.ui-autocomplete { max-height: 200px; overflow-y: auto; overflow-x: hidden;	}
 </style>
 
@@ -105,7 +105,7 @@ function OnOfferSaveRes__(e) {
 			<h5 class="errors">{{form_errors.request}}</h5>
 			<form action="/offer/create/" method="POST" enctype="multipart/form-data" class="ajax-form" id="offer_form" data-delegates='{"before": "OnOfferSaveReq__", "after": "OnOfferSaveRes__"}'>
 				{% csrf_token %}
-				<table class="form_table">
+				<table class="ui-form-table">
 					<td>BUSINESS : </td>
                     <td>
                         <select class="ui-input" name="OF_business" >

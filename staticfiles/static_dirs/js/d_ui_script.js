@@ -24,7 +24,7 @@ function initApp()
 
 	$AppOverlay.init();
 
-	$(document).on("submit", "form.ajax-form", ajaxFormSubmit);
+	$(document).on("submit", "form.ajax-form", $AppForm.ajaxSubmit);
 
 	$(document).on("click", ".app_vlist_exp_item > a", function(e) {
 		e.preventDefault();
@@ -149,49 +149,48 @@ function navClicked()
 	}
 }
 
-function ajaxFormSubmit(e)
-{
-	console.log("+ajaxFormSubmit");
-	e.preventDefault();
-	var $form = $(this);
-	e.$src = $form;
-	var action = $form.attr('action');
-	console.log('action : '+ action);
-	var dg = JSON.parse($form.attr('data-delegates'));
-	var dlgs = {
-		"before": (dg && dg.before)? window[dg.before] || null : null,
-		"after": (dg && dg.after)? window[dg.after] || null : null,
-	};
+var $AppForm = {
+	ajaxSubmit: function(e) {
+		console.log("+ajaxSubmit");
+		e.preventDefault();
+		var $form = $(this);
+		e.$src = $form;
+		var action = $form.attr('action');
+		console.log('action : '+ action);
 
-	if (dlgs.before)
+		var dg = JSON.parse($form.attr('data-delegates'));
+		var dlgs = {
+			"before": (dg && dg.before)? window[dg.before] : $AppForm.before,
+			"after": (dg && dg.after)? window[dg.after] : $AppForm.after,
+		};
+
 		if (dlgs.before(e) === false)
 			return;
 
-	$AppRequest.post(action, $form.serialize(), (status, json) => {
-		if (dlgs.after) {
+		$AppRequest.post(action, $form.serialize(), (status, json) => {
 			e.status = status;
 			e.resp = json;
 			dlgs.after(e);
+		});
+	},
+	before: function(e) {
+		console.log('do nothing');
+		return true;
+	},
+	after: function(e) {
+		console.log("+afterResponse");
+		if (e.status) {
+			$AppNoti.info({title:"Successful", text:e.resp.message});
 		} else {
-			$AppToast.show(JSON.stringify(json.message));
+			var errors = '';
+			for (var key in e.resp.data) {
+				console.log(key + ' : '+ e.resp.data[key]);
+				errors += e.resp.data[key]+'<br />';
+			}
+			$AppNoti.error({title:e.resp.message, text:errors});
 		}
-	});
-}
-
-function afterResponse(e) {
-	console.log("+afterResponse");
-	if (e.status) {
-		$AppNoti.info({title:"Successful", text:e.resp.message});
-	} else {
-		var errors = '';
-		for (var key in e.resp.data) {
-			console.log(key + ' : '+ e.resp.data[key]);
-			errors += e.resp.data[key]+'<br />';
-		}
-		$AppNoti.error({title:e.resp.message, text:errors});
 	}
 }
-
 
 /*******************************************************/
 /******************** App Library **********************/

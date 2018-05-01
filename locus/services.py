@@ -1,5 +1,6 @@
 from locus.models import Address
-from base.serializers import *
+from base.serializers import (ModelValueSerializer, ModelValuesSerializer)
+
 
 class AddressService(object):
     model = Address
@@ -9,12 +10,10 @@ class AddressService(object):
     def timestamp(klass, key):
         return klass.model.timestamp(key)
 
-
     @classmethod
     def address(klass):
         data = klass.model.fetch_all()
         return ModelValueSerializer.json(data)
-
 
     @classmethod
     def address_by_id(klass, id_):
@@ -22,9 +21,7 @@ class AddressService(object):
         print(data)
         return ModelValueSerializer.json(data, klass.fields)
 
-
     @classmethod
     def address_by_user(klass, user):
         data = klass.model.fetch_by_user(user)
-        #return data
         return ModelValuesSerializer.json(data, klass.fields)

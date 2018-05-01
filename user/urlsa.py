@@ -18,5 +18,5 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.UserView.as_view()),
-	url(r'^(?P<key>[0-9]+)/$', views.UserView.as_view()),
+    url(r'^(?P<key>[0-9]+)/$', views.UserView.as_view()),
 ]

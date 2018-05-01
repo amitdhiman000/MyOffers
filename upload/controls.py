@@ -20,7 +20,7 @@ class FileUploadControl(BaseControl):
 	def parseRequest(self, request):
 		self.m_file = None
 		self.m_user = request.user
-		if request.FILES == None:
+		if request.FILES is None:
 			self.m_errors['upload'] = 'No file attached'
 			self.m_valid = False
 			return False
@@ -33,14 +33,14 @@ class FileUploadControl(BaseControl):
 
 
 	def validate(self):
-		if self.m_valid == False:
+		if self.m_valid is False:
 			return self.m_valid
 
 		print('validating')
 		valid = True
 
 		user = User.fetch_user(self.m_user)
-		if user != None:
+		if user is not None:
 			self.m_user = user
 		else:
 			self.m_errors['upload'] = 'Invalid user'
@@ -51,11 +51,11 @@ class FileUploadControl(BaseControl):
 
 
 	def execute(self):
-		if self.m_valid == False:
+		if self.m_valid is False:
 			return None
 
 		upload = FileUpload.create(self.m_file, self.m_user)
-		if upload != None:
+		if upload is not None:
 			pass
 			#clear_file_upload(self.m_user.id, upload.id)
 		else:

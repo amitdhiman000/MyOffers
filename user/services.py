@@ -1,5 +1,5 @@
+from user.models import User
 from base.serializers import ModelValueSerializer
-from .models import User
 
 
 class UserService(object):

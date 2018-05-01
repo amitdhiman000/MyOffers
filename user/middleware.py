@@ -1,6 +1,7 @@
 from django.utils.functional import SimpleLazyObject
 from . import backends
 
+
 def fetch_user(request):
     if not hasattr(request, '_cached_user'):
         request._cached_user = backends.fetch_user(request)
@@ -22,7 +23,6 @@ class AuthMiddleware(object):
         response = self.get_response(request)
         return response
 
-
-    ## this method will suppress the excepion callstack so commented
-    ##def process_exception(self, request, exception):
-    ##    pass
+    # this method will suppress the excepion callstack so commented
+    # def process_exception(self, request, exception):
+    #    pass

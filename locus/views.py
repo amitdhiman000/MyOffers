@@ -26,12 +26,12 @@ class AddressView(RestApiView):
 
     def get(self, request, key=None, *args, **kwargs):
         print('get request')
-        if key == None:
+        if key is None:
             addresses = self.service.address()
             return JsonResponse({'result':addresses})
 
         address = self.service.address_by_id(key)
-        if address == None:
+        if address is None:
             data = {'error':{'status':404, 'message':'Not Found'}}
             return JsonResponse(data, status=404)
         return JsonResponse(address)
@@ -46,7 +46,7 @@ class AddressView(RestApiView):
             and form.validate()
             ):
             obj = form.save()
-            if obj != None:
+            if obj is not None:
                 res = JsonResponse(status=201)
                 res['location'] = obj.absolute_url()
                 return res
@@ -98,7 +98,7 @@ def address_create(request):
         data = form.commit()
 
     if request.is_ajax():
-        if data != None:
+        if data is not None:
             data = AddressService.address_by_id(data.id)
             return App_Render(request, 'locus/address_item_1.html', {'address': data})
         else:
@@ -118,7 +118,7 @@ def address_update(request):
 
     data = form.errors()
     if request.is_ajax():
-        if data != None:
+        if data is not None:
             return JsonResponse({'status': 200, 'message': 'Saved Successfully', 'data': data})
         else:
             data = form.errors()
@@ -136,7 +136,7 @@ def address_patch(request):
         data = form.commit()
 
     if request.is_ajax():
-        if data != None:
+        if data is not None:
             return JsonResponse({'status': 200, 'message': 'Saved Successfully', 'data': data})
         else:
             data = form.errors()
@@ -154,7 +154,7 @@ def address_delete(request):
         data = form.commit()
 
     if request.is_ajax():
-        if data == True:
+        if data is True:
             return JsonResponse({'status': 204, 'message': 'Deleted Successfully'})
         else:
             data = form.errors()

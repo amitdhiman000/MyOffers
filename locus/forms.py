@@ -51,7 +51,7 @@ class AddressRegForm(CreateForm):
 
 		#location = self.model_value('location')
 		location = self.del_model_value('location')
-		if location != None:
+		if location is not None:
 			try:
 				loc = location.split(',')
 				if len(loc) == 2:
@@ -86,8 +86,8 @@ class AddressRegForm(CreateForm):
 
 	def save(self):
 		print(self.model_values())
-		result = self.model.create(self.model_values())
-		if result[1] == False:
+		result = self.model.create_v1(self.model_values())
+		if result[1] is False:
 			self.set_error('error', 'Address already exists!!')
 			return None
 		return result[0]

@@ -12,7 +12,8 @@ def user(request):
         from user.models import Guest
         user = Guest()
 
-    return {'user': user,}
+    return {'user': user, }
+
 
 def ajax(request):
     return {'is_ajax': request.is_ajax()}

@@ -63,16 +63,16 @@ class MessageControl(BaseControl):
 		else:
 			# check for user name
 			error = validator.validateName(self.m_msg.name)
-			if error != None:
+			if error is not None:
 				self.m_errors['name'] = error
 
 			# check for email
-			if self.m_msg.email == None or self.m_msg.email == '':
+			if self.m_msg.email is None or self.m_msg.email == '':
 				valid = False
 				self.m_errors['email'] = '*Email or Phone is required'
 			else:
 				match = re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', self.m_msg.email)
-				if match != None:
+				if match is not None:
 					# valid email
 					self.m_msg.phone = ""
 				elif is_number(self.m_msg.phone):
@@ -88,7 +88,7 @@ class MessageControl(BaseControl):
 
 
 		# check for phone
-		if self.m_msg.title == None or self.m_msg.title == '':
+		if self.m_msg.title is None or self.m_msg.title == '':
 			# okay title is not mendatory
 			#valid = False
 			#self.m_errors['title'] = '*title can\'t be empty'
@@ -96,7 +96,7 @@ class MessageControl(BaseControl):
 
 		# check for text
 		print(self.m_msg.text)
-		if self.m_msg.text == None or self.m_msg.text == '':
+		if self.m_msg.text is None or self.m_msg.text == '':
 			valid = False
 			self.m_errors['text'] = '*message can\'t be empty'
 

@@ -1,5 +1,6 @@
 import types
-from django.core import serializers
+# from django.core import serializers
+
 
 class ModelValueSerializer(object):
 
@@ -16,13 +17,12 @@ class ModelValueSerializer(object):
                 obj.__dict__[key] = prop_method()
 
         localdict = {}
-        if fields != None:
+        if fields is not None:
             for key in fields:
                 localdict[key] = obj.__dict__[key]
         else:
             localdict = obj.__dict__
         return obj
-
 
 
 class ModelValuesSerializer(object):
@@ -34,8 +34,8 @@ class ModelValuesSerializer(object):
         if not query_set.exists():
             return datalist
 
-        #unwanted = set(query_set.first().__dict__.keys()) - set(fields)
-        #print(unwanted)
+        # unwanted = set(query_set.first().__dict__.keys()) - set(fields)
+        # print(unwanted)
         for obj in query_set:
             for key, val in obj.ExtraFields.items():
                 prop_method = getattr(obj, val)
@@ -44,7 +44,7 @@ class ModelValuesSerializer(object):
                     obj.__dict__[key] = prop_method()
 
             localdict = {}
-            if fields != None:
+            if fields is not None:
                 for key in fields:
                     localdict[key] = obj.__dict__[key]
             else:
