@@ -231,7 +231,7 @@ SITE_NAME = "Trader"
 # some custom settings
 BASE_TEMPLATE = 'base/app_base_1.html'
 BASE_AJAX_TEMPLATE = 'base/app_base_2.html'
-DEFAULT_USER_IMAGE = 'default/user.svg'
+DEFAULT_USER_IMAGE = 'default/user_24_1.svg'
 
 # ## admin pages
 # ##

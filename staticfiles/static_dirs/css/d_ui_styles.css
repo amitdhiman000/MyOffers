@@ -1,7 +1,7 @@
 * { margin:0; padding:0; border:0; outline:0; font-size: 100%; font: inherit; vertical-align: baseline; box-sizing: border-box; }
 a { text-decoration: none; cursor: pointer; color: #333; }
 a:hover { text-decoration: underline; }
-//img { user-select: none; pointer-events: none; }
+/*img { user-select: none; pointer-events: none; }*/
 ul { list-style: none; }
 table { min-width: 50%; border-spacing: 1.5em 1.5em; border-collapse: collapse; }
 table th, table td { padding: 0.7em; text-align: left; }
@@ -45,8 +45,8 @@ overflow: auto; height: 100%
 .ui-form-table { width: 99%; }
 .ui-form-table tr td:first-child { text-align: right; }
 .ui-info-table { width:99%; }
-//.ui-info-table th { border-bottom: 1px solid #ddd; background: #e9e9e9; }
-//.ui-info-table tr { border-bottom: 1px solid #ddd; }
+/*.ui-info-table th { border-bottom: 1px solid #ddd; background: #e9e9e9; }*/
+/*.ui-info-table tr { border-bottom: 1px solid #ddd; }*/
 
 .ui-input { background: #fff; width: 95%; max-width: 30em; height: 3.3em; border: 1px solid #ddd; padding: 0.5em 1.0em; border-radius: 0.3em; }
 .ui-input:focus { border: 1px solid #aaa; }
@@ -180,7 +180,7 @@ textarea.ui-input { width:95%; max-width: 30em; height: 6em; border: 1px solid #
 .wt-progress-control { margin-left: 1%; min-width: 25%; }
 
 /* switchtab */
-.wt-switchtab { }
+.wt-switchtab { display: block; }
 .wt-switchtab-nav > li > a { border: 1px solid #aaa; }
 .wt-switchtab-nav > li > a.wt-switchtab-a { border-bottom: none; }
 .wt-switchtab-item { display: none; }
