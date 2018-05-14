@@ -14,19 +14,19 @@
 		</div>
 		<div class="ui-block-body">
 			<style type="text/css" >
-				#contact-left { min-width: 50%; display: inline-block; vertical-align: top; }
-				#contact-right { margin-left: 5px; display: inline-block; vertical-align: top; }
-				.form-table { width: 100%; }
-				.form-table tr td:first-child { max-width: 20%; text-align: right; }
+				#contact_left { min-width: 50%; display: inline-block; vertical-align: top; }
+				#contact_right { margin-left: 5px; display: inline-block; vertical-align: top; }
+				.form_table { width: 100%; }
+				.form_table tr td:first-child { text-align: right; }
 			</style>
-			<div id="contact-left" >
+			<div id="contact_left" >
 				<div class="ui-errors"></div>
-				<form action="/public/contacts/" method="POST" class="contact-form ajax-form" data-delegates='{"before":"OnMessageSendReq__", "after": "OnMessageSendRes__"}' >
+				<form action="/public/contacts/" method="POST" class="ajax-form" data-delegates='{"before":"OnMessageSendReq__", "after": "OnMessageSendRes__"}' >
 					{% csrf_token %}
-					<table class="form-table">
-						<tr><td>NAME* </td><td><input type="text" name="name" class="ui-input" placeholder="Name" /></td>
+					<table class="form_table">
+						<tr><td>NAME* </td><td><input type="text" name="name" {% if user.is_loggedin %} value="{{user.name}}" {% endif %} class="ui-input" placeholder="Name" /></td>
 						</tr>
-						<tr><td>CONTACT* </td><td><input type="text" name="email" class="ui-input" placeholder="Email or Phone" /></td>
+						<tr><td>CONTACT* </td><td><input type="text" name="email" {% if user.is_loggedin %} value="{{user.email}}" {% endif %} class="ui-input" placeholder="Email or Phone" /></td>
 						</tr>
 						<tr><td>ABOUT* </td><td><input type="text" name="title" class="ui-input" placeholder="About" /></td>
 						</tr>
@@ -38,7 +38,7 @@
 					</table>
 				</form>
 			</div>
-			<div id="contact-right">
+			<div id="contact_right">
 				<div style="margin: 3px 0px;">
 					GOT A QUESTION? <strong>TALK WITH US DIRECT.</strong>
 				</div>

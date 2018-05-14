@@ -2,7 +2,7 @@ from myadmin.backenddb import (insert_default_areas, insert_custom_areas, insert
 
 from offer.models import Category
 from locus.models import (Country ,State, City, Area)
-from public.models import (GuestMessage, UserMessage)
+from public.models import (Message)
 from myadmin.preload_data import (gCountries, gCategories)
 from base.apputil import (App_AdminRequired, App_Render)
 # Create your views here.
@@ -157,13 +157,13 @@ def category_add_view0(request):
 @App_AdminRequired
 def category_add_view1(request, params, length):
     print(request)
-    index = 0;
+    index = 0
     cat_list = gCategories
     while index < length:
         for cat in cat_list:
             if cat['name'] == params[index]:
                 if 'sub' in cat:
-                    cat_list = cat['sub'];
+                    cat_list = cat['sub']
                 else:
                     print('No more subcategories, jump to root')
                     cat_list = cat
@@ -217,6 +217,7 @@ def category_add_view(request, query):
 
 @App_AdminRequired
 def messages_view(request):
-    messages = GuestMessage.fetch_all()
+    print('chaum executing this')
+    messages = Message.fetch_all()
     data = {'title': 'Messages', 'messages': messages}
     return App_Render(request, 'admin/admin_message_1.html', data)

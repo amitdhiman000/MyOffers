@@ -1,4 +1,5 @@
 {% extends base_template %}
+{% load static %}
 
 {% block appmenu %}
 {% include './admin_left_nav.html' %}
@@ -6,29 +7,51 @@
 
 {% block pagecontent %}
 <style>
-	.msg-box { margin-top: 0.8em; padding: 0em 0.8em; border:1px solid #ddd; }
-	.msg-head { display:table;}
-	.msg-head > div { display: table-cell; vertical-align: middle; }
-	.msg-controls { width: 100%; text-align: right; }
-	.msg-body { padding: 0.8em 0em; }
-	.msg-foot {}
+	.msg_block { width: 100%; display: table; font-size: 1.2em; }
+	.msg_item { height: 30px; border-top: 1px solid #ccc;  background: #f9f9f9; cursor: pointer; }
+	.msg_item:last-child { border-bottom: 1px solid #ccc; }
+	.msg_item > div { height: inherit; vertical-align: middle; }
+	.msg_checkbox { width: 1%; display: table-cell; }
+	.msg_name { display: table-cell; width: 7%;  }
+	.msg_content {  display: table-cell; width: 20%; }
+	.msg_time { display: table-cell; width: 5%; }
+	.msg_menu > div { display: inline-block; cursor: pointer; }
 </style>
+
 <div class="ui-content" >
-	<div class="ui-bar-tbb">
-		<h3>Messages</h3>
-	</div>
-	<div class="ui-body">
-		<table class="ui-info-table">
-			{% for msg in messages %}
-				<div class="msg-box">
-					<div class="msg-head" > <div><strong>{{msg.title}}</strong></div> <div class="msg-controls"><a href="javascript:void(0)">Delete</a></div></div>
-					<div class="ui-line-s"></div>
-					<div class="msg-body" >{{msg.text}}</div>
-					<div class="ui-line-s"></div>
-					<div class="msg-foot">From: <strong>{{msg.name}}</strong> Contact: <strong>{{msg.email}} {{msg.phone}}</strong> </div>
+	<div class="ui-block">
+		<div class="ui-block-bar" style="padding-left: 0px;" >
+			<div class="msg_menu">
+				<div>
+					<div class="app_checkbox ui-center" >
+						<input type="checkbox" />
+						<div></div>
+					</div>
 				</div>
-			{% endfor %}
-		</table>
+				<div><img src="{% static 'images/svg/delete_24_1.svg' %}" style="height: 24px; width: 24px;" /></div>
+				<div><img src="{% static 'images/svg/markunread_24_1.svg' %}" style="height: 24px; width: 24px;" /></div>
+			</div>
+			<strong>Messages</strong>
+		</div>
+  		<div class="ui-block-body" style="padding-left: 0; padding-right: 0;">
+			<div class="msg_block" >
+				<ul>
+					{% for message in messages %}
+					<li class="msg_item" >
+						<div class="msg_checkbox" >
+							<div class="app_checkbox ui-center" >
+								<input type="checkbox" />
+								<div></div>
+							</div>
+						</div>
+						<div class="msg_name" >{{message.name}}</div>
+						<div class="msg_content" ><b>{{message.title}}</b> - {{message.text}}</div>
+						<div class="msg_time" title="{{message.created_at}}" >{{message.created_at | date:"M d, Y"}}</div>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+  		</div>
 	</div>
 </div>
 {% endblock %}

@@ -54,7 +54,7 @@ overflow: auto; height: 100%
 .ui-input[readonly]:hover { border:none; }
 select.ui-input[readonly] { pointer-events: none; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
 textarea.ui-input { width:95%; max-width: 30em; height: 6em; border: 1px solid #ddd; padding: 0.5em 1.0em; border-radius: 0.3em; }
-.ui-input[type=checkbox] { width: 30px; height: 30px; }
+.ui-input[type=checkbox] { width: 24px; height: 24px; }
 .ui-input:focus::-webkit-input-placeholder { color:transparent; }
 .ui-input:focus:-moz-placeholder { color:transparent; } /* FF 4-18 */
 .ui-input:focus::-moz-placeholder { color:transparent; } /* FF 19+ */
@@ -109,7 +109,7 @@ textarea.ui-input { width:95%; max-width: 30em; height: 6em; border: 1px solid #
 .wt-notibox {
 	position: fixed; min-width: 30%; max-width: 30%; min-height: 15%; max-height: 15%;
 	right: 3%; top: 15%; z-index: 100; pointer-events: none; overflow: visible;
-	//border: 1px solid #bbb;
+	/*border: 1px solid #bbb;*/
 }
 .wt-noti {  width: 100%; height: inherit;
 	margin-top: 1em; pointer-events: visible;

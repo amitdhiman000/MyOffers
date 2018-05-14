@@ -146,10 +146,10 @@ def user_account_view(request):
 
 
 @App_LoginRequired
-def user_mails_view(request):
+def user_messages_view(request):
     print(request.GET.urlencode())
     data = {'title': 'User mails'}
-    return App_Render(request, 'user/user_mails_1.html', data)
+    return App_Render(request, 'user/user_messages_1.html', data)
 
 
 @App_LoginRequired

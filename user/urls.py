@@ -26,7 +26,7 @@ urlpatterns = [
     url(r'^signout/$', views.signout, name='signout'),
     # user profile tabs
     url(r'^account/$', views.user_account_view, name='user_account_view'),
-    url(r'^mails/$', views.user_mails_view, name='user_mails_view'),
+    url(r'^messages/$', views.user_messages_view, name='user_messages_view'),
     url(r'^stats/$', views.user_stats_view, name='user_stats_view'),
     url(r'^wishlist/$', views.user_wishlist_view, name='user_wishlist_view'),
     url(r'^settings/$', views.user_settings_view, name='user_settings_view'),
