@@ -54,7 +54,9 @@ function OnMessageSendReq__(e) {
 function OnMessageSendRes__(e) {
 	console.log("+OnMessageSendRes__");
 	if (e.status)
-	Toast.show("Message sent!!");
+		$AppToast.show("Message sent!!");
+	else
+		$AppToast.show(e.resp.message);
 	return true;
 }
 </script>

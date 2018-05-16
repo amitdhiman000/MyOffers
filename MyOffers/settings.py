@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'search',
     'upload',
     'user',
+    'mail',
     'myadmin',
     'MyOffers',
 ]
@@ -235,6 +236,8 @@ DEFAULT_USER_IMAGE = 'default/user_24_1.svg'
 
 # ## admin pages
 # ##
+GUEST_LEVEL = 0
+NUSER_LEVEL = 1
 ADMIN_LEVEL = 9
 ADMIN_HOME = '/myadmin/'
 ADMIN_CUSTOM_DATA = '/myadmin/fetch-custom/'

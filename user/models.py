@@ -72,34 +72,6 @@ class User(models.Model):
         return None
 
     @classmethod
-    def update_name(klass, name, user):
-        u = klass.fetch_user(user)
-        u.name = name
-        u.save()
-        return u.name
-
-    @classmethod
-    def update_email(klass, email, user):
-        u = klass.fetch_user(user)
-        u.email = email
-        u.save()
-        return u.email
-
-    @classmethod
-    def update_phone(klass, phone, user):
-        u = klass.fetch_user(user)
-        u.phone = phone
-        u.save()
-        return u.phone
-
-    @classmethod
-    def update_password(klass, password, user):
-        u = klass.fetch_user(user)
-        u.password = password
-        u.save()
-        return 'xxxxxxxx'
-
-    @classmethod
     def check_password(klass, password, user):
         u = klass.fetch_user(user)
         return u.password == password
@@ -113,6 +85,14 @@ class User(models.Model):
         try:
             return klass.objects.get(email=email, password=password)
             # return klass.objects.filter(email=email, password=password).first()
+        except Exception as ex:
+            logging.error(ex)
+        return None
+
+    @classmethod
+    def fetch_admin(klass):
+        try:
+            return klass.objects.filter(level=settings.ADMIN_LEVEL).first()
         except Exception as ex:
             logging.error(ex)
         return None

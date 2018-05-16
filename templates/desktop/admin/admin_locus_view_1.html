@@ -7,23 +7,25 @@
 
 {% block pagecontent %}
 <div class="ui-content" >
-	<div class="ui-bar-tbb">
-		<h3>Locations</h3>
-	</div>
-	<div class="ui-body">
-	{% if countries|length == 0 %}
-		<h4>No default values</h4>
-	{% else %}
-		<div class="ui-bar-tbb">
-			&gt;&gt; <a href="/myadmin/locus/">Countries</a>
+	<div class="ui-block" >
+		<div class="ui-block-bar">
+			<h3>Locations</h3>
 		</div>
-		<table class="ui-info-table">
-		<tr><th>Sr.</th><th>Country Name</th></tr>
-		{% for country in countries %}
-			<tr><td>{{forloop.counter}}</td><td><a href="/myadmin/locus/{{country.name}}/" >{{country.name}}</a></td></tr>
-		{% endfor %}
-		</table>
-	{% endif %}
+		<div class="ui-block-body">
+			{% if countries|length == 0 %}
+				<h4>No default values</h4>
+			{% else %}
+				<div class="ui-bar-tbb">
+					&gt;&gt; <a href="/myadmin/locus/">Countries</a>
+				</div>
+				<table class="ui-info-table">
+				<tr><th>Sr.</th><th>Country Name</th></tr>
+				{% for country in countries %}
+					<tr><td>{{forloop.counter}}</td><td><a href="/myadmin/locus/{{country.name}}/" >{{country.name}}</a></td></tr>
+				{% endfor %}
+				</table>
+			{% endif %}
+		</div>
 	</div>
 </div>
 {% endblock %}

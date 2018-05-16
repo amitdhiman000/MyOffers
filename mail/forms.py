@@ -1,7 +1,7 @@
 from base.forms import (CreateForm, UpdateForm)
 from base.validators import (NoValidator, NameValidator, DescriptionValidator)
 from base.validators import (EmailValidator, PhoneValidator)
-from public.models import Message
+from mail.models import (PublicMessage, PrivateMessage)
 
 
 model_fields = {
@@ -31,21 +31,18 @@ form_fields = {
 }
 
 
-class MessageForm(CreateForm):
+class PublicMessageForm(CreateForm):
 
     def __init__(self):
         super().__init__()
         self.m_fields = form_fields
 
-    def validate(self):
-        is_valid = super().validate()
-        if not is_valid:
-            return is_valid
-        if self.request().user.is_loggedin() is True:
-            self.add_model_value('fk_user', self.request().user)
-        return True
 
     def save(self):
         print('saving ....')
-        ret = Message.create_v1(self.model_values())
-        return ret[0]
+        ret = PublicMessage.create_v1(self.model_values())
+        if ret is None:
+            self.set_error('error', 'Failed to sent message')
+        elif not ret[1]:
+            self.set_error('error', 'Duplicate message')
+        return ret[1]

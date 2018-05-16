@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import (csrf_protect)
 
-from public.forms import MessageForm
+from mail.forms import PublicMessageForm
 from base.apputil import App_Render
 
 
@@ -22,17 +22,18 @@ class ContactsView(TemplateView):
         print(request.POST)
         error = None
         data = {'title': 'Contacts'}
-        form = MessageForm()
+        form = PublicMessageForm()
         if form.parseForm(request) and form.clean() and form.validate():
-            form.commit()
+            if not form.commit():
+                error = form.errors()
         else:
             error = form.errors()
 
         if request.is_ajax():
             if error is None:
-                data.update({'status': 204, 'message': 'successfuly sent'})
+                data.update({'status': 204, 'message': 'Successfuly sent'})
             else:
-                data.update({'status': 401, 'error': error})
+                data.update({'status': 401, 'message': 'Failed', 'error': error})
             return JsonResponse(data)
         else:
             if error is None:

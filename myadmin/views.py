@@ -2,7 +2,7 @@ from myadmin.backenddb import (insert_default_areas, insert_custom_areas, insert
 
 from offer.models import Category
 from locus.models import (Country ,State, City, Area)
-from public.models import (Message)
+from mail.models import (PublicMessage)
 from myadmin.preload_data import (gCountries, gCategories)
 from base.apputil import (App_AdminRequired, App_Render)
 # Create your views here.
@@ -218,6 +218,6 @@ def category_add_view(request, query):
 @App_AdminRequired
 def messages_view(request):
     print('chaum executing this')
-    messages = Message.fetch_all()
+    messages = PublicMessage.fetch_all()
     data = {'title': 'Messages', 'messages': messages}
     return App_Render(request, 'admin/admin_message_1.html', data)
