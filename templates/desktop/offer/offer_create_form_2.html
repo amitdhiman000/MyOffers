@@ -73,25 +73,30 @@ $(function(){
 });
 
 
-function OnOfferSaveReq__(e) {
-	console.log("+beforeOfferSaveReq");
-	return true;
-}
-
-function OnOfferSaveRes__(e) {
-	console.log("+afterOfferSaveRes");
-	if (e.status) {
-		//var val = e.resp;
-		//$('#address_cont').prepend(val);
-		$AppNoti.info({title:'Success', text:e.resp.message});
-	} else {
-		var errors = '';
-		for (var err in e.resp.data) {
-			errors += e.resp.data[err] + '<br />';
+var OfferFormHandler = {
+	before: function(e) {
+		console.log("+beforeOfferSaveReq");
+		return true;
+	},
+	after: function(e) {
+		console.log("+afterOfferSaveRes");
+		if (e.status) {
+			//var val = e.resp;
+			//$('#address_cont').prepend(val);
+			$AppNoti.info({title:'Success', text:e.resp.message});
+		} else {
+			var errors = '';
+			for (var err in e.resp.data) {
+				errors += e.resp.data[err] + '<br />';
+			}
+			$AppNoti.info({title:e.resp.message, text:errors});
 		}
-		$AppNoti.info({title:e.resp.message, text:errors});
 	}
-}
+};
+
+$(function(){
+	$('#offer_create_form').data('data-handler', OfferFormHandler);
+});
 </script>
 
 <div class="ui-content" >
@@ -103,7 +108,7 @@ function OnOfferSaveRes__(e) {
 		</div>
 		<div class="ui-block-body" >
 			<h5 class="errors">{{form_errors.request}}</h5>
-			<form action="/offer/create/" method="POST" enctype="multipart/form-data" class="ajax-form" id="offer_form" data-delegates='{"before": "OnOfferSaveReq__", "after": "OnOfferSaveRes__"}'>
+			<form action="/offer/create/" method="POST" enctype="multipart/form-data" class="ajax-form" id="offer_create_form" >
 				{% csrf_token %}
 				<table class="ui-form-table">
 					<td>BUSINESS : </td>

@@ -27,14 +27,24 @@ def auth_user(email, password):
     return User.check_creds(email, password)
 
 
+def reload(request, user):
+    # need to do it in user.middleware.AuthMiddleware
+    newUser  = User.fetch_by_id(user.id)
+    request.session[USER_UID_KEY] = newUser.id
+    request.session[USER_EMAIL_KEY] = newUser.email
+    request.session[USER_NAME_KEY] = newUser.name
+    request.session[USER_LEVEL_KEY] = newUser.level
+    request.session[USER_AUTH_KEY] = True
+    #request.session.set_expiry(60*60)  # 60 minutes session timeout
+
 def login(request, user):
-    # need to do it in accounts.middleware.AuthMiddleware
+    # need to do it in user.middleware.AuthMiddleware
     request.session[USER_UID_KEY] = user.id
     request.session[USER_EMAIL_KEY] = user.email
     request.session[USER_NAME_KEY] = user.name
     request.session[USER_LEVEL_KEY] = user.level
     request.session[USER_AUTH_KEY] = True
-    request.session.set_expiry(60*60)  # 10 minutes session timeout
+    request.session.set_expiry(60*60)  # 60 minutes session timeout
 
 
 def logout(request):

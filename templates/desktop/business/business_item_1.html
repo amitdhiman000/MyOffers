@@ -1,3 +1,5 @@
+{% load staticfiles %}
+{% load common %}
 <div class="ui-block ui-shadow business_item" data-id="{{b.id}}" style="margin-top:2.5em;" >
     <div class="ui-block-bar">
         <div class="ui-content" >
@@ -5,86 +7,84 @@
         </div>
         <div class="ui-content" style="text-transform: none;" >
             <div class="ui-right" >
-                <a onclick="deafaultBusiness(event,this)" >Default</a>
-                &nbsp;|&nbsp;<a onclick="deleteBusiness(event,this)" >Delete</a>
+                <a onclick="deafaultBusiness(event,this)" >
+                    Default
+                </a>
+                &nbsp;|&nbsp;
+                <a onclick="deleteBusiness(event,this)" >
+                    Delete
+                </a>
+                &nbsp;|&nbsp;
+                <a onclick="editBusinessFormFields(event, this)" >
+                    Edit
+                </a>
             </div>
         </div>
     </div>
     <div class="ui-block-body">
-        <table class="ui-form-table" >
+        <form method="POST" action="/business/update/" class="ajax-form" >
+        {% csrf_token %}
+        <input type="hidden" name="B_id" value="{{b.id}}" />
+        <table class="ui-info-table" >
             <tr class="info_item" >
-                <td>NAME</td>
                 <td>
-                    <form method="POST" action="/business/update/" class="ajax-form">
-                    <div>
-                        {% csrf_token %}
-                        <input type="hidden" name="B_id" value="{{b.id}}" />
-                        <input readonly type="text" name="B_name" value="{{b.name}}" data-value="{{b.name}}" placeholder="Name" class="ui-input" />
+                    <p>NAME</p>
+                    <div class="info_view" >
+                        <label data-rel="B_name" >{{b.name}}</label>
                     </div>
-                    <div class="ui-hide item_controls" >
-                        <input type="submit" value="Save" class="ui-btn" />
-                        <input type="button" value="Cancel" onclick="editText(event,this)" class="ui-btn" />
+                    <div class="info_edit ui-hide" >
+                        <input type="text" name="B_name" value="{{b.name}}" data-value="{{b.name}}" placeholder="Name" class="ui-input" />
                     </div>
-                    </form>
                 </td>
-                <td><a onclick="editText(event,this)" >Edit</a></td>
             </tr>
             <tr class="info_item" >
-                <td>ABOUT</td>
                 <td>
-                    <form method="POST" action="/business/update/" class="ajax-form">
-                    <div>
-                        {% csrf_token %}
-                        <input type="hidden" name="B_id" value="{{b.id}}" />
-                        <input readonly type="text" name="B_about" value="{{b.about}}" data-value="{{b.about}}" placeholder="About Business" class="ui-input" />
+                    <p>ABOUT</p>
+                    <div class="info_view" >
+                        <label data-rel="B_about" >{{b.about}}</label>
                     </div>
-                    <div class="ui-hide item_controls" >
-                        <input type="submit" value="Save" class="ui-btn" />
-                        <input type="button" value="Cancel" onclick="editText(event,this)" class="ui-btn" />
+                    <div class="info_edit ui-hide" >
+                        <input type="text" name="B_about" value="{{b.about}}" data-value="{{b.about}}" placeholder="About Business" class="ui-input" />
                     </div>
-                    </form>
                 </td>
-                <td><a onclick="editText(event,this)" >Edit</a></td>
             </tr>
             <tr class="info_item" >
-                <td>CATEGORY</td>
                 <td>
-                    <form method="POST" action="/business/update/" class="ajax-form">
-                    <div>
-                        {% csrf_token %}
-                        <input type="hidden" name="B_id" value="{{b.id}}" />
-                        <select readonly name="B_category" value="{{b.category}}" data-value="{{b.category}}" class="ui-input" >
+                    <p>CATEGORY</p>
+                    <div class="info_view" >
+                        <label data-rel="B_category" >{{b.fk_category.name}}</label>
+                    </div>
+                    <div class="info_edit ui-hide" >
+                        <select name="B_category" value="{{b.fk_category.id}}" data-value="{{b.fk_category.id}}" class="ui-input" >
                             {% for cat in categories %}
-                            <option value="{{cat.id}}" {% if b.fk_category.id == cat.id %}selected{% endif %}>{{cat.name}}</option>
+                                {% if b.fk_category.id == cat.id %}
+                                    <option value="{{cat.id}}" selected>{{cat.name}}</option>
+                                    {% set category_name = cat.name %}
+                                {% else %}
+                                    <option value="{{cat.id}}" >{{cat.name}}</option>
+                                {% endif %}
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="ui-hide item_controls" >
-                        <input type="submit" value="Save" class="ui-btn" />
-                        <input type="button" value="Cancel" onclick="editText(event,this)" class="ui-btn" />
-                    </div>
-                    </form>
                 </td>
-                <td><a onclick="editText(event,this)" >Edit</a></td>
             </tr>
             <tr class="info_item" >
-                <td>WEBSITE</td>
                 <td>
-                    <form method="POST" action="/business/update/" class="ajax-form">
-                    <div>
-                        {% csrf_token %}
-                        <input type="hidden" name="B_id" value="{{b.id}}" />
-                        <input readonly type="text" name="B_website" value="{{b.website}}" data-value="{{b.website}}" placeholder="Website e.g. http://mybusiness.com" class="ui-input" />
+                    <p>WEBSITE</p>
+                    <div class="info_view" >
+                        <label data-rel="B_website" >{{b.website}}</label>
                     </div>
-                    <div class="ui-hide item_controls" >
-                        <input type="submit" value="Save" class="ui-btn" />
-                        <input type="button" value="Cancel" onclick="editText(event,this)" class="ui-btn" />
+                    <div class="info_edit ui-hide" >
+                        <input type="text" name="B_website" value="{{b.website}}" data-value="{{b.website}}" placeholder="Website e.g. http://mybusiness.com" class="ui-input" />
                     </div>
-                    </form>
                 </td>
-                <td><a onclick="editText(event,this)" >Edit</a></td>
             </tr>
         </table>
+        <div class="ui-hide form_controls" >
+            <input type="submit" value="Save" class="ui-btn" />
+            <input type="button" value="Cancel" onclick="editBusinessFormFields(event,this)" class="ui-btn" />
+        </div>
+        </form>
         <div id="business_addr_cont" >
             {% if b.address %}
                 {% for address in b.address %}

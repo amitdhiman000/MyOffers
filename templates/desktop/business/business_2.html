@@ -1,5 +1,5 @@
+{% load staticfiles %}
 {% include '../locus/address_picker_1.html' %}
-
 
 <div class="ui-content" >
 	<style type="text/css" >
@@ -12,37 +12,19 @@
 			$("#business_add_box").find('form').trigger("reset");
 		}
 
-		function editText(e, This)
-		{
-			console.log('+editText');
-			e.stopPropagation();
-			e.preventDefault();
-
-			var $root = $(This).parents('.info_item');
-			var $inputs = $root.find('.ui-input');
-			var $controls = $root.find('.item_controls');
-			if ($inputs.attr('readonly')) {
-				$inputs.removeAttr('readonly');
-			} else {
-				$inputs.attr('readonly', 'readonly');
-				$inputs.val($inputs.attr('data-value'));
-			}
-			$controls.toggleClass('ui-hide');
-		}
-
 		function showAddressBox(e, This) {
 			console.log("+showAddressBox");
 			e.stopPropagation();
 			$AppOverlay.show("#locus_addr_picker");
-			BeforeAddrSaveEvent.add(OnBAddrSaveReq__);
-			AfterAddrSaveEvent.add(OnBAddrSaveRes__);
+			BeforeAddrSaveEvent.add(BusinessAddressCreateHandler.before);
+			AfterAddrSaveEvent.add(BusinessAddressCreateHandler.after);
 		}
 
 		function hideAddressBox()
 		{
 			console.log('+hideAddressBox');
-			BeforeAddrSaveEvent.del(OnBAddrSaveReq__);
-			AfterAddrSaveEvent.del(OnBAddrSaveRes__);
+			BeforeAddrSaveEvent.del(BusinessAddressCreateHandler.before);
+			AfterAddrSaveEvent.del(BusinessAddressCreateHandler.after);
 			$AppOverlay.close();
 		}
 
@@ -65,7 +47,8 @@
 			});
 		}
 
-		function showAddressSelectBox(e, This) {
+		function showAddressSelectBox(e, This)
+		{
 			console.log("+showAddressSelectBox");
 			e.stopPropagation();
 
@@ -85,54 +68,96 @@
 			});
 		}
 
-		function OnBusinessSaveReq__(e) {
-			console.log("+OnBusinessSaveReq__");
-			return true;
-		}
-
-		function OnBusinessSaveRes__(e) {
-			console.log("+OnBusinessSaveRes__");
-			if (e.status) {
-				var val = e.resp;
-				$('#business_items_cont').prepend(val);
-				toggleBusinessBox();
-				$AppNoti.info({title:"Saved", text:"Business save Successfully!!"});
-			} else {
-				var errors = '';
-				for (var err in e.resp.data) {
-					errors += e.resp.data[err] + '<br />';
+		var BusinessAddressCreateHandler = {
+			before: function (e) {
+				console.log("+OnAdSaveReq__");
+				return true;
+			},
+			after: function (e) {
+				console.log("+OnAddrSaveRes__");
+				if (e.status) {
+					var val = e.resp;
+					$('#business_addr_cont').prepend(val);
+					hideAddressBox();
+					$AppNoti.info({title:"Saved", text:e.resp.message});
+				} else {
+					var errors = '';
+					for (var err in e.resp.data) {
+						errors += e.resp.data[err] + '<br />';
+						}
+					$AppNoti.info({title:e.resp.message, text:errors});
 				}
-				$AppNoti.info({title:e.resp.message, text:errors});
+				return true;
 			}
-			return true;
 		}
 
-		function OnBAddrSaveReq__(e) {
-			console.log("+OnAdSaveReq__");
-			return true;
+		function editBusinessFormFields(e, pThis)
+		{
+			console.log('+editBusinessFormFields');
+			var $block = $(pThis).parents('.ui-block');
+			var $form = $block.find('.ajax-form');
+			$form.find('.info_view, .info_edit').toggle();
+			var $controls = $block.find('.form_controls');
+			$controls.toggle();
+			$AppFormUtils.resetVal($form);
 		}
 
-		function OnBAddrSaveRes__(e) {
-			console.log("+OnAddrSaveRes__");
-			if (e.status) {
-				var val = e.resp;
-				$('#business_addr_cont').prepend(val);
-				hideAddressBox();
-				$AppNoti.info({title:"Saved", text:e.resp.message});
-			} else {
-				var errors = '';
-				for (var err in e.resp.data) {
-					errors += e.resp.data[err] + '<br />';
+		var BusinessItemUpdateFormHandler = {
+			before: function(e) {
+				console.log("+beforeSaveReq");
+				return true;
+			},
+			after: function(e) {
+				console.log("+afterSaveRes");
+				if (e.status) {
+					var vals = e.resp.data;
+					var $form = e.$form;
+					for (var key in vals) {
+						var val = vals[key];
+						console.log(key+' : '+val);
+						$AppFormUtils.setValByName($form, key, val);
 					}
-				$AppNoti.info({title:e.resp.message, text:errors});
+					$form.find('input[type=button]').click();
+					$AppNoti.info({title:'Done!!', text:e.resp.message});
+				} else {
+					var errors = '';
+					for (var err in e.resp.data) {
+						errors += e.resp.data[err] + '<br />';
+					}
+					$AppNoti.info({title:e.resp.message, text:errors});
+				}
+			},
+		};
+
+		var BusinessItemCreateFormHandler = {
+			before: function(e) {
+				return true;
+			},
+			after: function(e) {
+				console.log("+OnBusinessSaveRes");
+				if (e.status) {
+					var val = e.resp;
+					$('#business_items_cont').prepend(val);
+					toggleBusinessBox();
+					$AppNoti.info({title:"Saved", text:"Business saved Successfully!!"});
+				} else {
+					var errors = '';
+					for (var err in e.resp.data) {
+						errors += e.resp.data[err] + '<br />';
+					}
+					$AppNoti.info({title:e.resp.message, text:errors});
+				}
+				return true;
 			}
-			return true;
-		}
+		};
+
+		$(function() {
+			$('#business_create_form').data('data-handler', BusinessItemCreateFormHandler);
+			$('.business_item form').data('data-handler', BusinessItemUpdateFormHandler);
+		});
+
 	</script>
 
-	<div id="delete-dialog" title="Delete" style="display: none;">
-		<p>Are you sure want to delete this business ?</p>
-	</div>
 	<div class="ui-block">
 		<div class="ui-block-bar">
 			<div>
@@ -142,7 +167,7 @@
 		<div class="ui-block-body" >
 			<a class="ui-btn-a" onclick="toggleBusinessBox();" >ADD BUSINESS</a>
 			<div id="business_add_box" >
-				<form method="POST" action="/business/create/" class="ajax-form" data-delegates='{"before":"OnBusinessSaveReq__", "after":"OnBusinessSaveRes__"}' >
+				<form method="POST" action="/business/create/" class="ajax-form" id="business_create_form" >
 					<table class="ui-form-table" >
 						{% csrf_token %}
 						<input type="hidden" name="B_id" class="ui-input" value="{{business.id}}" />

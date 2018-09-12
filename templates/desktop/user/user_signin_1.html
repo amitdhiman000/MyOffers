@@ -15,7 +15,7 @@
 				{% endfor %}
 				{% endif %}
 			</div>
-			<form action="/user/signin-auth/" method="POST" class="ajax-form" id="signin-form" data-delegates='{"before": "OnSignInReq__"}' >
+			<form action="/user/signin-auth/" method="POST" class="ajax-form" id="signin-form" data-delegate="SignInFormHandler" >
 				{% csrf_token %}
 				<input type="hidden" name="next" value="{{ next }}">
 				<table class="ui-form-table">
@@ -30,10 +30,12 @@
 	</div>
 </div>
 <script type="text/javascript">
-function OnSignInReq__(e) {
-	console.log("+OnSignInReq__");
-	return true;
-}
+	var SignInFormHandler = {
+		before: function(e) {
+			console.log("+OnSignInReq");
+			return true;
+		}
+	};
 </script>
 
 {% endblock %}

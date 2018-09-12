@@ -9,7 +9,7 @@
 <div id="wt-noti" class="wt-noti ui-hide" >
     <a class="wt-notilink" style="display: table;" >
     <div style="display: table-cell; width: 15%; padding: 1em; ">
-        <img src={% static "images/svg/checkcircle_24_1.svg" %} style="ui-fit"/>
+        <img src={% static "images/svg/checkcircle_24_1.svg" %} class="ui-fit" />
     </div>
     <div style="display: table-cell; width: 85%; vertical-align: middle;" >
         <div class="wt-notititle" style="font-weight: bold;" >
@@ -23,10 +23,23 @@
 
 <!-- Overlay -->
 <div id="wt-overlay" class="wt-overlay" tabindex="1">
-    <div class="wt-overlay-control" >
-        <a href="javascript:void(0)" class="wt-closebtn">&times;</a>
-    </div>
     <div class="wt-overlay-content">
-        <!-- Overlay content -->
+        <div class="wt-overlay-head" >
+            <a href="javascript:void(0)" class="wt-closebtn">&times;</a>
+        </div>
+        <div class="wt-overlay-body" ></div>
+    </div>
+</div>
+
+
+ <!-- Dialog -->
+<div id="wt-dialog" class="wt-dialog" tabindex="2">
+    <div class="wt-dialog-content">
+        <div class="wt-dialog-head" >
+            <div class="ui-left" ></div>
+            <div class="ui-right" ><a href="javascript:void(0)" class="wt-closebtn">&times;</a></div>
+        </div>
+        <div class="wt-dialog-body" ></div>
+        <div class="wt-dialog-foot" ></div>
     </div>
 </div>

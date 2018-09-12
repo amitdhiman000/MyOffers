@@ -42,19 +42,20 @@
                 $wrapper.toggleClass('business_addr_item_w_expanded');
             }
 
-            function OnAddrLinkReq__(e)
-            {
-                console.log("+OnAddrLinkReq__");
-                return true;
-            }
-            function OnAddrLinkRes__(e)
-            {
-                console.log("+OnAddrLinkRes__");
-                $AppOverlay.close();
-                return true;
-            }
+
+            var BusinesAddressLinkFormHandler = {
+                before: function(e) {
+                    console.log("+OnAddrLinkReq__");
+                    return true;
+                },
+                after: function(e) {
+                    console.log("+OnAddrLinkRes__");
+                    $AppOverlay.close();
+                    return true;
+                }
+            };
         </script>
-        <form action="/business/address/link/" method="POST" class="ajax-form" data-delegates='{"before":"OnAddrLinkReq__", "after":"OnAddrLinkRes__"}' >
+        <form action="/business/address/link/" method="POST" class="ajax-form" data-delegate="BusinesAddressLinkFormHandler" >
             {% csrf_token %}
             <input type="hidden" name="B_id" value="{{business}}" />
             <input type='hidden' name="A_ids" value="-1" />

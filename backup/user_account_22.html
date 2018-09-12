@@ -2,55 +2,71 @@
 {% load staticfiles %}
 
 <script type="text/javascript">
+function editText(e, This)
+{
+	e.stopPropagation();
+	e.preventDefault();
+	console.log('+editText');
+	var root = $(This).parents('.user_info_item');
+	var inputs = root.find('.user_info_data');
+	var controls = root.find('.item_controls');
+	if (inputs.attr('readonly')) {
+		inputs.removeAttr('readonly');
+	} else {
+		inputs.attr('readonly', 'readonly');
+		inputs.val(inputs.attr('data-value'));
+	}
+	controls.toggleClass('ui-hide');
+}
 
-var UserInfoFormHandler = {
+var UserInfoSaveHandlers = {
 	before: function(e) {
 		console.log("+beforeSaveReq");
 		return true;
 	},
-	after: function(e) {
+ 	after: function(e) {
 		console.log("+afterSaveRes");
-		var vals = e.resp.data;
-		var $form = e.$form;
 		if (e.status) {
+			var vals = e.resp.data;
+			var $form = e.$form;
 			for (var key in vals) {
 				var val = vals[key];
 				console.log(key+' : '+val);
-				$AppFormUtils.setValByName($form, key, val);
-				var $node = $form.find('[name='+key+']');
-				$node.prev('.ui-errors').remove();
+				var inp = $form.find('.ui-input[name='+key+']');
+				if (inp.exists()) {
+					inp.attr('data-ovalue', val);
+				}
 			}
 			$form.find('input[type=button]').click();
-			$AppNoti.info({title:'Done!!', text:e.resp.message});
+			$AppNoti.info({title:e.resp.message, text:''});
 		} else {
 			var errors = '';
-			for (var key in vals) {
-				errors += vals[key] + '<br />';
-				var $node = $form.find('[name='+key+']');
-				if ($node.length > 0) {
-					var $errors = $node.prev('.ui-errors');
-					if ($errors.length > 0) {
-						$errors.html(vals[key]);
-					} else {
-						$node.before('<p class="ui-errors">'+vals[key]+'</p>');
-					}
-				}
+			for (var err in e.resp.data) {
+				errors += e.resp.data[err] + '<br />';
 			}
 			$AppNoti.info({title:e.resp.message, text:errors});
 		}
 	},
 };
 
-function editFormFields(e, pThis)
+function toggleEditMode($form)
+{
+	console.log('+toggleFormElements');
+	$.each($form.find('.info_view .info_edit'), function(index, elm) {
+		$(elm).toggle();
+	});
+}
+
+function editDataFields(e, pThis)
 {
 	var $block = $(pThis).parents('.ui-block');
 	var $form = $block.find('.ajax-form');
-	$form.find('.info_view, .info_edit').toggle();
+	toggleFormElements($form);
 	var $controls = $block.find('.form_controls');
 	$controls.toggle();
 }
 
-$(function(){ $('#user_basic_info_form').data('data-handler', UserInfoFormHandler); });
+$(function(){ $('#user_basic_info_form').data('data-handlers', UserInfoSaveHandlers); });
 
 </script>
 <div class="ui-content" >
@@ -61,7 +77,7 @@ $(function(){ $('#user_basic_info_form').data('data-handler', UserInfoFormHandle
 			</div>
 			<div>
 				<div class="ui-right" >
-					<a onclick="editFormFields(event, this)" >
+					<a onclick="editDataFields(event, this)" >
 						<img src="{% static 'images/svg/editfilled_24_1.svg' %}" style="width:24px; height:24px;" />
 					</a>
 				</div>
@@ -76,13 +92,13 @@ $(function(){ $('#user_basic_info_form').data('data-handler', UserInfoFormHandle
 						<td>
 							<div class="info_block" >
 								<div class="info_title" >
-									<p>NAME</p>
+									<lable>NAME</lable>
 								</div>
 								<div class="info_view" >
-									<label class="info_value" data-rel="U_name" >{{user.name}}</label>
+									<label>{{user.name}}</label>
 								</div>
 								<div class="info_edit ui-hide" >
-									<input type="text" name="U_name" class="ui-input" placeholder="Name" value="{{user.name}}" data-value="{{user.name}}" />
+									<input readonly type="text" name="U_name" class="ui-input" placeholder="Name" value="{{user.name}}" data-ovalue="{{user.name}}" />
 								</div>
 							</div>
 						</td>
@@ -94,10 +110,10 @@ $(function(){ $('#user_basic_info_form').data('data-handler', UserInfoFormHandle
 									<lable>EMAIL</lable>
 								</div>
 								<div class="info_view" >
-										<label data-rel="U_email" >{{user.email}}</label>
+										<label>{{user.name}}</label>
 								</div>
 								<div class="info_edit ui-hide" >
-									<input type="text" name="U_email" class="ui-input" placeholder="Email" value="{{user.email}}" data-value="{{user.email}}" />
+									<input readonly type="text" name="U_email" class="ui-input" placeholder="Email" value="{{user.email}}" data-ovalue="{{user.email}}" />
 								</div>
 							</div>
 						</td>
@@ -109,10 +125,10 @@ $(function(){ $('#user_basic_info_form').data('data-handler', UserInfoFormHandle
 									<lable>PHONE</lable>
 								</div>
 								<div class="info_view" >
-										<label data-rel="U_phone" >{{user.phone}}</label>
+										<label>{{user.name}}</label>
 								</div>
 								<div class="info_edit ui-hide" >
-									<input type="text" name="U_phone" class="ui-input" placeholder="Name" value="{{user.phone}}" data-value="{{user.phone}}" />
+									<input readonly type="text" name="U_phone" class="ui-input" placeholder="Name" value="{{user.phone}}" data-ovalue="{{user.phone}}" />
 								</div>
 							</div>
 						</td>
@@ -120,7 +136,7 @@ $(function(){ $('#user_basic_info_form').data('data-handler', UserInfoFormHandle
 				</table>
 				<div class="ui-hide form_controls" >
 					<input type="submit" value="Save" class="ui-btn" />
-					<input type="button" value="Cancel" class="ui-btn" onclick="editFormFields(event, this)" />
+					<input type="button" value="Cancel" class="ui-btn" onclick="editDataFields(event, this)" />
 				</div>
 			</form>
 		</div>

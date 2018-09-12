@@ -24,6 +24,8 @@ function initApp()
 
 	$AppOverlay.init();
 
+	$AppDialog.init();
+
 	$(document).on("submit", "form.ajax-form", $AppForm.ajaxSubmit);
 
 	$(document).on("click", ".app_vlist_exp_item > a", function(e) {
@@ -154,31 +156,35 @@ var $AppForm = {
 		console.log("+ajaxSubmit");
 		e.preventDefault();
 		var $form = $(this);
-		e.$src = $form;
+		e.$form = $form;
 		var action = $form.attr('action');
 		console.log('action : '+ action);
 
-		var dg = JSON.parse($form.attr('data-delegates'));
-		var dlgs = {
-			"before": (dg && dg.before)? window[dg.before] : $AppForm.before,
-			"after": (dg && dg.after)? window[dg.after] : $AppForm.after,
-		};
+		var handler = $form.data('data-handler');
+		handler = (handler)? handler: window[$form.attr('data-delegate')];
 
-		if (dlgs.before(e) === false)
+		if (handler) {
+			handler.before = (handler.before)? handler.before : this.before;
+			handler.after = (handler.after)? handler.after: this.after;
+		} else {
+			handler = this;
+		}
+
+		if (handler.before(e) === false)
 			return;
 
 		$AppRequest.post(action, $form.serialize(), (status, json) => {
 			e.status = status;
 			e.resp = json;
-			dlgs.after(e);
+			handler.after(e);
 		});
 	},
 	before: function(e) {
-		console.log('do nothing');
+		console.log('+$AppForm::before');
 		return true;
 	},
 	after: function(e) {
-		console.log("+afterResponse");
+		console.log("+$AppForm::after");
 		if (e.status) {
 			$AppNoti.info({title:"Successful", text:e.resp.message});
 		} else {
@@ -190,7 +196,84 @@ var $AppForm = {
 			$AppNoti.error({title:e.resp.message, text:errors});
 		}
 	}
+};
+
+var $AppFormUtils = {
+	setValByName: function($form, name, val) {
+		console.log('+setValByName');
+		var viewVal = val;
+		var $editNode = $form.find('.ui-input[name='+name+']');
+		var $viewNode = $form.find('[data-rel='+name+']');
+		if ($editNode.exists()) {
+			viewVal = this.setVal($editNode, val);
+			$editNode.attr('data-value', val);
+		}
+		($viewNode.exists() && $viewNode.html(viewVal));
+	},
+	setVal: function($node, val) {
+		var retVal = val;
+		switch($node.prop("tagName").toLowerCase()) {
+			case 'input':
+				var type = $node.prop('type').toLowerCase();
+				switch(type) {
+					case 'text':
+						$node.val(val);
+						break;
+					case 'radio':
+					case 'checkbox':
+						if (val) {
+							$node.prop('checked', true);
+						} else {
+							$node.removeProp('checked');
+						}
+						retVal = $node.val();
+						break;
+				}
+				break;
+			case 'select':
+				retVal = $node.find('[value='+val+']').prop('selected', true).text();
+				break;
+			case 'textarea':
+				$editNode.html(val);
+				break;
+		}
+		console.log('retVal : '+ retVal);
+		return retVal;
+	},
+	resetVal: function($form) {
+		var This = this;
+		$form.find('input[type=text], select, textarea').each(function(index, node) {
+			This.setVal($(node), $(node).attr('data-value'));
+		});
+	}
 }
+
+var $AppFormSaveHandler = {
+	before: function(e) {
+		console.log("+beforeSaveReq");
+		return true;
+	},
+	after: function(e) {
+		console.log("+afterSaveRes");
+		if (e.status) {
+			var vals = e.resp.data;
+			var $form = e.$form;
+			for (var key in vals) {
+				var val = vals[key];
+				console.log(key+' : '+val);
+				$AppFormUtils.setValByName($form, key, val);
+			}
+			$form.find('input[type=button]').click();
+			$AppNoti.info({title:'Done!!', text:e.resp.message});
+		} else {
+			var errors = '';
+			for (var err in e.resp.data) {
+				errors += e.resp.data[err] + '<br />';
+			}
+			$AppNoti.info({title:e.resp.message, text:errors});
+		}
+	},
+};
 
 /*******************************************************/
 /******************** App Library **********************/
@@ -249,20 +332,59 @@ var $AppEvent = {
 };
 
 var $AppRequest = {
-	get: function(pUrl, pData, pCallback) {
+	_options: {
+		url: '', data: '', type: 'POST',
+		dataType: 'text', processData: true,
+		contentType: 'application/x-www-form-urlencoded; charset=UTF-8', /* 'multipart/form-data', or 'text/plain' */
+		progress: function(p){},
+		complete: function(s,o){},
+	},
+	options: function() {
+		return $.extend({}, this._options);
+	},
+	abort: function(request) {
+		request.abort();
+	},
+	get: function(pUrl, pData, pCallBack) {
 		console.log('+get');
-		this._request('GET', pUrl, pData, pCallback);
+		var opts = this.options();
+		opts.url = pUrl;
+		opts.type = 'GET';
+		opts.data = pData;
+		opts.complete = pCallBack;
+		return this._request(opts);
 	},
-	post: function (pUrl, pData, pCallback) {
+	post: function(pUrl, pData, pCallBack) {
 		console.log("+post");
-		this._request('POST', pUrl, pData, pCallback);
+		var opts = this.options();
+		opts.url = pUrl;
+		opts.data = pData;
+		opts.complete = pCallBack;
+		return this._request(opts);
 	},
-	_request: function(pType='POST', pUrl, pData, pCallback) {
-		$.ajax({url: pUrl,
-			data: pData,
-			type: pType,
+	file: function(opts) {
+		return this._request(opts);
+	},
+	_request: function(opts) {
+		return $.ajax(
+			{url: opts.url,
+			data: opts.data,
+			type: opts.type,
+			dataType: opts.dataType,
+			processData: opts.processData,
+			contentType: opts.contentType,
 			async: true,
-			dataType: 'text',
+			cache: false,
+			xhr: function() {
+				var xhr = jQuery.ajaxSettings.xhr();
+				xhr.upload.addEventListener("progress", function(evt){
+					if (evt.lengthComputable) {
+						var percent = 100 * parseInt(evt.loaded / evt.total);
+						opts.progress(percent);
+					}
+				}, false);
+				return xhr;
+			},
 			complete: function(res) {
 				console.log('+comeplete : '+ res.status);
 			},
@@ -270,9 +392,9 @@ var $AppRequest = {
 				console.log('+success');
 				mimeType = xhr.getResponseHeader("content-type");
 				if (mimeType.indexOf('json') > -1) {
-					console.log('json');
+					console.log('content-type: json');
 					console.log('data : ' + data);
-					jsonObj = jQuery.parseJSON(data);
+					jsonObj = JSON.parse(data);
 					switch(jsonObj.status) {
 						case 302:
 							console.log('redirect');
@@ -280,25 +402,25 @@ var $AppRequest = {
 							break;
 						case 200:
 						case 204:
-							pCallback(true, jsonObj);
+							opts.complete(true, jsonObj);
 							break;
 						case 401:
 						default:
-							pCallback(false, jsonObj);
+							opts.complete(false, jsonObj);
 							break;
 					}
 				} else if (mimeType.indexOf('html') > -1) {
-					console.log('html');
-					pCallback(true, data);
+					console.log('content-type: html');
+					opts.complete(true, data);
 				} else {
-					console.log('unknown');
-					pCallback(false, {'message': 'Unknown response', 'data':'unexpected content type'});
+					console.log('content-type: unknown');
+					opts.complete(false, {'message': 'Unknown response', 'data':'unexpected content type'});
 				}
 			},
 			error: function (xhr,error) {
 				console.log('+error : '+xhr.status);
 				$AppToast.show('Network error occured');
-				pCallback(false, {'message': 'Network failed', 'data': {error} });
+				opts.complete(false, {'message': 'Network failed', 'data': {error} });
 			}
 		});
 	}
@@ -313,7 +435,7 @@ var $AppData = {
 				var cks = document.cookie.split(';');
 				for (var i = 0; i < cks.length; i++) {
 					var c = cks[i].trim();
-					// Does this cookie string begin with the name we want?
+					/* Does this cookie string begin with the name we want? */
 					if (c.substring(0, cname.length + 1) === (name + '=')) {
 						cv = decodeURIComponent(c.substring(cname.length + 1));
 						break;
@@ -362,9 +484,9 @@ var $AppOverlay = {
 	init: function() {
 		this.$overlay = $('#wt-overlay');
 		this.$closebtn = this.$overlay.find('.wt-closebtn');
-		this.$body = this.$overlay.find('.wt-overlay-content');
-		this.$content_def = $('<div style="width:80%; height:inherit; margin: 0 auto; background:#fff;" data-type="none"></div>');
-		this.$content = this.$content_def;
+		this.$body = this.$overlay.find('.wt-overlay-body');
+		this.$html_def = $('<div style="width:80%; height:inherit; margin: 0 auto; background:#fff;" data-type="none"></div>');
+		this.$html = this.$html_def;
 		this.$closebtn.on('click', this, this._onclose);
 		this.$overlay.on('click', this, this._onclick);
 		this.$overlay.on('keyup', this, this._onkeyup);
@@ -382,11 +504,11 @@ var $AppOverlay = {
 	shown: function() {
 		return this._shown;
 	},
-	show: function($content=this.$content_def, options={}) {
+	show: function($html=this.$html_def, options={}) {
 		this._apply_options(options);
 		/* ordering matter for correct heights */
 		this.$overlay.show();
-		this.update($content);
+		this.update($html);
 		this.$overlay.focus();
 		this._shown = true;
 		$('body').toggleClass('ui-noscroll', this._shown);
@@ -398,13 +520,13 @@ var $AppOverlay = {
 		$('body').toggleClass('ui-noscroll', this._shown);
 		return this;
 	},
-	update: function($content) {
-		this.$content = $($content);
-		this.$body.html(this.$content.show());
-		var $scroll = this.$content.find(".wt-overlay-scroll");
+	update: function($html) {
+		this.$html = $($html);
+		this.$body.html(this.$html.show());
+		var $scroll = this.$html.find(".wt-overlay-scroll");
 		if ($scroll.exists()) {
 			var h1 = this.$body.height();
-			var h2 = this.$content.height();
+			var h2 = this.$html.height();
 			var h3 = $scroll.height();
 			if (h1 < h2) {
 				var h4 = h3 - (h2 - h1);
@@ -415,7 +537,7 @@ var $AppOverlay = {
 		return this;
 	},
 	clear: function() {
-		this.update(this.$content_def);
+		this.update(this.$html_def);
 		return this;
 	},
 	close: function(e) {
@@ -423,11 +545,11 @@ var $AppOverlay = {
 		this.$closebtn.click();
 	},
 	_close: function(e) {
-		var $content = this.$content.hide();
-		if ($content.attr('data-type') == 'persist') {
-			setTimeout(function(){ $content.appendTo('body'); }, 100);
+		var $html = this.$html.hide();
+		if ($html.attr('data-type') == 'persist') {
+			setTimeout(function(){ $html.appendTo('body'); }, 100);
 		} else {
-			$content.remove();
+			$html.remove();
 		}
 		this.hide();
 	},
@@ -452,16 +574,117 @@ var $AppOverlay = {
 };
 
 
+/* App Modal */
 var $AppModal = {
-	show: function($content) {
-		$AppOverlay.show($content, {closeOnClickOutside:true});
+	show: function($html) {
+		$AppOverlay.show($html, {closeOnClickOutside:true});
 	},
-	update: function($content) {
-		$AppOverlay.update($content);
+	update: function($html) {
+		$AppOverlay.update($html);
 	},
 	close: function() {
 		$AppOverlay.close();
 	},
+};
+
+/* App Dialog */
+var $AppDialog = {
+	init: function() {
+		this.$dialog = $('#wt-dialog');
+		this.$closebtn = this.$dialog.find('.wt-closebtn');
+		this.$body = this.$dialog.find('.wt-dialog-body');
+		this.$html_def = $('<div style="width:100%; height:inherit; margin: 0 auto; background:#fff;" data-type="none"><h1>Hello World!!</h1></div>');
+		this.$html = this.$html_def;
+		this.$closebtn.on('click', this, this._onclose);
+		this.$dialog.on('click', this, this._onclick);
+		this.$dialog.on('keyup', this, this._onkeyup);
+		this._shown = false;
+		this._options_def = { closeBtn:true, closeOnEscape:true, closeOnClickOutside:true };
+		this._options = $AppUtil.merge(this._options_def, {});
+	},
+	_apply_options: function(options) {
+		this._options = $AppUtil.merge(this._options_def, options);
+		if (this._options['closeBtn'] === false)
+			this.$closebtn.hide();
+		else
+			this.$closebtn.show();
+	},
+	shown: function() {
+		return this._shown;
+	},
+	show: function($html=this.$html_def, options={}) {
+		this._apply_options(options);
+		/* ordering matter for correct heights */
+		this.$dialog.show();
+		this.update($html);
+		this.$dialog.focus();
+		this._shown = true;
+		$('body').toggleClass('ui-noscroll', this._shown);
+		return this;
+	},
+	hide: function() {
+		this.$dialog.hide();
+		this._shown = false;
+		$('body').toggleClass('ui-noscroll', this._shown);
+		return this;
+	},
+	update: function($html) {
+		this.$html = $($html);
+		this.$body.html(this.$html.show());
+		var $scroll = this.$html.find(".wt-dialog-scroll");
+		if ($scroll.exists()) {
+			var h1 = this.$body.height();
+			var h2 = this.$html.height();
+			var h3 = $scroll.height();
+			if (h1 < h2) {
+				var h4 = h3 - (h2 - h1);
+				console.log("h4 : "+h4);
+				$scroll.height(h4);
+			}
+		}
+		return this;
+	},
+	clear: function() {
+		this.update(this.$html_def);
+		return this;
+	},
+	close: function(e) {
+		console.log("CLOSE OVERLAY");
+		this.$closebtn.click();
+	},
+	_close: function(e) {
+		var $html = this.$html.hide();
+		if ($html.attr('data-type') == 'persist') {
+			setTimeout(function(){ $html.appendTo('body'); }, 100);
+		} else {
+			$html.remove();
+		}
+		this.hide();
+	},
+	_onclose: function(e) {
+		console.log("ONCLOSE DIALOG");
+		e.data._close();
+	},
+	_onclick: function(e) {
+		console.log("ONCLICK DIALOG");
+		var This = e.data;
+		if (This._options["closeOnClickOutside"] === true && $(e.target).parent().is(This.$dialog)) {
+			This._close();
+		}
+	},
+	_onkeyup: function(e) {
+		console.log("ONKEYUP DIALOG");
+		var This = e.data;
+		if (This._options["closeOnEscape"] === true && e.keyCode == KEY_ESCAPE) {
+			This._close();
+		}
+	}
+};
+
+
+/* App Popup */
+var $AppPopup = {
+
 };
 
 
@@ -516,150 +739,145 @@ var wsuggest = function($Inst, opts) {
 	console.log('+wsuggest : '+$Inst.prop("tagName"));
 	$Inst.kd = {
 		_name: 'suggest',
-		_ui: null,
 		_count: 0,
-		_jsonObj: null,
-		_selectedItem: null,
 		_selectedIndex: 0,
+		_jsonItemsList: null,
+		$_body: null,
+		$_selectedItem: null,
 	};
 
 	$Inst.kf = {
 		minLength: 1,
 		delay: 0,
+		scrollTimer: null,
 		_create: function(e) {
 			console.log('+_create['+kd._name+']');
-			kd._ui = $('<ul class="wt-search-list wt-search-list-app" >');
-			kd._ui.css({width: $Inst.css('width')});
-			$Inst.after(kd._ui);
-			kd._ui.on('mouseenter', 'li', kf._itemHover);
-			$Inst.on("keyup", kf._keyUp);
-			$Inst.on("keypress", kf._keyPress);
+			kd.$_body = $('<ul class="wt-search-list wt-search-list-app" >');
+			kd.$_body.css({width: $Inst.css('width')});
+			kd.$_body.on('mouseenter', 'li', kf._onitemhover);
+			kd.$_body.on('click', 'li', kf._onitemclick);
+			kd.$_body.on('scroll', kf._onlistscroll);
+			$Inst.on("keyup", kf._onkeyup);
+			$Inst.on("keypress", kf._onkeypress);
 			$Inst.on("focus", kf._onfocus);
 			$Inst.on("blur", kf._onunfocus);
+			$Inst.after(kd.$_body);
 		},
 		_destroy: function(e) {
-			kd._ui.remove();
-			kd._ui = null;
+			kd.$_body.remove();
+			kd.$_body = null;
 		},
 		_onfocus: function(e) {
-			kd._ui.show();
+			console.log('+_onfocus');
+			kd.$_body.show();
 		},
 		_onunfocus: function(e) {
-			kd._ui.hide();
+			kd.$_body.hide();
 		},
 		source: function(key, resp) {
 			console.log('implement source function');
 		},
-		_parse: function(jsonObj) {
+		_parse: function(jsonItemsList) {
 			console.log('+_parse');
-			kd._ui.html('');
-			if (jsonObj.length > 0) {
-				var count = 0;
-				for (i in jsonObj) {
-					kd._ui.append(kf.itemCreate(jsonObj[i]));
-					count++;
+			kd.$_body.html('');
+			kd._jsonItemsList = jsonItemsList;
+			kd._count = jsonItemsList.length;
+			kd._selectedIndex = 0;
+			if (kd._count > 0) {
+				for (i in jsonItemsList) {
+					kd.$_body.append(kf.itemCreate(jsonItemsList[i]));
 				}
-				kd._jsonObj = jsonObj;
-				kd._count = count;
-				kd._selectedIndex = 0;
-				kd._selectedItem = kd._ui.children().eq(kd._selectedIndex).addClass('wt-search-item-a');
-				kd._ui.show();
+				kd.$_selectedItem = kd.$_body.children().eq(kd._selectedIndex);
+				kd.$_selectedItem.addClass('wt-search-item-a');
 			} else {
-				kd._count = 0;
-				kd._selectedIndex = 0;
-				kd._ui.html('<div class="wt-search-item">No search results</div>');
-				kd._ui.show();
+				kd.$_body.html('<div class="wt-search-item">No search results</div>');
 			}
+			kd.$_body.show();
 		},
 		itemCreate: function(item) {
 			console.log('implement itemCreate function');
 			return '';
 		},
-		_itemHover: function(e) {
-			console.log('+_itemHover');
-			var index = $(this).index();
-			console.log('old selected : '+ kd._selectedIndex);
-			console.log('new selected : '+ index);
-			if (kd._selectedIndex != index) {
-				kd._ui.children().eq(kd._selectedIndex).removeClass('wt-search-item-a');
-				kd._selectedIndex = index;
-				kd._ui.children().eq(kd._selectedIndex).addClass('wt-search-item-a');
-				if (kd._jsonObj) {
-					kf.onItemSelect($Inst, kd._jsonObj[index]);
+		_setItemSelected(newIndex) {
+			var oldIndex = kd._selectedIndex;
+			console.log('oldIndex : '+oldIndex + ' newIndex : '+newIndex);
+			if (newIndex >= 0 && newIndex < kd._count) {
+				if (oldIndex != newIndex) {
+					var $children = kd.$_body.children();
+					$children.eq(oldIndex).removeClass('wt-search-item-a');
+					kd.$_selectedItem = $children.eq(newIndex).addClass('wt-search-item-a');
+					kd._selectedIndex = newIndex;
+					kf._notifyItemSelected();
 				}
+				var itemTop = kd.$_selectedItem.position().top;
+				var itemHeight = kd.$_selectedItem.outerHeight();
+				var bodyScroll = kd.$_body.scrollTop();
+				var bodyHeight = kd.$_body.outerHeight();
+
+				console.log('itemTop : '+ itemTop +' itemHeight : '+ itemHeight);
+				console.log('bodyScroll : '+ bodyScroll +' bodyHeight : '+ bodyHeight);
+				if (itemTop < 0) {
+					console.log('scrollup');
+					kd.$_body.scrollTop(bodyScroll + itemTop);
+				} else if (itemTop + itemHeight > bodyHeight) {
+					console.log('scrolldown');
+					kd.$_body.scrollTop(bodyScroll + itemHeight - (bodyHeight - itemTop));
+				}
+				kd.$_body.show();
 			}
 		},
-		_itemClick: function(e) {
-			console.log('+_itemClick');
-			var index = $(this).index();
-			console.log('old selected : '+ kd._selectedIndex);
-			console.log('new selected : '+ index);
-			if (kd._jsonData) {
-				kd._ui.children().eq(kd._selectedIndex).removeClass('wt-search-item-a');
-				kd._ui.children().eq(index).addClass('wt-search-item-a');
-				kf.onItemSelect($Inst, kd._jsonData[index]);
-				kd._selectedIndex = index;
+		_onlistscroll: function(e) {
+			kf.scrollTimer = setTimeout(function() {
+				kf.scrollTimer = null;
+			}, 300);
+		},
+		_onitemhover: function(e) {
+			console.log('+_onitemhover');
+			if (!kf.scrollTimer) {
+				kf._setItemSelected($(this).index());
 			}
+		},
+		_onitemclick: function(e) {
+			console.log('+_onitemclick');
+			kf._setItemSelected($(this).index());
 		},
 		onItemSelect: function(input, item) {
 			 console.log('implement onItemSelect function');
 		},
-		_onItemSelectCurrent: function() {
-			if (kd._count > 0 && kd._jsonObj) {
-				kf.onItemSelect($Inst, kd._jsonObj[kd._selectedIndex]);
+		_notifyItemSelected: function() {
+			if (kd._count > 0 && kd._jsonItemsList) {
+				kf.onItemSelect($Inst, kd._jsonItemsList[kd._selectedIndex]);
 			}
 		},
-		onEnter: function(e) {
+		_onenter: function(e) {
 			console.log('+onEnter');
-			kf._onItemSelectCurrent();
+			kf._notifyItemSelected();
 			kf._onunfocus();
 		},
-		_keyPress: function(e) {
-			console.log('+_keyPress : '+ e.keyCode);
+		_onkeypress: function(e) {
+			console.log('+_onkeypress : '+ e.keyCode);
 			if (e.keyCode === 10 || e.keyCode === 13) {
 				e.preventDefault();
 				e.data = $Inst;
-				kf.onEnter(e);
+				kf._onenter(e);
 			}
 		},
-		_keyUp: function(e) {
-			console.log('+_keyUp');
-			var handled = false;
+		_onkeyup: function(e) {
+			console.log('+_onkeyup');
+			var handled = true;
 			switch(e.keyCode) {
 			case KEY_UP:
-				if (kd._selectedIndex > 0) {
-					kd._ui.children().eq(kd._selectedIndex).removeClass('wt-search-item-a');
-					kd._selectedIndex--;
-					var child = kd._ui.children().eq(kd._selectedIndex).addClass('wt-search-item-a');
-					var cont = kd._ui;
-					cont.scrollTop(child.position().top + cont.scrollTop());
-					//cont.scrollTop(child.offset().top - cont.offset().top + cont.scrollTop());
-					if (kd._jsonObj) {
-						kf.onItemSelect($Inst, kd._jsonObj[kd._selectedIndex]);
-					}
-				}
-				handled = true;
+				kf._setItemSelected(kd._selectedIndex - 1);
 				break;
 			case KEY_DOWN:
-				if (kd._selectedIndex < kd._count - 1) {
-					kd._ui.children().eq(kd._selectedIndex).removeClass('wt-search-item-a');
-					kd._selectedIndex++;
-					var child = kd._ui.children().eq(kd._selectedIndex).addClass('wt-search-item-a');
-					var cont = kd._ui;
-					//console.log("child top : "+ child.position().top);
-					//console.log("scroll top : "+ cont.scrollTop());
-					cont.scrollTop(child.position().top + cont.scrollTop());
-					if (kd._jsonObj) {
-						kf.onItemSelect($Inst, kd._jsonObj[kd._selectedIndex]);
-					}
-				}
-				handled = true;
+				kf._setItemSelected(kd._selectedIndex + 1);
 				break;
 			case KEY_ENTER:
-				handled = true;
 				break;
 			case KEY_LEFT:
 			case KEY_RIGHT:
+				kf._onfocus();
+				break;
 			default:
 				console.log('keycode : '+e.keyCode);
 				handled = false;
@@ -754,63 +972,31 @@ function wfileupload($Inst, opts)
 			var uiBtn = uiItem.find('.ui-btn');
 			uiBtn.on('click', kf._cancel);
 			kd._ui.append(uiItem);
-			var request = $.ajax({
-				url: '/upload/fileupload/',
-				type: 'post',
-				data: fdata,
-				cache: false,
-				dataType: 'json',
-				processData: false,
-				contentType: false,
-				xhr: function() {
-					var xhr = jQuery.ajaxSettings.xhr();
-					//Upload progress
-					xhr.upload.addEventListener("progress", function(evt){
-						if (evt.lengthComputable) {
-							var percent = 100*(evt.loaded / evt.total);
-							percent = parseInt(percent);
-							kf._progress(percent);
-						}
-					}, false);
-					return xhr;
-				},
-				success: function(jsonObj, status, xhr) {
-					switch (jsonObj.status) {
-						case 302:
-						{
-							console.log('redirect');
-							location.href = jsonObj.url;
-							break;
-						}
-						case 200:
-						case 204:
-						{
-							console.log("upload finished");
-							var id = jsonObj.data.upload_id;
-							kd._uploads.push(id);
-							kd._hidden.val(kd._uploads.toString());
-							uiBtn.data('request', null);
-							uiBtn.data('upload_id', id);
-							uiBtn.text('Remove');
-							console.log('ids : '+kd._uploads.toString());
-							break;
-						}
-						case 401:
-						default:
-							console.log('ERRORS: ' + JSON.stringify(jsonObj.data));
-							uiItem.remove();
-					}
-				},
-				error: function(xhr, status, errorThrown) {
-					console.log('ERRORS: ' + status);
+
+			var opts = $AppRequest.options();
+			opts.url = '/upload/fileupload/';
+			opts.processData = false;
+			opts.contentType = false,
+			opts.data = fdata;
+			opts.progress = function(percent) {
+				kf._progress(percent);
+			};
+			opts.complete = function(status, jsonObj) {
+				if (status) {
+					console.log("upload finished");
+					var id = jsonObj.data.upload_id;
+					kd._uploads.push(id);
+					kd._hidden.val(kd._uploads.toString());
+					uiBtn.data('request', null);
+					uiBtn.data('upload_id', id);
+					uiBtn.text('Remove');
+					console.log('ids : '+kd._uploads.toString());
+				} else {
+					console.log('file upload failed reason : '+ JSON.stringify(jsonObj));
 					uiItem.remove();
-				},
-				complete: function(res) {
-					// This function is called at last for cleanup
-					console.log('+comeplete :'+ res.status);
-					lThis.value = '';
-				},
-			});
+				}
+			};
+			var request = $AppRequest.file(opts);
 			uiBtn.data('request', request);
 		},
 		_cancel: function(e) {
@@ -820,7 +1006,7 @@ function wfileupload($Inst, opts)
 			console.log(lThis.text());
 			if (lThis.text() == 'Cancel') {
 				var request = lThis.data('request');
-				request.abort();
+				$AppRequest.abort(request);
 				console.log('aborted');
 			} else {
 				var id = lThis.data('upload_id');

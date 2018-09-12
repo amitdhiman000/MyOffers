@@ -179,6 +179,11 @@ def user_update(request):
             and form.validate()):
         data = form.commit()
 
+    # update user info in ongoing session
+    if data:
+        backends.reload(request, request.user)
+        
+
     if request.is_ajax():
         if data is None:
             return JsonResponse({'status': 400, 'message': 'Save Failed', 'data': form.errors()})
