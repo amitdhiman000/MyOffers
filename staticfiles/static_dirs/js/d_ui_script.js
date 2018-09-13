@@ -332,57 +332,57 @@ var $AppEvent = {
 };
 
 var $AppRequest = {
-	_options: {
-		url: '', data: '', type: 'POST',
-		dataType: 'text', processData: true,
-		contentType: 'application/x-www-form-urlencoded; charset=UTF-8', /* 'multipart/form-data', or 'text/plain' */
-		progress: function(p){},
-		complete: function(s,o){},
+	_handler: {
+		progress0: function(p){ console.log('default_up_progress'); },
+		progress1: function(p){ console.log('default_dn_progress');  },
+		complete: function(s,d){ console.log('default_complete');  },
 	},
-	options: function() {
-		return $.extend({}, this._options);
+	handler: function(custom={}) {
+		return $.extend({}, this._handler, custom);
 	},
 	abort: function(request) {
 		request.abort();
 	},
-	get: function(pUrl, pData, pCallBack) {
+	get: function(url, data, callback) {
 		console.log('+get');
-		var opts = this.options();
-		opts.url = pUrl;
-		opts.type = 'GET';
-		opts.data = pData;
-		opts.complete = pCallBack;
-		return this._request(opts);
+		var options = {type:'GET', 'url': url, 'data': data};
+		var handler = this.handler({complete: callback});
+		console.log(handler);
+		return this._request(handler, options);
 	},
-	post: function(pUrl, pData, pCallBack) {
+	post: function(url, data, callback) {
 		console.log("+post");
-		var opts = this.options();
-		opts.url = pUrl;
-		opts.data = pData;
-		opts.complete = pCallBack;
-		return this._request(opts);
+		var options = {type:'POST', 'url': url, 'data': data};
+		var handler = this.handler({complete: callback});
+		console.log(handler);
+		return this._request(handler, options);
 	},
-	file: function(opts) {
-		return this._request(opts);
+	file: function(url, data, handler) {
+		console.log("+file");
+		var options = {type:'POST', 'url': url, 'data': data, processData: false, contentType: false};
+		return this._request(handler, options);
 	},
-	_request: function(opts) {
-		return $.ajax(
-			{url: opts.url,
-			data: opts.data,
-			type: opts.type,
-			dataType: opts.dataType,
-			processData: opts.processData,
-			contentType: opts.contentType,
-			async: true,
-			cache: false,
+	request: function(handler, options) {
+		console.log("+request");
+		return this._request(handler, options);
+	},
+	_request: function(handler=this.handler(), options={}) {
+		var methods = {
+			dataType: 'text',
 			xhr: function() {
 				var xhr = jQuery.ajaxSettings.xhr();
-				xhr.upload.addEventListener("progress", function(evt){
+				xhr.upload.onprogress = function(evt) {
 					if (evt.lengthComputable) {
 						var percent = 100 * parseInt(evt.loaded / evt.total);
-						opts.progress(percent);
+						handler.progress0(percent);
 					}
-				}, false);
+				};
+				xhr.onprogress = function(evt) {
+					if (evt.lengthComputable) {
+						var percent = 100 * parseInt(evt.loaded / evt.total);
+						handler.progress1(percent);
+					}
+				};
 				return xhr;
 			},
 			complete: function(res) {
@@ -391,8 +391,8 @@ var $AppRequest = {
 			success: function (data, status, xhr) {
 				console.log('+success');
 				mimeType = xhr.getResponseHeader("content-type");
+				console.log('content-type: '+ mimeType);
 				if (mimeType.indexOf('json') > -1) {
-					console.log('content-type: json');
 					console.log('data : ' + data);
 					jsonObj = JSON.parse(data);
 					switch(jsonObj.status) {
@@ -402,27 +402,28 @@ var $AppRequest = {
 							break;
 						case 200:
 						case 204:
-							opts.complete(true, jsonObj);
+							handler.complete(true, jsonObj);
 							break;
 						case 401:
 						default:
-							opts.complete(false, jsonObj);
+							handler.complete(false, jsonObj);
 							break;
 					}
 				} else if (mimeType.indexOf('html') > -1) {
-					console.log('content-type: html');
-					opts.complete(true, data);
+					handler.complete(true, data);
 				} else {
 					console.log('content-type: unknown');
-					opts.complete(false, {'message': 'Unknown response', 'data':'unexpected content type'});
+					handler.complete(false, {'message': 'Unknown response', 'data':'unexpected content type'});
 				}
 			},
-			error: function (xhr,error) {
+			error: function (xhr, error) {
 				console.log('+error : '+xhr.status);
 				$AppToast.show('Network error occured');
-				opts.complete(false, {'message': 'Network failed', 'data': {error} });
+				handler.complete(false, {'message': 'Network failed', 'data': {error} });
 			}
-		});
+		};
+		$.extend(options, methods);
+		return $.ajax(options);
 	}
 };
 
@@ -973,15 +974,11 @@ function wfileupload($Inst, opts)
 			uiBtn.on('click', kf._cancel);
 			kd._ui.append(uiItem);
 
-			var opts = $AppRequest.options();
-			opts.url = '/upload/fileupload/';
-			opts.processData = false;
-			opts.contentType = false,
-			opts.data = fdata;
-			opts.progress = function(percent) {
+			var handler = $AppRequest.handler();
+			handler.progress0 = function(percent) {
 				kf._progress(percent);
 			};
-			opts.complete = function(status, jsonObj) {
+			handler.complete = function(status, jsonObj) {
 				if (status) {
 					console.log("upload finished");
 					var id = jsonObj.data.upload_id;
@@ -996,7 +993,7 @@ function wfileupload($Inst, opts)
 					uiItem.remove();
 				}
 			};
-			var request = $AppRequest.file(opts);
+			var request = $AppRequest.file('/upload/fileupload/', fdata, handler);
 			uiBtn.data('request', request);
 		},
 		_cancel: function(e) {
