@@ -91,7 +91,7 @@ def address_view(request):
 @App_LoginRequired
 def address_create(request):
     aid = request.POST.get('A_id', '-1')
-    if (aid == '-1'):
+    if (aid != '-1'):
         return address_update(request)
 
     data = None

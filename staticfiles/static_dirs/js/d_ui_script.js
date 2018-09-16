@@ -337,6 +337,7 @@ var $AppUtil = {
 };
 
 var $AppEvent = {
+	_set: [],
 	sub: function(p) {
 		console.log('+$AppEvent::sub');
 		if (this._set.indexOf(p) == -1)
@@ -590,7 +591,7 @@ var $GoogleMap = {
 			}
 			This._Marker.setPosition(place.geometry.location);
 			This._Marker.setVisible(true);
-			This._OnAddressFound({status:true, address:place});
+			This.AddressFoundEvent.trigger({status:true, address:place});
 		});
 	},
 	update: function() {
