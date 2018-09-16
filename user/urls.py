@@ -31,5 +31,6 @@ urlpatterns = [
     url(r'^wishlist/$', views.user_wishlist_view, name='user_wishlist_view'),
     url(r'^settings/$', views.user_settings_view, name='user_settings_view'),
     url(r'^update/$', views.user_update, name='user_update'),
+    url(r'^updatepass/$', views.user_update_password, name='user_update_password'),
     url(r'^topic-selected/$', views.user_topic_selected, name='user_topic_selected'),
 ]

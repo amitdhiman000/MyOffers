@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from base.models import CRUDModel
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.core.mail import send_mail
@@ -8,12 +9,11 @@ from base.apputil import App_UserFilesDir
 import logging
 
 
-class User(models.Model):
-    id = models.BigAutoField(primary_key=True)
+
+class User(CRUDModel):
     name = models.CharField(max_length=50, blank=False, default='')
     email = models.EmailField()
     password = models.CharField(max_length=32, blank=False, default='')
-    created_at = models.DateTimeField(default=timezone.now)
     phone = models.CharField(max_length=10, blank=True)
     # {-2: delete, -1:blocked, 0:inactive, 1:active }
     status = models.IntegerField(default=1)
@@ -21,6 +21,8 @@ class User(models.Model):
     level = models.IntegerField(default=1)
     # profile image by default : user.svg
     image = models.FileField(upload_to=App_UserFilesDir, default=settings.DEFAULT_USER_IMAGE)
+    # otp for user actions
+    otp = models.CharField(max_length=10, blank=True)
 
     class Meta:
         verbose_name = _('user')
@@ -77,8 +79,14 @@ class User(models.Model):
         return u.password == password
 
     @classmethod
-    def check_email(klass, email):
-        return klass.objects.filter(email=email).exists()
+    def check_email(klass, email, user):
+        u = klass.fetch_user(user)
+        return u.email == email
+
+    @classmethod
+    def check_otp(klass, otp, user):
+        u = klass.fetch_user(user)
+        return u.otp == otp
 
     @classmethod
     def check_creds(klass, email, password):

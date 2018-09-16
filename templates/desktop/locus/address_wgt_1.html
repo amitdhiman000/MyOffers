@@ -1,136 +1,39 @@
 <script type="text/javascript">
-	var _gMap;
-	var _gMarker;
-	var _gGeocoder;
-	var _gTimeout;
-	function updateMap()
-	{
-		if (_gMap) {
-			google.maps.event.trigger(_gMap, 'resize');
-			if (_gMarker) {
-				_gMap.setCenter(_gMarker.getPosition());
-			}
-		}
-	}
 
+	var BeforeAddrSaveEvent = $AppUtil.new($AppEvent);
+	var AfterAddrSaveEvent = $AppUtil.new($AppEvent);
+	var AddressFormHandler = {
+		before: function(e) {
+			console.log('+BeforeAdrReq');
+			return BeforeAddrSaveEvent.trigger(e);
+		},
+		after: function(e) {
+			console.log('+AfterAdrRes');
+			return AfterAddrSaveEvent.trigger(e);
+		}
+	};
+
+	var GoogleMap = $AppUtil.new($GoogleMap);
 	function initMap()
 	{
-		console.log("+initMap");
-		var myLatlng = new google.maps.LatLng(12.972132,77.594010);
-		var mapOpts = {
-			zoom: 18,
-			center: myLatlng,
-			mapTypeId: google.maps.MapTypeId.ROADMAP
-		}
-
-		_gMap = new google.maps.Map(document.getElementById("gmap"), mapOpts);
-		_gMarker = new google.maps.Marker({
-			position: myLatlng,
-			map: _gMap,
-			draggable: true,
-			title: "Your Location"
-		});
-
-		google.maps.event.addListener(_gMarker, 'dragend', function (e) {
-			var lat = e.latLng.lat();
-			var lng = e.latLng.lng();
-			updateCurrLoc(lat,lng);
-		});
-
-		google.maps.event.addListener(_gMap, 'drag', function (e) {
-			var myLatLng = this.getCenter();
-			clearTimeout(_gTimeout);
-			_gTimeout = setTimeout(function(){
-				_gMarker.setPosition(myLatLng);
-				updateCurrLoc(myLatLng.lat(), myLatLng.lng());
-			}, 50);
-		});
-		// init place search
-		initPlaceSearch(OnAddressFound);
-		// trigger locate address
-		locateAddress();
+		var mapBox = document.getElementById("gmap_box");
+		var mapInput = document.getElementById("gmap_search_input");
+		console.log(GoogleMap);
+		GoogleMap.init(mapBox);
+		GoogleMap.initPlaceSearch(mapInput);
+		GoogleMap.AddressFoundEvent.sub(OnAddressFound);
 	}
 
-	function initPlaceSearch(OnFound)
-	{
-		console.log('+initPlaceSearch');
-		var input = document.getElementById('gmap_search');
-		var autocomplete = new google.maps.places.Autocomplete(input);
-
-		/*_gMap.addListener('bounds_changed', function() {
-			searchBox.setBounds(_gMap.getBounds());
-		});*/
-
-		autocomplete.addListener('place_changed', function() {
-			_gMarker.setVisible(false);
-			var place = autocomplete.getPlace();
-			if (!place.geometry) {
-				$AppToast.show("No details available for : '" + place.name + "'");
-				return;
-			}
-
-			// If the place has a geometry, then present it on a map.
-			if (place.geometry.viewport) {
-				_gMap.fitBounds(place.geometry.viewport);
-			} else {
-				_gMap.setCenter(place.geometry.location);
-				_gMap.setZoom(17);
-			}
-			_gMarker.setPosition(place.geometry.location);
-			_gMarker.setVisible(true);
-			console.log(place);
-			OnFound(true, place);
-		});
-	}
-
-	function locateAddress()
-	{
-		console.log("+locateAddress");
-		navigator.geolocation.getCurrentPosition(function(pos, err) {
-			var lat = pos.coords.latitude.toFixed(8);
-			var lng = pos.coords.longitude.toFixed(8);
-			var ts = pos.timestamp;
-			var acc = pos.coords.accuracy;
-			updateCurrLoc(lat, lng);
-		});
-	}
-
-	function updateCurrLoc(lat, lng)
-	{
-		_gGeocoder = new google.maps.Geocoder();
-		console.log(lat + "-- ######## --" + lng);
-		if (lat != '' && lng != '') {
-			var myLatlng = new google.maps.LatLng(lat, lng);
-			_gMarker.setPosition(myLatlng);
-			_gMap.panTo(myLatlng);
-			return getCurrentAddress(myLatlng, OnAddressFound);
-		}
-	}
-
-	//Get current address
-	function getCurrentAddress(loc, OnFound)
-	{
-	  _gGeocoder.geocode({
-			'location': loc
-	  }, function(results, status) {
-		  if (status == google.maps.GeocoderStatus.OK) {
-			  console.log(results[0]);
-			  OnFound(true, results[0]);
-		  } else {
-			  console.log('Geocode failed reason: ' + status);
-			  OnFound(false, "");
-		  }
-	  });
-	}
-
-	function OnAddressFound(status, address)
+	function OnAddressFound(data)
 	{
 		console.log("+OnAddressFound");
-		var faddr = address.formatted_address;
-		var loc = address.geometry.location;
-		loc = loc.lat() + "," + loc.lng();
+		if (!data.status)
+			return;
+
+		var faddr = data.address.formatted_address;
+		var loc = data.address.geometry.location;
+		loc = loc.lat() + ',' + loc.lng();
 		console.log('loc : '+loc);
-		$("#address").html(faddr);
 		var parts = faddr.split(",");
 		var len = parts.length;
 		var name = parts[0];
@@ -139,31 +42,21 @@
 		var state = stateStr.substr(0, index);
 		var pincode = stateStr.substr(index + 1);
 		var country = parts[len - 1];
-		$('#A_name').val(name);
-		$('#A_address').val(faddr);
-		$('#A_pincode').val(pincode);
-		$('#A_location').val(loc);
-		$('#gmap_search').val(faddr);
+		var vals = {
+			'A_name': name,
+			'A_address': faddr,
+			'A_pincode': pincode,
+			'A_location': loc,
+		};
+		$AppFormUtils.fillByName($('#locus_addr_form'), vals);
 	}
 
-
-	var BeforeAddrSaveEvent = $AppEvent.new();
-	var AfterAddrSaveEvent = $AppEvent.new();
-
-	var AddressFormHandler = {
-		before: function(e) {
-			console.log('+BeforeAdrReq');
-			return BeforeAddrSaveEvent.call(e);
-		},
-		after: function(e) {
-			console.log('+AfterAdrRes');
-			return AfterAddrSaveEvent.call(e);
-		}
-	};
-
-	$(function(){
-		$("#locus_addr_form").data("data-handler", AddressFormHandler);
-	});
+	function locateMe()
+	{
+		$AppGeo.locate(function(lt,lg) {
+			GoogleMap.updateLoc(lt,lg);
+		});
+	}
 </script>
 
 <div style="border: 1px solid #ddd;" class="wt-overlay-scroll" >
@@ -171,11 +64,11 @@
 		<table class="ui-info-table">
 			<tr><td>LOCATION</td></tr>
 			<tr><td>
-				<input type="text" name="gmap_search" id="gmap_search" class="ui-input" style="max-width:50em; padding-right:7em;" />
-				<a class="ui-btn-a" style="width:7em; margin-left: -7em;" onclick="locateAddress()"> Locate Me </a>
+				<input type="text" name="gmap_search_input" id="gmap_search_input" class="ui-input" style="max-width:50em; padding-right:7em;" />
+				<a class="ui-btn-a" style="width:7em; margin-left: -7em;" onclick="locateMe()"> Locate Me </a>
 			</td></tr>
 			<tr><td>
-			<div id="gmap" style="width: 95%; height: 300px; border: 2px solid #bbb;" >
+			<div id="gmap_box" style="width: 95%; height: 300px; border: 2px solid #bbb;" >
 				<h1>&nbsp;</h1>
 			</div>
 			</td></tr>
@@ -188,24 +81,27 @@
 	</div>
 
 	<div style="display:table-cell; width: 50%;" >
-		<form action="/locus/address/create/" method="POST" id="locus_addr_form" class="ajax-form" >
+		<form action="/locus/address/create/" method="POST" id="locus_addr_form" class="ajax-form" data-delegate='AddressFormHandler' >
 		{% csrf_token %}
-		<input type="hidden" name="A_location" id="A_location" value="" />
+		<input type="hidden" name="A_id" value="-1" />
+		<input type="hidden" name="A_location" value="12.964914,77.596683" />
 		<table class="ui-info-table">
 			<tr><td>NAME</td></tr>
 			<tr><td>
-				<input type="text" name="A_name" id="A_name" class="ui-input" placeholder="House / Office Building Number" />
+				<input type="text" name="A_name" class="ui-input" placeholder="House / Office Building Number" />
 			</td></tr>
 			<tr><td>PINCODE / ZIPCODE</td></tr>
-			<tr><td><input type="text" name="A_pincode" id="A_pincode" class="ui-input" placeholder="176039"/> </td></tr>
+			<tr><td><input type="text" name="A_pincode" class="ui-input" placeholder="176039"/> </td></tr>
 			<tr><td>ADDRESS</td></tr>
-			<tr><td><textarea name="A_address" id="A_address" class="ui-input" placeholder="Full Address" > </textarea> </td></tr>
+			<tr><td><textarea name="A_address" class="ui-input" placeholder="Full Address" > </textarea> </td></tr>
 			<tr><td>PERSON / INCHARGE</td></tr>
-			<tr><td><input type="text" name="A_pname" id="A_pname" class="ui-input" placeholder="Ramesh Kumar" /> </td></tr>
+			<tr><td><input type="text" name="A_pname" class="ui-input" placeholder="Ramesh Kumar" /> </td></tr>
 			<tr><td>PHONE</td></tr>
-			<tr><td><input type="text" name="A_phone" id="A_phone" class="ui-input" placeholder="+91 9876543210" /> </td></tr>
+			<tr><td><input type="text" name="A_phone" class="ui-input" placeholder="+91 9876543210" /> </td></tr>
 			<tr><td><input type="submit" value="Save" class="ui-btn" /></td></tr>
 		</table>
 		</form>
 	</div>
 </div>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMz94217XzpYaxnQRagzgCwpy4dfBM1Ho&libraries=places&callback=initMap">
+</script>

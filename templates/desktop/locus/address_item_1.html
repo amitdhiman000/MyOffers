@@ -21,11 +21,13 @@
     </div>
     <div class="ui-block-body">
         <table class="ui-form-table locus_addr_table" >
-            <tr><td>NAME </td><td>{{address.name}}</td></tr>
-            <tr><td>ADDRESS </td><td>{{address.address}}</td></tr>
-            <tr><td>PERSON </td><td>{{address.person}}</td></tr>
-            <tr><td>PHONE </td><td>{{address.phone}}</td></tr>
-            <tr><td>PINCODE </td><td>{{address.pincode}}</td></tr>
+            <tr class="ui-hide"><td class="locus_addr_item_uid" >{{address.id}}</td></tr>
+            <tr class="ui-hide"><td class="locus_addr_item_loc" >{{address.location}}</td></tr>
+            <tr><td>NAME </td><td class="locus_addr_item_name">{{address.name}}</td></tr>
+            <tr><td>ADDRESS </td><td class="locus_addr_item_addr">{{address.address}}</td></tr>
+            <tr><td>PERSON </td><td class="locus_addr_item_pname">{{address.person}}</td></tr>
+            <tr><td>PHONE </td><td class="locus_addr_item_pphone">{{address.phone}}</td></tr>
+            <tr><td>PINCODE </td><td class="locus_addr_item_pincode">{{address.pincode}}</td></tr>
             <tr><td>LANDMARK </td><td>{{address.landmark}}</td></tr>
             <tr><td>AREA </td><td>{{address.area}}</td></tr>
             <tr><td>CITY </td><td>{{address.city}}</td></tr>

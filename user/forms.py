@@ -5,27 +5,27 @@ from user.models import User
 from user import backends
 
 
-model_fields = [
-    {'name': 'id', 'validator': NoValidator},
-    {'name': 'name', 'validator': NameValidator},
-    {'name': 'password', 'validator': PasswordValidator},
-    {'name': 'email', 'validator': EmailValidator},
-    {'name': 'phone', 'validator': PhoneValidator},
-]
+model_fields = {
+    'id': {'name': 'id', 'validator': NoValidator},
+    'name': {'name': 'name', 'validator': NameValidator},
+    'pass': {'name': 'password', 'validator': PasswordValidator},
+    'email': {'name': 'email', 'validator': EmailValidator},
+    'phone': {'name': 'phone', 'validator': PhoneValidator},
+}
 
 form_fields = {
     # for html form
-    'U_id': model_fields[0],
-    'U_name': model_fields[1],
-    'U_pass': model_fields[2],
-    'U_email': model_fields[3],
-    'U_phone': model_fields[4],
+    'U_id': model_fields['id'],
+    'U_name': model_fields['name'],
+    'U_pass': model_fields['pass'],
+    'U_email': model_fields['email'],
+    'U_phone': model_fields['phone'],
     # for json
-    'id': model_fields[0],
-    'name': model_fields[1],
-    'pass': model_fields[2],
-    'email': model_fields[3],
-    'phone': model_fields[4],
+    'id': model_fields['id'],
+    'name': model_fields['name'],
+    'pass': model_fields['pass'],
+    'email': model_fields['email'],
+    'phone': model_fields['phone'],
 }
 
 
@@ -61,6 +61,7 @@ class UserUpdateForm(UpdateForm):
         if not is_valid:
             return is_valid
         self.add_model_value('id', self.m_request.user.id)
+        self.del_model_value('password')
         print(self.m_values)
         return True
 
@@ -68,8 +69,7 @@ class UserUpdateForm(UpdateForm):
         print('saving ....')
         if User.update(self.model_values()):
             return self.result()
-        else:
-            return None
+        return None
 
 
 class UserSignInForm(Form):
@@ -98,3 +98,36 @@ class UserSignInForm(Form):
         else:
             self.set_error('email', 'Email or password is wrong!!')
         return user
+
+
+class UserPasswordUpdateForm(UpdateForm):
+    def __init__(self):
+        super().__init__()
+        self.m_fields = {
+            'U_pass0': {'name': 'pass0', 'validator': NoValidator},
+            'pass0': {'name': 'pass0', 'validator': NoValidator},
+            'U_pass1': model_fields['pass'],
+            'pass1': model_fields['pass'],
+        }
+
+    def validate(self):
+        is_valid = super().validate()
+        if not is_valid:
+            return is_valid
+        user = self.request().user
+        old_pass = self.del_model_value('pass0')
+        if User.check_password(old_pass, user) or User.check_otp(old_pass, user):
+            self.add_model_value('id', self.m_request.user.id)
+            print(self.m_values)
+        else:
+            is_valid = False
+            self.set_error('pass0', 'Old password in wrong, not working?, try OTP')
+        return is_valid
+
+    def update(self):
+        print('saving ....')
+        if User.update(self.model_values()):
+            self.add_model_value('pass0', 'xxxxxxxxxxx')
+            self.add_model_value('password', 'xxxxxxxxxxx')
+            return self.result()
+        return None

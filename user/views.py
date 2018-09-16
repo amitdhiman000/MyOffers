@@ -10,7 +10,7 @@ from base.apputil import (App_LoginRequired, App_PostRequired, App_RedirectIfLog
 from base.apputil import (App_Render, App_Redirect, App_RunTime)
 from base.apputil import App_TokenRequired
 from user.services import UserService
-from user.forms import (UserRegForm, UserUpdateForm, UserSignInForm)
+from user.forms import (UserRegForm, UserUpdateForm, UserSignInForm, UserPasswordUpdateForm)
 from api.views import RestApiView
 
 
@@ -189,6 +189,42 @@ def user_update(request):
             return JsonResponse({'status': 400, 'message': 'Save Failed', 'data': form.errors()})
         else:
             return JsonResponse({'status': 200, 'message': 'Saved Successfully', 'data': form.result()})
+    else:
+        return App_Redirect(request)
+
+
+@App_LoginRequired
+def user_update_password(request):
+    data = None
+    form = UserPasswordUpdateForm()
+    if (form.parseForm(request)
+            and form.clean()
+            and form.validate()):
+        data = form.commit()
+
+    if request.is_ajax():
+        if data is None:
+            return JsonResponse({'status': 400, 'message': 'Password update failed', 'data': form.errors()})
+        else:
+            return JsonResponse({'status': 200, 'message': 'Password update success', 'data': data})
+    else:
+        return App_Redirect(request)
+
+
+@App_LoginRequired
+def user_send_otp(request):
+    data = None
+    form = UserUpdateForm()
+    if (form.parseForm(request)
+            and form.clean()
+            and form.validate()):
+        data = form.commit()
+
+    if request.is_ajax():
+        if data is None:
+            return JsonResponse({'status': 400, 'message': 'OTP sending Failed, Please try again', 'data': form.errors()})
+        else:
+            return JsonResponse({'status': 204, 'message': 'OTP sent to email '+ user.email})
     else:
         return App_Redirect(request)
 

@@ -127,7 +127,8 @@ class Address(CRUDModelWithUrl):
         area=models.F('fk_area__name'),
         city=models.F('fk_area__fk_city__name'),
         state=models.F('fk_area__fk_state__name'),
-        country=models.F('fk_area__fk_country__name'))
+        country=models.F('fk_area__fk_country__name'),
+        location=models.functions.Concat('latitude', models.Value(','), 'longitude'))
 
     @classmethod
     def fetch_all(klass):

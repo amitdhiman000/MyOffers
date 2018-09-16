@@ -7,6 +7,23 @@
 	function editAddress(e, This)
 	{
 		console.log('+editAddress');
+		var $table = $(This).parents('.locus_addr_item').find('.locus_addr_table');
+		var uid = $table.find(".locus_addr_item_uid").html();
+		var loc = $table.find(".locus_addr_item_loc").html();
+		var name = $table.find(".locus_addr_item_name").html();
+		var address = $table.find(".locus_addr_item_addr").html();
+		var pincode = $table.find(".locus_addr_item_pincode").html();
+		var pname = $table.find(".locus_addr_item_pname").html();
+		var pphone = $table.find(".locus_addr_item_pphone").html();
+		var vals = {
+			'A_id': uid,
+			'A_name': name,
+			'A_address': address,
+			'A_pincode': pincode,
+			'A_location': loc,
+		};
+		$AppFormUtils.fillByName($('#locus_addr_form'), vals);
+		showAddressBox(e, This);
 	}
 
 	function deleteAddress(e, This)
@@ -30,12 +47,12 @@
 		console.log("+showAddressBox");
 		e.stopPropagation();
 		$AppOverlay.show($("#locus_addr_picker"));
-		//updateMap();
 	}
 
 	function hideAddressBox()
 	{
 		console.log('+hideAddressBox');
+		$AppFormUtils.fillByName($('#locus_addr_form'), {A_id:'-1'});
 		$AppOverlay.close();
 	}
 
@@ -45,11 +62,6 @@
 		var $This = $(this);
 		$This.toggleClass('locus_addr_item_w_expanded');
 		$AppUtil.scrollTo($This);
-	}
-
-	function OnAddrSaveReq__(e) {
-		console.log("+OnAdSaveReq__");
-		return true;
 	}
 
 	function OnAddrSaveRes__(e) {
@@ -70,8 +82,7 @@
 	}
 
 	$(function() {
-		BeforeAddrSaveEvent.add(OnAddrSaveReq__);
-		AfterAddrSaveEvent.add(OnAddrSaveRes__);
+		AfterAddrSaveEvent.sub(OnAddrSaveRes__);
 		$(document).on("click", ".locus_addr_item_w", toggleBoxSize);
 	});
 </script>

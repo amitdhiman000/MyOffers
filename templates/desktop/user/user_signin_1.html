@@ -15,7 +15,7 @@
 				{% endfor %}
 				{% endif %}
 			</div>
-			<form action="/user/signin-auth/" method="POST" class="ajax-form" id="signin-form" data-delegate="SignInFormHandler" >
+			<form action="/user/signin-auth/" method="POST" class="ajax-form" data-delegate="SignInFormHandler" >
 				{% csrf_token %}
 				<input type="hidden" name="next" value="{{ next }}">
 				<table class="ui-form-table">

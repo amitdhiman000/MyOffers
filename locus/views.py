@@ -4,7 +4,7 @@ from django.utils.decorators import method_decorator
 from django.http import HttpResponse, JsonResponse
 
 from base.apputil import *
-from locus.forms import (AddressRegForm, AddressUpdateForm, AddressDeleteForm)
+from locus.forms import (AddressCreateForm, AddressUpdateForm, AddressDeleteForm)
 from locus.services import AddressService
 from api.views import RestApiView
 
@@ -12,7 +12,7 @@ import logging
 
 
 class AddressView(RestApiView):
-    form = AddressRegForm
+    form = AddressCreateForm
     service = AddressService
 
     def head(self, request, key, **kwargs):
@@ -90,8 +90,12 @@ def address_view(request):
 
 @App_LoginRequired
 def address_create(request):
+    aid = request.POST.get('A_id', '-1')
+    if (aid == '-1'):
+        return address_update(request)
+
     data = None
-    form = AddressRegForm()
+    form = AddressCreateForm()
     if (form.parseForm(request)
         and form.clean()
         and form.validate()):
@@ -103,7 +107,7 @@ def address_create(request):
             return App_Render(request, 'locus/address_item_1.html', {'address': data})
         else:
             data = form.errors()
-            return JsonResponse({'status': 400, 'message': 'Saving Failed', 'data': data})
+            return JsonResponse({'status': 400, 'message': 'Address saving failed', 'data': data})
     return App_Redirect(request)
 
 
@@ -119,10 +123,10 @@ def address_update(request):
     data = form.errors()
     if request.is_ajax():
         if data is not None:
-            return JsonResponse({'status': 200, 'message': 'Saved Successfully', 'data': data})
+            return JsonResponse({'status': 200, 'message': 'Address updated', 'data': data})
         else:
             data = form.errors()
-            return JsonResponse({'status': 400, 'message': 'Saving Failed', 'data': data})
+            return JsonResponse({'status': 400, 'message': 'Address update failed', 'data': data})
     return App_Redirect(request)
 
 
@@ -137,10 +141,10 @@ def address_patch(request):
 
     if request.is_ajax():
         if data is not None:
-            return JsonResponse({'status': 200, 'message': 'Saved Successfully', 'data': data})
+            return JsonResponse({'status': 200, 'message': 'Address updated', 'data': data})
         else:
             data = form.errors()
-            return JsonResponse({'status': 400, 'message': 'Saving Failed', 'data': data})
+            return JsonResponse({'status': 400, 'message': 'Address update failed', 'data': data})
     return App_Redirect(request)
 
 
@@ -155,8 +159,8 @@ def address_delete(request):
 
     if request.is_ajax():
         if data is True:
-            return JsonResponse({'status': 204, 'message': 'Deleted Successfully'})
+            return JsonResponse({'status': 204, 'message': 'Address deleted'})
         else:
             data = form.errors()
-            return JsonResponse({'status': 400, 'message': 'Deletion Failed', 'data': data})
+            return JsonResponse({'status': 400, 'message': 'Address delete failed', 'data': data})
     return App_Redirect(request)

@@ -4,7 +4,7 @@ from base.serializers import (ModelValueSerializer, ModelValuesSerializer)
 
 class AddressService(object):
     model = Address
-    fields = ('id', 'name', 'person', 'phone', 'pincode', 'address', 'area', 'city', 'state', 'country', 'landmark', 'url')
+    fields = ('id', 'name', 'person', 'phone', 'pincode', 'address', 'area', 'city', 'state', 'country', 'landmark', 'url', 'location')
 
     @classmethod
     def timestamp(klass, key):

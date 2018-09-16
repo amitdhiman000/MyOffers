@@ -26,7 +26,10 @@ function initApp()
 
 	$AppDialog.init();
 
-	$(document).on("submit", "form.ajax-form", $AppForm.ajaxSubmit);
+	$(document).on("submit", "form.ajax-form", function(e) {
+		e.preventDefault();
+		$AppForm.ajaxSubmit(e, $(this));
+	});
 
 	$(document).on("click", ".app_vlist_exp_item > a", function(e) {
 		e.preventDefault();
@@ -117,16 +120,13 @@ function initSearch()
 			+ '</li>';
 			return uiItem;
 		},
-		onItemSelect: function(input, item) {
-			input.val(item.name);
+		onItemSelect: function($input, item) {
+			$input.val(item.name);
 		},
-		onEnter: function(e) {
+		onEnter: function($input, item) {
 			console.log('+onEnter');
-			var $Inst = e.data;
-			$Inst.kf._onunfocus();
-			if ($Inst.kd._count > 0) {
-				var item = $Inst.kd._jsonObj[$Inst.kd._selectedIndex];
-				location.href = item.url
+			if (item) {
+				location.href = item.url;
 			}
 		}
 	});
@@ -152,10 +152,8 @@ function navClicked()
 }
 
 var $AppForm = {
-	ajaxSubmit: function(e) {
-		console.log("+ajaxSubmit");
-		e.preventDefault();
-		var $form = $(this);
+	ajaxSubmit: function(e, $form) {
+		console.log("+$AppFrom::ajaxSubmit");
 		e.$form = $form;
 		var action = $form.attr('action');
 		console.log('action : '+ action);
@@ -184,7 +182,7 @@ var $AppForm = {
 		return true;
 	},
 	after: function(e) {
-		console.log("+$AppForm::after");
+		console.log('+$AppForm::after');
 		if (e.status) {
 			$AppNoti.info({title:"Successful", text:e.resp.message});
 		} else {
@@ -217,7 +215,11 @@ var $AppFormUtils = {
 				var type = $node.prop('type').toLowerCase();
 				switch(type) {
 					case 'text':
+					case 'hidden':
 						$node.val(val);
+						break;
+					case 'password':
+						$node.val('');
 						break;
 					case 'radio':
 					case 'checkbox':
@@ -234,7 +236,8 @@ var $AppFormUtils = {
 				retVal = $node.find('[value='+val+']').prop('selected', true).text();
 				break;
 			case 'textarea':
-				$editNode.html(val);
+			default:
+				$node.html(val);
 				break;
 		}
 		console.log('retVal : '+ retVal);
@@ -245,16 +248,22 @@ var $AppFormUtils = {
 		$form.find('input[type=text], select, textarea').each(function(index, node) {
 			This.setVal($(node), $(node).attr('data-value'));
 		});
-	}
+	},
+	fillByName: function($form, vals) {
+		for (key in vals) {
+			var $node = $form.find('[name='+key+']');
+			this.setVal($node, vals[key]);
+		}
+	},
 }
 
 var $AppFormSaveHandler = {
 	before: function(e) {
-		console.log("+beforeSaveReq");
+		console.log("+Form::beforeSave");
 		return true;
 	},
 	after: function(e) {
-		console.log("+afterSaveRes");
+		console.log("+Form::afterSave");
 		if (e.status) {
 			var vals = e.resp.data;
 			var $form = e.$form;
@@ -278,11 +287,39 @@ var $AppFormSaveHandler = {
 /*******************************************************/
 /******************** App Library **********************/
 /*******************************************************/
+function New(cls, options) { return $AppUtil.new(cls, options); }
 var $AppUtil = {
+	type: function(o) {
+		return (o)?Object.prototype.toString.call(o).slice(8, -1):'undefined';
+	},
+	isArray: function(o) {
+		return this.type(o) === 'Array';
+	},
+	isObject: function(o) {
+		return this.type(o) === 'Object';
+	},
+	new: function(cls, options={}) {
+		if ($.merge) {
+			return $.extend(true, {}, cls, options);
+		}
+		ret = this.merge({}, cls);
+		return this.merge(ret, options);
+	},
 	merge: function(a1, a2) {
 		var res = a1;
-		//for (var k in a1) { res[k] = a1[k]; }
-		for (var k in a2) { res[k] = a2[k]; }
+		for (var k in a2) {
+			if (a2.hasOwnProperty(k)) {
+				if (typeof a2[k] === 'object') {
+					if (this.isArray(a2[k]))
+						res[k] = [];
+					else if (this.isObject(a2[k]))
+						res[k] = {};
+					res[k] = this.merge(res[k], a2[k]);
+				} else {
+					res[k] = a2[k];
+				}
+			}
+		}
 		return res;
 	},
 	dump: function(obj) {
@@ -300,29 +337,20 @@ var $AppUtil = {
 };
 
 var $AppEvent = {
-	new: function() {
-		console.log("+Event new");
-		copy = {'_set': new Array()};
-		for (var key in this) {
-			if (this.hasOwnProperty(key))
-				copy[key] = this[key];
-		}
-		return copy;
-	},
-	add: function(p) {
-		console.log("+Event add");
+	sub: function(p) {
+		console.log('+$AppEvent::sub');
 		if (this._set.indexOf(p) == -1)
 			this._set.push(p);
 	},
-	del: function(p) {
-		console.log("+Event del");
+	unsub: function(p) {
+		console.log('$AppEvent::unsub');
 		var pos = this._set.indexOf(p);
 		if (pos > 1)
 			this._set.splice(pos, 1);
 
 	},
-	call: function(e) {
-		console.log("+Event call");
+	trigger: function(e) {
+		console.log('+$AppEvent trigger');
 		var ret = true;
 		for (i in this._set) {
 			ret = ret && this._set[i](e);
@@ -478,6 +506,129 @@ var $AppData = {
 			this._name = $mt.attr("content") || "/m\\";
 		}
 		return this._name;
+	}
+};
+
+var $AppGeo = {
+	locate: function(OnLocate) {
+		console.log("+$AppGeo::locate");
+		navigator.geolocation.getCurrentPosition(function(pos, err) {
+			var lat = pos.coords.latitude.toFixed(8);
+			var lng = pos.coords.longitude.toFixed(8);
+			var ts = pos.timestamp;
+			var acc = pos.coords.accuracy;
+			OnLocate(lat, lng);
+		});
+	}
+};
+
+var $GoogleMap = {
+	_IsInit: false,
+	_Map: null,
+	_Marker: null,
+	_Geocoder: null,
+	_Timeout: null,
+	_LatLong: {lat:12.964914, lng:77.596683},
+	AddressFoundEvent: $AppUtil.new($AppEvent),
+	init: function(mapBox) {
+		console.log("+GoogleMap::init");
+		var This = this;
+		var myLatlng = new google.maps.LatLng(This._LatLong.lat, This._LatLong.lng);
+		var mapOpts = {
+			zoom: 18,
+			center: myLatlng,
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+		}
+
+		This._Map = new google.maps.Map(mapBox, mapOpts);
+		This._Marker = new google.maps.Marker({
+			position: myLatlng,
+			map: This._Map,
+			draggable: true,
+			title: "Your Location"
+		});
+		This._Geocoder = new google.maps.Geocoder();
+
+		google.maps.event.addListener(This._Marker, 'dragend', function (e) {
+			This.updateLoc(e.latLng.lat(), e.latLng.lng());
+		});
+
+		google.maps.event.addListener(This._Map, 'drag', function (e) {
+			var center = this.getCenter();
+			clearTimeout(This._Timeout);
+			This._Timeout = setTimeout(function() {
+				This._Marker.setPosition(center);
+				This.updateLoc(center.lat(), center.lng());
+			}, 50);
+		});
+
+		This._IsInit = true;
+		$AppGeo.locate(function(lt,lg) {
+			This.updateLoc(lt,lg);
+		});
+	},
+	initPlaceSearch: function(input) {
+		console.log('+GoogleMap::initPlaceSearch');
+		var This = this;
+		var autocomplete = new google.maps.places.Autocomplete(input);
+
+		autocomplete.addListener('place_changed', function() {
+			This._Marker.setVisible(false);
+			var place = autocomplete.getPlace();
+			if (!place.geometry) {
+				$AppToast.show("No details available for : '" + place.name + "'");
+				return;
+			}
+
+			console.log(place);
+			// If the place has a geometry, then present it on a map.
+			if (place.geometry.viewport) {
+				This._Map.fitBounds(place.geometry.viewport);
+			} else {
+				This._Map.setCenter(place.geometry.location);
+				This._Map.setZoom(17);
+			}
+			This._Marker.setPosition(place.geometry.location);
+			This._Marker.setVisible(true);
+			This._OnAddressFound({status:true, address:place});
+		});
+	},
+	update: function() {
+		if (this._Map) {
+			google.maps.event.trigger(this._Map, 'resize');
+			if (this._Marker) {
+				this._Map.setCenter(this._Marker.getPosition());
+			}
+		}
+	},
+	updateLoc: function(lat, lng) {
+		console.log('[' +lat + ' ### ' + lng+ ']');
+		if (lat != '' && lng != '') {
+			var This = this;
+			var pos = new google.maps.LatLng(lat, lng);
+			This._Marker.setPosition(pos);
+			This._Map.panTo(pos);
+			return This.getAddress(pos, function(data){
+				This.AddressFoundEvent.trigger(data);
+			});
+		}
+	},
+	getAddress: function(loc, OnFound) {
+		if (!this._IsInit)
+			return;
+		this._Geocoder.geocode({
+			'location': loc
+			},
+			function(results, status) {
+				if (status == google.maps.GeocoderStatus.OK) {
+					console.log(results[0]);
+					OnFound({status:true, 'address':results[0]});
+				} else {
+					console.log('Geocode failed reason: ' + status);
+					OnFound({status:false, address:''});
+				}
+			}
+		);
 	}
 };
 
@@ -693,7 +844,7 @@ var $AppNoti = {
 	_defaults: {
 		link: window.location,
 		title: 'Alert',
-		text: 'Alert',
+		text: 'Notification',
 		timeout: 5000,
 	},
 	info: function(p) {
@@ -743,7 +894,8 @@ var wsuggest = function($Inst, opts) {
 		_count: 0,
 		_selectedIndex: 0,
 		_jsonItemsList: null,
-		$_body: null,
+		$_self: $Inst,
+		$_list: null,
 		$_selectedItem: null,
 	};
 
@@ -753,58 +905,64 @@ var wsuggest = function($Inst, opts) {
 		scrollTimer: null,
 		_create: function(e) {
 			console.log('+_create['+kd._name+']');
-			kd.$_body = $('<ul class="wt-search-list wt-search-list-app" >');
-			kd.$_body.css({width: $Inst.css('width')});
-			kd.$_body.on('mouseenter', 'li', kf._onitemhover);
-			kd.$_body.on('click', 'li', kf._onitemclick);
-			kd.$_body.on('scroll', kf._onlistscroll);
+			kd.$_list = $('<ul class="wt-search-list wt-search-list-app" >');
+			kd.$_list.css({width: $Inst.css('width')});
+			kd.$_list.on('mouseenter', 'li', kf._onitemhover);
+			kd.$_list.on('click', 'li', kf._onitemclick);
+			kd.$_list.on('scroll', kf._onlistscroll);
 			$Inst.on("keyup", kf._onkeyup);
 			$Inst.on("keypress", kf._onkeypress);
 			$Inst.on("focus", kf._onfocus);
 			$Inst.on("blur", kf._onunfocus);
-			$Inst.after(kd.$_body);
+			$Inst.after(kd.$_list);
 		},
 		_destroy: function(e) {
-			kd.$_body.remove();
-			kd.$_body = null;
+			kd.$_list.remove();
+			kd.$_list = null;
 		},
 		_onfocus: function(e) {
 			console.log('+_onfocus');
-			kd.$_body.show();
+			kd.$_list.show();
 		},
 		_onunfocus: function(e) {
-			kd.$_body.hide();
+			kd.$_list.hide();
 		},
 		source: function(key, resp) {
 			console.log('implement source function');
 		},
-		_parse: function(jsonItemsList) {
-			console.log('+_parse');
-			kd.$_body.html('');
+		itemCreate: function(item) {
+			console.log('implement itemCreate function');
+			return '';
+		},
+		onItemSelect: function($input, item) {
+			console.log('implement onItemSelect function');
+		},
+		onEnter: function($input, item) {
+			console.log('implement onEnter function');
+		},
+		_ondata: function(jsonItemsList) {
+			console.log('+_ondata');
+			kd.$_list.html('');
 			kd._jsonItemsList = jsonItemsList;
 			kd._count = jsonItemsList.length;
 			kd._selectedIndex = 0;
 			if (kd._count > 0) {
 				for (i in jsonItemsList) {
-					kd.$_body.append(kf.itemCreate(jsonItemsList[i]));
+					kd.$_list.append(kf.itemCreate(jsonItemsList[i]));
 				}
-				kd.$_selectedItem = kd.$_body.children().eq(kd._selectedIndex);
+				kd.$_selectedItem = kd.$_list.children().eq(kd._selectedIndex);
 				kd.$_selectedItem.addClass('wt-search-item-a');
 			} else {
-				kd.$_body.html('<div class="wt-search-item">No search results</div>');
+				kd.$_list.html('<div class="wt-search-item">No search results</div>');
 			}
-			kd.$_body.show();
-		},
-		itemCreate: function(item) {
-			console.log('implement itemCreate function');
-			return '';
+			kd.$_list.show();
 		},
 		_setItemSelected(newIndex) {
 			var oldIndex = kd._selectedIndex;
 			console.log('oldIndex : '+oldIndex + ' newIndex : '+newIndex);
 			if (newIndex >= 0 && newIndex < kd._count) {
 				if (oldIndex != newIndex) {
-					var $children = kd.$_body.children();
+					var $children = kd.$_list.children();
 					$children.eq(oldIndex).removeClass('wt-search-item-a');
 					kd.$_selectedItem = $children.eq(newIndex).addClass('wt-search-item-a');
 					kd._selectedIndex = newIndex;
@@ -812,19 +970,19 @@ var wsuggest = function($Inst, opts) {
 				}
 				var itemTop = kd.$_selectedItem.position().top;
 				var itemHeight = kd.$_selectedItem.outerHeight();
-				var bodyScroll = kd.$_body.scrollTop();
-				var bodyHeight = kd.$_body.outerHeight();
+				var bodyScroll = kd.$_list.scrollTop();
+				var bodyHeight = kd.$_list.outerHeight();
 
 				console.log('itemTop : '+ itemTop +' itemHeight : '+ itemHeight);
 				console.log('bodyScroll : '+ bodyScroll +' bodyHeight : '+ bodyHeight);
 				if (itemTop < 0) {
 					console.log('scrollup');
-					kd.$_body.scrollTop(bodyScroll + itemTop);
+					kd.$_list.scrollTop(bodyScroll + itemTop);
 				} else if (itemTop + itemHeight > bodyHeight) {
 					console.log('scrolldown');
-					kd.$_body.scrollTop(bodyScroll + itemHeight - (bodyHeight - itemTop));
+					kd.$_list.scrollTop(bodyScroll + itemHeight - (bodyHeight - itemTop));
 				}
-				kd.$_body.show();
+				kd.$_list.show();
 			}
 		},
 		_onlistscroll: function(e) {
@@ -842,25 +1000,18 @@ var wsuggest = function($Inst, opts) {
 			console.log('+_onitemclick');
 			kf._setItemSelected($(this).index());
 		},
-		onItemSelect: function(input, item) {
-			 console.log('implement onItemSelect function');
-		},
 		_notifyItemSelected: function() {
 			if (kd._count > 0 && kd._jsonItemsList) {
 				kf.onItemSelect($Inst, kd._jsonItemsList[kd._selectedIndex]);
 			}
 		},
-		_onenter: function(e) {
-			console.log('+onEnter');
-			kf._notifyItemSelected();
-			kf._onunfocus();
-		},
 		_onkeypress: function(e) {
 			console.log('+_onkeypress : '+ e.keyCode);
 			if (e.keyCode === 10 || e.keyCode === 13) {
 				e.preventDefault();
-				e.data = $Inst;
-				kf._onenter(e);
+				var item = (kd._count > 0)? kd._jsonItemsList[kd._selectedIndex]: null;
+				kf.onEnter(kd.$_self, item);
+				kf._onunfocus(e);
 			}
 		},
 		_onkeyup: function(e) {
@@ -889,7 +1040,7 @@ var wsuggest = function($Inst, opts) {
 				return;
 			}
 			var key = $Inst.val();
-			(key.length >= kf.minLength && kf.source(key, kf._parse));
+			(key.length >= kf.minLength && kf.source(key, kf._ondata));
 		},
 	};
 
@@ -1088,10 +1239,6 @@ var $WgtTabs = {
 	_active: null,
 	_activeIndex: 0,
 
-	new: function() {
-		//return $AppWidgets.copy(this);
-		return $.extend({}, {}, this);
-	},
 	attach: function($Inst, options) {
 		console.log('+_create['+this._name+']');
 		this._$Inst = $Inst;
@@ -1133,9 +1280,6 @@ var $WgtSuggesions = {
 	_selectedItem: null,
 	_selectedIndex: 0,
 
-	new: function() {
-		return $.extend({}, {}, this);
-	},
 	attach: function($Inst, options) {
 		console.log('+attach['+this._name+']');
 		this._$ui = $('<ul class="wt-search-list wt-search-list-app" >');

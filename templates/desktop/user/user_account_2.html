@@ -50,7 +50,17 @@ function editFormFields(e, pThis)
 	$controls.toggle();
 }
 
-$(function(){ $('#user_basic_info_form').data('data-handler', UserInfoFormHandler); });
+function sendOTP()
+{
+	$AppRequest.post('/user/requestopt/', '', function(status, json) {
+		$AppNoti.info(json.message);
+	});
+}
+
+$(function() {
+	$('#user_basic_info_form').data('data-handler', UserInfoFormHandler);
+	$('#user_pass_form').data('data-handler', UserInfoFormHandler);
+});
 
 </script>
 <div class="ui-content" >
@@ -94,7 +104,7 @@ $(function(){ $('#user_basic_info_form').data('data-handler', UserInfoFormHandle
 									<lable>EMAIL</lable>
 								</div>
 								<div class="info_view" >
-										<label data-rel="U_email" >{{user.email}}</label>
+									<label data-rel="U_email" >{{user.email}}</label>
 								</div>
 								<div class="info_edit ui-hide" >
 									<input type="text" name="U_email" class="ui-input" placeholder="Email" value="{{user.email}}" data-value="{{user.email}}" />
@@ -109,10 +119,10 @@ $(function(){ $('#user_basic_info_form').data('data-handler', UserInfoFormHandle
 									<lable>PHONE</lable>
 								</div>
 								<div class="info_view" >
-										<label data-rel="U_phone" >{{user.phone}}</label>
+									<label data-rel="U_phone" >{{user.phone}}</label>
 								</div>
 								<div class="info_edit ui-hide" >
-									<input type="text" name="U_phone" class="ui-input" placeholder="Name" value="{{user.phone}}" data-value="{{user.phone}}" />
+									<input type="text" name="U_phone" class="ui-input" placeholder="Phone" value="{{user.phone}}" data-value="{{user.phone}}" />
 								</div>
 							</div>
 						</td>
@@ -133,14 +143,43 @@ $(function(){ $('#user_basic_info_form').data('data-handler', UserInfoFormHandle
 			</div>
 			<div>
 				<div class="ui-right" >
-					<a onclick="editDataFields(event, this)" >
+					<a onclick="editFormFields(event, this)" >
 						<img src="{% static 'images/svg/editfilled_24_1.svg' %}" style="width:24px; height:24px;" />
 					</a>
 				</div>
 			</div>
 		</div>
 		<div class="ui-block-body">
-			<a href="#/user/changepass/" >Change Password</a>
+			<form action="/user/updatepass/" method="POST" class="ajax-form" id="user_pass_form" >
+			{% csrf_token %}
+			<table class="ui-info-form" >
+				<tr class="info_item user_info_item" >
+					<td>
+						<div class="info_block" >
+							<div class="info_title" >
+								<lable>PASSWORD</lable>
+							</div>
+							<div class="info_view" >
+								<label data-rel="U_pass0" >xxxxxxxxx</label>
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								<a onclick="editFormFields(event,this)" >Change Password</a>
+							</div>
+							<div class="info_edit ui-hide" >
+								<table class="ui-info-table" >
+									<tr><td><a onclick="sendOTP()">Get OTP on Email</a></td></tr>
+									<tr><td><input type="password" name="U_pass0" class="ui-input" placeholder="Old Password or OTP" value="" data-value="xxxxxxxxxx" /></td></tr>
+									<tr><td><input type="password" name="U_pass1" class="ui-input" placeholder="New Password" value="" data-value="xxxxxxxxxx" /></td></tr>
+								</table>
+							</div>
+						</div>
+					</td>
+				</tr>
+			</table>
+			<div class="ui-hide form_controls" >
+				<input type="submit" value="Save" class="ui-btn" />
+				<input type="button" value="Cancel" class="ui-btn" onclick="editFormFields(event, this)" />
+			</div>
+			</form>
 		</div>
 	</div>
 </div>

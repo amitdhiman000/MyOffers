@@ -38,7 +38,7 @@ form_fields = {
 }
 
 
-class AddressRegForm(CreateForm):
+class AddressCreateForm(CreateForm):
 	model = Address
 
 	def __init__(self):
@@ -87,10 +87,14 @@ class AddressRegForm(CreateForm):
 	def save(self):
 		print(self.model_values())
 		result = self.model.create_v1(self.model_values())
-		if result[1] is False:
-			self.set_error('error', 'Address already exists!!')
-			return None
-		return result[0]
+		if result:
+			if result[1] is False:
+				self.set_error('error', 'Address already exists!!')
+				return None
+			return result[0]
+		else:
+			self.set_error('error', 'Address save failed [unknown error]')
+		return None
 
 
 
