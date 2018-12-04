@@ -75,7 +75,7 @@ ROOT_URLCONF = 'MyOffers.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates'],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -148,13 +148,15 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': 'logs/logs.log',
+            'filename': os.path.join(BASE_DIR,'logs/logs.log'),
+            #'filename': '/tmp/django_debug.log',
             'formatter': 'normal'
         },
         'file_request': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': 'logs/request_logs.log',
+            'filename': os.path.join(BASE_DIR, 'logs/request_logs.log'),
+            #'filename': '/tmp/django_req_debug.log',
             'formatter': 'simple'
         },
     },
