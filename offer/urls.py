@@ -5,28 +5,29 @@ The `urlpatterns` list routes URLs to views. For more information please see:
 Examples:
 Function views
     1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  url(r'^$', views.home, name='home')
+    2. Add a URL to urlpatterns:  path('', views.home, name='home')
 Class-based views
     1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  url(r'^$', Home.as_view(), name='home')
+    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
 Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
-    2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
+    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.urls import path
 from . import views
 
 urlpatterns = [
-    url(r'^$', views.offer_home_view, name='offer_home_view'),
-    url(r'^form/$', views.offer_form_view, name='offer_form_view'),
-    url(r'^create/$', views.offer_create, name='offer_create'),
-    url(r'^update/$', views.offer_update, name='offer_update'),
-    url(r'^patch/$', views.offer_patch, name='offer_patch'),
-    url(r'^delete/$', views.offer_delete, name='offer_delete'),
-    url(r'^new/$', views.new1_view, name='new1_view'),
-    url(r'^online/$', views.online_view, name='online_view'),
-    url(r'^nearby/$', views.nearby_view, name='nearby_view'),
-    url(r'^bulk/$', views.bulk_view, name='bulk_view'),
-    url(r'^food/$', views.food_view, name='food_view'),
-    url(r'^(?P<slug>[\w-]+)/$', views.offer_detail_view, name="offer_detail_view"),
+    path('', views.offer_home_view, name='offer_home_view'),
+    path('form/', views.offer_form_view, name='offer_form_view'),
+    path('create/', views.offer_create, name='offer_create'),
+    path('update/', views.offer_update, name='offer_update'),
+    path('patch/', views.offer_patch, name='offer_patch'),
+    path('delete/', views.offer_delete, name='offer_delete'),
+    path('new/', views.new1_view, name='new1_view'),
+    path('online/', views.online_view, name='online_view'),
+    path('nearby/', views.nearby_view, name='nearby_view'),
+    path('bulk/', views.bulk_view, name='bulk_view'),
+    path('food/', views.food_view, name='food_view'),
+    #path('(?P<slug>[\w-]+)/', views.offer_detail_view, name="offer_detail_view"),
+    path('slug:slug>/', views.offer_detail_view, name="offer_detail_view"),
 ]

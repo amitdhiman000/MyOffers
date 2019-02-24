@@ -1,9 +1,14 @@
-var KEY_ESCAPE = 27;
-var KEY_ENTER = 13;
-var KEY_LEFT = 37;
-var KEY_UP = 38;
-var KEY_RIGHT = 39;
-var KEY_DOWN = 40;
+var KEYS = {
+	BACK: 8,
+	TAB: 9,
+	ENTER: 13,
+	ESCAPE: 27,
+	LEFT: 37,
+	UP: 38,
+	RIGHT: 39,
+	DOWN: 40,
+	DELETE: 46,
+};
 
 $(function() {
 	console.log("+init");
@@ -720,7 +725,7 @@ var $AppOverlay = {
 	_onkeyup: function(e) {
 		console.log("ONKEYUP OVERLAY");
 		var This = e.data;
-		if (This._options["closeOnEscape"] === true && e.keyCode == KEY_ESCAPE) {
+		if (This._options["closeOnEscape"] === true && e.keyCode == KEYS.ESCAPE) {
 			This._close();
 		}
 	}
@@ -828,7 +833,7 @@ var $AppDialog = {
 	_onkeyup: function(e) {
 		console.log("ONKEYUP DIALOG");
 		var This = e.data;
-		if (This._options["closeOnEscape"] === true && e.keyCode == KEY_ESCAPE) {
+		if (This._options["closeOnEscape"] === true && e.keyCode == KEYS.ESCAPE) {
 			This._close();
 		}
 	}
@@ -890,7 +895,7 @@ var $AppToast = {
 
 var wsuggest = function($Inst, opts) {
 	console.log('+wsuggest : '+$Inst.prop("tagName"));
-	$Inst.kd = {
+	$Inst.__suggest_data = {
 		_name: 'suggest',
 		_count: 0,
 		_selectedIndex: 0,
@@ -900,7 +905,7 @@ var wsuggest = function($Inst, opts) {
 		$_selectedItem: null,
 	};
 
-	$Inst.kf = {
+	$Inst.__suggest_func = {
 		minLength: 1,
 		delay: 0,
 		scrollTimer: null,
@@ -1008,7 +1013,7 @@ var wsuggest = function($Inst, opts) {
 		},
 		_onkeypress: function(e) {
 			console.log('+_onkeypress : '+ e.keyCode);
-			if (e.keyCode === 10 || e.keyCode === 13) {
+			if (e.keyCode === KEYS.ENTER) {
 				e.preventDefault();
 				var item = (kd._count > 0)? kd._jsonItemsList[kd._selectedIndex]: null;
 				kf.onEnter(kd.$_self, item);
@@ -1019,16 +1024,16 @@ var wsuggest = function($Inst, opts) {
 			console.log('+_onkeyup');
 			var handled = true;
 			switch(e.keyCode) {
-			case KEY_UP:
+			case KEYS.UP:
 				kf._setItemSelected(kd._selectedIndex - 1);
 				break;
-			case KEY_DOWN:
+			case KEYS.DOWN:
 				kf._setItemSelected(kd._selectedIndex + 1);
 				break;
-			case KEY_ENTER:
+			case KEYS.ENTER:
 				break;
-			case KEY_LEFT:
-			case KEY_RIGHT:
+			case KEYS.LEFT:
+			case KEYS.RIGHT:
 				kf._onfocus();
 				break;
 			default:
@@ -1045,8 +1050,8 @@ var wsuggest = function($Inst, opts) {
 		},
 	};
 
-	var kf = $Inst.kf;
-	var kd = $Inst.kd;
+	var kf = $Inst.__suggest_func;
+	var kd = $Inst.__suggest_data;
 
 	/* merge the options */
 	for (var key in opts) {
@@ -1060,14 +1065,14 @@ function wfileupload($Inst, opts)
 {
 	console.log('+wfileupload : '+$Inst.prop('tagName'));
 	// klass data
-	$Inst.kd = {
+	$Inst.__fileupload_data = {
 		_name: 'fileupload',
 		_ui: null,
 		_uploads: [],
 		_hidden: null,
 	};
 	// klass functors
-	$Inst.kf =  {
+	$Inst.__fileupload_func =  {
 		maxFiles: 1,
 		mimeType: 'image',
 		maxSize: 1024, // 1KB
@@ -1174,8 +1179,8 @@ function wfileupload($Inst, opts)
 		}
 	};
 
-	var kd = $Inst.kd;
-	var kf = $Inst.kf;
+	var kf = $Inst.__fileupload_func;
+	var kd = $Inst.__fileupload_data;
 
 	/* merge the options */
 	for (var key in opts) {
@@ -1188,13 +1193,13 @@ function wswitchtab($Inst, opts)
 {
 	console.log('+wswitchtab : '+$Inst.prop('tagName'));
 	// klass data
-	$Inst.kd = {
+	$Inst.__switchtab_data = {
 		_name: 'switchtab',
 		_total: 2,
 		_active: null,
 	};
 	// klass functors
-	$Inst.kf =  {
+	$Inst.__switchtab_func =  {
 		_activeIndex: 0,
 		_create: function(e) {
 			console.log('+_create['+kd._name+']');
@@ -1223,8 +1228,8 @@ function wswitchtab($Inst, opts)
 		},
 	};
 
-	var kd = $Inst.kd;
-	var kf = $Inst.kf;
+	var kf = $Inst.__switchtab_func;
+	var kd = $Inst.__switchtab_data;
 
 	/* merge the options */
 	for (var key in opts) {
@@ -1386,7 +1391,7 @@ var $WgtSuggesions = {
 		console.log('+onkeyup');
 		var handled = false;
 		switch(e.keyCode) {
-		case KEY_UP:
+		case KEYS.UP:
 			if (this._selectedIndex > 0) {
 				this._$ui.children().eq(this._selectedIndex).removeClass('wt-search-item-a');
 				this._selectedIndex--;
@@ -1400,7 +1405,7 @@ var $WgtSuggesions = {
 			}
 			handled = true;
 			break;
-		case KEY_DOWN:
+		case KEYS.DOWN:
 			if (this._selectedIndex < this._count - 1) {
 				this._$ui.children().eq(this._selectedIndex).removeClass('wt-search-item-a');
 				this._selectedIndex++;
@@ -1415,11 +1420,11 @@ var $WgtSuggesions = {
 			}
 			handled = true;
 			break;
-		case KEY_ENTER:
+		case KEYS.ENTER:
 			handled = true;
 			break;
-		case KEY_LEFT:
-		case KEY_RIGHT:
+		case KEYS.LEFT:
+		case KEYS.RIGHT:
 		default:
 			console.log('keycode : '+e.keyCode);
 			handled = false;

@@ -8,7 +8,6 @@ from user.backends import auth_user
 from base.apputil import (App_CreateToken, App_RefreshToken)
 
 
-
 @csrf_exempt
 def token_create(request):
     print(request.POST)
