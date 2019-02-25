@@ -32,7 +32,7 @@ class UserView(RestApiView):
     @App_TokenRequired
     def post(self, request, key=None):
         form = self.form()
-        if (form.parseJson(request)
+        if (form.parse(request)
             and form.clean()
             and form.validate()):
             obj = form.save()
@@ -79,7 +79,7 @@ def signup_view(request):
 def signin_auth(request):
     print(request.POST)
     form = UserSignInForm()
-    if (form.parseForm(request)
+    if (form.parse(request)
             and form.clean()
             and form.validate()):
         user = form.commit()
@@ -105,7 +105,7 @@ def signin_auth(request):
 def signup_auth(request):
     print(request.POST)
     form = UserRegForm()
-    if (form.parseForm(request)
+    if (form.parse(request)
             and form.clean()
             and form.validate()):
         user = form.commit()
@@ -174,7 +174,7 @@ def user_settings_view(request):
 def user_update(request):
     data = None
     form = UserUpdateForm()
-    if (form.parseForm(request)
+    if (form.parse(request)
             and form.clean()
             and form.validate()):
         data = form.commit()
@@ -197,7 +197,7 @@ def user_update(request):
 def user_update_password(request):
     data = None
     form = UserPasswordUpdateForm()
-    if (form.parseForm(request)
+    if (form.parse(request)
             and form.clean()
             and form.validate()):
         data = form.commit()
@@ -215,7 +215,7 @@ def user_update_password(request):
 def user_send_otp(request):
     data = None
     form = UserUpdateForm()
-    if (form.parseForm(request)
+    if (form.parse(request)
             and form.clean()
             and form.validate()):
         data = form.commit()

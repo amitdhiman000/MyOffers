@@ -236,7 +236,7 @@ def App_Redirect(request, url=None):
     return HttpResponseRedirect(url)
 
 
-def App_Render(request, file, data):
+def App_Render(request, file, data={'title': settings.APP_NAME}):
     base_tpl, file = App_Template(request, file)
     data.update({'base_template': base_tpl})
     return render(request, file, data)

@@ -23,7 +23,7 @@ def business_create(request):
     data = None
 
     form = BusinessRegForm()
-    if (form.parseForm(request)
+    if (form.parse(request)
             and form.clean()
             and form.validate()):
         data = form.commit()
@@ -47,7 +47,7 @@ def business_update(request):
     data = None
 
     form = BusinessUpdateForm()
-    if (form.parseForm(request)
+    if (form.parse(request)
             and form.clean()
             and form.validate()):
         data = form.commit()
@@ -68,7 +68,7 @@ def business_delete(request):
     status = False
 
     form = BusinessDeleteForm()
-    if (form.parseForm(request)
+    if (form.parse(request)
             and form.clean()
             and form.validate()):
         status = form.commit()
@@ -105,7 +105,7 @@ def business_address_link(request):
     data = None
     form = BALinkBulkForm()
 
-    if (form.parseForm(request)
+    if (form.parse(request)
             and form.clean()
             and form.validate()):
         data = form.commit()

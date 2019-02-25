@@ -41,7 +41,7 @@ class AddressView(RestApiView):
         print('post request')
         print(request.body)
         form = self.form()
-        if (form.parseJson(request)
+        if (form.parse(request)
             and form.clean()
             and form.validate()
             ):
@@ -96,7 +96,7 @@ def address_create(request):
 
     data = None
     form = AddressCreateForm()
-    if (form.parseForm(request)
+    if (form.parse(request)
         and form.clean()
         and form.validate()):
         data = form.commit()
@@ -115,7 +115,7 @@ def address_create(request):
 def address_update(request):
     data = None
     form = AddressUpdateForm()
-    if (form.parseForm(request)
+    if (form.parse(request)
         and form.clean()
         and form.validate()):
         data = form.commit()
@@ -134,7 +134,7 @@ def address_update(request):
 def address_patch(request):
     data = None
     form = AddressUpdateForm()
-    if (form.parseForm(request)
+    if (form.parse(request)
         and form.clean()
         and form.validate()):
         data = form.commit()
@@ -152,7 +152,7 @@ def address_patch(request):
 def address_delete(request):
     logging.error(request.POST)
     form = AddressDeleteForm()
-    if (form.parseForm(request)
+    if (form.parse(request)
         and form.clean()
         and form.validate()):
         data = form.commit()

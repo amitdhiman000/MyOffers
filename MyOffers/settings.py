@@ -231,6 +231,7 @@ MEDIA_USER_FILES_DIR_NAME = 'files'
 MEDIA_TMP_FILES_DIR_NAME = 'tmp'
 
 SITE_NAME = "Trader"
+APP_NAME = SITE_NAME
 
 # some custom settings
 BASE_TEMPLATE = 'base/app_base_1.html'

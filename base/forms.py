@@ -41,19 +41,6 @@ class Form(object):
         if key == rkey:
             logging.warning('key not found in request', key)
 
-    def process(self, request):
-        return (self.parseForm(request)
-                and self.clean()
-                and self.validate())
-
-    # parse the json request.
-    def parseJson(self, request):
-        return self.parse(request, True)
-
-    # parse the html form POST request.
-    def parseForm(self, request):
-        return self.parse(request, False)
-
     # add new value for model
     def add_model_value(self, key, val):
         self.m_model_values[key] = val
@@ -76,13 +63,33 @@ class Form(object):
         self.m_rfields[fkey] = key
         self.m_model_values[fkey] = val
 
-    def parse(self, request, is_json=True):
+    # short hand for all the operations
+    def process(self, request):
+        if (self.parse(request) and self.clean() and self.validate()):
+            return self.commit()
+        return False
+
+
+    # parse the json request.
+    def parseJson(self, request):
+        self.m_values = json.loads(request.body.decode('utf-8'))
+        return True
+
+    # parse the html form POST request.
+    def parseForm(self, request):
+        self.m_values = request.POST
+        return True
+
+    # parse the request type
+    def parse(self, request):
         print('parsing ....')
         self.m_request = request
-        if is_json is True:
-            self.m_values = json.loads(request.body.decode('utf-8'))
+        contentType = request.META.get('CONTENT_TYPE', 'application/json')
+        print(contentType)
+        if contentType == 'application/json':
+            self.parseJson(request)
         else:
-            self.m_values = request.POST
+            self.parseForm(request)
 
         for key in self.m_values:
             if key in self.m_fields:

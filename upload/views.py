@@ -11,7 +11,7 @@ def fileupload(request):
     print(request.POST, request.FILES)
     ret = None
     form = FileUploadForm()
-    if form.parseForm(request) and form.clean() and form.validate():
+    if form.parse(request) and form.clean() and form.validate():
         ret = form.commit()
 
     if ret is not None:

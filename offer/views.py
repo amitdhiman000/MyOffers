@@ -70,7 +70,7 @@ def offer_create(request):
 
     data = None
     form = OfferRegForm()
-    if (form.parseForm(request)
+    if (form.parse(request)
         and form.clean()
         and form.validate()):
         data = form.commit()
@@ -93,7 +93,7 @@ def offer_update(request):
     print(request.POST)
     data = None
     form = OfferUpdateForm()
-    if (form.parseForm(request)
+    if (form.parse(request)
         and form.clean()
         and form.validate()):
         data = form.commit()
@@ -116,7 +116,7 @@ def offer_patch(request):
     print(request.POST)
     data = None
     form = OfferUpdateForm()
-    if (form.parseForm(request)
+    if (form.parse(request)
         and form.clean()
         and form.validate()):
         data = form.commit()
@@ -139,7 +139,7 @@ def offer_delete(request):
     print(request.POST)
     data = None
     form = OfferUpdateForm()
-    if (form.parseForm(request)
+    if (form.parse(request)
         and form.clean()
         and form.validate()):
         data = form.commit()

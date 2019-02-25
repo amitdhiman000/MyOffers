@@ -23,7 +23,7 @@ class ContactsView(TemplateView):
         error = None
         data = {'title': 'Contacts'}
         form = PublicMessageForm()
-        if form.parseForm(request) and form.clean() and form.validate():
+        if form.parse(request) and form.clean() and form.validate():
             if not form.commit():
                 error = form.errors()
         else:
