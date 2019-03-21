@@ -10,132 +10,146 @@ var KEYS = {
 	DELETE: 46,
 };
 
+var g_application = null;
 $(function() {
 	console.log("+init");
-
-	/*Initialize App*/
-	initApp();
-	/*Initialize History*/
-	initHistory();
-	/*Initialize search*/
-	initSearch();
-
+	g_application = new App();
 	console.log("-init");
 });
 
-function initApp()
-{
-	console.log("+initApp");
 
-	$AppOverlay.init();
+class App {
+	constructor()
+	{
+		init();
+		this._history = new History();
+		this._search = new Search();
+	}
+	init()
+	{
+		console.log('+App::init');
+		$AppOverlay.init();
 
-	$AppDialog.init();
+		$AppDialog.init();
 
-	$(document).on("submit", "form.ajax-form", function(e) {
-		e.preventDefault();
-		$AppForm.ajaxSubmit(e, $(this));
-	});
-
-	$(document).on("click", ".app_vlist_exp_item > a", function(e) {
-		e.preventDefault();
-		$(this).parent().toggleClass("expanded");
-	});
-
-	$(document).on("click", function(e) {
-		//e.stopPropagation();
-		$(".ui-dropcontent").hide();
-	});
-	$(document).on("click", ".ui-dropbtn", function(e) {
-		e.stopPropagation();
-		$(e.target).parents(".ui-dropdown").find(".ui-dropcontent").toggle();
-	});
-
-	$(document).on("click", ".ui-hovermenu", function(e) {
-		console.log("hovermenu clicked");
-		e.preventDefault();
-		e.stopPropagation();
-	});
-}
-
-function initHistory()
-{
-	console.log("+initHistory");
-	if (window.history && window.history.pushState) {
-		function afterGetResponse(status, data, state) {
-			console.log('afterGetResponse');
-			if (status) {
-				$(state.dest[0]).html(data);
-				history.pushState(state, state.title, state.url);
-				document.title = state.title;
-			} else {
-				$(state.dest[0]).html("<h1>Failed to load page</h1>");
-				//$(state.dest[0]).html("<h1>Failed to load page</h1>"+"<br />"+JSON.stringify(data));
-			}
-		}
-		function makeRequest(state) {
-			$AppRequest.get(state.url, 'pid='+state.dest[1],
-				function(status, data) {
-					afterGetResponse(status, data, state);
-				});
-		}
-		$(document).on('click', 'a[data-dest]', function (e) {
+		$(document).on("submit", "form.ajax-form", function(e) {
 			e.preventDefault();
-			console.log("+a");
-			var This = $(this),
-			url = This.attr("href"),
-			dest = This.attr("data-dest").split(':');
-			title = This.text()+' | '+$AppData.name();
-			state = {url:url, title:title, dest:dest,};
-			makeRequest(state);
+			$AppForm.ajaxSubmit(e, $(this));
 		});
 
-		window.addEventListener('popstate', function(e) {
-			console.log('+popstate');
-			console.log(JSON.stringify(state));
-			if (e.state !== null) {
-				makeRequest(e.state);
-			} else {
-				console.log("no history to load");
-				location.reload();
-				//window.history.go(-1);
+		$(document).on("click", ".app_vlist_exp_item > a", function(e) {
+			e.preventDefault();
+			$(this).parent().toggleClass("expanded");
+		});
+
+		$(document).on("click", function(e) {
+			//e.stopPropagation();
+			$(".ui-dropcontent").hide();
+		});
+		$(document).on("click", ".ui-dropbtn", function(e) {
+			e.stopPropagation();
+			$(e.target).parents(".ui-dropdown").find(".ui-dropcontent").toggle();
+		});
+
+		$(document).on("click", ".ui-hovermenu", function(e) {
+			console.log("hovermenu clicked");
+			e.preventDefault();
+			e.stopPropagation();
+		});
+	}
+};
+
+class History {
+	constructor()
+	{
+		init();
+	}
+	init()
+	{
+		console.log('+History::init');
+		if (window.history && window.history.pushState) {
+			function afterGetResponse(status, data, state) {
+				console.log('afterGetResponse');
+				if (status) {
+					$(state.dest[0]).html(data);
+					history.pushState(state, state.title, state.url);
+					document.title = state.title;
+				} else {
+					$(state.dest[0]).html("<h1>Failed to load page</h1>");
+					//$(state.dest[0]).html("<h1>Failed to load page</h1>"+"<br />"+JSON.stringify(data));
+				}
+			}
+			function makeRequest(state) {
+				$AppRequest.get(state.url, 'pid='+state.dest[1],
+					function(status, data) {
+						afterGetResponse(status, data, state);
+					});
+			}
+			$(document).on('click', 'a[data-dest]', function (e) {
+				e.preventDefault();
+				console.log("+a");
+				var This = $(this),
+				url = This.attr("href"),
+				dest = This.attr("data-dest").split(':');
+				title = This.text()+' | '+$AppData.name();
+				state = {url:url, title:title, dest:dest,};
+				makeRequest(state);
+			});
+
+			window.addEventListener('popstate', function(e) {
+				console.log('+popstate');
+				console.log(JSON.stringify(e.state));
+				if (e.state !== null) {
+					makeRequest(e.state);
+				} else {
+					console.log("no history to load");
+					location.reload();
+					//window.history.go(-1);
+				}
+			});
+		}
+	}
+}
+
+class Search {
+	constructor()
+	{
+	}
+	init()
+	{
+		console.log('+Search::init');
+		$("#app_search_input").suggestions({
+			minLength: 2,
+			source: function(key, resp) {
+				$AppRequest.post('/search/offer/', {'key': key}, function(status, json){
+					if (true == status) {
+						resp(json.data);
+					} else {
+						console.log('data : '+JSON.stringify(json.data));
+					}
+				});
+			},
+			itemCreate: function(item) {
+				var uiItem = '<li>'
+				+ '<div class="wt-search-item">'
+				+ '<a style="display:block; padding: 0.5em;" href="'+item.url+'">'+item.name+'</a>'
+				+ '</div>'
+				+ '</li>';
+				return uiItem;
+			},
+			onItemSelect: function($input, item) {
+				$input.val(item.name);
+			},
+			onEnter: function($input, item) {
+				console.log('+onEnter');
+				if (item) {
+					location.href = item.url;
+				}
 			}
 		});
 	}
 }
 
-function initSearch()
-{
-	console.log('+initSearch');
-	$("#app_search_input").suggestions({
-		minLength: 2,
-		source: function(key, resp) {
-			$AppRequest.post('/search/offer/', {'key': key}, function(status, json){
-				if (true == status) {
-					resp(json.data);
-				} else {
-					console.log('data : '+JSON.stringify(json.data));
-				}
-			});
-		},
-		itemCreate: function(item) {
-			var uiItem = '<li>'
-			+ '<div class="wt-search-item">'
-			+ '<a style="display:block; padding: 0.5em;" href="'+item.url+'">'+item.name+'</a>'
-			+ '</div>'
-			+ '</li>';
-			return uiItem;
-		},
-		onItemSelect: function($input, item) {
-			$input.val(item.name);
-		},
-		onEnter: function($input, item) {
-			console.log('+onEnter');
-			if (item) {
-				location.href = item.url;
-			}
-		}
-	});
-}
 
 function navClicked()
 {
@@ -156,12 +170,20 @@ function navClicked()
 	}
 }
 
-var $AppForm = {
-	ajaxSubmit: function(e, $form) {
-		console.log("+$AppFrom::ajaxSubmit");
+class Form()
+{
+	constructor(sel)
+	{
+		this.$form = $(sel);
+	}
+	
+	ajaxSubmit(e) {
+		console.log("+From::ajaxSubmit");
+		var $form = this.$form;
 		e.$form = $form;
 		var action = $form.attr('action');
-		console.log('action : '+ action);
+		if (!action) action = window.location.href;
+		console.log('action : ' + action);
 
 		var handler = $form.data('data-handler');
 		handler = (handler)? handler: window[$form.attr('data-delegate')];
@@ -181,13 +203,13 @@ var $AppForm = {
 			e.resp = json;
 			handler.after(e);
 		});
-	},
+	}
 	before: function(e) {
-		console.log('+$AppForm::before');
+		console.log('+Form::before');
 		return true;
-	},
+	}
 	after: function(e) {
-		console.log('+$AppForm::after');
+		console.log('+Form::after');
 		if (e.status) {
 			$AppNoti.info({title:"Successful", text:e.resp.message});
 		} else {
@@ -199,7 +221,8 @@ var $AppForm = {
 			$AppNoti.error({title:e.resp.message, text:errors});
 		}
 	}
-};
+}
+
 
 var $AppFormUtils = {
 	setValByName: function($form, name, val) {
@@ -500,11 +523,19 @@ var $AppData = {
 				localStorage.setItem(key, val);
 		},
 	},
-	csrf: function() {
+	csrfToken: function() {
 		var $mt = $('meta[name=csrf-token]');
 		var data = {};
 		data[$mt.attr("key")] = $mt.attr("content");
 		return data;
+	},
+	csrfField: function () {
+		var csrfField = "";
+		var token = this.csrfToken();
+		for (key in token) {
+			csrfField = '<input type="hidden" name='+key+' value='+token[key]+' />';
+		}
+		return csrfField;
 	},
 	name: function() {
 		if (!this._name) {

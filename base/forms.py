@@ -65,9 +65,14 @@ class Form(object):
 
     # short hand for all the operations
     def process(self, request):
-        if (self.parse(request) and self.clean() and self.validate()):
-            return self.commit()
-        return False
+        try:
+            if (self.parse(request) and self.clean() and self.validate()):
+                return self.commit()
+            return False
+        except Exception as ex:
+            logging.error(ex)
+        return None
+
 
 
     # parse the json request.

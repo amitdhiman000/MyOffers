@@ -156,6 +156,14 @@ def App_UserFilePath(user, filename):
     return filepath
 
 
+# ## return file path relative to media_root
+def App_TempFilePath(filename):
+    filepath = os.path.join(settings.MEDIA_TMP_FILES_DIR_NAME,
+                            '{0}_{1}'.format(timezone.now(), filename))
+    print(filepath)
+    return filepath
+
+
 # ## older way of saving uploaded file
 def App_SaveUploadedFileOld(request, f):
     directory = App_UserFilesDir(request.user)
@@ -240,3 +248,11 @@ def App_Render(request, file, data={'title': settings.APP_NAME}):
     base_tpl, file = App_Template(request, file)
     data.update({'base_template': base_tpl})
     return render(request, file, data)
+
+
+def App_Response(data=''):
+    typed = type(data)
+    if typed == list or typed == dict:
+        return JsonResponse(data)
+    else:
+        return HttpResponse(data)

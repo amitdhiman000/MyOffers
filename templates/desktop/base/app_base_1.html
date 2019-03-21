@@ -10,11 +10,16 @@
 		<meta name="csrf-token" key="csrfmiddlewaretoken" content="{{csrf_token}}" />
 		<meta name="app-name" content="{% includesettings 'SITE_NAME' %}" />
 
+		<link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/favicon/apple-touch-icon.png' %}">
+		<link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon/favicon-32x32.png' %}">
+		<link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon/favicon-16x16.png' %}">
+		<link rel="manifest" href="{% static 'images/favicon/site.webmanifest' %}">
+
 		<script type="text/javascript" src="{% static 'libs/jquery/jquery-3.3.1.min.js' %}" ></script>
-		<script type="text/javascript" src="{% static 'js/d_ui_script.js' %}" ></script>
+		<script type="text/javascript" src="{% static 'desktop/js/ui_script.js' %}" ></script>
 
 		<style type="text/css">
-			{% includestatic 'css/d_ui_styles.css' %}
+			{% includestatic 'desktop/css/ui_styles.css' %}
 			#app_header { position: fixed; width: 100%; max-height: 55px; border-bottom: 1px solid #ccd; background: #f9f9f9; z-index: 98; box-shadow: 0 0 4px rgba(0,0,0,.14), 0 4px 8px rgba(0,0,0,.28); }
 			#app_body { position: absolute; top: 60px; width: 100%; margin-bottom: 30px; }
 			#app_footer { position: fixed; width: 100%; height: 30px; left: 0; bottom: 0; background: #f9f9f9; border-top: 1px solid #ccd; box-shadow: 0 0 4px rgba(0,0,0,.14), 0 4px 8px rgba(0,0,0,.28); }
@@ -51,12 +56,12 @@
 			.app_checkbox > input[type="checkbox"] { position: absolute; width: inherit; height: inherit; opacity: 0; }
 			.app_checkbox > input[type="checkbox"] + div {
 				position: absolute; width: inherit; height: inherit;  pointer-events: none;
-				background: url({% static "images/svg/checkbox_unchecked_24_1.svg" %}) no-repeat;
+				background: url("{% static 'images/svg/checkbox_unchecked_24_1.svg' %}") no-repeat;
 				background-size: cover;
 			}
 			.app_checkbox > input[type="checkbox"]:checked + div {
 				width: inherit; height: inherit;
-				background: url({% static "images/svg/checkbox_checked_24_1.svg" %}) no-repeat;
+				background: url("{% static 'images/svg/checkbox_checked_24_1.svg' %}") no-repeat;
 				background-size: cover;
 			}
 		</style>

@@ -1,9 +1,8 @@
 from django.conf import settings
 from django.db import models
-from django.utils import timezone
+from base.models import (CRUDModel)
 
-from user.models import User
-from base.apputil import App_UserFilePath
+from base.apputil import (App_UserFilePath, App_TempFilePath)
 ## debug
 import logging
 
@@ -12,12 +11,13 @@ def file_upload_path(inst, filename):
 	return App_UserFilePath(inst.fk_user, filename)
 
 
-class FileUpload(models.Model):
-	id = models.BigAutoField(primary_key=True)
+def temp_upload_path(inst, filename):
+	return App_TempFilePath(filename)
+
+class FileUpload(CRUDModel):
 	file = models.FileField(upload_to=file_upload_path)
 	used = models.IntegerField(default=0)
-	created_at = models.DateTimeField(default=timezone.now)
-	fk_user = models.ForeignKey(User, on_delete=models.CASCADE)
+	#fk_user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 	@classmethod
@@ -27,9 +27,9 @@ class FileUpload(models.Model):
 
 
 	@classmethod
-	def remove(klass, file_id, user):
+	def remove(klass, values):
 		try:
-			obj = klass.objects.get(id=file_id, fk_user=user)
+			obj = klass.objects.get(**values)
 			if obj.used == 0:
 				# delete the file from disk
 				obj.file.delete()
@@ -41,9 +41,9 @@ class FileUpload(models.Model):
 
 
 	@classmethod
-	def fetch_file(klass, file_id, user):
+	def fetch_file(klass, values):
 		try:
-			obj = klass.objects.get(id=file_id, fk_user=user)
+			obj = klass.objects.get(**values)
 			return obj
 		except Exception as ex:
 			logging.error(ex)
@@ -51,9 +51,43 @@ class FileUpload(models.Model):
 
 
 	@classmethod
-	def mark_used(klass, file_id, user):
+	def mark_used(klass, **values):
 		try:
-			obj = klass.objects.get(id=file_id, fk_user=user)
+			obj = klass.objects.get(**values)
+			obj.used = 1
+			obj.save()
+			return True
+		except Exception as ex:
+			logging.error(ex)
+			return False
+
+
+class ImageUpload(CRUDModel):
+	file = models.FileField(upload_to=temp_upload_path)
+	used = models.IntegerField(default=0)
+
+	@classmethod
+	def create(klass, values):
+		obj = klass.objects.create(**values)
+		return obj
+
+	@classmethod
+	def remove(klass, values):
+		try:
+			obj = klass.objects.get(**values)
+			if obj.used == 0:
+				# delete the file from disk
+				obj.file.delete()
+			obj.delete()
+			return True
+		except Exception as ex:
+			logging.error(ex)
+			return False
+
+	@classmethod
+	def mark_used(klass, values):
+		try:
+			obj = klass.objects.get(**values)
 			obj.used = 1
 			obj.save()
 			return True

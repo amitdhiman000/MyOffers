@@ -6,3 +6,6 @@
 
 # development files
 staticfiles/static_root
+
+# log files
+logs/*

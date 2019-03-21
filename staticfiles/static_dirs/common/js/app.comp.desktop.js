@@ -6,7 +6,7 @@ var App = {
     },
     Bool: function(o) {
         this.Type(o) !== 'undefined';
-    }
+    },
     Select: function(exp) {
         return document.querySelectorAll(exp);
     },
