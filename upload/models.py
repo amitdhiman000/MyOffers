@@ -15,7 +15,7 @@ def temp_upload_path(inst, filename):
 	return App_TempFilePath(filename)
 
 class FileUpload(CRUDModel):
-	file = models.FileField(upload_to=file_upload_path)
+	file = models.FileField(upload_to=temp_upload_path)
 	used = models.IntegerField(default=0)
 	#fk_user = models.ForeignKey(User, on_delete=models.CASCADE)
 

@@ -40,7 +40,7 @@ class UserRegForm(CreateForm):
         if not is_valid:
             return is_valid
         email = self.model_value('email')
-        if User.check_email(email):
+        if User.fetch({'email': email}):
             self.set_error('email', 'Account already exist with this Email Id')
             return False
         return True
@@ -93,7 +93,7 @@ class UserSignInForm(Form):
         passw = model_values['password']
         print(email, passw)
         user = backends.auth_user(email, passw)
-        if (user is not None):
+        if user:
             backends.login(self.request(), user)
         else:
             self.set_error('email', 'Email or password is wrong!!')

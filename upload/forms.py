@@ -8,15 +8,14 @@ from base.forms import CreateForm
 @background(schedule=1*60)
 def clear_file_upload(user_id, upload_id):
     print('clear_file_upload :: start')
-    #user = User.fetch_by_id(user_id)
-    #FileUpload.remove(upload_id, user)
+    FileUpload.remove({'id':upload_id, 'fk_user': user})
     print('clear_file_upload :: done')
     # user.email_user('Here is a notification', 'You have been notified')
 
 
 # run after 60 seconds
 @background(schedule=1*60)
-def clear_temp_image(upload_id):
+def clear_temp_image(user_id, upload_id):
     print('clear_file_upload :: start')
     ImageUpload.remove({'id':upload_id})
     print('clear_file_upload :: done')
@@ -45,15 +44,15 @@ class FileUploadForm(CreateForm):
 
     def validate(self):
         super().validate()
-        self.add_model_value('fk_user', self.request().user)
+        #self.add_model_value('fk_user', self.request().user)
         return self.valid()
 
     def commit(self):
         print(self.model_values())
         upload = FileUpload.create(self.model_values())
-        if upload is not None:
+        if upload:
             pass
-            # clear_file_upload(self.m_user.id, upload.id)
+            # clear_file_upload(self.request().user.id, upload.id)
         else:
             self.set_error('upload', 'File save server error, try again')
         return upload
@@ -86,7 +85,7 @@ class ImageUploadForm(CreateForm):
     
         if uploads:
             pass
-            # clear_file_upload(self.m_user.id, upload.id)
+            # clear_file_upload(self.request().user.id, upload.id)
         else:
             self.set_error('upload', 'File save server error, try again')
         return uploads

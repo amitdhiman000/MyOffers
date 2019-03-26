@@ -1159,6 +1159,10 @@ function wfileupload($Inst, opts)
 		_uploadFile: function(lThis, file) {
 			console.log('+_uploadFile');
 			var fdata = new FormData();
+			var csrf = $AppData.csrfToken();
+			for (key in csrf) {
+				fdata.append(key, csrf[key]);
+			}
 			fdata.append('image', file);
 			var fileName = file.name;
 			//(fileName.length > 20 && (fileName = fileName.substring(0, 20)));
@@ -1181,11 +1185,11 @@ function wfileupload($Inst, opts)
 			handler.complete = function(status, jsonObj) {
 				if (status) {
 					console.log("upload finished");
-					var id = jsonObj.data.upload_id;
-					kd._uploads.push(id);
+					var upload_ids = jsonObj.data.upload_ids;
+					kd._uploads.push(upload_ids);
 					kd._hidden.val(kd._uploads.toString());
 					uiBtn.data('request', null);
-					uiBtn.data('upload_id', id);
+					uiBtn.data('upload_ids', upload_ids);
 					uiBtn.text('Remove');
 					console.log('ids : '+kd._uploads.toString());
 				} else {
@@ -1193,7 +1197,7 @@ function wfileupload($Inst, opts)
 					uiItem.remove();
 				}
 			};
-			var request = $AppRequest.file('/upload/fileupload/', fdata, handler);
+			var request = $AppRequest.file('/upload/file/', fdata, handler);
 			uiBtn.data('request', request);
 		},
 		_cancel: function(e) {
