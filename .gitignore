@@ -7,5 +7,7 @@
 # development files
 staticfiles/static_root
 
+# ignore node_modules
+staticfiles/static_dirs/node/node_modules
 # log files
 logs/*
