@@ -1,15 +1,15 @@
-import {$} from '../../libs/jquery/jquery-3.3.1.min';
+import $ from 'jquery';
 
 export class UIToast {
 	private static _instance: UIToast = null;
-
-	constructor()
-	{}
-
+	
 	public static Instance()
 	{
 		return this._instance || (this._instance = new this());
 	}
+
+	constructor()
+	{}
 
 	show(text='Error', timeout=1800) : any {
 		$('.wt-toast').fadeIn({

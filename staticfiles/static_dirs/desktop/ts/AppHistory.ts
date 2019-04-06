@@ -1,11 +1,11 @@
-import {$} from '../../libs/jquery/jquery-3.3.1.min';
+import $ from 'jquery';
 import { HttpService } from './HttpService';
 import {App} from './App';
 
-export class History {
+export class AppHistory {
 	constructor()
 	{
-		console.log("+History");
+		console.log("+AppHistory");
 		this.init();
 	}
 
@@ -31,12 +31,12 @@ export class History {
 						afterGetResponse(status, data, state);
 					});
 			}
-			$(document).on('click', 'a[data-dest]', function (e) {
+			$(document).on('click', 'a[data-dest]', function (e: any) {
 				e.preventDefault();
 				console.log("+a");
 				let This = $(this);
 				let url:string = This.attr("href");
-				let dest:string = This.attr("data-dest").split(':');
+				let dest:string[] = This.attr("data-dest").split(':');
 				let title:string = This.text()+' | '+App.Instance().name();
 				let state:any = {url:url, title:title, dest:dest,};
 				makeRequest(state);

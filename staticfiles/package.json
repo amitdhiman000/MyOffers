@@ -207,6 +207,7 @@
 			"resolved": "https://registry.npmjs.org/@types/estree/-/estree-0.0.38.tgz",
 			"version": "0.0.38"
 		},
+		"@types/jquery": "^3.3.6",
 		"@types/node": {
 			"integrity": "sha512-Lg00egj78gM+4aE0Erw05cuDbvX9sLJbaaPwwRtdCdAMnIudqrQZ0oZX98Ek0yiSK/A2nubHgJfvII/rTT2Dwg==",
 			"resolved": "https://registry.npmjs.org/@types/node/-/node-11.12.0.tgz",

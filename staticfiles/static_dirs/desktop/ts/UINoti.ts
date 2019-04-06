@@ -1,4 +1,4 @@
-import {$} from '../../libs/jquery/jquery-3.3.1.min';
+import $ from 'jquery';
 import {ObjectUtil} from './AppUtils';
 
 export class UINoti {
@@ -11,7 +11,11 @@ export class UINoti {
     constructor(config: any)
     {
         ObjectUtil.Instance().merge(this, config);
-    }
+	}
+	
+	static make(config: any): UINoti {
+		return new this(config);
+	}
 
 	show() {
         let This = this;

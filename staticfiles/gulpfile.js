@@ -1,33 +1,38 @@
-var gulp = require("gulp");
-var browserify = require("browserify");
-var source = require('vinyl-source-stream');
-var tsify = require("tsify");
-var uglify = require('gulp-uglify');
-var terser = require('gulp-terser');
-var rename = require('gulp-rename');
-var sourcemaps = require('gulp-sourcemaps');
-var buffer = require('vinyl-buffer');
-var del = require('del');
+const path = require("path");
+const gulp = require("gulp");
+const browserify = require("browserify");
+const source = require('vinyl-source-stream');
+const tsify = require("tsify");
+const uglify = require('gulp-uglify');
+const terser = require('gulp-terser');
+const rename = require('gulp-rename');
+const sourcemaps = require('gulp-sourcemaps');
+const buffer = require('vinyl-buffer');
+const del = require('del');
 
 
-let input_config = {
-	tsConfigPath: '../desktop/ts/tsconfig.json',
-	srcFilesPath: ['../desktop/ts/'],
-	entryFilePath: '../desktop/ts/AppMain.ts'
+
+const baseDir = path.resolve(__dirname, "static_dirs/desktop");
+
+const input_config = {
+	tsConfigPath: path.resolve(baseDir, "ts/tsconfig.json"),
+	srcFilesPath: [path.resolve(baseDir, "ts")],
+	entryFilePath: path.resolve(baseDir, "ts/index.ts"),
 }
 
-var output_config_es5 = {
-	outputName: 'index.js',
-    outputPath: '../desktop/tsfy/es5'
+const output_config_es5 = {
+	outputName: "index.js",
+    outputPath: path.resolve(baseDir, "tsfy/es5"),
 };
 
-var output_config_es6 = {
-    outputName: 'index.js',
-    outputPath: '../desktop/tsfy/es6'
+const output_config_es6 = {
+    outputName: "index.js",
+    outputPath: path.resolve(baseDir, "tsfy/es6"),
 };
 
-gulp.task('clean', function () {
-    //return del([paths.tempDst]);
+gulp.task('clean', function (done) {
+    del([path.resolve(input_config.srcFilesPath, "/*.d.ts")]);
+    done();
 });
 
 
@@ -71,7 +76,7 @@ gulp.task("build_es6", function (done) {
     done();
 });
 
-gulp.task("build", gulp.parallel("build_es5", "build_es6"), function(done) { done(); });
+gulp.task("build", gulp.parallel("clean", "build_es5", "build_es6"), function(done) { done(); });
 
 gulp.task("default", gulp.series("build"));
 

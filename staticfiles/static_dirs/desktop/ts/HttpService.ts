@@ -1,5 +1,6 @@
-import {$} from '../../libs/jquery/jquery-3.3.1.min';
-import {UIToast} from './UIToast'
+import $ from 'jquery';
+import {UIToast} from './UIToast';
+import {ObjectUtil} from './AppUtils';
 
 
 export class HttpResponseHandler  {
@@ -7,61 +8,63 @@ export class HttpResponseHandler  {
 	progress_dn = function(p: number): any { console.log('default_progress_dn');  };
     complete = function(s: any, d: any): any { console.log('default_complete');  };
     constructor(handlers: any) {
-
+		ObjectUtil.Instance().merge(this, handlers);
     }
 };
-
+ 
 export class HttpService {
     _handle: any = null;
     constructor()
     {}
     
 	abort(): any {
-		this._handle.abort();
+		if (this._handle) {
+			this._handle.abort();
+		}
     }
     
 	get(url: string, data: any, callback: any): any {
 		console.log('+get');
 		let options = {type:'GET', 'url': url, 'data': data};
-		let handler: HttpResponseHandler = new HttpResponseHandler({complete: callback});
+		let handler = new HttpResponseHandler({complete: callback});
 		console.log(handler);
-		return this._request(handler, options);
+		return this._request(options, handler);
     }
     
 	post(url: string, data: any, callback: any): any {
 		console.log("+post");
 		let options = {type:'POST', 'url': url, 'data': data};
-		let handler: HttpResponseHandler = new HttpResponseHandler({complete: callback});
+		let handler = new HttpResponseHandler({complete: callback});
 		console.log(handler);
-		return this._request(handler, options);
+		return this._request(options, handler);
     }
     
-	file(url: string, data: any, handler: any): any {
+	file(url: string, data: any, handler?: any): any {
 		console.log("+file");
 		let options = {type:'POST', 'url': url, 'data': data, processData: false, contentType: false};
-		return this._request(handler, options);
+		return this._request(options, handler);
     }
     
-	public request(handler: any, options: any): any {
+	public request(options: any, handler?: any): any {
 		console.log("+request");
-		return this._request(handler, options);
+		return this._request(options, handler);
     }
     
-	private _request(handler: any = HttpResponseHandler, options: any = {}): any {
+	private _request(options: any, handler: any = HttpResponseHandler): any {
 		let methods = {
 			dataType: 'text',
 			xhr: () => {
-				var xhr = $.ajaxSettings.xhr();
+				let xhr = $.ajaxSettings.xhr();
 				xhr.upload.onprogress = function(evt: any) {
 					if (evt.lengthComputable) {
-						var percent = 100 * parseInt(evt.loaded / evt.total);
-						handler.progress0(percent);
+						let percent:number = 100 * (evt.loaded / evt.total);
+						handler.progress_up(percent);
 					}
 				};
 				xhr.onprogress = function(evt: any) {
 					if (evt.lengthComputable) {
-						var percent = 100 * parseInt(evt.loaded / evt.total);
-						handler.progress1(percent);
+						let percent: number = 100 * (evt.loaded / evt.total);
+						handler.progress_dn(percent);
 					}
 				};
 				return xhr;
@@ -106,4 +109,4 @@ export class HttpService {
 		$.extend(options, methods);
 		this._handle = $.ajax(options);
 	}
-}
+};

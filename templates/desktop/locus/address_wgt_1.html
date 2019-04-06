@@ -1,7 +1,7 @@
 <script type="text/javascript">
 
-	var BeforeAddrSaveEvent = $AppUtil.new($AppEvent);
-	var AfterAddrSaveEvent = $AppUtil.new($AppEvent);
+	var BeforeAddrSaveEvent = new AppEventHandler();
+	var AfterAddrSaveEvent = new AppEventHandler();
 	var AddressFormHandler = {
 		before: function(e) {
 			console.log('+BeforeAdrReq');
@@ -13,15 +13,15 @@
 		}
 	};
 
-	var GoogleMap = $AppUtil.new($GoogleMap);
+	var googleMap = new GoogleMap(mapBox);
 	function initMap()
 	{
 		var mapBox = document.getElementById("gmap_box");
 		var mapInput = document.getElementById("gmap_search_input");
-		console.log(GoogleMap);
-		GoogleMap.init(mapBox);
-		GoogleMap.initPlaceSearch(mapInput);
-		GoogleMap.AddressFoundEvent.sub(OnAddressFound);
+		console.log(googleMap);
+		googleMap.attach(mapBox);
+		googleMap.initPlaceSearch(mapInput);
+		googleMap.AddressFoundEvent.sub(OnAddressFound);
 	}
 
 	function OnAddressFound(data)
@@ -53,7 +53,7 @@
 
 	function locateMe()
 	{
-		$AppGeo.locate(function(lt,lg) {
+		AppGeo.Instance().locate(function(lt,lg) {
 			GoogleMap.updateLoc(lt,lg);
 		});
 	}
@@ -103,5 +103,7 @@
 		</form>
 	</div>
 </div>
+<!--
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMz94217XzpYaxnQRagzgCwpy4dfBM1Ho&libraries=places&callback=initMap">
 </script>
+-->

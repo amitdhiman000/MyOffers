@@ -32,9 +32,10 @@
 		{
 			var $item = $(This).parents('.business_item');
 			var b_id = $item.attr('data-id');
-			var data = $AppData.csrf();
+			var data = AppUtil.Instanc().csrfToken();
 			data["B_id"] = b_id;
-			$AppRequest.post('/business/delete/', data, function(status, resp) {
+			var http = new HttpService();
+			http.post('/business/delete/', data, function(status, resp) {
 				if (status == true) {
 					$item.remove();
 				} else {
@@ -42,7 +43,8 @@
 					for (var err in resp.data) {
 						errors += resp.data[err] + '<br />';
 					}
-					$AppNoti.info({title:e.message, text:errors});
+					var noti = new UINoti({title:e.message, text:errors});
+					noti.show();
 				}
 			});
 		}
@@ -54,11 +56,12 @@
 
 			var $item = $(This).parents('.business_item');
 			var b_id = $item.attr('data-id');
-			var data = $AppData.csrf();
+			var data = AppUtil.Instanc().csrfToken();
 			data["B_id"] = b_id;
 			data["pid"] = 2;
 			$AppModal.show();
-			$AppRequest.get('/business/address/', data, function(status, resp) {
+			var http = new HttpService();
+			http.get('/business/address/', data, function(status, resp) {
 				if (true == status) {
 					$AppModal.update(resp);
 				} else {

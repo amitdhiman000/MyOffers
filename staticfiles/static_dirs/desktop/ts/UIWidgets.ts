@@ -1,5 +1,6 @@
-import {$} from '../../libs/jquery/jquery-3.3.1.min';
-import { ObjectUtil } from './AppUtils';
+import $ from 'jquery';
+import { AppUtil, ObjectUtil } from './AppUtils';
+import {HttpService, HttpResponseHandler} from './HttpService';
 
 
 var KEYS = {
@@ -15,25 +16,32 @@ var KEYS = {
 };
 
 export class UIOverlay {
-    _shown: boolean = false;
     $overlay: any = null;
     $closebtn: any = null;
     $body: any = null;
     $html: any = null;
     $html_def: any = null;
-    
+
+    _shown: boolean = false;
     _options_def: any = { closeBtn:true, closeOnEscape:true, closeOnClickOutside:true };
     _options: any = null;
 
-	init() {
-		this.$overlay = $('#wt-overlay');
+    private static _instance: UIOverlay = null;
+
+    public static Instance()
+    {
+        return this._instance || (this._instance = new this());
+    }
+
+    constructor() {
+        this.$overlay = $('#wt-overlay');
 		this.$closebtn = this.$overlay.find('.wt-closebtn');
 		this.$body = this.$overlay.find('.wt-overlay-body');
 		this.$html_def = $('<div style="width:80%; height:inherit; margin: 0 auto; background:#fff;" data-type="none"></div>');
 		this.$html = this.$html_def;
 		this.$closebtn.on('click', this, this._onclose);
 		this.$overlay.on('click', this, this._onclick);
-		this.$overlay.on('keyup', this, this._onkeyup);
+		this.$overlay.on('keyup', this, this._onKeyUp);
 		this._shown = false;
 		this._options_def = { closeBtn:true, closeOnEscape:true, closeOnClickOutside:true };
 		this._options = ObjectUtil.Instance().merge(this._options_def, {});
@@ -46,12 +54,12 @@ export class UIOverlay {
 		else
 			this.$closebtn.show();
     }
-    
+
 	shown() {
 		return this._shown;
     }
-    
-	show($html=this.$html_def, options={}) {
+
+	show($html=this.$html_def, options={}): this {
 		this._apply_options(options);
 		/* ordering matter for correct heights */
 		this.$overlay.show();
@@ -62,23 +70,23 @@ export class UIOverlay {
 		return this;
     }
 
-	hide() {
+	hide(): this {
 		this.$overlay.hide();
 		this._shown = false;
 		$('body').toggleClass('ui-noscroll', this._shown);
 		return this;
     }
 
-	update($html: any) {
+	update($html: any): this {
 		this.$html = $($html);
 		this.$body.html(this.$html.show());
-		var $scroll = this.$html.find(".wt-overlay-scroll");
+		let $scroll = this.$html.find(".wt-overlay-scroll");
 		if ($scroll.exists()) {
-			var h1 = this.$body.height();
-			var h2 = this.$html.height();
-			var h3 = $scroll.height();
+			let h1 = this.$body.height();
+			let h2 = this.$html.height();
+			let h3 = $scroll.height();
 			if (h1 < h2) {
-				var h4 = h3 - (h2 - h1);
+				let h4 = h3 - (h2 - h1);
 				console.log("h4 : "+h4);
 				$scroll.height(h4);
 			}
@@ -86,18 +94,18 @@ export class UIOverlay {
 		return this;
     }
 
-	clear() {
+	clear(): this {
 		this.update(this.$html_def);
 		return this;
     }
 
-	close(e: any) {
+	close() {
 		console.log("CLOSE OVERLAY");
 		this.$closebtn.click();
     }
 
-	_close(e: any) {
-		var $html = this.$html.hide();
+	_close() {
+		let $html = this.$html.hide();
 		if ($html.attr('data-type') == 'persist') {
 			setTimeout(function(){ $html.appendTo('body'); }, 100);
 		} else {
@@ -113,15 +121,15 @@ export class UIOverlay {
 
 	_onclick(e: any) {
 		console.log("ONCLICK OVERLAY");
-		var This = e.data;
+		let This = e.data;
 		if (This._options["closeOnClickOutside"] === true && $(e.target).parent().is(This.$overlay)) {
 			This._close();
 		}
     }
 
-	_onkeyup(e: any) {
+	_onKeyUp(e: any) {
 		console.log("ONKEYUP OVERLAY");
-		var This = e.data;
+		let This = e.data;
 		if (This._options["closeOnEscape"] === true && e.keyCode == KEYS.ESCAPE) {
 			This._close();
 		}
@@ -129,76 +137,68 @@ export class UIOverlay {
 }
 
 
-
 /* App Modal */
 export class UIModal extends UIOverlay {
+    show($html: any, options?: any): this {
+        return super.show($html, { closeOnClickOutside:true });
+    }
 
-	show($html: any) {
-		super.show($html, {closeOnClickOutside:true});
+    hide(): this {
+        return super.hide();
+    }
+
+    close() {
+        super.close();
     }
 };
 
 
+export class UIDialog {
+    show($html: any) {
+        UIOverlay.Instance().show($html);
+    }
+
+    hide() {
+        UIOverlay.Instance().hide();
+    }
+
+    close() {
+        UIOverlay.Instance().close();
+    }
+};
+
 
 export class UIOptionList {
-    _name: string = 'optionList';
+    _name: string = 'UIOptionList';
 	_count: number = 0;
 	_selectedIndex: number = 0;
-	_jsonItemsList: null;
+	_jsonItemsList: any = null;
 
     _config: any = { minLength: 1, delay: 0};
-    _overrides: any = {};
+    _overrides: any = { 'source': (key:string, respCB:any) => { console.log('implement source');},
+                        'itemCreate': (item: any) => { console.log('implement itemCreate'); },
+                        'onItemSelect': ($input: any, item: any) => { console.log('implement onItemSelect'); },
+                        'onEnter': ($input: any, item: any) => { console.log('implement onEnter'); },
+                    };
     _scrollTimer: any =  null;
 
     $_self: any = null;
 	$_list: any = null;
     $_selectedItem: any = null;
     
-    constructor($Inst: any, config: any, overrides: any) {
+    constructor($Inst: any, overrides: any, config: any) {
         console.log('+UIOptionList : '+$Inst.prop("tagName"));
         this.$_self = $Inst;
         $Inst.optionsList = this;
         /* merge the options */
-        for (let key in config) {
-            this._config[key] = config[key];
-        }
-        this._overrides = overrides;
-        this._create({});
-	}
-
-    _create(e: any) {
-        let This = this;
-        console.log('+_create['+This._name+']');
-        This.$_list = $('<ul class="wt-search-list wt-search-list-app" >');
-        This.$_list.css({width: This.$_self.css('width')});
-        This.$_list.on('mouseenter', 'li', This._onitemhover.bind(This));
-        This.$_list.on('click', 'li', This._onitemclick.bind(This));
-        This.$_list.on('scroll', This._onlistscroll.bind(This));
-        This.$_self.on("keyup", This._onkeyup.bind(This));
-        This.$_self.on("keypress", This._onkeypress.bind(This));
-        This.$_self.on("focus", This._onfocus.bind(This));
-        This.$_self.on("blur", This._onunfocus.bind(This));
-        This.$_self.after(This.$_list);
+        ObjectUtil.Instance().merge(this._config, config);
+        ObjectUtil.Instance().merge(this._overrides, overrides);
+        this._create();
     }
-
-    _destroy(e: any) {
-        this.$_list.remove();
-    }
-
-    _onfocus(e: any) {
-        console.log('+_onfocus');
-        this.$_list.show();
-    }
-
-    _onunfocus(e: any) {
-        this.$_list.hide();
-    }
-
+    
     source(key: string, respCB: any) {
         if (this._overrides.source)
             this._overrides.source(key, respCB);
-        else
-            console.log('implement source function');
     }
 
     itemCreate(item: any) {
@@ -210,19 +210,45 @@ export class UIOptionList {
     onItemSelect($input: any, item: any) {
         if (this._overrides.onItemSelect)
             this._overrides.onItemSelect($input, item);
-        else
-            console.log('implement onItemSelect function');
     }
 
     onEnter($input: any, item: any) {
         if (this._overrides.onEnter)
             this._overrides.onEnter($input, item);
-        else
-            console.log('implement onEnter function');
     }
 
-    _ondata(jsonItemsList: any) {
-        console.log('+_ondata');
+    /* private methods */
+    _create() {
+        let This = this;
+        console.log('+_create['+This._name+']');
+        This.$_list = $('<ul class="wt-search-list wt-search-list-app" >');
+        This.$_list.css({width: This.$_self.css('width')});
+        This.$_list.on('mouseenter', 'li', This._onItemHover.bind(This));
+        This.$_list.on('click', 'li', This._onItemClick.bind(This));
+        This.$_list.on('scroll', This._onListScroll.bind(This));
+        This.$_self.on("keyup", This._onKeyUp.bind(This));
+        This.$_self.on("keypress", This._onKeyPress.bind(This));
+        This.$_self.on("focus", This._onFocus.bind(This));
+        This.$_self.on("blur", This._onUnfocus.bind(This));
+        This.$_self.on('DOMNodeRemoved', This._destroy.bind(This));
+        This.$_self.after(This.$_list);
+    }
+
+    _destroy(e: any) {
+        this.$_list.remove();
+    }
+
+    _onFocus(e: any) {
+        console.log('+_onFocus');
+        this.$_list.show();
+    }
+
+    _onUnfocus(e: any) {
+        this.$_list.hide();
+    }
+
+    _onData(jsonItemsList: any) {
+        console.log('+_onData');
         let This = this;
         This.$_list.html('');
         This._jsonItemsList = jsonItemsList;
@@ -270,23 +296,23 @@ export class UIOptionList {
         }
     }
 
-    _onlistscroll(e: any) {
+    _onListScroll(e: any) {
         let This = this;
         This._scrollTimer = setTimeout(function() {
             This._scrollTimer = null;
         }, 300);
     }
 
-    _onitemhover(e: any) {
+    _onItemHover(e: any) {
         let This = this;
-        console.log('+_onitemhover');
+        console.log('+_onItemHover');
         if (!This._scrollTimer) {
             This._setItemSelected($(e.target).index());
         }
     }
 
-    _onitemclick(e: any) {
-        console.log('+_onitemclick');
+    _onItemClick(e: any) {
+        console.log('+_onItemClick');
         this._setItemSelected($(e.target).index());
     }
 
@@ -296,18 +322,18 @@ export class UIOptionList {
         }
     }
 
-    _onkeypress(e: any) {
-        console.log('+_onkeypress : '+ e.keyCode);
+    _onKeyPress(e: any) {
+        console.log('+_onKeyPress : '+ e.keyCode);
         if (e.keyCode === KEYS.ENTER) {
             e.preventDefault();
-            var item = (this._count > 0 && this._jsonItemsList)? this._jsonItemsList[this._selectedIndex]: null;
+            let item = (this._count > 0 && this._jsonItemsList)? this._jsonItemsList[this._selectedIndex]: null;
             this.onEnter(this.$_self, item);
-            this._onunfocus(e);
+            this._onUnfocus(e);
         }
     }
 
-    _onkeyup(e: any) {
-        console.log('+_onkeyup');
+    _onKeyUp(e: any) {
+        console.log('+_onKeyUp');
         let This = this;
         let handled = true;
         switch(e.keyCode) {
@@ -321,7 +347,7 @@ export class UIOptionList {
             break;
         case KEYS.LEFT:
         case KEYS.RIGHT:
-            This._onfocus({});
+            This._onFocus({});
             break;
         default:
             console.log('keycode : '+e.keyCode);
@@ -332,7 +358,208 @@ export class UIOptionList {
             e.preventDefault();
             return;
         }
-        var key = This.$_self.val();
-        (key.length >= This._config.minLength && This.source(key, This._ondata));
+        let key = This.$_self.val();
+        (key.length >= This._config.minLength && This.source(key, This._onData.bind(This)));
+    }
+};
+
+
+export class UIProgressBar {
+    $_ui: any = null;
+    constructor(title: string, btnText: string) {
+        this.$_ui = `<div class="wt-progress-outer" >
+                    <div class="wt-progress-inner">
+                    <div class="wt-progress-filename">${title}</div>
+                    <div class="wt-progress-bar">&nbsp;0%</div></div>
+                    <div class="wt-progress-control">
+                    <button class="ui-btn">${btnText}</button>
+                    </div></div>`;
+    }
+
+    show($parent: any) {
+        $parent.append(this.$_ui);
+        this.$_ui.show();
+    }
+};
+
+export class UIFileUpload {
+
+    _name: string = 'UIFileUpload';
+	_uploads: any = [];
+    
+    $_hidden: any = null;
+    $_ui: any =  null;
+    $_self: any = null;
+    
+    _overrides: any = {};
+    _config: any = {maxFiles: 1, mimeType: 'image', maxSize: 1024,};
+
+    constructor($Inst: any, overrides: any, config: any) {
+        console.log('+UIFileUpload : '+$Inst.prop('tagName'));
+        ObjectUtil.Instance().merge(this._overrides, overrides);
+        ObjectUtil.Instance().merge(this._config, config);
+        this.$_self = $Inst;
+        this._create();
+    }
+
+    _create() {
+        let This = this;
+        console.log('+_create['+This._name+']');
+        This.$_ui = $('<div class="wt-progress-div" ></div>');
+        This.$_ui.css({width: This.$_self.css('width')});
+        This.$_hidden = $('<input type="hidden" name="files" value="" >');
+        This.$_self.before(This.$_hidden);
+        This.$_self.after(This.$_ui);
+        This.$_self.on('change', This._upload.bind(This));
+        This.$_self.on('DOMNodeRemoved', This._destroy.bind(This));
+    }
+        
+    _destroy(e: any) {
+        console.log('+_destroy['+this._name+']');
+        this.$_ui.remove();
+        this.$_hidden.remove();
+    }
+
+    _upload(e: any) {
+        console.log('+_upload');
+        e.stopPropagation();
+        e.preventDefault();
+        let This = this;
+        let FileField = e.target;
+        let Files = $(FileField)[0].files;
+        let count = This.$_ui.find('.wt-progress-outer').length;
+        console.log('count : '+count);
+        let rem = This._config.maxFiles - count;
+        if (rem == 0) {
+            FileField.value = '';
+            console.log('Already attached to max limit');
+            return;
+        }
+
+        if (rem > Files.length) {
+            rem = Files.length;
+        }
+        for (let i = 0; i < rem; ++i) {
+            console.log('name : '+ Files[i].name + ' data : '+Files[i]);
+            This._uploadFile(Files[i]);
+        }
+    }
+    
+    _uploadFile(file: any) {
+        console.log('+_uploadFile');
+        let This = this;
+        let formData = new FormData();
+        let fileName: string = file.name;
+        let csrf: any = AppUtil.Instance().csrfToken();
+        for (let key in csrf) {
+            formData.append(key, csrf[key]);
+        }
+        formData.append('image', file);
+        //(fileName.length > 20 && (fileName = fileName.substring(0, 20)));
+
+        let $item = $(`<div class="wt-progress-outer" >'
+                        <div class="wt-progress-inner">'
+                        <div class="wt-progress-filename">${fileName}</div>'
+                        <div class="wt-progress-bar">&nbsp;0%</div></div>'
+                        <div class="wt-progress-control">'
+                        <button class="ui-btn">Cancel</button>'
+                        </div></div>`);
+        let $cancelBtn = $item.find('.ui-btn');
+        $cancelBtn.on('click', This._cancel.bind(This));
+        This.$_ui.append($item);
+
+        const callbacks = {
+            progress_up :(percent: number) => {
+                This._progress(percent);
+            },
+            complete: (status: boolean, jsonObj: any) => {
+                if (status) {
+                    console.log("upload finished");
+                    let upload_ids = jsonObj.data.upload_ids;
+                    This._uploads.push(upload_ids);
+                    This.$_hidden.val(This._uploads.toString());
+                    $cancelBtn.data('request', null);
+                    $cancelBtn.data('upload_ids', upload_ids);
+                    $cancelBtn.text('Remove');
+                    console.log('ids : '+This._uploads.toString());
+                } else {
+                    console.log('file upload failed reason : '+ JSON.stringify(jsonObj));
+                    $cancelBtn.remove();
+                }
+            }
+        };
+        let handler = new HttpResponseHandler(callbacks);
+        let http = new HttpService();
+        http.file('/upload/file/', formData, handler);
+        $cancelBtn.data('request', http);
+    }
+    
+    _cancel(e: any) {
+        console.log('+_cancel');
+        e.preventDefault();
+        let This = this;
+        let $item = $(e.target);
+        console.log($item.text());
+        if ($item.text() == 'Cancel') {
+            let http: HttpService = $item.data('request');
+            http.abort();
+            console.log('aborted');
+        } else {
+            let id = $item.data('upload_id');
+            let index = This._uploads.indexOf(id);
+            This._uploads.splice(index, 1);
+            This.$_hidden.val(This._uploads);
+            console.log('ids : '+This._uploads.toString());
+        }
+        $item.parents('.wt-progress-outer').remove();
+    }
+    
+    _progress(progress: number) {
+        console.log('progress : '+progress+'%');
+        let $pgbar = this.$_ui.find('.wt-progress-bar');
+        $pgbar.css({width: progress+'%'});
+        $pgbar.html(progress+'%');
     }
 }
+
+
+export class UITabs {
+
+    _name: string = 'UITabs';
+    _total: number = 2;
+    _active: any = null;
+    _activeIndex: number = 0;
+    _overrides: any = {'beforeLoad': (num: number) => { console.log("implement beforeLoad()"); },
+                        'afterLoad': (num: number) => { console.log("implement afterLoad()"); },
+                        'source': (num: number) => { console.log("implement source()"); }
+                    };
+    $_self: any = null;
+
+    constructor($Inst: any, overrides: any) {
+        console.log('+UITabs : '+$Inst.prop('tagName'));
+        this.$_self = $Inst;
+        this._create();
+    }
+	
+    _create() {
+        let This = this;
+        console.log('+_create['+This._name+']');
+        let $elems = This.$_self.find(".wt-switchtab-nav > li > a[rel]");
+        This._total = $elems.length;
+        console.log("Tabs : "+ This._total);
+        This._active = $elems.eq(This._activeIndex);
+        let rel = This._active.prop("rel");
+        This.$_self.find(rel).show();
+        $elems.on("click", function(e: any) {
+            console.log("+tabClicked");
+            e.preventDefault();
+            let rel = This._active.prop("rel");
+            This._active.removeClass("wt-switchtab-a");
+            This.$_self.find(rel).hide();
+            This._active = $(this);
+            rel = This._active.prop("rel");
+            This._active.prop("class", "wt-switchtab-a");
+            This.$_self.find(rel).show();
+        });
+    }
+};
