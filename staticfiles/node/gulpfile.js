@@ -12,7 +12,7 @@ const del = require('del');
 
 
 
-const baseDir = path.resolve(__dirname, "static_dirs/desktop");
+const baseDir = path.resolve(__dirname, "../static_dirs/desktop");
 
 const input_config = {
 	tsConfigPath: path.resolve(baseDir, "ts/tsconfig.json"),

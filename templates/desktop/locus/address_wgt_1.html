@@ -1,7 +1,7 @@
 <script type="text/javascript">
 
-	var BeforeAddrSaveEvent = new AppEventHandler();
-	var AfterAddrSaveEvent = new AppEventHandler();
+	var BeforeAddrSaveEvent = new AppLib.AppEventHandler();
+	var AfterAddrSaveEvent = new AppLib.AppEventHandler();
 	var AddressFormHandler = {
 		before: function(e) {
 			console.log('+BeforeAdrReq');
@@ -13,7 +13,7 @@
 		}
 	};
 
-	var googleMap = new GoogleMap(mapBox);
+	var googleMap = new AppLib.GoogleMap();
 	function initMap()
 	{
 		var mapBox = document.getElementById("gmap_box");
@@ -48,13 +48,13 @@
 			'A_pincode': pincode,
 			'A_location': loc,
 		};
-		$AppFormUtils.fillByName($('#locus_addr_form'), vals);
+		AppLib.FormUtil.fillByName($('#locus_addr_form'), vals);
 	}
 
 	function locateMe()
 	{
-		AppGeo.Instance().locate(function(lt,lg) {
-			GoogleMap.updateLoc(lt,lg);
+		AppLib.AppGeo.Instance().locate(function(lt,lg) {
+			googleMap.updateLoc(lt,lg);
 		});
 	}
 </script>

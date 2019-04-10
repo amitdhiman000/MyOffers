@@ -1,12 +1,12 @@
 {
   "noImplicitAny": true,
   "compilerOptions": {
-    "baseUrl": "../../../",
+    "baseUrl": "../../node",
     "paths": {
       "jquery": ["node_modules/jquery/dist/jquery"]
     },
     "typeRoots": [
-      "node_modules/@types"
+      "../../node/node_modules/@types"
     ],
     "module": "commonjs",
     "target": "es5",

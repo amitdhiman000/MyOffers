@@ -11,8 +11,7 @@ staticfiles/static_root
 *.d.ts
 
 # ignore node_modules
-staticfiles/node_modules
-staticfiles/static_dirs/node/node_modules
+staticfiles/node/node_modules
 
 # log files
 logs/*

@@ -57,7 +57,7 @@ def locus_view0(request):
 
 
 @App_AdminRequired
-def locus_view(request, query):
+def locus_view(request, query=''):
     print('query : '+query)
     params = query.rstrip('/').split('/')
     length = len(params)
@@ -91,7 +91,7 @@ def locus_add_view0(request):
 
 
 @App_AdminRequired
-def locus_add_view(request, query):
+def locus_add_view(request, query=''):
     print('query : '+query)
     params = query.rstrip('/').split('/')
     length = len(params)
@@ -109,7 +109,7 @@ def locus_add_view(request, query):
 
 
 @App_AdminRequired
-def locus_auth(request, query):
+def locus_auth(request, query=''):
     print('query : '+query)
     params = query.rstrip('/').split('/')
     length = len(params)
@@ -130,7 +130,7 @@ def locus_auth(request, query):
 
 
 @App_AdminRequired
-def category_view(request, query):
+def category_view(request, query=''):
     print('query : '+query)
     params = query.rstrip('/').split('/')
     length = len(params)

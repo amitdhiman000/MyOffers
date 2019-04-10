@@ -203,9 +203,9 @@ export class AppGeo {
 	}
 };
 
-export class Cookie {
+export class AppCookie {
 
-    private static _instance: Cookie = null;
+    private static _instance: AppCookie = null;
 
     public static Instance()
     {
@@ -241,8 +241,8 @@ export class Cookie {
 };
 
 
-export class Storage {
-    private static _instance: Storage = null;
+export class AppStorage {
+    private static _instance: AppStorage = null;
 
     public static Instance()
     {

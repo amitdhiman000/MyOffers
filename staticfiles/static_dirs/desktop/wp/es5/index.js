@@ -1,3 +1,4 @@
+var AppLib =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -81,25 +82,25 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./static_dirs/desktop/ts/index.ts");
+/******/ 	return __webpack_require__(__webpack_require__.s = "../desktop/ts/index.ts");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./static_dirs/desktop/ts/App.ts":
-/*!***************************************!*\
-  !*** ./static_dirs/desktop/ts/App.ts ***!
-  \***************************************/
+/***/ "../desktop/ts/App.ts":
+/*!****************************!*\
+  !*** ../desktop/ts/App.ts ***!
+  \****************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function($) {
 Object.defineProperty(exports, "__esModule", { value: true });
-var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "./static_dirs/desktop/ts/AppUtils.ts");
-var AppHistory_1 = __webpack_require__(/*! ./AppHistory */ "./static_dirs/desktop/ts/AppHistory.ts");
-var AppComponents_1 = __webpack_require__(/*! ./AppComponents */ "./static_dirs/desktop/ts/AppComponents.ts");
-var AppForm_1 = __webpack_require__(/*! ./AppForm */ "./static_dirs/desktop/ts/AppForm.ts");
+var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../desktop/ts/AppUtils.ts");
+var AppHistory_1 = __webpack_require__(/*! ./AppHistory */ "../desktop/ts/AppHistory.ts");
+var AppComponents_1 = __webpack_require__(/*! ./AppComponents */ "../desktop/ts/AppComponents.ts");
+var AppForm_1 = __webpack_require__(/*! ./AppForm */ "../desktop/ts/AppForm.ts");
 var App = /** @class */ (function () {
     function App() {
         this._history = null;
@@ -151,10 +152,10 @@ exports.App = App;
 
 /***/ }),
 
-/***/ "./static_dirs/desktop/ts/AppComponents.ts":
-/*!*************************************************!*\
-  !*** ./static_dirs/desktop/ts/AppComponents.ts ***!
-  \*************************************************/
+/***/ "../desktop/ts/AppComponents.ts":
+/*!**************************************!*\
+  !*** ../desktop/ts/AppComponents.ts ***!
+  \**************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -165,8 +166,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "jquery"));
-var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "./static_dirs/desktop/ts/AppUtils.ts");
-var HttpService_1 = __webpack_require__(/*! ./HttpService */ "./static_dirs/desktop/ts/HttpService.ts");
+var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../desktop/ts/AppUtils.ts");
+var HttpService_1 = __webpack_require__(/*! ./HttpService */ "../desktop/ts/HttpService.ts");
 var AppNavbar = /** @class */ (function () {
     function AppNavbar(config) {
         this._config = { 'navbar_btn': '#navbar_btn' };
@@ -248,19 +249,19 @@ exports.AppHeader = AppHeader;
 
 /***/ }),
 
-/***/ "./static_dirs/desktop/ts/AppForm.ts":
-/*!*******************************************!*\
-  !*** ./static_dirs/desktop/ts/AppForm.ts ***!
-  \*******************************************/
+/***/ "../desktop/ts/AppForm.ts":
+/*!********************************!*\
+  !*** ../desktop/ts/AppForm.ts ***!
+  \********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var HttpService_1 = __webpack_require__(/*! ./HttpService */ "./static_dirs/desktop/ts/HttpService.ts");
-var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "./static_dirs/desktop/ts/AppUtils.ts");
-var UINoti_1 = __webpack_require__(/*! ./UINoti */ "./static_dirs/desktop/ts/UINoti.ts");
+var HttpService_1 = __webpack_require__(/*! ./HttpService */ "../desktop/ts/HttpService.ts");
+var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../desktop/ts/AppUtils.ts");
+var UINoti_1 = __webpack_require__(/*! ./UINoti */ "../desktop/ts/UINoti.ts");
 var AjaxForm = /** @class */ (function () {
     function AjaxForm($form) {
         this.$_form = null;
@@ -365,10 +366,10 @@ exports.AppFormHandler = AppFormHandler;
 
 /***/ }),
 
-/***/ "./static_dirs/desktop/ts/AppHistory.ts":
-/*!**********************************************!*\
-  !*** ./static_dirs/desktop/ts/AppHistory.ts ***!
-  \**********************************************/
+/***/ "../desktop/ts/AppHistory.ts":
+/*!***********************************!*\
+  !*** ../desktop/ts/AppHistory.ts ***!
+  \***********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -379,8 +380,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "jquery"));
-var HttpService_1 = __webpack_require__(/*! ./HttpService */ "./static_dirs/desktop/ts/HttpService.ts");
-var App_1 = __webpack_require__(/*! ./App */ "./static_dirs/desktop/ts/App.ts");
+var HttpService_1 = __webpack_require__(/*! ./HttpService */ "../desktop/ts/HttpService.ts");
+var App_1 = __webpack_require__(/*! ./App */ "../desktop/ts/App.ts");
 var AppHistory = /** @class */ (function () {
     function AppHistory() {
         console.log("+AppHistory");
@@ -438,10 +439,10 @@ exports.AppHistory = AppHistory;
 
 /***/ }),
 
-/***/ "./static_dirs/desktop/ts/AppUtils.ts":
-/*!********************************************!*\
-  !*** ./static_dirs/desktop/ts/AppUtils.ts ***!
-  \********************************************/
+/***/ "../desktop/ts/AppUtils.ts":
+/*!*********************************!*\
+  !*** ../desktop/ts/AppUtils.ts ***!
+  \*********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -652,13 +653,13 @@ var AppGeo = /** @class */ (function () {
 }());
 exports.AppGeo = AppGeo;
 ;
-var Cookie = /** @class */ (function () {
-    function Cookie() {
+var AppCookie = /** @class */ (function () {
+    function AppCookie() {
     }
-    Cookie.Instance = function () {
+    AppCookie.Instance = function () {
         return this._instance || (this._instance = new this());
     };
-    Cookie.prototype.get = function (cname) {
+    AppCookie.prototype.get = function (cname) {
         var cv = null;
         if (document.cookie != 'undefined' && document.cookie !== '') {
             var cks = document.cookie.split(';');
@@ -673,47 +674,196 @@ var Cookie = /** @class */ (function () {
         }
         return cv;
     };
-    Cookie.prototype.set = function (cname, cvalue, exdays) {
+    AppCookie.prototype.set = function (cname, cvalue, exdays) {
         var d = new Date();
         d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
         var expires = "expires=" + d.toUTCString();
         document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
     };
-    Cookie.prototype.has = function (cname) {
+    AppCookie.prototype.has = function (cname) {
         return (this.get(cname) != null);
     };
-    Cookie._instance = null;
-    return Cookie;
+    AppCookie._instance = null;
+    return AppCookie;
 }());
-exports.Cookie = Cookie;
+exports.AppCookie = AppCookie;
 ;
-var Storage = /** @class */ (function () {
-    function Storage() {
+var AppStorage = /** @class */ (function () {
+    function AppStorage() {
     }
-    Storage.Instance = function () {
+    AppStorage.Instance = function () {
         return this._instance || (this._instance = new this());
     };
-    Storage.prototype.get = function (key) {
+    AppStorage.prototype.get = function (key) {
         if (typeof (Storage) !== "undefined")
             return localStorage.getItem(key);
         return "";
     };
-    Storage.prototype.set = function (key, val) {
+    AppStorage.prototype.set = function (key, val) {
         if (typeof (Storage) !== "undefined")
             localStorage.setItem(key, val);
     };
-    Storage._instance = null;
-    return Storage;
+    AppStorage._instance = null;
+    return AppStorage;
 }());
-exports.Storage = Storage;
+exports.AppStorage = AppStorage;
 
 
 /***/ }),
 
-/***/ "./static_dirs/desktop/ts/HttpService.ts":
-/*!***********************************************!*\
-  !*** ./static_dirs/desktop/ts/HttpService.ts ***!
-  \***********************************************/
+/***/ "../desktop/ts/GoogleMap.ts":
+/*!**********************************!*\
+  !*** ../desktop/ts/GoogleMap.ts ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../desktop/ts/AppUtils.ts");
+var UIToast_1 = __webpack_require__(/*! ./UIToast */ "../desktop/ts/UIToast.ts");
+var url = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCMz94217XzpYaxnQRagzgCwpy4dfBM1Ho&libraries=places&callback=__onGoogleMapLoaded';
+var GoogleMapsLoader = /** @class */ (function () {
+    function GoogleMapsLoader() {
+    }
+    GoogleMapsLoader.load = function () {
+        // First time 'load' is called?
+        if (!GoogleMapsLoader.promise) {
+            // Make promise to load
+            GoogleMapsLoader.promise = new Promise(function (resolve) {
+                // Set callback for when google maps is loaded.
+                window['__onGoogleMapLoaded'] = function (ev) {
+                    resolve('google maps api loaded');
+                };
+                var node = document.createElement('script');
+                node.src = url;
+                node.type = 'text/javascript';
+                document.getElementsByTagName('head')[0].appendChild(node);
+            });
+        }
+        // Always return promise. When 'load' is called many times, the promise is already resolved.
+        return GoogleMapsLoader.promise;
+    };
+    return GoogleMapsLoader;
+}());
+exports.GoogleMapsLoader = GoogleMapsLoader;
+var GoogleMap = /** @class */ (function () {
+    function GoogleMap(mapBox, config) {
+        this._IsInit = false;
+        this._Map = null;
+        this._Marker = null;
+        this._Geocoder = null;
+        this._Timeout = null;
+        this._LatLong = { lat: 12.964914, lng: 77.596683 };
+        this.AddressFoundEvent = new AppUtils_1.AppEventHandler();
+        GoogleMapsLoader.load();
+    }
+    GoogleMap.prototype.attach = function (mapBox) {
+        console.log("+GoogleMap::init");
+        var This = this;
+        var myLatlng = new google.maps.LatLng(This._LatLong.lat, This._LatLong.lng);
+        var mapOpts = {
+            zoom: 18,
+            center: myLatlng,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        This._Map = new google.maps.Map(mapBox, mapOpts);
+        This._Marker = new google.maps.Marker({
+            position: myLatlng,
+            map: This._Map,
+            draggable: true,
+            title: "Your Location"
+        });
+        This._Geocoder = new google.maps.Geocoder();
+        google.maps.event.addListener(This._Marker, 'dragend', function (e) {
+            This.updateLoc(e.latLng.lat(), e.latLng.lng());
+        });
+        google.maps.event.addListener(This._Map, 'drag', function (e) {
+            var center = this.getCenter();
+            clearTimeout(This._Timeout);
+            This._Timeout = setTimeout(function () {
+                This._Marker.setPosition(center);
+                This.updateLoc(center.lat(), center.lng());
+            }, 50);
+        });
+        This._IsInit = true;
+        AppUtils_1.AppGeo.Instance().locate(function (lt, lg) {
+            This.updateLoc(lt, lg);
+        });
+    };
+    GoogleMap.prototype.initPlaceSearch = function (input) {
+        console.log('+GoogleMap::initPlaceSearch');
+        var This = this;
+        var autocomplete = new google.maps.places.Autocomplete(input);
+        autocomplete.addListener('place_changed', function () {
+            This._Marker.setVisible(false);
+            var place = autocomplete.getPlace();
+            if (!place.geometry) {
+                UIToast_1.UIToast.Instance().show("No details available for : '" + place.name + "'");
+                return;
+            }
+            console.log(place);
+            // If the place has a geometry, then present it on a map.
+            if (place.geometry.viewport) {
+                This._Map.fitBounds(place.geometry.viewport);
+            }
+            else {
+                This._Map.setCenter(place.geometry.location);
+                This._Map.setZoom(17);
+            }
+            This._Marker.setPosition(place.geometry.location);
+            This._Marker.setVisible(true);
+            This.AddressFoundEvent.trigger({ status: true, address: place });
+        });
+    };
+    GoogleMap.prototype.update = function () {
+        if (this._Map) {
+            google.maps.event.trigger(this._Map, 'resize');
+            if (this._Marker) {
+                this._Map.setCenter(this._Marker.getPosition());
+            }
+        }
+    };
+    GoogleMap.prototype.updateLoc = function (lat, lng) {
+        console.log('[' + lat + ' ### ' + lng + ']');
+        if (lat != 0 && lng != 0) {
+            var This_1 = this;
+            var pos = new google.maps.LatLng(lat, lng);
+            This_1._Marker.setPosition(pos);
+            This_1._Map.panTo(pos);
+            return This_1.getAddress(pos, function (data) {
+                This_1.AddressFoundEvent.trigger(data);
+            });
+        }
+    };
+    GoogleMap.prototype.getAddress = function (loc, OnFound) {
+        if (!this._IsInit)
+            return;
+        this._Geocoder.geocode({
+            'location': loc
+        }, function (results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                console.log(results[0]);
+                OnFound({ status: true, 'address': results[0] });
+            }
+            else {
+                console.log('Geocode failed reason: ' + status);
+                OnFound({ status: false, address: '' });
+            }
+        });
+    };
+    return GoogleMap;
+}());
+exports.GoogleMap = GoogleMap;
+
+
+/***/ }),
+
+/***/ "../desktop/ts/HttpService.ts":
+/*!************************************!*\
+  !*** ../desktop/ts/HttpService.ts ***!
+  \************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -724,8 +874,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "jquery"));
-var UIToast_1 = __webpack_require__(/*! ./UIToast */ "./static_dirs/desktop/ts/UIToast.ts");
-var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "./static_dirs/desktop/ts/AppUtils.ts");
+var UIToast_1 = __webpack_require__(/*! ./UIToast */ "../desktop/ts/UIToast.ts");
+var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../desktop/ts/AppUtils.ts");
 var HttpResponseHandler = /** @class */ (function () {
     function HttpResponseHandler(handlers) {
         this.progress_up = function (p) { console.log('default_progress_up'); };
@@ -839,10 +989,10 @@ exports.HttpService = HttpService;
 
 /***/ }),
 
-/***/ "./static_dirs/desktop/ts/UINoti.ts":
-/*!******************************************!*\
-  !*** ./static_dirs/desktop/ts/UINoti.ts ***!
-  \******************************************/
+/***/ "../desktop/ts/UINoti.ts":
+/*!*******************************!*\
+  !*** ../desktop/ts/UINoti.ts ***!
+  \*******************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -853,7 +1003,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "jquery"));
-var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "./static_dirs/desktop/ts/AppUtils.ts");
+var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../desktop/ts/AppUtils.ts");
 var UINoti = /** @class */ (function () {
     function UINoti(config) {
         this.link = window.location.href;
@@ -887,10 +1037,10 @@ exports.UINoti = UINoti;
 
 /***/ }),
 
-/***/ "./static_dirs/desktop/ts/UIToast.ts":
-/*!*******************************************!*\
-  !*** ./static_dirs/desktop/ts/UIToast.ts ***!
-  \*******************************************/
+/***/ "../desktop/ts/UIToast.ts":
+/*!********************************!*\
+  !*** ../desktop/ts/UIToast.ts ***!
+  \********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -926,10 +1076,10 @@ exports.UIToast = UIToast;
 
 /***/ }),
 
-/***/ "./static_dirs/desktop/ts/UIWidgets.ts":
-/*!*********************************************!*\
-  !*** ./static_dirs/desktop/ts/UIWidgets.ts ***!
-  \*********************************************/
+/***/ "../desktop/ts/UIWidgets.ts":
+/*!**********************************!*\
+  !*** ../desktop/ts/UIWidgets.ts ***!
+  \**********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -953,8 +1103,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "jquery"));
-var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "./static_dirs/desktop/ts/AppUtils.ts");
-var HttpService_1 = __webpack_require__(/*! ./HttpService */ "./static_dirs/desktop/ts/HttpService.ts");
+var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../desktop/ts/AppUtils.ts");
+var HttpService_1 = __webpack_require__(/*! ./HttpService */ "../desktop/ts/HttpService.ts");
 var KEYS = {
     BACK: 8,
     TAB: 9,
@@ -1469,10 +1619,10 @@ exports.UITabs = UITabs;
 
 /***/ }),
 
-/***/ "./static_dirs/desktop/ts/index.ts":
-/*!*****************************************!*\
-  !*** ./static_dirs/desktop/ts/index.ts ***!
-  \*****************************************/
+/***/ "../desktop/ts/index.ts":
+/*!******************************!*\
+  !*** ../desktop/ts/index.ts ***!
+  \******************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1485,8 +1635,29 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //import * as $ from '../../libs/jquery/jquery-3.3.1.min';
 //import * as $ from 'jquery'; // esModuleInterop:false in tsconfig.json
 var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "jquery"));
-var App_1 = __webpack_require__(/*! ./App */ "./static_dirs/desktop/ts/App.ts");
-var UIWidgets_1 = __webpack_require__(/*! ./UIWidgets */ "./static_dirs/desktop/ts/UIWidgets.ts");
+var App_1 = __webpack_require__(/*! ./App */ "../desktop/ts/App.ts");
+var UIWidgets_1 = __webpack_require__(/*! ./UIWidgets */ "../desktop/ts/UIWidgets.ts");
+var AppForm_1 = __webpack_require__(/*! ./AppForm */ "../desktop/ts/AppForm.ts");
+exports.AjaxForm = AppForm_1.AjaxForm;
+exports.AppFormHandler = AppForm_1.AppFormHandler;
+var UINoti_1 = __webpack_require__(/*! ./UINoti */ "../desktop/ts/UINoti.ts");
+exports.UINoti = UINoti_1.UINoti;
+var UIToast_1 = __webpack_require__(/*! ./UIToast */ "../desktop/ts/UIToast.ts");
+exports.UIToast = UIToast_1.UIToast;
+var HttpService_1 = __webpack_require__(/*! ./HttpService */ "../desktop/ts/HttpService.ts");
+exports.HttpResponseHandler = HttpService_1.HttpResponseHandler;
+exports.HttpService = HttpService_1.HttpService;
+var GoogleMap_1 = __webpack_require__(/*! ./GoogleMap */ "../desktop/ts/GoogleMap.ts");
+exports.GoogleMap = GoogleMap_1.GoogleMap;
+var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../desktop/ts/AppUtils.ts");
+exports.ObjectUtil = AppUtils_1.ObjectUtil;
+exports.AppUtil = AppUtils_1.AppUtil;
+exports.FormUtil = AppUtils_1.FormUtil;
+var AppUtils_2 = __webpack_require__(/*! ./AppUtils */ "../desktop/ts/AppUtils.ts");
+exports.AppEventHandler = AppUtils_2.AppEventHandler;
+exports.AppGeo = AppUtils_2.AppGeo;
+exports.AppCookie = AppUtils_2.AppCookie;
+exports.AppStorage = AppUtils_2.AppStorage;
 function initPlugins() {
     jquery_1.default.fn.extend({
         exists: function () { return this.length > 0; },
