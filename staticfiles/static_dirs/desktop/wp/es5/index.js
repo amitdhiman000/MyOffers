@@ -82,25 +82,25 @@ var AppLib =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "../desktop/ts/index.ts");
+/******/ 	return __webpack_require__(__webpack_require__.s = "../static_dirs/desktop/ts/index.ts");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "../desktop/ts/App.ts":
-/*!****************************!*\
-  !*** ../desktop/ts/App.ts ***!
-  \****************************/
+/***/ "../static_dirs/desktop/ts/App.ts":
+/*!****************************************!*\
+  !*** ../static_dirs/desktop/ts/App.ts ***!
+  \****************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function($) {
 Object.defineProperty(exports, "__esModule", { value: true });
-var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../desktop/ts/AppUtils.ts");
-var AppHistory_1 = __webpack_require__(/*! ./AppHistory */ "../desktop/ts/AppHistory.ts");
-var AppComponents_1 = __webpack_require__(/*! ./AppComponents */ "../desktop/ts/AppComponents.ts");
-var AppForm_1 = __webpack_require__(/*! ./AppForm */ "../desktop/ts/AppForm.ts");
+var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../static_dirs/desktop/ts/AppUtils.ts");
+var AppHistory_1 = __webpack_require__(/*! ./AppHistory */ "../static_dirs/desktop/ts/AppHistory.ts");
+var AppComponents_1 = __webpack_require__(/*! ./AppComponents */ "../static_dirs/desktop/ts/AppComponents.ts");
+var AppForm_1 = __webpack_require__(/*! ./AppForm */ "../static_dirs/desktop/ts/AppForm.ts");
 var App = /** @class */ (function () {
     function App() {
         this._history = null;
@@ -152,10 +152,10 @@ exports.App = App;
 
 /***/ }),
 
-/***/ "../desktop/ts/AppComponents.ts":
-/*!**************************************!*\
-  !*** ../desktop/ts/AppComponents.ts ***!
-  \**************************************/
+/***/ "../static_dirs/desktop/ts/AppComponents.ts":
+/*!**************************************************!*\
+  !*** ../static_dirs/desktop/ts/AppComponents.ts ***!
+  \**************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -166,8 +166,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "jquery"));
-var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../desktop/ts/AppUtils.ts");
-var HttpService_1 = __webpack_require__(/*! ./HttpService */ "../desktop/ts/HttpService.ts");
+var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../static_dirs/desktop/ts/AppUtils.ts");
+var HttpService_1 = __webpack_require__(/*! ./HttpService */ "../static_dirs/desktop/ts/HttpService.ts");
 var AppNavbar = /** @class */ (function () {
     function AppNavbar(config) {
         this._config = { 'navbar_btn': '#navbar_btn' };
@@ -249,19 +249,19 @@ exports.AppHeader = AppHeader;
 
 /***/ }),
 
-/***/ "../desktop/ts/AppForm.ts":
-/*!********************************!*\
-  !*** ../desktop/ts/AppForm.ts ***!
-  \********************************/
+/***/ "../static_dirs/desktop/ts/AppForm.ts":
+/*!********************************************!*\
+  !*** ../static_dirs/desktop/ts/AppForm.ts ***!
+  \********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var HttpService_1 = __webpack_require__(/*! ./HttpService */ "../desktop/ts/HttpService.ts");
-var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../desktop/ts/AppUtils.ts");
-var UINoti_1 = __webpack_require__(/*! ./UINoti */ "../desktop/ts/UINoti.ts");
+var HttpService_1 = __webpack_require__(/*! ./HttpService */ "../static_dirs/desktop/ts/HttpService.ts");
+var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../static_dirs/desktop/ts/AppUtils.ts");
+var UINoti_1 = __webpack_require__(/*! ./UINoti */ "../static_dirs/desktop/ts/UINoti.ts");
 var AjaxForm = /** @class */ (function () {
     function AjaxForm($form) {
         this.$_form = null;
@@ -366,10 +366,10 @@ exports.AppFormHandler = AppFormHandler;
 
 /***/ }),
 
-/***/ "../desktop/ts/AppHistory.ts":
-/*!***********************************!*\
-  !*** ../desktop/ts/AppHistory.ts ***!
-  \***********************************/
+/***/ "../static_dirs/desktop/ts/AppHistory.ts":
+/*!***********************************************!*\
+  !*** ../static_dirs/desktop/ts/AppHistory.ts ***!
+  \***********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -380,8 +380,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "jquery"));
-var HttpService_1 = __webpack_require__(/*! ./HttpService */ "../desktop/ts/HttpService.ts");
-var App_1 = __webpack_require__(/*! ./App */ "../desktop/ts/App.ts");
+var HttpService_1 = __webpack_require__(/*! ./HttpService */ "../static_dirs/desktop/ts/HttpService.ts");
+var App_1 = __webpack_require__(/*! ./App */ "../static_dirs/desktop/ts/App.ts");
 var AppHistory = /** @class */ (function () {
     function AppHistory() {
         console.log("+AppHistory");
@@ -439,10 +439,10 @@ exports.AppHistory = AppHistory;
 
 /***/ }),
 
-/***/ "../desktop/ts/AppUtils.ts":
-/*!*********************************!*\
-  !*** ../desktop/ts/AppUtils.ts ***!
-  \*********************************/
+/***/ "../static_dirs/desktop/ts/AppUtils.ts":
+/*!*********************************************!*\
+  !*** ../static_dirs/desktop/ts/AppUtils.ts ***!
+  \*********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -711,18 +711,18 @@ exports.AppStorage = AppStorage;
 
 /***/ }),
 
-/***/ "../desktop/ts/GoogleMap.ts":
-/*!**********************************!*\
-  !*** ../desktop/ts/GoogleMap.ts ***!
-  \**********************************/
+/***/ "../static_dirs/desktop/ts/GoogleMap.ts":
+/*!**********************************************!*\
+  !*** ../static_dirs/desktop/ts/GoogleMap.ts ***!
+  \**********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../desktop/ts/AppUtils.ts");
-var UIToast_1 = __webpack_require__(/*! ./UIToast */ "../desktop/ts/UIToast.ts");
+var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../static_dirs/desktop/ts/AppUtils.ts");
+var UIToast_1 = __webpack_require__(/*! ./UIToast */ "../static_dirs/desktop/ts/UIToast.ts");
 var url = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCMz94217XzpYaxnQRagzgCwpy4dfBM1Ho&libraries=places&callback=__onGoogleMapLoaded';
 var GoogleMapsLoader = /** @class */ (function () {
     function GoogleMapsLoader() {
@@ -860,10 +860,10 @@ exports.GoogleMap = GoogleMap;
 
 /***/ }),
 
-/***/ "../desktop/ts/HttpService.ts":
-/*!************************************!*\
-  !*** ../desktop/ts/HttpService.ts ***!
-  \************************************/
+/***/ "../static_dirs/desktop/ts/HttpService.ts":
+/*!************************************************!*\
+  !*** ../static_dirs/desktop/ts/HttpService.ts ***!
+  \************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -874,8 +874,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "jquery"));
-var UIToast_1 = __webpack_require__(/*! ./UIToast */ "../desktop/ts/UIToast.ts");
-var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../desktop/ts/AppUtils.ts");
+var UIToast_1 = __webpack_require__(/*! ./UIToast */ "../static_dirs/desktop/ts/UIToast.ts");
+var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../static_dirs/desktop/ts/AppUtils.ts");
 var HttpResponseHandler = /** @class */ (function () {
     function HttpResponseHandler(handlers) {
         this.progress_up = function (p) { console.log('default_progress_up'); };
@@ -989,10 +989,10 @@ exports.HttpService = HttpService;
 
 /***/ }),
 
-/***/ "../desktop/ts/UINoti.ts":
-/*!*******************************!*\
-  !*** ../desktop/ts/UINoti.ts ***!
-  \*******************************/
+/***/ "../static_dirs/desktop/ts/UINoti.ts":
+/*!*******************************************!*\
+  !*** ../static_dirs/desktop/ts/UINoti.ts ***!
+  \*******************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1003,7 +1003,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "jquery"));
-var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../desktop/ts/AppUtils.ts");
+var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../static_dirs/desktop/ts/AppUtils.ts");
 var UINoti = /** @class */ (function () {
     function UINoti(config) {
         this.link = window.location.href;
@@ -1037,10 +1037,10 @@ exports.UINoti = UINoti;
 
 /***/ }),
 
-/***/ "../desktop/ts/UIToast.ts":
-/*!********************************!*\
-  !*** ../desktop/ts/UIToast.ts ***!
-  \********************************/
+/***/ "../static_dirs/desktop/ts/UIToast.ts":
+/*!********************************************!*\
+  !*** ../static_dirs/desktop/ts/UIToast.ts ***!
+  \********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1076,10 +1076,10 @@ exports.UIToast = UIToast;
 
 /***/ }),
 
-/***/ "../desktop/ts/UIWidgets.ts":
-/*!**********************************!*\
-  !*** ../desktop/ts/UIWidgets.ts ***!
-  \**********************************/
+/***/ "../static_dirs/desktop/ts/UIWidgets.ts":
+/*!**********************************************!*\
+  !*** ../static_dirs/desktop/ts/UIWidgets.ts ***!
+  \**********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1103,8 +1103,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "jquery"));
-var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../desktop/ts/AppUtils.ts");
-var HttpService_1 = __webpack_require__(/*! ./HttpService */ "../desktop/ts/HttpService.ts");
+var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../static_dirs/desktop/ts/AppUtils.ts");
+var HttpService_1 = __webpack_require__(/*! ./HttpService */ "../static_dirs/desktop/ts/HttpService.ts");
 var KEYS = {
     BACK: 8,
     TAB: 9,
@@ -1619,10 +1619,10 @@ exports.UITabs = UITabs;
 
 /***/ }),
 
-/***/ "../desktop/ts/index.ts":
-/*!******************************!*\
-  !*** ../desktop/ts/index.ts ***!
-  \******************************/
+/***/ "../static_dirs/desktop/ts/index.ts":
+/*!******************************************!*\
+  !*** ../static_dirs/desktop/ts/index.ts ***!
+  \******************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1635,25 +1635,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //import * as $ from '../../libs/jquery/jquery-3.3.1.min';
 //import * as $ from 'jquery'; // esModuleInterop:false in tsconfig.json
 var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "jquery"));
-var App_1 = __webpack_require__(/*! ./App */ "../desktop/ts/App.ts");
-var UIWidgets_1 = __webpack_require__(/*! ./UIWidgets */ "../desktop/ts/UIWidgets.ts");
-var AppForm_1 = __webpack_require__(/*! ./AppForm */ "../desktop/ts/AppForm.ts");
+var App_1 = __webpack_require__(/*! ./App */ "../static_dirs/desktop/ts/App.ts");
+var UIWidgets_1 = __webpack_require__(/*! ./UIWidgets */ "../static_dirs/desktop/ts/UIWidgets.ts");
+var AppForm_1 = __webpack_require__(/*! ./AppForm */ "../static_dirs/desktop/ts/AppForm.ts");
 exports.AjaxForm = AppForm_1.AjaxForm;
 exports.AppFormHandler = AppForm_1.AppFormHandler;
-var UINoti_1 = __webpack_require__(/*! ./UINoti */ "../desktop/ts/UINoti.ts");
+var UINoti_1 = __webpack_require__(/*! ./UINoti */ "../static_dirs/desktop/ts/UINoti.ts");
 exports.UINoti = UINoti_1.UINoti;
-var UIToast_1 = __webpack_require__(/*! ./UIToast */ "../desktop/ts/UIToast.ts");
+var UIToast_1 = __webpack_require__(/*! ./UIToast */ "../static_dirs/desktop/ts/UIToast.ts");
 exports.UIToast = UIToast_1.UIToast;
-var HttpService_1 = __webpack_require__(/*! ./HttpService */ "../desktop/ts/HttpService.ts");
+var HttpService_1 = __webpack_require__(/*! ./HttpService */ "../static_dirs/desktop/ts/HttpService.ts");
 exports.HttpResponseHandler = HttpService_1.HttpResponseHandler;
 exports.HttpService = HttpService_1.HttpService;
-var GoogleMap_1 = __webpack_require__(/*! ./GoogleMap */ "../desktop/ts/GoogleMap.ts");
+var GoogleMap_1 = __webpack_require__(/*! ./GoogleMap */ "../static_dirs/desktop/ts/GoogleMap.ts");
 exports.GoogleMap = GoogleMap_1.GoogleMap;
-var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../desktop/ts/AppUtils.ts");
+var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../static_dirs/desktop/ts/AppUtils.ts");
 exports.ObjectUtil = AppUtils_1.ObjectUtil;
 exports.AppUtil = AppUtils_1.AppUtil;
 exports.FormUtil = AppUtils_1.FormUtil;
-var AppUtils_2 = __webpack_require__(/*! ./AppUtils */ "../desktop/ts/AppUtils.ts");
+var AppUtils_2 = __webpack_require__(/*! ./AppUtils */ "../static_dirs/desktop/ts/AppUtils.ts");
 exports.AppEventHandler = AppUtils_2.AppEventHandler;
 exports.AppGeo = AppUtils_2.AppGeo;
 exports.AppCookie = AppUtils_2.AppCookie;
