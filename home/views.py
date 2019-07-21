@@ -1,7 +1,6 @@
 from django.views.decorators.csrf import (csrf_exempt)
-from offer.models import Offer
+from offer.models import OfferModel
 from offer.views import offer_home_view
-from base.apputil import App_Render, App_SaveUploadedFile
 
 
 def home_view(request):
@@ -23,6 +22,6 @@ def test_view(request):
 
 
 def home_backup_view(request):
-    offers = Offer.get_all()
+    offers = OfferModel.get_all()
     data = {'title': 'Home Backup', 'offers_list': offers}
     return App_Render(request, 'home/home_backup_1.html', data)

@@ -1,14 +1,14 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from offer.models import Offer
-from locus.models import Area
+from offer.models import OfferModel
+from locus.models import AreaModel
 
 
 @csrf_exempt
 def offer(request):
     key = request.POST.get('key', 'offer')
-    offers = Offer.fetch_by_match(key)
+    offers = OfferModel.fetch_by_match(key)
     offersdata = list(offers)
 
     data = {'status': 200, 'data': offersdata}
@@ -20,7 +20,7 @@ def offer(request):
 def location(request):
     print(request.POST)
     key = request.POST.get('key', 'bengaluru')
-    areas = Area.fetch_by_match(key)
+    areas = AreaModel.fetch_by_match(key)
 
     areadata = list(areas)
     data = {'status': 200, 'data': areadata}

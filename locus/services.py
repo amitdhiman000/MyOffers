@@ -1,9 +1,9 @@
-from locus.models import Address
+from locus.models import AddressModel
 from base.serializers import (ModelValueSerializer, ModelValuesSerializer)
 
 
 class AddressService(object):
-    model = Address
+    model = AddressModel
     fields = ('id', 'name', 'person', 'phone', 'pincode', 'address', 'area', 'city', 'state', 'country', 'landmark', 'url', 'location')
 
     @classmethod

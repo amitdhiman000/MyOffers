@@ -1,6 +1,5 @@
 from base.forms import *
-from locus.models import (Area, Address)
-from user.models import User
+from locus.models import (AreaModel, AddressModel)
 
 import logging
 
@@ -39,7 +38,7 @@ form_fields = {
 
 
 class AddressCreateForm(CreateForm):
-	model = Address
+	model = AddressModel
 
 	def __init__(self):
 		super().__init__()
@@ -65,7 +64,7 @@ class AddressCreateForm(CreateForm):
 		pincode = self.model_value('pincode')
 		address = self.model_value('address')
 		if pincode != '':
-			areas = Area.fetch_by_pincode(pincode)
+			areas = AreaModel.fetch_by_pincode(pincode)
 			if areas.exists():
 				final_area = areas.first()
 				for area in areas:
@@ -99,7 +98,7 @@ class AddressCreateForm(CreateForm):
 
 
 class AddressUpdateForm(UpdateForm):
-	model = Address
+	model = AddressModel
 
 	def __init__(self):
 		super().__init__()
@@ -117,7 +116,7 @@ class AddressUpdateForm(UpdateForm):
 
 
 class AddressDeleteForm(DeleteForm):
-	model = Address
+	model = AddressModel
 
 	def __init__(self):
 		super().__init__()

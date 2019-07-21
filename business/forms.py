@@ -2,8 +2,8 @@ from base.forms import (CreateForm, UpdateForm, DeleteForm)
 from base.validators import (NoValidator, DescriptionValidator, WebsiteValidator)
 from business.validators import (BusinessNameValidator, BusinessCategoryValidator)
 from business.services import BusinessService
-from locus.models import Address
-from business.models import (Business, Category, BusinessAddressMap)
+from locus.models import AddressModel
+from business.models import (BusinessModel, CategoryModel, BusinessAddressMapModel)
 import logging
 
 
@@ -42,7 +42,7 @@ class BusinessRegForm(CreateForm):
         if not is_valid:
             return is_valid
 
-        cat = Category.fetch_by_id(self.model_value('fk_category'))
+        cat = CategoryModel.fetch_by_id(self.model_value('fk_category'))
         if cat is not None:
             self.add_model_value('fk_category', cat)
         else:
@@ -54,7 +54,7 @@ class BusinessRegForm(CreateForm):
     def save(self):
         print('saving ....')
         print(self.model_values())
-        result = Business.create_v1(self.model_values())
+        result = BusinessModel.create_v1(self.model_values())
         if result[1] is False:
             self.set_error('error', 'Business already exists!!')
             return None
@@ -76,7 +76,7 @@ class BusinessUpdateForm(UpdateForm):
 
     def update(self):
         print('saving ....')
-        if Business.update(self.model_values()):
+        if BusinessModel.update(self.model_values()):
             return self.result()
         else:
             return None
@@ -101,7 +101,7 @@ class BusinessDeleteForm(DeleteForm):
 
     def commit(self):
         print(self.model_values())
-        if Business.remove(self.model_values()):
+        if BusinessModel.remove(self.model_values()):
             return True
         else:
             self.set_error('id', 'Failed to delete Bunisess!!')
@@ -131,7 +131,7 @@ class BALinkForm(CreateForm):
     def save(self):
         print('saving ....')
         print(self.model_values())
-        return Business.create(self.model_values())
+        return BusinessModel.create(self.model_values())
 
 
 class BAUnLinkForm(CreateForm):
@@ -149,7 +149,7 @@ class BAUnLinkForm(CreateForm):
     def delete(self):
         print('saving ....')
         print(self.model_values())
-        return Business.remove(self.model_values())
+        return BusinessModel.remove(self.model_values())
 
 
 ba_fields = {
@@ -199,18 +199,18 @@ class BALinkBulkForm(CreateForm):
             print('insert_set : ', insert_set)
             print('delete_set : ', delete_set)
 
-            business = Business(id=int(b_id))
+            business = BusinessModel(id=int(b_id))
             self.add_model_value('fk_business', business)
 
             for item in insert_set:
                 self.add_model_value('fk_address', Address(id=int(item)))
                 print(self.model_values())
-                BusinessAddressMap.create(self.model_values())
+                BusinessAddressMapModel.create(self.model_values())
 
             for item in delete_set:
                 self.add_model_value('fk_address', Address(id=int(item)))
                 print(self.model_values())
-                BusinessAddressMap.remove(self.model_values())
+                BusinessAddressMapModel.remove(self.model_values())
             return True
         except Exception as ex:
             logging.error(ex)

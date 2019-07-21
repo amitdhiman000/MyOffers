@@ -1,16 +1,15 @@
 from background_task import background
-from upload.models import FileUpload
-from user.models import User
+from upload.models import FileUploadModel
+from user.models import UserModel
 from base.controls import BaseControl
-## debug
-from pprint import pprint
+
 
 ## run after 60 seconds
 @background(schedule=1*60)
 def clear_file_upload(user_id, upload_id):
 	print('clear_file_upload :: start')
 	user = User.fetch_by_id(user_id)
-	FileUpload.remove(upload_id, user)
+	FileUploadModel.remove(upload_id, user)
 	print('clear_file_upload :: done')
 	#user.email_user('Here is a notification', 'You have been notified')
 

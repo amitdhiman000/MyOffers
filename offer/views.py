@@ -2,8 +2,8 @@ from django.conf import settings
 from django.http import JsonResponse
 from datetime import (datetime, timedelta)
 
-from business.models import Business
-from offer.models import Offer
+from business.models import BusinessModel
+from offer.models import OfferModel
 from offer.forms import (OfferRegForm, OfferUpdateForm)
 from base.apputil import (App_Render, App_LoginRequired, App_PostRequired, App_Redirect)
 
@@ -11,7 +11,7 @@ from base.apputil import (App_Render, App_LoginRequired, App_PostRequired, App_R
 # Create your views here.
 
 def offer_home_view(request):
-    offers = Offer.fetch_all()
+    offers = OfferModel.fetch_all()
     data = {'title': 'Offers', 'offers_list': offers}
     return App_Render(request, 'offer/offer_home_1.html', data)
 
@@ -38,7 +38,7 @@ def food_view(request):
 
 def offer_detail_view(request, slug):
     print('slug : '+slug)
-    offer = Offer.fetch_by_slug(slug)
+    offer = OfferModel.fetch_by_slug(slug)
     data = {'title': 'View Offers', 'offer': offer}
     return App_Render(request, 'offer/offer_item_detail_1.html', data)
 
@@ -46,7 +46,7 @@ def offer_detail_view(request, slug):
 @App_LoginRequired
 def offer_form_view(request):
     print(request)
-    businesses = Business.fetch_by_user(request.user)
+    businesses = BusinessModel.fetch_by_user(request.user)
     print(businesses)
     data = {'title': 'Create Offer', 'businesses': businesses}
     if 'form_errors' in request.session:

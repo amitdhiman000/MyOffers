@@ -1,12 +1,12 @@
 from django.db import models
 from base.models import (CRUDModel, CRUDModelWithUrl)
-from django.utils.translation import ugettext as _
+from user.models import UserModel
 
-from user.models import User
+from django.utils.translation import ugettext as _
 import logging
 
 
-class Country(CRUDModel):
+class CountryModel(CRUDModel):
     name = models.CharField(max_length=50, blank=False)
 
     class Meta:
@@ -18,9 +18,9 @@ class Country(CRUDModel):
         return klass.create({'name': name})
 
 
-class State(CRUDModel):
+class StateModel(CRUDModel):
     name = models.CharField(max_length=50, blank=True)
-    fk_country = models.ForeignKey(Country, on_delete=models.CASCADE)
+    fk_country = models.ForeignKey(CountryModel, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = _('state')
@@ -32,10 +32,10 @@ class State(CRUDModel):
         return klass.create({'name': state_name, 'fk_country': country})
 
 
-class City(CRUDModel):
+class CityModel(CRUDModel):
     name = models.CharField(max_length=50)
-    fk_state = models.ForeignKey(State, on_delete=models.CASCADE)
-    fk_country = models.ForeignKey(Country, on_delete=models.CASCADE)
+    fk_state = models.ForeignKey(StateModel, on_delete=models.CASCADE)
+    fk_country = models.ForeignKey(CountryModel, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = _('city')
@@ -54,12 +54,12 @@ class City(CRUDModel):
         return None
 
 
-class Area(CRUDModel):
+class AreaModel(CRUDModel):
     name = models.CharField(max_length=50, blank=True)
     pincode = models.CharField(max_length=10, blank=True)
-    fk_city = models.ForeignKey(City, on_delete=models.CASCADE)
-    fk_state = models.ForeignKey(State, on_delete=models.CASCADE)
-    fk_country = models.ForeignKey(Country, on_delete=models.CASCADE)
+    fk_city = models.ForeignKey(CityModel, on_delete=models.CASCADE)
+    fk_state = models.ForeignKey(StateModel, on_delete=models.CASCADE)
+    fk_country = models.ForeignKey(CountryModel, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = _('area')
@@ -100,7 +100,7 @@ class Area(CRUDModel):
         return query
 
 
-class Address(CRUDModelWithUrl):
+class AddressModel(CRUDModelWithUrl):
     name = models.CharField(max_length=50, blank=False)
     person = models.CharField(max_length=20, blank=True)
     phone = models.CharField(max_length=10, blank=True)
@@ -108,8 +108,8 @@ class Address(CRUDModelWithUrl):
     landmark = models.CharField(max_length=50, blank=True)
     latitude = models.CharField(max_length=10, blank=True)
     longitude = models.CharField(max_length=10, blank=True)
-    fk_area = models.ForeignKey(Area, on_delete=models.CASCADE)
-    fk_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    fk_area = models.ForeignKey(AreaModel, on_delete=models.CASCADE)
+    fk_user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
     flags = models.CharField(max_length=10, default='')
 
     class Meta:

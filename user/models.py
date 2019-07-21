@@ -10,7 +10,7 @@ import logging
 
 
 
-class User(CRUDModel):
+class UserModel(CRUDModel):
     name = models.CharField(max_length=50, blank=False, default='')
     email = models.EmailField()
     password = models.CharField(max_length=32, blank=False, default='')
@@ -113,7 +113,7 @@ class User(CRUDModel):
         send_mail(subject, message, from_email, self.email)
 
 
-class Guest(object):
+class GuestModel(object):
 
     def __init__(self):
         self.id = -1

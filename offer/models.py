@@ -3,9 +3,9 @@ from base.models import CRUDModel
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 
-from user.models import User
-from locus.models import Address
-from business.models import (Category, Business)
+from user.models import UserModel
+from locus.models import AddressModel
+from business.models import (CategoryModel, BusinessModel)
 from base.apputil import App_UserFilesDir
 import logging
 
@@ -16,7 +16,7 @@ def days_ahead(days=1):
 
 
 # offers table for new offers
-class Offer(CRUDModel):
+class OfferModel(CRUDModel):
     slug = models.SlugField(unique=True)
     name = models.CharField(max_length=30, blank=False)
     details = models.TextField()
@@ -26,8 +26,8 @@ class Offer(CRUDModel):
     discount_price = models.IntegerField(default=100)
     start_at = models.DateTimeField(default=timezone.now)
     expire_at = models.DateTimeField(default=days_ahead(5))
-    fk_user = models.ForeignKey(User, on_delete=models.CASCADE)
-    fk_business = models.ForeignKey(Business, db_index=True, on_delete=models.CASCADE)
+    fk_user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    fk_business = models.ForeignKey(BusinessModel, db_index=True, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = _('offer')
@@ -67,11 +67,11 @@ class Offer(CRUDModel):
         return []
 
 
-class OfferCategoryMap(CRUDModel):
-    fk_offer = models.ForeignKey(Offer, on_delete=models.CASCADE)
-    fk_category = models.ForeignKey(Category, db_index=True, on_delete=models.CASCADE)
+class OfferCategoryMapModel(CRUDModel):
+    fk_offer = models.ForeignKey(OfferModel, on_delete=models.CASCADE)
+    fk_category = models.ForeignKey(CategoryModel, db_index=True, on_delete=models.CASCADE)
 
 
-class OfferAddressMap(CRUDModel):
-    fk_offer = models.ForeignKey(Offer, on_delete=models.CASCADE)
-    fk_address = models.ForeignKey(Address, db_index=True, on_delete=models.CASCADE)
+class OfferAddressMapModel(CRUDModel):
+    fk_offer = models.ForeignKey(OfferModel, on_delete=models.CASCADE)
+    fk_address = models.ForeignKey(AddressModel, db_index=True, on_delete=models.CASCADE)

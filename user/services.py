@@ -1,9 +1,9 @@
-from user.models import User
+from user.models import UserModel
 from base.serializers import ModelValueSerializer
 
 
 class UserService(object):
-    model = User
+    model = UserModel
 
     @classmethod
     def users(klass):

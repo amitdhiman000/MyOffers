@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import (csrf_protect)
-from business.models import (Category, Business)
+from business.models import (CategoryModel, BusinessModel)
 from business.services import BusinessService
 from business.forms import (BALinkBulkForm, BAUnLinkForm)
 from business.forms import (BusinessRegForm, BusinessUpdateForm, BusinessDeleteForm)
@@ -11,8 +11,8 @@ from base.apputil import (App_LoginRequired, App_GetRequired, App_PostRequired)
 @App_RunTime
 @App_LoginRequired
 def business_home_view(request):
-    business = Business.fetch_by_user(request.user)
-    categories = Category.fetch_first_level()
+    business = BusinessModel.fetch_by_user(request.user)
+    categories = CategoryModel.fetch_first_level()
     data = {'title': 'My Business', 'business': business, 'categories': categories}
     return App_Render(request, 'business/business_1.html', data)
 
@@ -30,7 +30,7 @@ def business_create(request):
 
     if request.is_ajax:
         if data is not None:
-            categories = Category.fetch_first_level()
+            categories = CategoryModel.fetch_first_level()
             return App_Render(request, 'business/business_item_1.html', {'b': data, 'categories': categories})
             # ##return JsonResponse({'status':200, 'message':'Business saved', 'data': data});
         else:

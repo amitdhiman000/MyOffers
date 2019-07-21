@@ -1,7 +1,8 @@
 from django.db import models
 from base.models import CRUDModel
+from user.models import UserModel
+
 from datetime import (date, timedelta)
-from user.models import User
 import logging
 # Create your models here.
 
@@ -10,11 +11,11 @@ def get_admin():
     return User.fetch_admin()
 
 
-class PrivateMessage(CRUDModel):
+class PrivateMessageModel(CRUDModel):
     title = models.CharField(max_length=200, default="<No subject>")
     text = models.TextField()
-    fk_sender = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='fk_sender')
-    fk_receiver = models.ForeignKey(User, on_delete=models.DO_NOTHING, default=get_admin, related_name='fk_receiver')
+    fk_sender = models.ForeignKey(UserModel, on_delete=models.DO_NOTHING, related_name='fk_sender')
+    fk_receiver = models.ForeignKey(UserModel, on_delete=models.DO_NOTHING, default=get_admin, related_name='fk_receiver')
 
     @classmethod
     def fetch_latest(klass):
@@ -31,7 +32,7 @@ class PrivateMessage(CRUDModel):
         return []
 
 
-class PublicMessage(CRUDModel):
+class PublicMessageModel(CRUDModel):
     name = models.CharField(max_length=50)
     email = models.EmailField()
     phone = models.CharField(max_length=10, blank=True)

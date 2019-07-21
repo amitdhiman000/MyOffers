@@ -1,8 +1,8 @@
 from myadmin.backenddb import (insert_default_areas, insert_custom_areas, insert_default_categories)
 
-from offer.models import Category
-from locus.models import (Country ,State, City, Area)
-from mail.models import (PublicMessage)
+from offer.models import CategoryModel
+from locus.models import (CountryModel ,StateModel, CityModel, AreaModel)
+from mail.models import (PublicMessageModel)
 from myadmin.preload_data import (gCountries, gCategories)
 from base.apputil import (App_AdminRequired, App_Render)
 # Create your views here.
@@ -17,7 +17,7 @@ def home(request):
 @App_AdminRequired
 def locus_area_view(request, country, state, city, area):
     print(area)
-    areas = Area.fetch_by_name(area, city, state, country)
+    areas = AreaModel.fetch_by_name(area, city, state, country)
     data = {'title': 'MyAdmin', 'country': country, 'state': state, 'city': city, 'area': area, 'areas': areas}
     return App_Render(request, 'admin/admin_locus_area_1.html', data)
 
@@ -26,7 +26,7 @@ def locus_area_view(request, country, state, city, area):
 def locus_city_view(request, country, state, city):
     print(city)
     filter = {'fk_city__name': city, 'fk_state__name': state, 'fk_country__name': country}
-    areas = Area.fetch(filter)
+    areas = AreaModel.fetch(filter)
     data = {'title': 'MyAdmin', 'country': country, 'state': state, 'city': city, 'areas': areas}
     return App_Render(request, 'admin/admin_locus_city_1.html', data)
 
@@ -35,7 +35,7 @@ def locus_city_view(request, country, state, city):
 def locus_state_view(request, country, state):
     print(state)
     filter = {'fk_state__name': state, 'fk_country__name': country}
-    cities = City.fetch(filter)
+    cities = CityModel.fetch(filter)
     data = {'title': 'MyAdmin', 'country': country, 'state': state, 'cities': cities}
     return App_Render(request, 'admin/admin_locus_state_1.html', data)
 
@@ -43,15 +43,15 @@ def locus_state_view(request, country, state):
 @App_AdminRequired
 def locus_country_view(request, country):
     print(country)
-    states = State.fetch({'fk_country__name': country})
+    states = StateModel.fetch({'fk_country__name': country})
     data = {'title': 'MyAdmin', 'country': country, 'states': states}
     return App_Render(request, 'admin/admin_locus_country_1.html', data)
 
 
 @App_AdminRequired
 def locus_view0(request):
-    countries = Country.fetch_all()
-    states = State.fetch({'fk_country__name': 'India'})
+    countries = CountryModel.fetch_all()
+    states = StateModel.fetch({'fk_country__name': 'India'})
     data = {'title': 'MyAdmin', 'countries': countries, 'states': states}
     return App_Render(request, 'admin/admin_locus_view_1.html', data)
 
@@ -122,9 +122,9 @@ def locus_auth(request, query=''):
     state = params[1]
     city = params[2]
     print(country, state, city)
-    if City.fetch_by_name(city_name=city, state_name=state, country_name=country) is None:
+    if CityModel.fetch_by_name(city_name=city, state_name=state, country_name=country) is None:
         insert_custom_areas(city, state, country)
-    areas = Area.fetch_by_city(city)
+    areas = AreaModel.fetch_by_city(city)
     data = {'title': 'Location', 'country': country, 'state': state, 'city': city, 'areas': areas}
     return App_Render(request, 'admin/admin_locus_added_1.html', data)
 
@@ -141,7 +141,7 @@ def category_view(request, query=''):
     if length > 0 and params[0] != '':
         name = params[length - 1]
 
-    categories = Category.fetch_children(name)
+    categories = CategoryModel.fetch_children(name)
     data = {'title': 'MyAdmin', 'categories': categories}
     return App_Render(request, 'admin/admin_category_1.html', data)
 
@@ -218,6 +218,6 @@ def category_add_view(request, query):
 @App_AdminRequired
 def messages_view(request):
     print('chaum executing this')
-    messages = PublicMessage.fetch_all()
+    messages = PublicMessageModel.fetch_all()
     data = {'title': 'Messages', 'messages': messages}
     return App_Render(request, 'admin/admin_message_1.html', data)

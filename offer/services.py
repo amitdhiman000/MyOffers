@@ -1,9 +1,9 @@
-from offer.models import Offer
+from offer.models import OfferModel
 from base.serializers import (ModelValueSerializer, ModelValuesSerializer)
 
 
 class OfferService(object):
-    model = Offer
+    model = OfferModel
 
     @classmethod
     def timestamp(klass, key):

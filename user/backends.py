@@ -1,5 +1,5 @@
 # from django.conf import settings
-from user.models import (User, Guest)
+from user.models import (UserModel, GuestModel)
 
 USER_UID_KEY = '_user_uid'
 USER_EMAIL_KEY = '_user_name'
@@ -15,21 +15,21 @@ def fetch_user(request):
         email = request.session[USER_EMAIL_KEY]
         name = request.session[USER_NAME_KEY]
         level = request.session[USER_LEVEL_KEY]
-        user = User(id=uid, email=email, name=name, level=level)
+        user = UserModel(id=uid, email=email, name=name, level=level)
     else:
-        user = Guest()
+        user = GuestModel()
 
     # print ('user name : '+user.name)
     return user
 
 
 def auth_user(email, password):
-    return User.check_creds(email, password)
+    return UserModel.check_creds(email, password)
 
 
 def reload(request, user):
     # need to do it in user.middleware.AuthMiddleware
-    newUser  = User.fetch_by_id(user.id)
+    newUser  = UserModel.fetch_by_id(user.id)
     request.session[USER_UID_KEY] = newUser.id
     request.session[USER_EMAIL_KEY] = newUser.email
     request.session[USER_NAME_KEY] = newUser.name
@@ -49,5 +49,5 @@ def login(request, user):
 
 def logout(request):
     request.session.flush()
-    request.user = Guest()
+    request.user = GuestModel()
     # request._cached_user = request.user

@@ -1,6 +1,6 @@
 import json
 from background_task import background
-from upload.models import (FileUpload, ImageUpload)
+from upload.models import (FileUploadModel, ImageUploadModel)
 from base.forms import CreateForm
 
 
@@ -8,7 +8,7 @@ from base.forms import CreateForm
 @background(schedule=1*60)
 def clear_file_upload(user_id, upload_id):
     print('clear_file_upload :: start')
-    FileUpload.remove({'id':upload_id, 'fk_user': user})
+    FileUploadModel.remove({'id':upload_id, 'fk_user': user})
     print('clear_file_upload :: done')
     # user.email_user('Here is a notification', 'You have been notified')
 
@@ -17,7 +17,7 @@ def clear_file_upload(user_id, upload_id):
 @background(schedule=1*60)
 def clear_temp_image(user_id, upload_id):
     print('clear_file_upload :: start')
-    ImageUpload.remove({'id':upload_id})
+    ImageUploadModel.remove({'id':upload_id})
     print('clear_file_upload :: done')
     # user.email_user('Here is a notification', 'You have been notified')
 
@@ -49,7 +49,7 @@ class FileUploadForm(CreateForm):
 
     def commit(self):
         print(self.model_values())
-        upload = FileUpload.create(self.model_values())
+        upload = FileUploadModel.create(self.model_values())
         if upload:
             pass
             # clear_file_upload(self.request().user.id, upload.id)
@@ -80,7 +80,7 @@ class ImageUploadForm(CreateForm):
         uploads = []
         for key in values:
             model_values = {'file': values[key]}
-            upload = ImageUpload.create(model_values)
+            upload = ImageUploadModel.create(model_values)
             uploads.append(upload.id)
     
         if uploads:

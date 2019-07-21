@@ -1,7 +1,7 @@
 from base.forms import (CreateForm, UpdateForm)
 from base.validators import (NoValidator, NameValidator, DescriptionValidator)
 from base.validators import (EmailValidator, PhoneValidator)
-from mail.models import (PublicMessage, PrivateMessage)
+from mail.models import (PublicMessageModel, PrivateMessageModel)
 
 
 model_fields = {
@@ -40,7 +40,7 @@ class PublicMessageForm(CreateForm):
 
     def save(self):
         print('saving ....')
-        ret = PublicMessage.create_v1(self.model_values())
+        ret = PublicMessageModel.create_v1(self.model_values())
         if ret is None:
             self.set_error('error', 'Failed to sent message')
         elif not ret[1]:

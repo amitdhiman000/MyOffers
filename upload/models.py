@@ -14,10 +14,10 @@ def file_upload_path(inst, filename):
 def temp_upload_path(inst, filename):
 	return App_TempFilePath(filename)
 
-class FileUpload(CRUDModel):
+class FileUploadModel(CRUDModel):
 	file = models.FileField(upload_to=temp_upload_path)
 	used = models.IntegerField(default=0)
-	#fk_user = models.ForeignKey(User, on_delete=models.CASCADE)
+	#fk_user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
 
 
 	@classmethod
@@ -62,7 +62,7 @@ class FileUpload(CRUDModel):
 			return False
 
 
-class ImageUpload(CRUDModel):
+class ImageUploadModel(CRUDModel):
 	file = models.FileField(upload_to=temp_upload_path)
 	used = models.IntegerField(default=0)
 

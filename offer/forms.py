@@ -2,10 +2,10 @@ from django.utils import timezone
 from datetime import datetime
 from base.forms import (CreateForm, UpdateForm, DeleteForm)
 
-from business.models import Business
-from locus.models import Address
-from offer.models import (Offer, OfferCategoryMap)
-from upload.models import FileUpload
+from business.models import BusinessModel
+from locus.models import AddressModel
+from offer.models import (OfferModel, OfferCategoryMapModel)
+from upload.models import FileUploadModel
 
 from base.validators import (DescriptionValidator, PriceValidator, DiscountValidator, DateValidator)
 from offer.validators import OfferNameValidator
@@ -54,7 +54,7 @@ form_fields = {
 
 
 class OfferRegForm(CreateForm):
-    model = Offer
+    model = OfferModel
 
     def __init__(self):
         super().__init__()
@@ -130,7 +130,7 @@ class OfferRegForm(CreateForm):
 
 
 class OfferUpdateForm(UpdateForm):
-    model = Offer
+    model = OfferModel
 
     def __init__(self):
         super().__init__()
@@ -145,7 +145,7 @@ class OfferUpdateForm(UpdateForm):
 
 
 class OfferDeleteForm(DeleteForm):
-    model = Address
+    model = OfferModel
 
     def __init__(self):
         super().__init__()

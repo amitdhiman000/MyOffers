@@ -1,7 +1,7 @@
 from base.forms import (Form, CreateForm, UpdateForm)
 from base.validators import (NoValidator, NameValidator, PasswordValidator)
 from base.validators import (EmailValidator, PhoneValidator)
-from user.models import User
+from user.models import UserModel
 from user import backends
 
 
@@ -40,14 +40,14 @@ class UserRegForm(CreateForm):
         if not is_valid:
             return is_valid
         email = self.model_value('email')
-        if User.fetch({'email': email}):
+        if UserModel.fetch({'email': email}):
             self.set_error('email', 'Account already exist with this Email Id')
             return False
         return True
 
     def save(self):
         print('saving ....')
-        return User.create(self.model_values())
+        return UserModel.create(self.model_values())
 
 
 class UserUpdateForm(UpdateForm):
@@ -67,7 +67,7 @@ class UserUpdateForm(UpdateForm):
 
     def update(self):
         print('saving ....')
-        if User.update(self.model_values()):
+        if UserModel.update(self.model_values()):
             return self.result()
         return None
 
@@ -116,7 +116,7 @@ class UserPasswordUpdateForm(UpdateForm):
             return is_valid
         user = self.request().user
         old_pass = self.del_model_value('pass0')
-        if User.check_password(old_pass, user) or User.check_otp(old_pass, user):
+        if UserModel.check_password(old_pass, user) or UserModel.check_otp(old_pass, user):
             self.add_model_value('id', self.m_request.user.id)
             print(self.m_values)
         else:
@@ -126,7 +126,7 @@ class UserPasswordUpdateForm(UpdateForm):
 
     def update(self):
         print('saving ....')
-        if User.update(self.model_values()):
+        if UserModel.update(self.model_values()):
             self.add_model_value('pass0', 'xxxxxxxxxxx')
             self.add_model_value('password', 'xxxxxxxxxxx')
             return self.result()

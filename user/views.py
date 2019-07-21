@@ -3,8 +3,8 @@ from django.http import JsonResponse
 
 # custom authentication
 from user import backends
-from user.models import User
-from locus.models import Address
+from user.models import UserModel
+from locus.models import AddressModel
 
 from base.apputil import (App_LoginRequired, App_PostRequired, App_RedirectIfLoggedin)
 from base.apputil import (App_Render, App_Redirect, App_RunTime)
@@ -138,8 +138,8 @@ def signout(request):
 @App_RunTime
 @App_LoginRequired
 def user_account_view(request):
-    user = User.fetch_user(request.user)
-    address = Address.fetch_by_user(user)
+    user = UserModel.fetch_user(request.user)
+    address = AddressModel.fetch_by_user(user)
     user.address = address
     data = {'title': 'Account', 'user': user}
     return App_Render(request, 'user/user_account_1.html', data)

@@ -1,10 +1,10 @@
-from locus.models import Address
-from business.models import BusinessAddressMap
+from locus.models import AddressModel
+from business.models import BusinessAddressMapModel
 from base.serializers import (ModelValueSerializer, ModelValuesSerializer)
 
 
 class BusinessService(object):
-    model = BusinessAddressMap
+    model = BusinessAddressMapModel
     fields = ('id', 'name', 'person', 'phone', 'pincode', 'address', 'area', 'city', 'state', 'country', 'landmark', 'url')
 
     @classmethod
@@ -23,7 +23,7 @@ class BusinessService(object):
 
     @classmethod
     def fetch_by_business(klass, b_id, user):
-        addresses = Address.fetch_by_user(user)
+        addresses = AddressModel.fetch_by_user(user)
         linked = klass.model.fetch_by_business(b_id, user)
         print(linked)
         for address in addresses:

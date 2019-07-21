@@ -1,15 +1,15 @@
 # from django.conf import settings
 from django.db import models
 from base.models import CRUDModel
-from django.utils.translation import ugettext as _
+from user.models import UserModel
+from locus.models import AddressModel
 
-from user.models import User
-from locus.models import Address
+from django.utils.translation import ugettext as _
 import logging
 
 
 # Business types
-class Category(CRUDModel):
+class CategoryModel(CRUDModel):
     name = models.CharField(max_length=30)
     details = models.CharField(max_length=50)
     parent = models.ForeignKey("self", null=True, on_delete=models.DO_NOTHING)
@@ -36,22 +36,22 @@ class Category(CRUDModel):
 
 
 # Business
-class Business(CRUDModel):
+class BusinessModel(CRUDModel):
     name = models.CharField(max_length=50, blank=False)
     about = models.CharField(max_length=100, blank=False)
     website = models.CharField(max_length=100, blank=True)
-    fk_category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    fk_user = models.ForeignKey(User, on_delete=models.CASCADE)
-    # fk_address = models.ForeignKey(Address)
+    fk_category = models.ForeignKey(CategoryModel, on_delete=models.CASCADE)
+    fk_user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    # fk_address = models.ForeignKey(AddressModel)
 
     @classmethod
     def fetch_by_user(klass, user):
         return klass.objects.filter(fk_user=user)
 
 
-class BusinessAddressMap(CRUDModel):
-    fk_business = models.ForeignKey(Business, on_delete=models.CASCADE)
-    fk_address = models.ForeignKey(Address, on_delete=models.CASCADE)
+class BusinessAddressMapModel(CRUDModel):
+    fk_business = models.ForeignKey(BusinessModel, on_delete=models.CASCADE)
+    fk_address = models.ForeignKey(AddressModel, on_delete=models.CASCADE)
 
     @classmethod
     def fetch_by_business(klass, b_id, user):
