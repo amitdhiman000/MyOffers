@@ -53,6 +53,6 @@ export class App {
 	}
 
 	public name() {
-		return AppUtil.Instance().name();
+		return AppUtil.appName();
 	}
 }

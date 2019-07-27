@@ -22,7 +22,7 @@
 			'A_pincode': pincode,
 			'A_location': loc,
 		};
-		$AppFormUtils.fillByName($('#locus_addr_form'), vals);
+		AppLib.FormUtils.fillByName($('#locus_addr_form'), vals);
 		showAddressBox(e, This);
 	}
 
@@ -30,15 +30,16 @@
 	{
 		console.log('+deleteAddress');
 		var $item = $(This).parents(".locus_addr_item");
-		data = $AppData.csrf();
+		var data = AppLib.AppUtil.csrfToken();
 		data['A_id'] = $item.attr('data-aid');
 		console.log(data['A_id']);
 
-		$AppRequest.post('/locus/address/delete/', data, function(status, resp){
+		var http = new AppLib.HttpService();
+		http.post('/locus/address/delete/', data, function(status, resp){
 			if (status) {
 				$item.parent('.locus_addr_item_w').hide(500, function(){ $(this).remove(); });
 			} else {
-				$AppNoti.error({title:resp.message, text:JSON.stringify(resp.data)});
+				AppLib.UINoti.make({title:resp.message, text:JSON.stringify(resp.data)}).show();
 			}
 		});
 	}
@@ -46,14 +47,14 @@
 	function showAddressBox(e, This) {
 		console.log("+showAddressBox");
 		e.stopPropagation();
-		$AppOverlay.show($("#locus_addr_picker"));
+		AppLib.UIOverlay.Instance().show($("#locus_addr_picker"));
 	}
 
 	function hideAddressBox()
 	{
 		console.log('+hideAddressBox');
-		$AppFormUtils.fillByName($('#locus_addr_form'), {A_id:'-1'});
-		$AppOverlay.close();
+		AppLib.FormUtils.fillByName($('#locus_addr_form'), {A_id:'-1'});
+		AppLib.UIOverlay.Instance().close();
 	}
 
 	function toggleBoxSize(e)
@@ -61,7 +62,7 @@
 		console.log('+toggleBoxSize');
 		var $This = $(this);
 		$This.toggleClass('locus_addr_item_w_expanded');
-		$AppUtil.scrollTo($This);
+		AppLib.AppUtil.scrollTo($This);
 	}
 
 	function OnAddrSaveRes__(e) {
@@ -70,13 +71,13 @@
 			var val = '<div  class="locus_addr_item_w" >'+e.resp+'</div>';
 			$("#locus_addr_cont").prepend(val);
 			hideAddressBox();
-			$AppNoti.info({title:"Saved", text:"Address saved Successfully!!"});
+			AppLib.UINoti.make({title:"Saved", text:"Address saved Successfully!!"}).show();
 		} else {
 			var errors = '';
 			for (var err in e.resp.data) {
 				errors += e.resp.data[err] + '<br />';
 			}
-			$AppNoti.info({title:e.resp.message, text:errors});
+			AppLib.UINoti.make({title:e.resp.message, text:errors}).show();
 		}
 		return true;
 	}

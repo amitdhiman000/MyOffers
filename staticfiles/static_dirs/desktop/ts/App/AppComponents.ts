@@ -6,7 +6,7 @@ import {HttpService} from './HttpService';
 export class AppNavbar {
     _config: any = {'navbar_btn': '#navbar_btn'};
     constructor(config?: any) {
-        ObjectUtil.Instance().merge(this._config, config);
+        ObjectUtil.merge(this._config, config);
         $(this._config['navbar_btn']).on('click', this._onNavClicked.bind(this));
     }
 

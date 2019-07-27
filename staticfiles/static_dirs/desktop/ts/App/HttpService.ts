@@ -8,7 +8,7 @@ export class HttpResponseHandler  {
 	progress_dn = function(p: number): any { console.log('default_progress_dn');  };
     complete = function(s: any, d: any): any { console.log('default_complete');  };
     constructor(handlers: any) {
-		ObjectUtil.Instance().merge(this, handlers);
+		ObjectUtil.merge(this, handlers);
     }
 };
  

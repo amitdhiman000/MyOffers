@@ -1,26 +1,20 @@
 import $ from 'jquery';
 
 export class ObjectUtil {
-    private static _instance: ObjectUtil = null;
 
-    public static Instance()
-    {
-        return this._instance || (this._instance = new this());
-    }
-
-    type(o: any) {
+    static type(o: any) {
 		return (o)?Object.prototype.toString.call(o).slice(8, -1):'undefined';
     }
 
-	isArray(o: any) {
+	static isArray(o: any) {
 		return this.type(o) === 'Array';
     }
 
-	isObject(o: any) {
+	static isObject(o: any) {
 		return this.type(o) === 'Object';
 	}
     
-	merge(a1: any, a2: any) {
+	static merge(a1: any, a2: any) {
 		var res = a1;
 		for (var k in a2) {
 			if (a2.hasOwnProperty(k)) {
@@ -38,7 +32,7 @@ export class ObjectUtil {
 		return res;
     }
 
-    dump(obj: any) {
+    static dump(obj: any) {
 		var out:string = '';
 		for (var k in obj) { out += k + ': ' + obj[k]+'; '; }
 		console.log(out);
@@ -46,22 +40,16 @@ export class ObjectUtil {
 }
 
 export class AppUtil {
-    private static _instance: AppUtil = null;
-    private _name: string = '';
+    private static _name: string = '';
 
-    public static Instance()
-    {
-        return this._instance || (this._instance = new this());
-    }
-
-    csrfToken() {
+    static csrfToken(): any {
 		var $mt = $('meta[name=csrf-token]');
 		var data = {};
 		data[$mt.attr("key")] = $mt.attr("content");
 		return data;
     }
     
-	csrfField() {
+	static csrfField(): string {
 		var csrfField = "";
 		var token = this.csrfToken();
 		for (let key in token) {
@@ -70,7 +58,7 @@ export class AppUtil {
 		return csrfField;
     }
     
-	name() {
+	static appName(): string {
 		if (this._name == '') {
 			var $mt = $('meta[name=app-name]');
 			this._name = $mt.attr("content") || "/m\\";
@@ -81,14 +69,7 @@ export class AppUtil {
 
 export class FormUtil {
 
-    private static _instance: FormUtil = null;
-
-    public static Instance()
-    {
-        return this._instance || (this._instance = new this());
-    }
-
-	setValByName($form: any, name: string, val: string) {
+	static setValByName($form: any, name: string, val: string) {
 		console.log('+FormUtil::setValByName');
 		let viewVal = val;
 		let $editNode = $form.find('.ui-input[name='+name+']');
@@ -100,7 +81,7 @@ export class FormUtil {
 		($viewNode.exists() && $viewNode.html(viewVal));
     }
     
-	setVal($node: any, val: string) {
+	static setVal($node: any, val: string) {
         console.log("+FormUtil::setVal");
 		let retVal = val;
 		switch($node.prop("tagName").toLowerCase()) {
@@ -137,7 +118,7 @@ export class FormUtil {
 		return retVal;
     }
     
-	resetVal($form: any) {
+	static resetVal($form: any) {
         console.log("+FormUtil::resetVal");
 		let This = this;
 		$form.find('input[type=text], select, textarea').each(function(index: number, node: any) {
@@ -145,7 +126,7 @@ export class FormUtil {
 		});
     }
     
-	fillByName($form: any, vals: any) {
+	static fillByName($form: any, vals: any) {
         console.log("+FormUtil::fillByName");
 		for (let key in vals) {
 			let $node = $form.find('[name='+key+']');
@@ -154,41 +135,41 @@ export class FormUtil {
 	}
 };
 
-export class AppEventHandler {
-    _set: any = [];
+export class AppEvent {
+	_name: string = "AppEvent"
+	_set: any = [];
+	constructor(name?: string) {
+		if (name !== undefined) {
+			this._name = name;
+		}
+	}
 	sub(p: any) {
-		console.log('+AppEventHandler::sub');
+		console.log('+AppEvent::sub');
 		if (this._set.indexOf(p) == -1)
 			this._set.push(p);
     }
 
 	unsub(p: any) {
-		console.log('AppEventHandler::unsub');
-		var pos = this._set.indexOf(p);
+		console.log('AppEvent::unsub');
+		let pos = this._set.indexOf(p);
 		if (pos > 1)
 			this._set.splice(pos, 1);
-
     }
 
-	trigger(e: any) {
-		console.log('+AppEventHandler::trigger');
-		var ret = true;
+	trigger(e: any, data: any) {
+		console.log('+AppEvent::trigger');
+		let ret = true;
 		for (let i in this._set) {
-			ret = ret && this._set[i](e);
+			let val = this._set[i](e, data);
+			ret = ret && val;
 		}
 		return ret;
 	}
 }
 
 export class AppGeo {
-    private static _instance: AppGeo = null;
 
-    public static Instance()
-    {
-        return this._instance || (this._instance = new this());
-    }
-
-	locate(OnLocate: any) {
+	static locate(OnLocate: any) {
 		console.log("+AppGeo::locate");
 		navigator.geolocation.getCurrentPosition((pos: any) => {
 			let lat: number = pos.coords.latitude.toFixed(8);
@@ -205,14 +186,7 @@ export class AppGeo {
 
 export class AppCookie {
 
-    private static _instance: AppCookie = null;
-
-    public static Instance()
-    {
-        return this._instance || (this._instance = new this());
-    }
-
-    get(cname: string) {
+	static get(cname: string) {
         var cv = null;
         if (document.cookie != 'undefined' && document.cookie !== '') {
             var cks = document.cookie.split(';');
@@ -228,33 +202,28 @@ export class AppCookie {
         return cv;
     }
     
-    set(cname: string, cvalue: string, exdays: number) {
+    static set(cname: string, cvalue: string, exdays: number) {
         var d = new Date();
         d.setTime(d.getTime() + (exdays*24*60*60*1000));
         var expires = "expires="+d.toUTCString();
         document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
     }
     
-    has(cname: string) {
+    static has(cname: string) {
         return (this.get(cname) != null);
     }
 };
 
 
 export class AppStorage {
-    private static _instance: AppStorage = null;
 
-    public static Instance()
-    {
-        return this._instance || (this._instance = new this());
-    }
-    get(key: string) : string {
+    static get(key: string) : string {
         if (typeof(Storage) !== "undefined")
             return localStorage.getItem(key);
         return "";
     }
     
-    set(key: string, val: string) {
+    static set(key: string, val: string) {
         if (typeof(Storage) !== "undefined")
             localStorage.setItem(key, val);
     }

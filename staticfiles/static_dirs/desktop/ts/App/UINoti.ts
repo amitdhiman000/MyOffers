@@ -10,7 +10,7 @@ export class UINoti {
 
     constructor(config: any)
     {
-        ObjectUtil.Instance().merge(this, config);
+        ObjectUtil.merge(this, config);
 	}
 	
 	static make(config: any): UINoti {

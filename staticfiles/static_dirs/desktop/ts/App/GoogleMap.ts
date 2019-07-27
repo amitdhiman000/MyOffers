@@ -1,4 +1,4 @@
-import {AppEventHandler, AppGeo} from './AppUtils';
+import {AppEvent, AppGeo} from './AppUtils';
 import {UIToast} from './UIToast';
 
 const url = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCMz94217XzpYaxnQRagzgCwpy4dfBM1Ho&libraries=places&callback=__onGoogleMapLoaded';
@@ -11,7 +11,7 @@ export class GoogleMapsLoader {
         if (!GoogleMapsLoader.promise) {
 
             // Make promise to load
-            GoogleMapsLoader.promise = new Promise( resolve => {
+            GoogleMapsLoader.promise = new Promise( (resolve) => {
                 // Set callback for when google maps is loaded.
                 window['__onGoogleMapLoaded'] = (ev: any ) => {
                     resolve('google maps api loaded');
@@ -39,7 +39,7 @@ export class GoogleMap {
 	_Geocoder = null;
 	_Timeout = null;
 	_LatLong = {lat:12.964914, lng:77.596683};
-    AddressFoundEvent: AppEventHandler = new AppEventHandler();
+    AddressFoundEvent: AppEvent = new AppEvent();
     
     constructor(mapBox: any, config: any) {
         GoogleMapsLoader.load();
@@ -78,7 +78,7 @@ export class GoogleMap {
 		});
 
 		This._IsInit = true;
-		AppGeo.Instance().locate(function(lt: number, lg: number) {
+		AppGeo.locate(function(lt: number, lg: number) {
 			This.updateLoc(lt,lg);
 		});
     }
@@ -88,7 +88,7 @@ export class GoogleMap {
 		let This = this;
 		let autocomplete = new google.maps.places.Autocomplete(input);
 
-		autocomplete.addListener('place_changed', function() {
+		autocomplete.addListener('place_changed', function(e: any) {
 			This._Marker.setVisible(false);
 			let place = autocomplete.getPlace();
 			if (!place.geometry) {
@@ -106,7 +106,7 @@ export class GoogleMap {
 			}
 			This._Marker.setPosition(place.geometry.location);
 			This._Marker.setVisible(true);
-			This.AddressFoundEvent.trigger({status:true, address:place});
+			This.AddressFoundEvent.trigger(e, {status:true, address:place});
 		});
     }
     
@@ -126,8 +126,8 @@ export class GoogleMap {
 			let pos = new google.maps.LatLng(lat, lng);
 			This._Marker.setPosition(pos);
 			This._Map.panTo(pos);
-			return This.getAddress(pos, function(data){
-				This.AddressFoundEvent.trigger(data);
+			return This.getAddress(pos, function(data: any){
+				This.AddressFoundEvent.trigger({}, data);
 			});
 		}
     }

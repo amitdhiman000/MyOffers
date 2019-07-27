@@ -15,7 +15,7 @@
 		function showAddressBox(e, This) {
 			console.log("+showAddressBox");
 			e.stopPropagation();
-			$AppOverlay.show("#locus_addr_picker");
+			AppLib.UIOverlay.Instance().show("#locus_addr_picker");
 			BeforeAddrSaveEvent.sub(BusinessAddressCreateHandler.before);
 			AfterAddrSaveEvent.sub(BusinessAddressCreateHandler.after);
 		}
@@ -25,16 +25,16 @@
 			console.log('+hideAddressBox');
 			BeforeAddrSaveEvent.unsub(BusinessAddressCreateHandler.before);
 			AfterAddrSaveEvent.unsub(BusinessAddressCreateHandler.after);
-			$AppOverlay.close();
+			AppLib.UIOverlay.Instance().close();
 		}
 
 		function deleteBusiness(e, This)
 		{
 			var $item = $(This).parents('.business_item');
 			var b_id = $item.attr('data-id');
-			var data = AppUtil.Instanc().csrfToken();
+			var data = AppUtil.csrfToken();
 			data["B_id"] = b_id;
-			var http = new HttpService();
+			var http = new AppLib.HttpService();
 			http.post('/business/delete/', data, function(status, resp) {
 				if (status == true) {
 					$item.remove();
@@ -43,7 +43,7 @@
 					for (var err in resp.data) {
 						errors += resp.data[err] + '<br />';
 					}
-					UINoti.make({title:e.message, text:errors}).show();
+					AppLib.UINoti.make({title:e.message, text:errors}).show();
 				}
 			});
 		}
@@ -55,17 +55,18 @@
 
 			var $item = $(This).parents('.business_item');
 			var b_id = $item.attr('data-id');
-			var data = AppUtil.Instance().csrfToken();
+			var data = AppLib.AppUtil.csrfToken();
 			data["B_id"] = b_id;
 			data["pid"] = 2;
-			$AppModal.show();
-			var http = new HttpService();
+			var modal = new AppLib.UIModal();
+			modal.show();
+			var http = new AppLib.HttpService();
 			http.get('/business/address/', data, function(status, resp) {
 				if (true == status) {
-					$AppModal.update(resp);
+					modal.update(resp);
 				} else {
 					console.log('data : '+JSON.stringify(resp.data));
-					$AppModal.update(JSON.stringify(resp.data));
+					modal.update(JSON.stringify(resp.data));
 				}
 			});
 		}
@@ -81,13 +82,13 @@
 					var val = e.resp;
 					$('#business_addr_cont').prepend(val);
 					hideAddressBox();
-					UINoti.make({title:"Saved", text:e.resp.message}).show();
+					AppLib.UINoti.make({title:"Saved", text:e.resp.message}).show();
 				} else {
 					var errors = '';
 					for (var err in e.resp.data) {
 						errors += e.resp.data[err] + '<br />';
 						}
-					UINoti.make({title:e.resp.message, text:errors}).show();
+					AppLib.UINoti.make({title:e.resp.message, text:errors}).show();
 				}
 				return true;
 			}
@@ -101,7 +102,7 @@
 			$form.find('.info_view, .info_edit').toggle();
 			var $controls = $block.find('.form_controls');
 			$controls.toggle();
-			FormUtil.Instance().resetVal($form);
+			AppLib.FormUtil.resetVal($form);
 		}
 
 		var BusinessItemUpdateFormHandler = {
@@ -117,16 +118,16 @@
 					for (var key in vals) {
 						var val = vals[key];
 						console.log(key+' : '+val);
-						FormUtil.Instance().setValByName($form, key, val);
+						AppLib.FormUtil.setValByName($form, key, val);
 					}
 					$form.find('input[type=button]').click();
-					UINoti.make({title:'Done!!', text:e.resp.message}).show();
+					AppLib.UINoti.make({title:'Done!!', text:e.resp.message}).show();
 				} else {
 					var errors = '';
 					for (var err in e.resp.data) {
 						errors += e.resp.data[err] + '<br />';
 					}
-					UINoti.make({title:e.resp.message, text:errors}).show();
+					AppLib.UINoti.make({title:e.resp.message, text:errors}).show();
 				}
 			},
 		};
@@ -141,13 +142,13 @@
 					var val = e.resp;
 					$('#business_items_cont').prepend(val);
 					toggleBusinessBox();
-					UINoti.make({title:"Saved", text:"Business saved Successfully!!"}).show();
+					AppLib.UINoti.make({title:"Saved", text:"Business saved Successfully!!"}).show();
 				} else {
 					var errors = '';
 					for (var err in e.resp.data) {
 						errors += e.resp.data[err] + '<br />';
 					}
-					UINoti.make({title:e.resp.message, text:errors}).show();
+					AppLib.UINoti.make({title:e.resp.message, text:errors}).show();
 				}
 				return true;
 			}

@@ -1,15 +1,16 @@
+<script type="javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMz94217XzpYaxnQRagzgCwpy4dfBM1Ho&libraries=places&callback=__onGoogleMapLoaded" defer />
 <script type="text/javascript">
 
-	var BeforeAddrSaveEvent = new AppLib.AppEventHandler();
-	var AfterAddrSaveEvent = new AppLib.AppEventHandler();
+	var BeforeAddrSaveEvent = new AppLib.AppEvent();
+	var AfterAddrSaveEvent = new AppLib.AppEvent();
 	var AddressFormHandler = {
 		before: function(e) {
 			console.log('+BeforeAdrReq');
-			return BeforeAddrSaveEvent.trigger(e);
+			return BeforeAddrSaveEvent.trigger(e, null);
 		},
 		after: function(e) {
 			console.log('+AfterAdrRes');
-			return AfterAddrSaveEvent.trigger(e);
+			return AfterAddrSaveEvent.trigger(e, null);
 		}
 	};
 

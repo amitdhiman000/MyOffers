@@ -75,7 +75,7 @@ export class AjaxForm {
 
 export class AppFormHandler {
 	constructor(config: any) {
-		ObjectUtil.Instance().merge(this, config);
+		ObjectUtil.merge(this, config);
 	}
 
 	before(e: any) {
@@ -91,7 +91,7 @@ export class AppFormHandler {
 			for (let key in vals) {
 				let val = vals[key];
 				console.log(key+' : '+val);
-				FormUtil.Instance().setValByName($form, key, val);
+				FormUtil.setValByName($form, key, val);
 			}
             $form.find('input[type=button]').click();
             UINoti.make({title:'Done!!', text:e.resp.message}).show();

@@ -23,7 +23,7 @@ export class UIOverlay {
     $html_def: any = null;
 
     _shown: boolean = false;
-    _options_def: any = { closeBtn:true, closeOnEscape:true, closeOnClickOutside:true };
+    _options_def: any = { closeBtn:true, closeOnEscape:true, closeOnClickOutside:true, onClose: ()=>{} };
     _options: any = null;
 
     private static _instance: UIOverlay = null;
@@ -43,12 +43,11 @@ export class UIOverlay {
 		this.$overlay.on('click', this, this._onclick);
 		this.$overlay.on('keyup', this, this._onKeyUp);
 		this._shown = false;
-		this._options_def = { closeBtn:true, closeOnEscape:true, closeOnClickOutside:true };
-		this._options = ObjectUtil.Instance().merge(this._options_def, {});
+		this._options = ObjectUtil.merge(this._options_def, {});
     }
 
 	_apply_options(options: any) {
-		this._options = ObjectUtil.Instance().merge(this._options_def, options);
+		this._options = ObjectUtil.merge(this._options_def, options);
 		if (this._options['closeBtn'] === false)
 			this.$closebtn.hide();
 		else
@@ -104,7 +103,8 @@ export class UIOverlay {
 		this.$closebtn.click();
     }
 
-	_close() {
+	_close(e: any) {
+
 		let $html = this.$html.hide();
 		if ($html.attr('data-type') == 'persist') {
 			setTimeout(function(){ $html.appendTo('body'); }, 100);
@@ -116,14 +116,14 @@ export class UIOverlay {
 
 	_onclose(e: any) {
 		console.log("ONCLOSE OVERLAY");
-		e.data._close();
+		e.data._close(e);
     }
 
 	_onclick(e: any) {
 		console.log("ONCLICK OVERLAY");
 		let This = e.data;
 		if (This._options["closeOnClickOutside"] === true && $(e.target).parent().is(This.$overlay)) {
-			This._close();
+			This._close(e);
 		}
     }
 
@@ -131,24 +131,36 @@ export class UIOverlay {
 		console.log("ONKEYUP OVERLAY");
 		let This = e.data;
 		if (This._options["closeOnEscape"] === true && e.keyCode == KEYS.ESCAPE) {
-			This._close();
+			This._close(e);
 		}
 	}
 }
 
 
 /* App Modal */
-export class UIModal extends UIOverlay {
+export class UIModal {
     show($html: any, options?: any): this {
-        return super.show($html, { closeOnClickOutside:true });
+        UIOverlay.Instance().show($html, { closeOnClickOutside:true, onClose: this.onClose});
+        return this;
+    }
+
+    update($html: any): this {
+        UIOverlay.Instance().update($html);
+        return this;
     }
 
     hide(): this {
-        return super.hide();
+        UIOverlay.Instance().hide();
+        return this;
     }
 
-    close() {
-        super.close();
+    close(): this {
+        UIOverlay.Instance().close();
+        return this;
+    }
+
+    onClose(e: any) {
+
     }
 };
 
@@ -191,8 +203,8 @@ export class UIOptionList {
         this.$_self = $Inst;
         $Inst.optionsList = this;
         /* merge the options */
-        ObjectUtil.Instance().merge(this._config, config);
-        ObjectUtil.Instance().merge(this._overrides, overrides);
+        ObjectUtil.merge(this._config, config);
+        ObjectUtil.merge(this._overrides, overrides);
         this._create();
     }
     
@@ -396,8 +408,8 @@ export class UIFileUpload {
 
     constructor($Inst: any, overrides: any, config: any) {
         console.log('+UIFileUpload : '+$Inst.prop('tagName'));
-        ObjectUtil.Instance().merge(this._overrides, overrides);
-        ObjectUtil.Instance().merge(this._config, config);
+        ObjectUtil.merge(this._overrides, overrides);
+        ObjectUtil.merge(this._config, config);
         this.$_self = $Inst;
         this._create();
     }
@@ -450,7 +462,7 @@ export class UIFileUpload {
         let This = this;
         let formData = new FormData();
         let fileName: string = file.name;
-        let csrf: any = AppUtil.Instance().csrfToken();
+        let csrf: any = AppUtil.csrfToken();
         for (let key in csrf) {
             formData.append(key, csrf[key]);
         }

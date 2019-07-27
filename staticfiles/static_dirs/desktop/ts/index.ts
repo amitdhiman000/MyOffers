@@ -1,15 +1,16 @@
 //import * as $ from '../../libs/jquery/jquery-3.3.1.min';
 //import * as $ from 'jquery'; // esModuleInterop:false in tsconfig.json
 import $ from 'jquery';
-import { App } from './App';
-import { UIOptionList, UITabs, UIFileUpload } from './UIWidgets'
-import { AjaxForm, AppFormHandler } from './AppForm';
-import { UINoti } from './UINoti';
-import { UIToast } from './UIToast';
-import { HttpResponseHandler, HttpService } from './HttpService';
-import { GoogleMap } from './GoogleMap';
-import { ObjectUtil, AppUtil, FormUtil } from './AppUtils';
-import { AppEventHandler, AppGeo, AppCookie, AppStorage } from './AppUtils';
+import { App } from './App/App';
+import { UIOptionList, UITabs, UIFileUpload } from './App/UIWidgets';
+import { UIOverlay, UIModal, UIDialog } from './App/UIWidgets';
+import { AjaxForm, AppFormHandler } from './App/AppForm';
+import { UINoti } from './App/UINoti';
+import { UIToast } from './App/UIToast';
+import { HttpResponseHandler, HttpService } from './App/HttpService';
+import { GoogleMap } from './App/GoogleMap';
+import { ObjectUtil, AppUtil, FormUtil } from './App/AppUtils';
+import { AppEvent, AppGeo, AppCookie, AppStorage } from './App/AppUtils';
 
 /* Export for AppLib to use in html <script> tags */
 export {
@@ -17,13 +18,16 @@ export {
     AppFormHandler,
     UINoti,
     UIToast,
+    UIOverlay,
+    UIModal,
+    UIDialog,
     HttpResponseHandler,
     HttpService,
     GoogleMap,
     ObjectUtil,
     AppUtil,
     FormUtil,
-    AppEventHandler,
+    AppEvent,
     AppGeo,
     AppCookie,
     AppStorage,
