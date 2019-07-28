@@ -9,7 +9,7 @@ import { UINoti } from './App/UINoti';
 import { UIToast } from './App/UIToast';
 import { HttpResponseHandler, HttpService } from './App/HttpService';
 import { GoogleMap } from './App/GoogleMap';
-import { ObjectUtil, AppUtil, FormUtil } from './App/AppUtils';
+import { ObjectUtil, AppUtil, DomUtil, FormUtil } from './App/AppUtils';
 import { AppEvent, AppGeo, AppCookie, AppStorage } from './App/AppUtils';
 
 /* Export for AppLib to use in html <script> tags */
@@ -26,6 +26,7 @@ export {
     GoogleMap,
     ObjectUtil,
     AppUtil,
+    DomUtil,
     FormUtil,
     AppEvent,
     AppGeo,

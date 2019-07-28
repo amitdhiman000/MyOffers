@@ -522,6 +522,19 @@ var AppUtil = /** @class */ (function () {
 }());
 exports.AppUtil = AppUtil;
 ;
+var DomUtil = /** @class */ (function () {
+    function DomUtil() {
+    }
+    DomUtil.scrollTo = function ($elm) {
+        var elmTop = $elm.offset().top;
+        var headerH = jquery_1.default("#app_header").height();
+        jquery_1.default('html, body').animate({
+            scrollTop: elmTop - headerH
+        }, 500);
+    };
+    return DomUtil;
+}());
+exports.DomUtil = DomUtil;
 var FormUtil = /** @class */ (function () {
     function FormUtil() {
     }
@@ -710,9 +723,9 @@ var GoogleMapsLoader = /** @class */ (function () {
     }
     GoogleMapsLoader.load = function () {
         // First time 'load' is called?
-        if (!GoogleMapsLoader.promise) {
+        if (!this.promise) {
             // Make promise to load
-            GoogleMapsLoader.promise = new Promise(function (resolve) {
+            this.promise = new Promise(function (resolve) {
                 // Set callback for when google maps is loaded.
                 window['__onGoogleMapLoaded'] = function (ev) {
                     resolve('google maps api loaded');
@@ -724,11 +737,13 @@ var GoogleMapsLoader = /** @class */ (function () {
             });
         }
         // Always return promise. When 'load' is called many times, the promise is already resolved.
-        return GoogleMapsLoader.promise;
+        return this.promise;
+    };
+    GoogleMapsLoader.loaded = function () {
+        return AppUtils_1.ObjectUtil.isObject(window.google) && AppUtils_1.ObjectUtil.isObject(window.google.maps);
     };
     return GoogleMapsLoader;
 }());
-exports.GoogleMapsLoader = GoogleMapsLoader;
 var GoogleMap = /** @class */ (function () {
     function GoogleMap(mapBox, config) {
         this._IsInit = false;
@@ -738,8 +753,23 @@ var GoogleMap = /** @class */ (function () {
         this._Timeout = null;
         this._LatLong = { lat: 12.964914, lng: 77.596683 };
         this.AddressFoundEvent = new AppUtils_1.AppEvent();
-        GoogleMapsLoader.load();
+        this.load(function () { });
     }
+    GoogleMap.load = function (OnLoad) {
+        if (GoogleMapsLoader.loaded()) {
+            OnLoad({ status: true });
+        }
+        else {
+            GoogleMapsLoader.load().then(function () {
+                OnLoad({ status: true });
+            }).catch(function () {
+                OnLoad({ status: false });
+            });
+        }
+    };
+    GoogleMap.prototype.load = function (OnLoad) {
+        GoogleMap.load(OnLoad);
+    };
     GoogleMap.prototype.attach = function (mapBox) {
         console.log("+GoogleMap::init");
         var This = this;
@@ -1630,6 +1660,7 @@ exports.GoogleMap = GoogleMap_1.GoogleMap;
 var AppUtils_1 = __webpack_require__(/*! ./App/AppUtils */ "../static_dirs/desktop/ts/App/AppUtils.ts");
 exports.ObjectUtil = AppUtils_1.ObjectUtil;
 exports.AppUtil = AppUtils_1.AppUtil;
+exports.DomUtil = AppUtils_1.DomUtil;
 exports.FormUtil = AppUtils_1.FormUtil;
 var AppUtils_2 = __webpack_require__(/*! ./App/AppUtils */ "../static_dirs/desktop/ts/App/AppUtils.ts");
 exports.AppEvent = AppUtils_2.AppEvent;

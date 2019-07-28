@@ -1,0 +1,2 @@
+interface Window { google: any; }
+

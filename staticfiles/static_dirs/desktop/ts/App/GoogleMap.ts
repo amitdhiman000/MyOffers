@@ -1,17 +1,17 @@
-import {AppEvent, AppGeo} from './AppUtils';
+import {ObjectUtil, AppEvent, AppGeo} from './AppUtils';
 import {UIToast} from './UIToast';
 
+declare var google: any;
 const url = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCMz94217XzpYaxnQRagzgCwpy4dfBM1Ho&libraries=places&callback=__onGoogleMapLoaded';
-
-export class GoogleMapsLoader {
+class GoogleMapsLoader {
     private static promise: any;
 
-    public static load() {
+    static load() {
         // First time 'load' is called?
-        if (!GoogleMapsLoader.promise) {
+        if (!this.promise) {
 
             // Make promise to load
-            GoogleMapsLoader.promise = new Promise( (resolve) => {
+            this.promise = new Promise( (resolve) => {
                 // Set callback for when google maps is loaded.
                 window['__onGoogleMapLoaded'] = (ev: any ) => {
                     resolve('google maps api loaded');
@@ -25,12 +25,13 @@ export class GoogleMapsLoader {
         }
 
         // Always return promise. When 'load' is called many times, the promise is already resolved.
-        return GoogleMapsLoader.promise;
-    }
+        return this.promise;
+	}
+
+	static loaded() {
+		return ObjectUtil.isObject(window.google) && ObjectUtil.isObject(window.google.maps);
+	}
 }
-
-
-declare var google: any;
 
 export class GoogleMap {
 	_IsInit = false;
@@ -40,10 +41,27 @@ export class GoogleMap {
 	_Timeout = null;
 	_LatLong = {lat:12.964914, lng:77.596683};
     AddressFoundEvent: AppEvent = new AppEvent();
-    
+
+	static load(OnLoad: any) {
+		if (GoogleMapsLoader.loaded()) {
+			OnLoad({status: true});
+		} else {
+			GoogleMapsLoader.load().then(()=>{
+				OnLoad({status: true});
+			}).catch(()=>{
+				OnLoad({status: false});
+			});
+		}
+	}
+
     constructor(mapBox: any, config: any) {
-        GoogleMapsLoader.load();
-    }
+		this.load(()=>{});
+	}
+
+
+	load(OnLoad: any) {
+		GoogleMap.load(OnLoad);
+	}
 
     attach(mapBox: any) {
 		console.log("+GoogleMap::init");

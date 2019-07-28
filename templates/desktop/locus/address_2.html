@@ -22,7 +22,7 @@
 			'A_pincode': pincode,
 			'A_location': loc,
 		};
-		AppLib.FormUtils.fillByName($('#locus_addr_form'), vals);
+		AppLib.FormUtil.fillByName($('#locus_addr_form'), vals);
 		showAddressBox(e, This);
 	}
 
@@ -53,7 +53,7 @@
 	function hideAddressBox()
 	{
 		console.log('+hideAddressBox');
-		AppLib.FormUtils.fillByName($('#locus_addr_form'), {A_id:'-1'});
+		AppLib.FormUtil.fillByName($('#locus_addr_form'), {A_id:'-1'});
 		AppLib.UIOverlay.Instance().close();
 	}
 
@@ -62,7 +62,7 @@
 		console.log('+toggleBoxSize');
 		var $This = $(this);
 		$This.toggleClass('locus_addr_item_w_expanded');
-		AppLib.AppUtil.scrollTo($This);
+		AppLib.DomUtil.scrollTo($This);
 	}
 
 	function OnAddrSaveRes__(e) {

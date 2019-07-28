@@ -166,8 +166,8 @@ class BALinkBulkForm(CreateForm):
         self.m_fields = ba_fields
 
     # overriding parse for special case of list
-    def parse(self, request, is_json=True):
-        super().parse(request, is_json)
+    def parse(self, request):
+        super().parse(request)
         rkey = self.m_rfields.get('addresses', None)
         values_set = self.m_values.getlist(rkey)
         self.make_model_value(rkey, values_set)

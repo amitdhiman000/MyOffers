@@ -1,4 +1,3 @@
-<script type="javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMz94217XzpYaxnQRagzgCwpy4dfBM1Ho&libraries=places&callback=__onGoogleMapLoaded" defer />
 <script type="text/javascript">
 
 	var BeforeAddrSaveEvent = new AppLib.AppEvent();
@@ -15,6 +14,16 @@
 	};
 
 	var googleMap = new AppLib.GoogleMap();
+	function loadMap(OnLoad)
+	{
+		googleMap.load(function(e) {
+			if (e.status) {
+				initMap();
+				Onload(e);
+			}
+		});
+	}
+
 	function initMap()
 	{
 		var mapBox = document.getElementById("gmap_box");
@@ -25,7 +34,7 @@
 		googleMap.AddressFoundEvent.sub(OnAddressFound);
 	}
 
-	function OnAddressFound(data)
+	function OnAddressFound(e, data)
 	{
 		console.log("+OnAddressFound");
 		if (!data.status)
@@ -54,10 +63,19 @@
 
 	function locateMe()
 	{
-		AppLib.AppGeo.Instance().locate(function(lt,lg) {
-			googleMap.updateLoc(lt,lg);
+		loadMap(function() {
+			if (e.status) {
+					AppLib.AppGeo.Instance().locate(function(lt,lg) {
+					googleMap.updateLoc(lt,lg);
+				});
+			} else  {
+				AppLib.UIToast.make({title: "Failed", text: "Failed to load maps"}).show();
+			}
 		});
 	}
+	$(function(){
+		locateMe();
+	});
 </script>
 
 <div style="border: 1px solid #ddd;" class="wt-overlay-scroll" >

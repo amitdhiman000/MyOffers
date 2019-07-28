@@ -48,7 +48,7 @@ class AddressCreateForm(CreateForm):
 	def validate(self):
 		super().validate()
 
-		#location = self.model_value('location')
+		self.del_model_value('id')
 		location = self.del_model_value('location')
 		if location is not None:
 			try:

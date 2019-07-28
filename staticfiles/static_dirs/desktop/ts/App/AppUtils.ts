@@ -67,6 +67,16 @@ export class AppUtil {
     }
 };
 
+export class DomUtil {
+	static scrollTo($elm: any) {
+		var elmTop = $elm.offset().top;
+		var headerH = $("#app_header").height();
+		$('html, body').animate({
+			scrollTop: elmTop - headerH
+		}, 500);
+	}
+}
+
 export class FormUtil {
 
 	static setValByName($form: any, name: string, val: string) {
