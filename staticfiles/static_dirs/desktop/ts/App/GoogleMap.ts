@@ -54,7 +54,7 @@ export class GoogleMap {
 		}
 	}
 
-    constructor(mapBox: any, config: any) {
+    constructor(mapBox?: any, config?: any) {
 		this.load(()=>{});
 	}
 
@@ -110,7 +110,7 @@ export class GoogleMap {
 			This._Marker.setVisible(false);
 			let place = autocomplete.getPlace();
 			if (!place.geometry) {
-				UIToast.Instance().show("No details available for : '" + place.name + "'");
+				UIToast.show("No details available for : '" + place.name + "'");
 				return;
 			}
 

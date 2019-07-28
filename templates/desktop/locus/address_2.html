@@ -1,9 +1,9 @@
 {% load tz %}
 {% load staticfiles %}
-{% include './address_picker_1.html' %}
 
 <script type="text/javascript" >
 
+	var addressPicker = new AppLib.AddressPicker();
 	function editAddress(e, This)
 	{
 		console.log('+editAddress');
@@ -22,8 +22,12 @@
 			'A_pincode': pincode,
 			'A_location': loc,
 		};
-		AppLib.FormUtil.fillByName($('#locus_addr_form'), vals);
-		showAddressBox(e, This);
+		addressPicker.show(vals);
+	}
+
+	function showAddressBox(e, This)
+	{
+		addressPicker.show();
 	}
 
 	function deleteAddress(e, This)
@@ -44,19 +48,6 @@
 		});
 	}
 
-	function showAddressBox(e, This) {
-		console.log("+showAddressBox");
-		e.stopPropagation();
-		AppLib.UIOverlay.Instance().show($("#locus_addr_picker"));
-	}
-
-	function hideAddressBox()
-	{
-		console.log('+hideAddressBox');
-		AppLib.FormUtil.fillByName($('#locus_addr_form'), {A_id:'-1'});
-		AppLib.UIOverlay.Instance().close();
-	}
-
 	function toggleBoxSize(e)
 	{
 		console.log('+toggleBoxSize');
@@ -70,7 +61,7 @@
 		if (e.status == true) {
 			var val = '<div  class="locus_addr_item_w" >'+e.resp+'</div>';
 			$("#locus_addr_cont").prepend(val);
-			hideAddressBox();
+			addressPicker.hide();
 			AppLib.UINoti.make({title:"Saved", text:"Address saved Successfully!!"}).show();
 		} else {
 			var errors = '';
@@ -83,7 +74,7 @@
 	}
 
 	$(function() {
-		AfterAddrSaveEvent.sub(OnAddrSaveRes__);
+		addressPicker.AfterSaveEvent.sub(OnAddrSaveRes__);
 		$(document).on("click", ".locus_addr_item_w", toggleBoxSize);
 	});
 </script>

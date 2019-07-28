@@ -87,6 +87,119 @@ var AppLib =
 /************************************************************************/
 /******/ ({
 
+/***/ "../static_dirs/desktop/ts/App/AddressPicker.ts":
+/*!******************************************************!*\
+  !*** ../static_dirs/desktop/ts/App/AddressPicker.ts ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function($) {
+Object.defineProperty(exports, "__esModule", { value: true });
+var __1 = __webpack_require__(/*! .. */ "../static_dirs/desktop/ts/index.ts");
+var AppLib_1 = __webpack_require__(/*! ./AppLib */ "../static_dirs/desktop/ts/App/AppLib.ts");
+var AddressPicker = /** @class */ (function () {
+    function AddressPicker(options) {
+        this._$html = $("<div id=\"locus_addr_picker\" data-type=\"persist\" style=\"margin:0px auto; width:80%; padding:2px;\">\n                    <div class=\"ui-block\" >\n                        <div class=\"ui-block-head\">\n                            <div style=\"text-align: center;\">\n                                <h3>ADDRESS</h3>\n                            </div>\n                            <div>\n                            </div>\n                        </div>\n                        <div class=\"ui-block-body\">\n                            <div style=\"border: 1px solid #ddd;\" class=\"wt-overlay-scroll\" >\n                                <div style=\"display:table-cell; width: 50%;\">\n                                    <table class=\"ui-info-table\">\n                                        <tr><td>LOCATION</td></tr>\n                                        <tr><td>\n                                            <input type=\"text\" name=\"gmap_search_input\" id=\"gmap_search_input\" class=\"ui-input\" style=\"max-width:50em; padding-right:7em;\" />\n                                            <a class=\"ui-btn-a\" style=\"width:7em; margin-left: -7em;\" onclick=\"locateMe()\"> Locate Me </a>\n                                        </td></tr>\n                                        <tr><td>\n                                        <div id=\"gmap_box\" style=\"width: 95%; height: 300px; border: 2px solid #bbb;\" >\n                                            <h1>&nbsp;</h1>\n                                        </div>\n                                        </td></tr>\n                                        <tr><td>\n                                            <h2 style=\"font-size: 1em; font-weight:bold;\">\n                                                Choose your business location from map to increase Visibility of your business on Internet\n                                            </h2>\n                                        </td></tr>\n                                    </table>\n                                </div>\n\n                                <div style=\"display:table-cell; width: 50%;\" >\n                                    <form action=\"/locus/address/create/\" method=\"POST\" class=\"ajax-form locus_addr_form\" >\n                                    " + AppLib_1.AppUtil.csrfField() + "\n                                    <input type=\"hidden\" name=\"A_id\" value=\"-1\" />\n                                    <input type=\"hidden\" name=\"A_location\" value=\"12.964914,77.596683\" />\n                                    <table class=\"ui-info-table\">\n                                        <tr><td>NAME</td></tr>\n                                        <tr><td>\n                                            <input type=\"text\" name=\"A_name\" class=\"ui-input\" placeholder=\"House / Office Building Number\" />\n                                        </td></tr>\n                                        <tr><td>PINCODE / ZIPCODE</td></tr>\n                                        <tr><td><input type=\"text\" name=\"A_pincode\" class=\"ui-input\" placeholder=\"176039\"/> </td></tr>\n                                        <tr><td>ADDRESS</td></tr>\n                                        <tr><td><textarea name=\"A_address\" class=\"ui-input\" placeholder=\"Full Address\" > </textarea> </td></tr>\n                                        <tr><td>PERSON / INCHARGE</td></tr>\n                                        <tr><td><input type=\"text\" name=\"A_pname\" class=\"ui-input\" placeholder=\"Ramesh Kumar\" /> </td></tr>\n                                        <tr><td>PHONE</td></tr>\n                                        <tr><td><input type=\"text\" name=\"A_phone\" class=\"ui-input\" placeholder=\"+91 9876543210\" /> </td></tr>\n                                        <tr><td><input type=\"submit\" value=\"Save\" class=\"ui-btn\" /></td></tr>\n                                    </table>\n                                    </form>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </div>");
+        this._$form = null;
+        this.BeforeSaveEvent = new __1.AppEvent();
+        this.AfterSaveEvent = new __1.AppEvent();
+        this.CloseEvent = new __1.AppEvent();
+        this._googleMap = new __1.GoogleMap();
+        this._$form = this._$html.find('.locus_addr_form');
+        this._$form.data('data-handler', this);
+        this.loadMap(function () { });
+    }
+    AddressPicker.prototype.show = function (vals) {
+        var _this = this;
+        if (vals !== undefined) {
+            this.updateVals(vals);
+        }
+        var config = { onClose: function () { _this.close(); } };
+        __1.UIOverlay.Instance().show(this._$html, config);
+    };
+    AddressPicker.prototype.hide = function () {
+        this.close();
+    };
+    AddressPicker.prototype.close = function () {
+        this.CloseEvent.trigger({}, null);
+        this._$html.detach();
+        // reset id before closing.
+        __1.FormUtil.setValByName(this._$form, 'A_id', -1);
+        __1.UIOverlay.Instance().hide();
+    };
+    AddressPicker.prototype.updateVals = function (vals) {
+        __1.FormUtil.fillByName(this._$form, vals);
+    };
+    AddressPicker.prototype.before = function (e) {
+        console.log('+BeforeAdrReq');
+        return this.BeforeSaveEvent.trigger(e, null);
+    };
+    AddressPicker.prototype.after = function (e) {
+        console.log('+AfterAdrRes');
+        return this.AfterSaveEvent.trigger(e, null);
+    };
+    AddressPicker.prototype.loadMap = function (OnLoad) {
+        var This = this;
+        This._googleMap.load(function (e) {
+            if (e.status) {
+                This.initMap();
+                OnLoad(e);
+            }
+        });
+    };
+    AddressPicker.prototype.initMap = function () {
+        var mapBox = this._$html.find("#gmap_box").get(0);
+        var mapInput = this._$html.find("#gmap_search_input").get(0);
+        this._googleMap.attach(mapBox);
+        this._googleMap.initPlaceSearch(mapInput);
+        this._googleMap.AddressFoundEvent.sub(this.OnFound.bind(this));
+    };
+    AddressPicker.prototype.OnFound = function (e, data) {
+        console.log("+OnAddressFound");
+        if (!data.status)
+            return;
+        var faddr = data.address.formatted_address;
+        var loc = data.address.geometry.location;
+        loc = loc.lat() + ',' + loc.lng();
+        console.log('loc : ' + loc);
+        var parts = faddr.split(",");
+        var len = parts.length;
+        var name = parts[0];
+        var stateStr = parts[len - 2];
+        var index = stateStr.lastIndexOf(" ");
+        var state = stateStr.substr(0, index);
+        var pincode = stateStr.substr(index + 1);
+        var country = parts[len - 1];
+        var vals = {
+            'A_name': name,
+            'A_address': faddr,
+            'A_pincode': pincode,
+            'A_location': loc,
+        };
+        __1.FormUtil.fillByName(this._$form, vals);
+    };
+    AddressPicker.prototype.locateMe = function () {
+        this.loadMap(function (e) {
+            if (e.status) {
+                __1.AppGeo.locate(function (lt, lg) {
+                    this._googleMap.updateLoc(lt, lg);
+                });
+            }
+            else {
+                __1.UIToast.show("Failed to load maps");
+            }
+        });
+    };
+    return AddressPicker;
+}());
+exports.AddressPicker = AddressPicker;
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! jquery */ "jquery")))
+
+/***/ }),
+
 /***/ "../static_dirs/desktop/ts/App/App.ts":
 /*!********************************************!*\
   !*** ../static_dirs/desktop/ts/App/App.ts ***!
@@ -435,6 +548,45 @@ var AppHistory = /** @class */ (function () {
     return AppHistory;
 }());
 exports.AppHistory = AppHistory;
+
+
+/***/ }),
+
+/***/ "../static_dirs/desktop/ts/App/AppLib.ts":
+/*!***********************************************!*\
+  !*** ../static_dirs/desktop/ts/App/AppLib.ts ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var AppForm_1 = __webpack_require__(/*! ./AppForm */ "../static_dirs/desktop/ts/App/AppForm.ts");
+exports.AjaxForm = AppForm_1.AjaxForm;
+exports.AppFormHandler = AppForm_1.AppFormHandler;
+var UINoti_1 = __webpack_require__(/*! ./UINoti */ "../static_dirs/desktop/ts/App/UINoti.ts");
+exports.UINoti = UINoti_1.UINoti;
+var UIToast_1 = __webpack_require__(/*! ./UIToast */ "../static_dirs/desktop/ts/App/UIToast.ts");
+exports.UIToast = UIToast_1.UIToast;
+var HttpService_1 = __webpack_require__(/*! ./HttpService */ "../static_dirs/desktop/ts/App/HttpService.ts");
+exports.HttpResponseHandler = HttpService_1.HttpResponseHandler;
+exports.HttpService = HttpService_1.HttpService;
+var GoogleMap_1 = __webpack_require__(/*! ./GoogleMap */ "../static_dirs/desktop/ts/App/GoogleMap.ts");
+exports.GoogleMap = GoogleMap_1.GoogleMap;
+var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../static_dirs/desktop/ts/App/AppUtils.ts");
+exports.ObjectUtil = AppUtils_1.ObjectUtil;
+exports.AppUtil = AppUtils_1.AppUtil;
+exports.FormUtil = AppUtils_1.FormUtil;
+var AppUtils_2 = __webpack_require__(/*! ./AppUtils */ "../static_dirs/desktop/ts/App/AppUtils.ts");
+exports.AppEvent = AppUtils_2.AppEvent;
+exports.AppGeo = AppUtils_2.AppGeo;
+exports.AppCookie = AppUtils_2.AppCookie;
+exports.AppStorage = AppUtils_2.AppStorage;
+function AmitDhiman() {
+    console.log("Amit Dhiman!!");
+}
+exports.AmitDhiman = AmitDhiman;
 
 
 /***/ }),
@@ -811,7 +963,7 @@ var GoogleMap = /** @class */ (function () {
             This._Marker.setVisible(false);
             var place = autocomplete.getPlace();
             if (!place.geometry) {
-                UIToast_1.UIToast.Instance().show("No details available for : '" + place.name + "'");
+                UIToast_1.UIToast.show("No details available for : '" + place.name + "'");
                 return;
             }
             console.log(place);
@@ -985,7 +1137,7 @@ var HttpService = /** @class */ (function () {
             },
             error: function (xhr, error) {
                 console.log('+error : ' + xhr.status);
-                UIToast_1.UIToast.Instance().show('Network error occured');
+                UIToast_1.UIToast.show('Network error occured');
                 handler.complete(false, { 'message': 'Network failed', 'data': { error: error } });
             }
         };
@@ -1021,6 +1173,7 @@ var UINoti = /** @class */ (function () {
         this.title = 'Alert';
         this.text = 'Notification';
         this.timeout = 5000;
+        this._html = "<div class=\"wt-noti\" >\n\t\t\t\t<a class=\"wt-notilink\" style=\"display: table;\" >\n\t\t\t\t<div style=\"display: table-cell; width: 15%; padding: 1em; \">\n\t\t\t\t\t<img src=\"/static/images/svg/checkcircle_24_1.svg\" class=\"ui-icon24\"  />\n\t\t\t\t</div>\n\t\t\t\t<div style=\"display: table-cell; width: 85%; vertical-align: middle;\" >\n\t\t\t\t\t<div class=\"wt-notititle\" style=\"font-weight: bold;\" >\n\t\t\t\t\t</div>\n\t\t\t\t\t<div style=\"border-top: 1px solid #bbb; padding: 0.2em; \"></div>\n\t\t\t\t\t<div class=\"wt-notibody\">\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</div>";
         AppUtils_1.ObjectUtil.merge(this, config);
     }
     UINoti.make = function (config) {
@@ -1028,7 +1181,7 @@ var UINoti = /** @class */ (function () {
     };
     UINoti.prototype.show = function () {
         var This = this;
-        var $elm = jquery_1.default('#wt-noti').clone().removeAttr('id');
+        var $elm = jquery_1.default(this._html);
         $elm.fadeIn({ duration: 1000,
             start: function () {
                 $elm.find('.wt-notititle').html(This.title);
@@ -1065,21 +1218,17 @@ var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "jquery"));
 var UIToast = /** @class */ (function () {
     function UIToast() {
     }
-    UIToast.Instance = function () {
-        return this._instance || (this._instance = new this());
-    };
-    UIToast.prototype.show = function (text, timeout) {
+    UIToast.show = function (text, timeout) {
         if (text === void 0) { text = 'Error'; }
         if (timeout === void 0) { timeout = 1800; }
-        jquery_1.default('.wt-toast').fadeIn({
+        jquery_1.default('<div class="wt-toast" style="display: none;" ></div>').fadeIn({
             duration: 500,
             start: function () { jquery_1.default(this).text(text); },
         }).delay(timeout).fadeOut(500);
     };
-    UIToast.prototype.hide = function () {
+    UIToast.hide = function () {
         jquery_1.default('.wt-toast').hide();
     };
-    UIToast._instance = null;
     return UIToast;
 }());
 exports.UIToast = UIToast;
@@ -1645,6 +1794,8 @@ var UIWidgets_2 = __webpack_require__(/*! ./App/UIWidgets */ "../static_dirs/des
 exports.UIOverlay = UIWidgets_2.UIOverlay;
 exports.UIModal = UIWidgets_2.UIModal;
 exports.UIDialog = UIWidgets_2.UIDialog;
+var AddressPicker_1 = __webpack_require__(/*! ./App/AddressPicker */ "../static_dirs/desktop/ts/App/AddressPicker.ts");
+exports.AddressPicker = AddressPicker_1.AddressPicker;
 var AppForm_1 = __webpack_require__(/*! ./App/AppForm */ "../static_dirs/desktop/ts/App/AppForm.ts");
 exports.AjaxForm = AppForm_1.AjaxForm;
 exports.AppFormHandler = AppForm_1.AppFormHandler;

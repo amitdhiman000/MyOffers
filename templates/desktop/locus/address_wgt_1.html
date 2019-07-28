@@ -63,13 +63,13 @@
 
 	function locateMe()
 	{
-		loadMap(function() {
+		loadMap(function(e) {
 			if (e.status) {
 					AppLib.AppGeo.Instance().locate(function(lt,lg) {
 					googleMap.updateLoc(lt,lg);
 				});
 			} else  {
-				AppLib.UIToast.make({title: "Failed", text: "Failed to load maps"}).show();
+				AppLib.UIToast.show("Failed to load maps");
 			}
 		});
 	}

@@ -102,7 +102,7 @@ export class HttpService {
 			},
 			error: (xhr: any, error: any) => {
 				console.log('+error : '+xhr.status);
-				UIToast.Instance().show('Network error occured');
+				UIToast.show('Network error occured');
 				handler.complete(false, {'message': 'Network failed', 'data': {error} });
 			}
 		};

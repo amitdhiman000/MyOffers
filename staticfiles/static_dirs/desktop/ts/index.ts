@@ -4,6 +4,7 @@ import $ from 'jquery';
 import { App } from './App/App';
 import { UIOptionList, UITabs, UIFileUpload } from './App/UIWidgets';
 import { UIOverlay, UIModal, UIDialog } from './App/UIWidgets';
+import { AddressPicker } from './App/AddressPicker';
 import { AjaxForm, AppFormHandler } from './App/AppForm';
 import { UINoti } from './App/UINoti';
 import { UIToast } from './App/UIToast';
@@ -24,6 +25,7 @@ export {
     HttpResponseHandler,
     HttpService,
     GoogleMap,
+    AddressPicker,
     ObjectUtil,
     AppUtil,
     DomUtil,

@@ -1,24 +1,15 @@
 import $ from 'jquery';
 
 export class UIToast {
-	private static _instance: UIToast = null;
-	
-	public static Instance()
-	{
-		return this._instance || (this._instance = new this());
-	}
 
-	constructor()
-	{}
-
-	show(text='Error', timeout=1800) : any {
-		$('.wt-toast').fadeIn({
+	static show(text='Error', timeout=1800) : any {
+		$('<div class="wt-toast" style="display: none;" ></div>').fadeIn({
 			duration: 500,
 			start: function() { $(this).text(text); },
 		}).delay(timeout).fadeOut(500);
 	}
 
-	hide(): any {
+	static hide(): any {
 		$('.wt-toast').hide();
 	}
 }
