@@ -87,122 +87,9 @@ var AppLib =
 /************************************************************************/
 /******/ ({
 
-/***/ "../static_dirs/desktop/ts/App/AddressPicker.ts":
-/*!******************************************************!*\
-  !*** ../static_dirs/desktop/ts/App/AddressPicker.ts ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function($) {
-Object.defineProperty(exports, "__esModule", { value: true });
-var __1 = __webpack_require__(/*! .. */ "../static_dirs/desktop/ts/index.ts");
-var AppLib_1 = __webpack_require__(/*! ./AppLib */ "../static_dirs/desktop/ts/App/AppLib.ts");
-var AddressPicker = /** @class */ (function () {
-    function AddressPicker(options) {
-        this._$html = $("<div id=\"locus_addr_picker\" data-type=\"persist\" style=\"margin:0px auto; width:80%; padding:2px;\">\n                    <div class=\"ui-block\" >\n                        <div class=\"ui-block-head\">\n                            <div style=\"text-align: center;\">\n                                <h3>ADDRESS</h3>\n                            </div>\n                            <div>\n                            </div>\n                        </div>\n                        <div class=\"ui-block-body\">\n                            <div style=\"border: 1px solid #ddd;\" class=\"wt-overlay-scroll\" >\n                                <div style=\"display:table-cell; width: 50%;\">\n                                    <table class=\"ui-info-table\">\n                                        <tr><td>LOCATION</td></tr>\n                                        <tr><td>\n                                            <input type=\"text\" name=\"gmap_search_input\" id=\"gmap_search_input\" class=\"ui-input\" style=\"max-width:50em; padding-right:7em;\" />\n                                            <a class=\"ui-btn-a\" style=\"width:7em; margin-left: -7em;\" onclick=\"locateMe()\"> Locate Me </a>\n                                        </td></tr>\n                                        <tr><td>\n                                        <div id=\"gmap_box\" style=\"width: 95%; height: 300px; border: 2px solid #bbb;\" >\n                                            <h1>&nbsp;</h1>\n                                        </div>\n                                        </td></tr>\n                                        <tr><td>\n                                            <h2 style=\"font-size: 1em; font-weight:bold;\">\n                                                Choose your business location from map to increase Visibility of your business on Internet\n                                            </h2>\n                                        </td></tr>\n                                    </table>\n                                </div>\n\n                                <div style=\"display:table-cell; width: 50%;\" >\n                                    <form action=\"/locus/address/create/\" method=\"POST\" class=\"ajax-form locus_addr_form\" >\n                                    " + AppLib_1.AppUtil.csrfField() + "\n                                    <input type=\"hidden\" name=\"A_id\" value=\"-1\" />\n                                    <input type=\"hidden\" name=\"A_location\" value=\"12.964914,77.596683\" />\n                                    <table class=\"ui-info-table\">\n                                        <tr><td>NAME</td></tr>\n                                        <tr><td>\n                                            <input type=\"text\" name=\"A_name\" class=\"ui-input\" placeholder=\"House / Office Building Number\" />\n                                        </td></tr>\n                                        <tr><td>PINCODE / ZIPCODE</td></tr>\n                                        <tr><td><input type=\"text\" name=\"A_pincode\" class=\"ui-input\" placeholder=\"176039\"/> </td></tr>\n                                        <tr><td>ADDRESS</td></tr>\n                                        <tr><td><textarea name=\"A_address\" class=\"ui-input\" placeholder=\"Full Address\" > </textarea> </td></tr>\n                                        <tr><td>PERSON / INCHARGE</td></tr>\n                                        <tr><td><input type=\"text\" name=\"A_pname\" class=\"ui-input\" placeholder=\"Ramesh Kumar\" /> </td></tr>\n                                        <tr><td>PHONE</td></tr>\n                                        <tr><td><input type=\"text\" name=\"A_phone\" class=\"ui-input\" placeholder=\"+91 9876543210\" /> </td></tr>\n                                        <tr><td><input type=\"submit\" value=\"Save\" class=\"ui-btn\" /></td></tr>\n                                    </table>\n                                    </form>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </div>");
-        this._$form = null;
-        this.BeforeSaveEvent = new __1.AppEvent();
-        this.AfterSaveEvent = new __1.AppEvent();
-        this.CloseEvent = new __1.AppEvent();
-        this._googleMap = new __1.GoogleMap();
-        this._$form = this._$html.find('.locus_addr_form');
-        this._$form.data('data-handler', this);
-        this.loadMap(function () { });
-    }
-    AddressPicker.prototype.show = function (vals) {
-        var _this = this;
-        if (vals !== undefined) {
-            this.updateVals(vals);
-        }
-        var config = { onClose: function () { _this.close(); } };
-        __1.UIOverlay.Instance().show(this._$html, config);
-    };
-    AddressPicker.prototype.hide = function () {
-        this.close();
-    };
-    AddressPicker.prototype.close = function () {
-        this.CloseEvent.trigger({}, null);
-        this._$html.detach();
-        // reset id before closing.
-        __1.FormUtil.setValByName(this._$form, 'A_id', -1);
-        __1.UIOverlay.Instance().hide();
-    };
-    AddressPicker.prototype.updateVals = function (vals) {
-        __1.FormUtil.fillByName(this._$form, vals);
-    };
-    AddressPicker.prototype.before = function (e) {
-        console.log('+BeforeAdrReq');
-        return this.BeforeSaveEvent.trigger(e, null);
-    };
-    AddressPicker.prototype.after = function (e) {
-        console.log('+AfterAdrRes');
-        return this.AfterSaveEvent.trigger(e, null);
-    };
-    AddressPicker.prototype.loadMap = function (OnLoad) {
-        var This = this;
-        This._googleMap.load(function (e) {
-            if (e.status) {
-                This.initMap();
-                OnLoad(e);
-            }
-        });
-    };
-    AddressPicker.prototype.initMap = function () {
-        var mapBox = this._$html.find("#gmap_box").get(0);
-        var mapInput = this._$html.find("#gmap_search_input").get(0);
-        this._googleMap.attach(mapBox);
-        this._googleMap.initPlaceSearch(mapInput);
-        this._googleMap.AddressFoundEvent.sub(this.OnFound.bind(this));
-    };
-    AddressPicker.prototype.OnFound = function (e, data) {
-        console.log("+OnAddressFound");
-        if (!data.status)
-            return;
-        var faddr = data.address.formatted_address;
-        var loc = data.address.geometry.location;
-        loc = loc.lat() + ',' + loc.lng();
-        console.log('loc : ' + loc);
-        var parts = faddr.split(",");
-        var len = parts.length;
-        var name = parts[0];
-        var stateStr = parts[len - 2];
-        var index = stateStr.lastIndexOf(" ");
-        var state = stateStr.substr(0, index);
-        var pincode = stateStr.substr(index + 1);
-        var country = parts[len - 1];
-        var vals = {
-            'A_name': name,
-            'A_address': faddr,
-            'A_pincode': pincode,
-            'A_location': loc,
-        };
-        __1.FormUtil.fillByName(this._$form, vals);
-    };
-    AddressPicker.prototype.locateMe = function () {
-        this.loadMap(function (e) {
-            if (e.status) {
-                __1.AppGeo.locate(function (lt, lg) {
-                    this._googleMap.updateLoc(lt, lg);
-                });
-            }
-            else {
-                __1.UIToast.show("Failed to load maps");
-            }
-        });
-    };
-    return AddressPicker;
-}());
-exports.AddressPicker = AddressPicker;
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! jquery */ "jquery")))
-
-/***/ }),
-
-/***/ "../static_dirs/desktop/ts/App/App.ts":
+/***/ "../static_dirs/desktop/ts/app/App.ts":
 /*!********************************************!*\
-  !*** ../static_dirs/desktop/ts/App/App.ts ***!
+  !*** ../static_dirs/desktop/ts/app/App.ts ***!
   \********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -210,10 +97,10 @@ exports.AddressPicker = AddressPicker;
 "use strict";
 /* WEBPACK VAR INJECTION */(function($) {
 Object.defineProperty(exports, "__esModule", { value: true });
-var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../static_dirs/desktop/ts/App/AppUtils.ts");
-var AppHistory_1 = __webpack_require__(/*! ./AppHistory */ "../static_dirs/desktop/ts/App/AppHistory.ts");
-var AppComponents_1 = __webpack_require__(/*! ./AppComponents */ "../static_dirs/desktop/ts/App/AppComponents.ts");
-var AppForm_1 = __webpack_require__(/*! ./AppForm */ "../static_dirs/desktop/ts/App/AppForm.ts");
+var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../static_dirs/desktop/ts/app/AppUtils.ts");
+var AppHistory_1 = __webpack_require__(/*! ./AppHistory */ "../static_dirs/desktop/ts/app/AppHistory.ts");
+var AppComponents_1 = __webpack_require__(/*! ./AppComponents */ "../static_dirs/desktop/ts/app/AppComponents.ts");
+var AppForm_1 = __webpack_require__(/*! ./AppForm */ "../static_dirs/desktop/ts/app/AppForm.ts");
 var App = /** @class */ (function () {
     function App() {
         this._history = null;
@@ -265,9 +152,9 @@ exports.App = App;
 
 /***/ }),
 
-/***/ "../static_dirs/desktop/ts/App/AppComponents.ts":
+/***/ "../static_dirs/desktop/ts/app/AppComponents.ts":
 /*!******************************************************!*\
-  !*** ../static_dirs/desktop/ts/App/AppComponents.ts ***!
+  !*** ../static_dirs/desktop/ts/app/AppComponents.ts ***!
   \******************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -279,8 +166,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "jquery"));
-var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../static_dirs/desktop/ts/App/AppUtils.ts");
-var HttpService_1 = __webpack_require__(/*! ./HttpService */ "../static_dirs/desktop/ts/App/HttpService.ts");
+var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../static_dirs/desktop/ts/app/AppUtils.ts");
+var HttpService_1 = __webpack_require__(/*! ./HttpService */ "../static_dirs/desktop/ts/app/HttpService.ts");
 var AppNavbar = /** @class */ (function () {
     function AppNavbar(config) {
         this._config = { 'navbar_btn': '#navbar_btn' };
@@ -362,9 +249,9 @@ exports.AppHeader = AppHeader;
 
 /***/ }),
 
-/***/ "../static_dirs/desktop/ts/App/AppForm.ts":
+/***/ "../static_dirs/desktop/ts/app/AppForm.ts":
 /*!************************************************!*\
-  !*** ../static_dirs/desktop/ts/App/AppForm.ts ***!
+  !*** ../static_dirs/desktop/ts/app/AppForm.ts ***!
   \************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -372,9 +259,9 @@ exports.AppHeader = AppHeader;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var HttpService_1 = __webpack_require__(/*! ./HttpService */ "../static_dirs/desktop/ts/App/HttpService.ts");
-var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../static_dirs/desktop/ts/App/AppUtils.ts");
-var UINoti_1 = __webpack_require__(/*! ./UINoti */ "../static_dirs/desktop/ts/App/UINoti.ts");
+var HttpService_1 = __webpack_require__(/*! ./HttpService */ "../static_dirs/desktop/ts/app/HttpService.ts");
+var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../static_dirs/desktop/ts/app/AppUtils.ts");
+var UINoti_1 = __webpack_require__(/*! ../widgets/UINoti */ "../static_dirs/desktop/ts/widgets/UINoti.ts");
 var AjaxForm = /** @class */ (function () {
     function AjaxForm($form) {
         this.$_form = null;
@@ -479,9 +366,9 @@ exports.AppFormHandler = AppFormHandler;
 
 /***/ }),
 
-/***/ "../static_dirs/desktop/ts/App/AppHistory.ts":
+/***/ "../static_dirs/desktop/ts/app/AppHistory.ts":
 /*!***************************************************!*\
-  !*** ../static_dirs/desktop/ts/App/AppHistory.ts ***!
+  !*** ../static_dirs/desktop/ts/app/AppHistory.ts ***!
   \***************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -493,8 +380,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "jquery"));
-var HttpService_1 = __webpack_require__(/*! ./HttpService */ "../static_dirs/desktop/ts/App/HttpService.ts");
-var App_1 = __webpack_require__(/*! ./App */ "../static_dirs/desktop/ts/App/App.ts");
+var HttpService_1 = __webpack_require__(/*! ./HttpService */ "../static_dirs/desktop/ts/app/HttpService.ts");
+var App_1 = __webpack_require__(/*! ./App */ "../static_dirs/desktop/ts/app/App.ts");
 var AppHistory = /** @class */ (function () {
     function AppHistory() {
         console.log("+AppHistory");
@@ -552,9 +439,9 @@ exports.AppHistory = AppHistory;
 
 /***/ }),
 
-/***/ "../static_dirs/desktop/ts/App/AppLib.ts":
+/***/ "../static_dirs/desktop/ts/app/AppLib.ts":
 /*!***********************************************!*\
-  !*** ../static_dirs/desktop/ts/App/AppLib.ts ***!
+  !*** ../static_dirs/desktop/ts/app/AppLib.ts ***!
   \***********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -562,23 +449,23 @@ exports.AppHistory = AppHistory;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var AppForm_1 = __webpack_require__(/*! ./AppForm */ "../static_dirs/desktop/ts/App/AppForm.ts");
+var AppForm_1 = __webpack_require__(/*! ./AppForm */ "../static_dirs/desktop/ts/app/AppForm.ts");
 exports.AjaxForm = AppForm_1.AjaxForm;
 exports.AppFormHandler = AppForm_1.AppFormHandler;
-var UINoti_1 = __webpack_require__(/*! ./UINoti */ "../static_dirs/desktop/ts/App/UINoti.ts");
+var UINoti_1 = __webpack_require__(/*! ../widgets/UINoti */ "../static_dirs/desktop/ts/widgets/UINoti.ts");
 exports.UINoti = UINoti_1.UINoti;
-var UIToast_1 = __webpack_require__(/*! ./UIToast */ "../static_dirs/desktop/ts/App/UIToast.ts");
+var UIToast_1 = __webpack_require__(/*! ../widgets/UIToast */ "../static_dirs/desktop/ts/widgets/UIToast.ts");
 exports.UIToast = UIToast_1.UIToast;
-var HttpService_1 = __webpack_require__(/*! ./HttpService */ "../static_dirs/desktop/ts/App/HttpService.ts");
+var HttpService_1 = __webpack_require__(/*! ./HttpService */ "../static_dirs/desktop/ts/app/HttpService.ts");
 exports.HttpResponseHandler = HttpService_1.HttpResponseHandler;
 exports.HttpService = HttpService_1.HttpService;
-var GoogleMap_1 = __webpack_require__(/*! ./GoogleMap */ "../static_dirs/desktop/ts/App/GoogleMap.ts");
+var GoogleMap_1 = __webpack_require__(/*! ./GoogleMap */ "../static_dirs/desktop/ts/app/GoogleMap.ts");
 exports.GoogleMap = GoogleMap_1.GoogleMap;
-var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../static_dirs/desktop/ts/App/AppUtils.ts");
+var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../static_dirs/desktop/ts/app/AppUtils.ts");
 exports.ObjectUtil = AppUtils_1.ObjectUtil;
 exports.AppUtil = AppUtils_1.AppUtil;
 exports.FormUtil = AppUtils_1.FormUtil;
-var AppUtils_2 = __webpack_require__(/*! ./AppUtils */ "../static_dirs/desktop/ts/App/AppUtils.ts");
+var AppUtils_2 = __webpack_require__(/*! ./AppUtils */ "../static_dirs/desktop/ts/app/AppUtils.ts");
 exports.AppEvent = AppUtils_2.AppEvent;
 exports.AppGeo = AppUtils_2.AppGeo;
 exports.AppCookie = AppUtils_2.AppCookie;
@@ -591,9 +478,9 @@ exports.AmitDhiman = AmitDhiman;
 
 /***/ }),
 
-/***/ "../static_dirs/desktop/ts/App/AppUtils.ts":
+/***/ "../static_dirs/desktop/ts/app/AppUtils.ts":
 /*!*************************************************!*\
-  !*** ../static_dirs/desktop/ts/App/AppUtils.ts ***!
+  !*** ../static_dirs/desktop/ts/app/AppUtils.ts ***!
   \*************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -857,9 +744,9 @@ exports.AppStorage = AppStorage;
 
 /***/ }),
 
-/***/ "../static_dirs/desktop/ts/App/GoogleMap.ts":
+/***/ "../static_dirs/desktop/ts/app/GoogleMap.ts":
 /*!**************************************************!*\
-  !*** ../static_dirs/desktop/ts/App/GoogleMap.ts ***!
+  !*** ../static_dirs/desktop/ts/app/GoogleMap.ts ***!
   \**************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -867,8 +754,8 @@ exports.AppStorage = AppStorage;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../static_dirs/desktop/ts/App/AppUtils.ts");
-var UIToast_1 = __webpack_require__(/*! ./UIToast */ "../static_dirs/desktop/ts/App/UIToast.ts");
+var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../static_dirs/desktop/ts/app/AppUtils.ts");
+var UIToast_1 = __webpack_require__(/*! ../widgets/UIToast */ "../static_dirs/desktop/ts/widgets/UIToast.ts");
 var url = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCMz94217XzpYaxnQRagzgCwpy4dfBM1Ho&libraries=places&callback=__onGoogleMapLoaded';
 var GoogleMapsLoader = /** @class */ (function () {
     function GoogleMapsLoader() {
@@ -1023,9 +910,9 @@ exports.GoogleMap = GoogleMap;
 
 /***/ }),
 
-/***/ "../static_dirs/desktop/ts/App/HttpService.ts":
+/***/ "../static_dirs/desktop/ts/app/HttpService.ts":
 /*!****************************************************!*\
-  !*** ../static_dirs/desktop/ts/App/HttpService.ts ***!
+  !*** ../static_dirs/desktop/ts/app/HttpService.ts ***!
   \****************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -1037,8 +924,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "jquery"));
-var UIToast_1 = __webpack_require__(/*! ./UIToast */ "../static_dirs/desktop/ts/App/UIToast.ts");
-var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../static_dirs/desktop/ts/App/AppUtils.ts");
+var UIToast_1 = __webpack_require__(/*! ../widgets/UIToast */ "../static_dirs/desktop/ts/widgets/UIToast.ts");
+var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../static_dirs/desktop/ts/app/AppUtils.ts");
 var HttpResponseHandler = /** @class */ (function () {
     function HttpResponseHandler(handlers) {
         this.progress_up = function (p) { console.log('default_progress_up'); };
@@ -1152,10 +1039,10 @@ exports.HttpService = HttpService;
 
 /***/ }),
 
-/***/ "../static_dirs/desktop/ts/App/UINoti.ts":
-/*!***********************************************!*\
-  !*** ../static_dirs/desktop/ts/App/UINoti.ts ***!
-  \***********************************************/
+/***/ "../static_dirs/desktop/ts/index.ts":
+/*!******************************************!*\
+  !*** ../static_dirs/desktop/ts/index.ts ***!
+  \******************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1165,445 +1052,221 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+//import * as $ from '../../libs/jquery/jquery-3.3.1.min';
+//import * as $ from 'jquery'; // esModuleInterop:false in tsconfig.json
 var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "jquery"));
-var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../static_dirs/desktop/ts/App/AppUtils.ts");
-var UINoti = /** @class */ (function () {
-    function UINoti(config) {
-        this.link = window.location.href;
-        this.title = 'Alert';
-        this.text = 'Notification';
-        this.timeout = 5000;
-        this._html = "<div class=\"wt-noti\" >\n\t\t\t\t<a class=\"wt-notilink\" style=\"display: table;\" >\n\t\t\t\t<div style=\"display: table-cell; width: 15%; padding: 1em; \">\n\t\t\t\t\t<img src=\"/static/images/svg/checkcircle_24_1.svg\" class=\"ui-icon24\"  />\n\t\t\t\t</div>\n\t\t\t\t<div style=\"display: table-cell; width: 85%; vertical-align: middle;\" >\n\t\t\t\t\t<div class=\"wt-notititle\" style=\"font-weight: bold;\" >\n\t\t\t\t\t</div>\n\t\t\t\t\t<div style=\"border-top: 1px solid #bbb; padding: 0.2em; \"></div>\n\t\t\t\t\t<div class=\"wt-notibody\">\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</div>";
-        AppUtils_1.ObjectUtil.merge(this, config);
+var App_1 = __webpack_require__(/*! ./app/App */ "../static_dirs/desktop/ts/app/App.ts");
+var UINoti_1 = __webpack_require__(/*! ./widgets/UINoti */ "../static_dirs/desktop/ts/widgets/UINoti.ts");
+exports.UINoti = UINoti_1.UINoti;
+var UIToast_1 = __webpack_require__(/*! ./widgets/UIToast */ "../static_dirs/desktop/ts/widgets/UIToast.ts");
+exports.UIToast = UIToast_1.UIToast;
+var UIOverlay_1 = __webpack_require__(/*! ./widgets/UIOverlay */ "../static_dirs/desktop/ts/widgets/UIOverlay.ts");
+exports.UIOverlay = UIOverlay_1.UIOverlay;
+var UIModal_1 = __webpack_require__(/*! ./widgets/UIModal */ "../static_dirs/desktop/ts/widgets/UIModal.ts");
+exports.UIModal = UIModal_1.UIModal;
+var UIDialog_1 = __webpack_require__(/*! ./widgets/UIDialog */ "../static_dirs/desktop/ts/widgets/UIDialog.ts");
+exports.UIDialog = UIDialog_1.UIDialog;
+var UIOptionList_1 = __webpack_require__(/*! ./widgets/UIOptionList */ "../static_dirs/desktop/ts/widgets/UIOptionList.ts");
+var UIFileUpload_1 = __webpack_require__(/*! ./widgets/UIFileUpload */ "../static_dirs/desktop/ts/widgets/UIFileUpload.ts");
+var UITabs_1 = __webpack_require__(/*! ./widgets/UITabs */ "../static_dirs/desktop/ts/widgets/UITabs.ts");
+var AddressPicker_1 = __webpack_require__(/*! ./widgets/AddressPicker */ "../static_dirs/desktop/ts/widgets/AddressPicker.ts");
+exports.AddressPicker = AddressPicker_1.AddressPicker;
+var AppForm_1 = __webpack_require__(/*! ./app/AppForm */ "../static_dirs/desktop/ts/app/AppForm.ts");
+exports.AjaxForm = AppForm_1.AjaxForm;
+exports.AppFormHandler = AppForm_1.AppFormHandler;
+var HttpService_1 = __webpack_require__(/*! ./app/HttpService */ "../static_dirs/desktop/ts/app/HttpService.ts");
+exports.HttpResponseHandler = HttpService_1.HttpResponseHandler;
+exports.HttpService = HttpService_1.HttpService;
+var GoogleMap_1 = __webpack_require__(/*! ./app/GoogleMap */ "../static_dirs/desktop/ts/app/GoogleMap.ts");
+exports.GoogleMap = GoogleMap_1.GoogleMap;
+var AppUtils_1 = __webpack_require__(/*! ./app/AppUtils */ "../static_dirs/desktop/ts/app/AppUtils.ts");
+exports.ObjectUtil = AppUtils_1.ObjectUtil;
+exports.AppUtil = AppUtils_1.AppUtil;
+exports.DomUtil = AppUtils_1.DomUtil;
+exports.FormUtil = AppUtils_1.FormUtil;
+var AppUtils_2 = __webpack_require__(/*! ./app/AppUtils */ "../static_dirs/desktop/ts/app/AppUtils.ts");
+exports.AppEvent = AppUtils_2.AppEvent;
+exports.AppGeo = AppUtils_2.AppGeo;
+exports.AppCookie = AppUtils_2.AppCookie;
+exports.AppStorage = AppUtils_2.AppStorage;
+function initPlugins() {
+    jquery_1.default.fn.extend({
+        exists: function () { return this.length > 0; },
+        OptionList: function (overrides, config) { new UIOptionList_1.UIOptionList(this, overrides, config); },
+        Tabs: function (overrides, config) { new UITabs_1.UITabs(this, overrides); },
+        FileUpload: function (overrides, config) { new UIFileUpload_1.UIFileUpload(this, overrides, config); },
+    });
+}
+jquery_1.default(function () {
+    initPlugins();
+    var app = App_1.App.Instance();
+    app.show();
+});
+
+
+/***/ }),
+
+/***/ "../static_dirs/desktop/ts/widgets/AddressPicker.ts":
+/*!**********************************************************!*\
+  !*** ../static_dirs/desktop/ts/widgets/AddressPicker.ts ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function($) {
+Object.defineProperty(exports, "__esModule", { value: true });
+var __1 = __webpack_require__(/*! .. */ "../static_dirs/desktop/ts/index.ts");
+var AppLib_1 = __webpack_require__(/*! ../app/AppLib */ "../static_dirs/desktop/ts/app/AppLib.ts");
+var AddressPicker = /** @class */ (function () {
+    function AddressPicker(options) {
+        var _this = this;
+        this._$html = $("<div id=\"locus_addr_picker\" data-type=\"persist\" style=\"margin:0px auto; width:80%; padding:2px;\">\n                    <div class=\"ui-block\" >\n                        <div class=\"ui-block-head\">\n                            <div style=\"text-align: center;\">\n                                <h3>ADDRESS</h3>\n                            </div>\n                            <div>\n                            </div>\n                        </div>\n                        <div class=\"ui-block-body\">\n                            <div style=\"border: 1px solid #ddd;\" class=\"wt-overlay-scroll\" >\n                                <div style=\"display:table-cell; width: 50%;\">\n                                    <table class=\"ui-info-table\">\n                                        <tr><td>LOCATION</td></tr>\n                                        <tr><td>\n                                            <input type=\"text\" name=\"gmap_search_input\" id=\"gmap_search_input\" class=\"ui-input\" style=\"max-width:50em; padding-right:7em;\" />\n                                            <a class=\"ui-btn-a\" style=\"width:7em; margin-left: -7em;\" onclick=\"locateMe()\"> Locate Me </a>\n                                        </td></tr>\n                                        <tr><td>\n                                        <div id=\"gmap_box\" style=\"width: 95%; height: 300px; border: 2px solid #bbb;\" >\n                                            <h1>&nbsp;</h1>\n                                        </div>\n                                        </td></tr>\n                                        <tr><td>\n                                            <h2 style=\"font-size: 1em; font-weight:bold;\">\n                                                Choose your business location from map to increase Visibility of your business on Internet\n                                            </h2>\n                                        </td></tr>\n                                    </table>\n                                </div>\n\n                                <div style=\"display:table-cell; width: 50%;\" >\n                                    <form action=\"/locus/address/create/\" method=\"POST\" class=\"ajax-form locus_addr_form\" >\n                                    " + AppLib_1.AppUtil.csrfField() + "\n                                    <input type=\"hidden\" name=\"A_id\" value=\"-1\" />\n                                    <input type=\"hidden\" name=\"A_location\" value=\"12.964914,77.596683\" />\n                                    <table class=\"ui-info-table\">\n                                        <tr><td>NAME</td></tr>\n                                        <tr><td>\n                                            <input type=\"text\" name=\"A_name\" class=\"ui-input\" placeholder=\"House / Office Building Number\" />\n                                        </td></tr>\n                                        <tr><td>PINCODE / ZIPCODE</td></tr>\n                                        <tr><td><input type=\"text\" name=\"A_pincode\" class=\"ui-input\" placeholder=\"176039\"/> </td></tr>\n                                        <tr><td>ADDRESS</td></tr>\n                                        <tr><td><textarea name=\"A_address\" class=\"ui-input\" placeholder=\"Full Address\" > </textarea> </td></tr>\n                                        <tr><td>PERSON / INCHARGE</td></tr>\n                                        <tr><td><input type=\"text\" name=\"A_pname\" class=\"ui-input\" placeholder=\"Ramesh Kumar\" /> </td></tr>\n                                        <tr><td>PHONE</td></tr>\n                                        <tr><td><input type=\"text\" name=\"A_phone\" class=\"ui-input\" placeholder=\"+91 9876543210\" /> </td></tr>\n                                        <tr><td><input type=\"submit\" value=\"Save\" class=\"ui-btn\" /></td></tr>\n                                    </table>\n                                    </form>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </div>");
+        this._$form = null;
+        this.BeforeSaveEvent = new __1.AppEvent();
+        this.AfterSaveEvent = new __1.AppEvent();
+        this.CloseEvent = new __1.AppEvent();
+        this._googleMap = new __1.GoogleMap();
+        this.OnFound = function (e, data) {
+            console.log("+OnAddressFound");
+            if (!data.status)
+                return;
+            var faddr = data.address.formatted_address;
+            var loc = data.address.geometry.location;
+            loc = loc.lat() + ',' + loc.lng();
+            console.log('loc : ' + loc);
+            var parts = faddr.split(",");
+            var len = parts.length;
+            var name = parts[0];
+            var stateStr = parts[len - 2];
+            var index = stateStr.lastIndexOf(" ");
+            var state = stateStr.substr(0, index);
+            var pincode = stateStr.substr(index + 1);
+            var country = parts[len - 1];
+            var vals = {
+                'A_name': name,
+                'A_address': faddr,
+                'A_pincode': pincode,
+                'A_location': loc,
+            };
+            __1.FormUtil.fillByName(_this._$form, vals);
+        };
+        this._$form = this._$html.find('.locus_addr_form');
+        this._$form.data('data-handler', this);
+        this.loadMap(function () { });
     }
-    UINoti.make = function (config) {
-        return new this(config);
+    AddressPicker.prototype.show = function (vals) {
+        var _this = this;
+        if (vals !== undefined) {
+            this.updateVals(vals);
+        }
+        var config = { onClose: function () { _this.close(); } };
+        __1.UIOverlay.Instance().show(this._$html, config);
     };
-    UINoti.prototype.show = function () {
+    AddressPicker.prototype.hide = function () {
+        this.close();
+    };
+    AddressPicker.prototype.close = function () {
+        this.CloseEvent.trigger({}, null);
+        this._$html.detach();
+        // reset id before closing.
+        __1.FormUtil.setValByName(this._$form, 'A_id', '-1');
+        __1.UIOverlay.Instance().hide();
+    };
+    AddressPicker.prototype.updateVals = function (vals) {
+        __1.FormUtil.fillByName(this._$form, vals);
+    };
+    AddressPicker.prototype.before = function (e) {
+        console.log('+BeforeAdrReq');
+        return this.BeforeSaveEvent.trigger(e, null);
+    };
+    AddressPicker.prototype.after = function (e) {
+        console.log('+AfterAdrRes');
+        return this.AfterSaveEvent.trigger(e, null);
+    };
+    AddressPicker.prototype.loadMap = function (OnLoad) {
         var This = this;
-        var $elm = jquery_1.default(this._html);
-        $elm.fadeIn({ duration: 1000,
-            start: function () {
-                $elm.find('.wt-notititle').html(This.title);
-                $elm.find('.wt-notibody').html(This.text);
-                $elm.find('.wt-notilink').attr('href', This.link);
+        This._googleMap.load(function (e) {
+            if (e.status) {
+                This.initMap();
+                OnLoad(e);
             }
-        }).delay(This.timeout).fadeOut({
-            duration: 1000,
-            always: function () { $elm.remove(); }
         });
-        jquery_1.default('.wt-notibox').append($elm);
     };
-    return UINoti;
-}());
-exports.UINoti = UINoti;
-
-
-/***/ }),
-
-/***/ "../static_dirs/desktop/ts/App/UIToast.ts":
-/*!************************************************!*\
-  !*** ../static_dirs/desktop/ts/App/UIToast.ts ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "jquery"));
-var UIToast = /** @class */ (function () {
-    function UIToast() {
-    }
-    UIToast.show = function (text, timeout) {
-        if (text === void 0) { text = 'Error'; }
-        if (timeout === void 0) { timeout = 1800; }
-        jquery_1.default('<div class="wt-toast" style="display: none;" ></div>').fadeIn({
-            duration: 500,
-            start: function () { jquery_1.default(this).text(text); },
-        }).delay(timeout).fadeOut(500);
+    AddressPicker.prototype.initMap = function () {
+        var mapBox = this._$html.find("#gmap_box").get(0);
+        var mapInput = this._$html.find("#gmap_search_input").get(0);
+        this._googleMap.attach(mapBox);
+        this._googleMap.initPlaceSearch(mapInput);
+        this._googleMap.AddressFoundEvent.sub(this.OnFound);
     };
-    UIToast.hide = function () {
-        jquery_1.default('.wt-toast').hide();
-    };
-    return UIToast;
-}());
-exports.UIToast = UIToast;
-
-
-/***/ }),
-
-/***/ "../static_dirs/desktop/ts/App/UIWidgets.ts":
-/*!**************************************************!*\
-  !*** ../static_dirs/desktop/ts/App/UIWidgets.ts ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "jquery"));
-var AppUtils_1 = __webpack_require__(/*! ./AppUtils */ "../static_dirs/desktop/ts/App/AppUtils.ts");
-var HttpService_1 = __webpack_require__(/*! ./HttpService */ "../static_dirs/desktop/ts/App/HttpService.ts");
-var KEYS = {
-    BACK: 8,
-    TAB: 9,
-    ENTER: 13,
-    ESCAPE: 27,
-    LEFT: 37,
-    UP: 38,
-    RIGHT: 39,
-    DOWN: 40,
-    DELETE: 46,
-};
-var UIOverlay = /** @class */ (function () {
-    function UIOverlay() {
-        this.$overlay = null;
-        this.$closebtn = null;
-        this.$body = null;
-        this.$html = null;
-        this.$html_def = null;
-        this._shown = false;
-        this._options_def = { closeBtn: true, closeOnEscape: true, closeOnClickOutside: true, onClose: function () { } };
-        this._options = null;
-        this.$overlay = jquery_1.default('#wt-overlay');
-        this.$closebtn = this.$overlay.find('.wt-closebtn');
-        this.$body = this.$overlay.find('.wt-overlay-body');
-        this.$html_def = jquery_1.default('<div style="width:80%; height:inherit; margin: 0 auto; background:#fff;" data-type="none"></div>');
-        this.$html = this.$html_def;
-        this.$closebtn.on('click', this, this._onclose);
-        this.$overlay.on('click', this, this._onclick);
-        this.$overlay.on('keyup', this, this._onKeyUp);
-        this._shown = false;
-        this._options = AppUtils_1.ObjectUtil.merge(this._options_def, {});
-    }
-    UIOverlay.Instance = function () {
-        return this._instance || (this._instance = new this());
-    };
-    UIOverlay.prototype._apply_options = function (options) {
-        this._options = AppUtils_1.ObjectUtil.merge(this._options_def, options);
-        if (this._options['closeBtn'] === false)
-            this.$closebtn.hide();
-        else
-            this.$closebtn.show();
-    };
-    UIOverlay.prototype.shown = function () {
-        return this._shown;
-    };
-    UIOverlay.prototype.show = function ($html, options) {
-        if ($html === void 0) { $html = this.$html_def; }
-        if (options === void 0) { options = {}; }
-        this._apply_options(options);
-        /* ordering matter for correct heights */
-        this.$overlay.show();
-        this.update($html);
-        this.$overlay.focus();
-        this._shown = true;
-        jquery_1.default('body').toggleClass('ui-noscroll', this._shown);
-        return this;
-    };
-    UIOverlay.prototype.hide = function () {
-        this.$overlay.hide();
-        this._shown = false;
-        jquery_1.default('body').toggleClass('ui-noscroll', this._shown);
-        return this;
-    };
-    UIOverlay.prototype.update = function ($html) {
-        this.$html = jquery_1.default($html);
-        this.$body.html(this.$html.show());
-        var $scroll = this.$html.find(".wt-overlay-scroll");
-        if ($scroll.exists()) {
-            var h1 = this.$body.height();
-            var h2 = this.$html.height();
-            var h3 = $scroll.height();
-            if (h1 < h2) {
-                var h4 = h3 - (h2 - h1);
-                console.log("h4 : " + h4);
-                $scroll.height(h4);
+    AddressPicker.prototype.locateMe = function () {
+        this.loadMap(function (e) {
+            if (e.status) {
+                __1.AppGeo.locate(function (lt, lg) {
+                    this._googleMap.updateLoc(lt, lg);
+                });
             }
-        }
-        return this;
+            else {
+                __1.UIToast.show("Failed to load maps");
+            }
+        });
     };
-    UIOverlay.prototype.clear = function () {
-        this.update(this.$html_def);
-        return this;
-    };
-    UIOverlay.prototype.close = function () {
-        console.log("CLOSE OVERLAY");
-        this.$closebtn.click();
-    };
-    UIOverlay.prototype._close = function (e) {
-        var $html = this.$html.hide();
-        if ($html.attr('data-type') == 'persist') {
-            setTimeout(function () { $html.appendTo('body'); }, 100);
-        }
-        else {
-            $html.remove();
-        }
-        this.hide();
-    };
-    UIOverlay.prototype._onclose = function (e) {
-        console.log("ONCLOSE OVERLAY");
-        e.data._close(e);
-    };
-    UIOverlay.prototype._onclick = function (e) {
-        console.log("ONCLICK OVERLAY");
-        var This = e.data;
-        if (This._options["closeOnClickOutside"] === true && jquery_1.default(e.target).parent().is(This.$overlay)) {
-            This._close(e);
-        }
-    };
-    UIOverlay.prototype._onKeyUp = function (e) {
-        console.log("ONKEYUP OVERLAY");
-        var This = e.data;
-        if (This._options["closeOnEscape"] === true && e.keyCode == KEYS.ESCAPE) {
-            This._close(e);
-        }
-    };
-    UIOverlay._instance = null;
-    return UIOverlay;
+    return AddressPicker;
 }());
-exports.UIOverlay = UIOverlay;
-/* App Modal */
-var UIModal = /** @class */ (function () {
-    function UIModal() {
-    }
-    UIModal.prototype.show = function ($html, options) {
-        UIOverlay.Instance().show($html, { closeOnClickOutside: true, onClose: this.onClose });
-        return this;
-    };
-    UIModal.prototype.update = function ($html) {
-        UIOverlay.Instance().update($html);
-        return this;
-    };
-    UIModal.prototype.hide = function () {
-        UIOverlay.Instance().hide();
-        return this;
-    };
-    UIModal.prototype.close = function () {
-        UIOverlay.Instance().close();
-        return this;
-    };
-    UIModal.prototype.onClose = function (e) {
-    };
-    return UIModal;
-}());
-exports.UIModal = UIModal;
-;
+exports.AddressPicker = AddressPicker;
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! jquery */ "jquery")))
+
+/***/ }),
+
+/***/ "../static_dirs/desktop/ts/widgets/UIDialog.ts":
+/*!*****************************************************!*\
+  !*** ../static_dirs/desktop/ts/widgets/UIDialog.ts ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var __1 = __webpack_require__(/*! .. */ "../static_dirs/desktop/ts/index.ts");
 var UIDialog = /** @class */ (function () {
     function UIDialog() {
     }
     UIDialog.prototype.show = function ($html) {
-        UIOverlay.Instance().show($html);
+        __1.UIOverlay.Instance().show($html);
     };
     UIDialog.prototype.hide = function () {
-        UIOverlay.Instance().hide();
+        __1.UIOverlay.Instance().hide();
     };
     UIDialog.prototype.close = function () {
-        UIOverlay.Instance().close();
+        __1.UIOverlay.Instance().close();
     };
     return UIDialog;
 }());
 exports.UIDialog = UIDialog;
 ;
-var UIOptionList = /** @class */ (function () {
-    function UIOptionList($Inst, overrides, config) {
-        this._name = 'UIOptionList';
-        this._count = 0;
-        this._selectedIndex = 0;
-        this._jsonItemsList = null;
-        this._config = { minLength: 1, delay: 0 };
-        this._overrides = { 'source': function (key, respCB) { console.log('implement source'); },
-            'itemCreate': function (item) { console.log('implement itemCreate'); },
-            'onItemSelect': function ($input, item) { console.log('implement onItemSelect'); },
-            'onEnter': function ($input, item) { console.log('implement onEnter'); },
-        };
-        this._scrollTimer = null;
-        this.$_self = null;
-        this.$_list = null;
-        this.$_selectedItem = null;
-        console.log('+UIOptionList : ' + $Inst.prop("tagName"));
-        this.$_self = $Inst;
-        $Inst.optionsList = this;
-        /* merge the options */
-        AppUtils_1.ObjectUtil.merge(this._config, config);
-        AppUtils_1.ObjectUtil.merge(this._overrides, overrides);
-        this._create();
-    }
-    UIOptionList.prototype.source = function (key, respCB) {
-        if (this._overrides.source)
-            this._overrides.source(key, respCB);
-    };
-    UIOptionList.prototype.itemCreate = function (item) {
-        if (this._overrides.itemCreate)
-            return this._overrides.itemCreate(item);
-        return '';
-    };
-    UIOptionList.prototype.onItemSelect = function ($input, item) {
-        if (this._overrides.onItemSelect)
-            this._overrides.onItemSelect($input, item);
-    };
-    UIOptionList.prototype.onEnter = function ($input, item) {
-        if (this._overrides.onEnter)
-            this._overrides.onEnter($input, item);
-    };
-    /* private methods */
-    UIOptionList.prototype._create = function () {
-        var This = this;
-        console.log('+_create[' + This._name + ']');
-        This.$_list = jquery_1.default('<ul class="wt-search-list wt-search-list-app" >');
-        This.$_list.css({ width: This.$_self.css('width') });
-        This.$_list.on('mouseenter', 'li', This._onItemHover.bind(This));
-        This.$_list.on('click', 'li', This._onItemClick.bind(This));
-        This.$_list.on('scroll', This._onListScroll.bind(This));
-        This.$_self.on("keyup", This._onKeyUp.bind(This));
-        This.$_self.on("keypress", This._onKeyPress.bind(This));
-        This.$_self.on("focus", This._onFocus.bind(This));
-        This.$_self.on("blur", This._onUnfocus.bind(This));
-        This.$_self.on('DOMNodeRemoved', This._destroy.bind(This));
-        This.$_self.after(This.$_list);
-    };
-    UIOptionList.prototype._destroy = function (e) {
-        this.$_list.remove();
-    };
-    UIOptionList.prototype._onFocus = function (e) {
-        console.log('+_onFocus');
-        this.$_list.show();
-    };
-    UIOptionList.prototype._onUnfocus = function (e) {
-        this.$_list.hide();
-    };
-    UIOptionList.prototype._onData = function (jsonItemsList) {
-        console.log('+_onData');
-        var This = this;
-        This.$_list.html('');
-        This._jsonItemsList = jsonItemsList;
-        This._count = jsonItemsList.length;
-        This._selectedIndex = 0;
-        if (This._count > 0) {
-            for (var i in jsonItemsList) {
-                This.$_list.append(This.itemCreate(jsonItemsList[i]));
-            }
-            This.$_selectedItem = This.$_list.children().eq(This._selectedIndex);
-            This.$_selectedItem.addClass('wt-search-item-a');
-        }
-        else {
-            This.$_list.html('<div class="wt-search-item">No search results</div>');
-        }
-        This.$_list.show();
-    };
-    UIOptionList.prototype._setItemSelected = function (newIndex) {
-        var This = this;
-        var oldIndex = This._selectedIndex;
-        console.log('oldIndex : ' + oldIndex + ' newIndex : ' + newIndex);
-        if (newIndex >= 0 && newIndex < This._count) {
-            if (oldIndex != newIndex) {
-                var $children = This.$_list.children();
-                $children.eq(oldIndex).removeClass('wt-search-item-a');
-                This.$_selectedItem = $children.eq(newIndex).addClass('wt-search-item-a');
-                This._selectedIndex = newIndex;
-                This._notifyItemSelected();
-            }
-            var itemTop = This.$_selectedItem.position().top;
-            var itemHeight = This.$_selectedItem.outerHeight();
-            var bodyScroll = This.$_list.scrollTop();
-            var bodyHeight = This.$_list.outerHeight();
-            console.log('itemTop : ' + itemTop + ' itemHeight : ' + itemHeight);
-            console.log('bodyScroll : ' + bodyScroll + ' bodyHeight : ' + bodyHeight);
-            if (itemTop < 0) {
-                console.log('scrollup');
-                This.$_list.scrollTop(bodyScroll + itemTop);
-            }
-            else if (itemTop + itemHeight > bodyHeight) {
-                console.log('scrolldown');
-                This.$_list.scrollTop(bodyScroll + itemHeight - (bodyHeight - itemTop));
-            }
-            This.$_list.show();
-        }
-    };
-    UIOptionList.prototype._onListScroll = function (e) {
-        var This = this;
-        This._scrollTimer = setTimeout(function () {
-            This._scrollTimer = null;
-        }, 300);
-    };
-    UIOptionList.prototype._onItemHover = function (e) {
-        var This = this;
-        console.log('+_onItemHover');
-        if (!This._scrollTimer) {
-            This._setItemSelected(jquery_1.default(e.target).index());
-        }
-    };
-    UIOptionList.prototype._onItemClick = function (e) {
-        console.log('+_onItemClick');
-        this._setItemSelected(jquery_1.default(e.target).index());
-    };
-    UIOptionList.prototype._notifyItemSelected = function () {
-        if (this._count > 0 && this._jsonItemsList) {
-            this.onItemSelect(this.$_self, this._jsonItemsList[this._selectedIndex]);
-        }
-    };
-    UIOptionList.prototype._onKeyPress = function (e) {
-        console.log('+_onKeyPress : ' + e.keyCode);
-        if (e.keyCode === KEYS.ENTER) {
-            e.preventDefault();
-            var item = (this._count > 0 && this._jsonItemsList) ? this._jsonItemsList[this._selectedIndex] : null;
-            this.onEnter(this.$_self, item);
-            this._onUnfocus(e);
-        }
-    };
-    UIOptionList.prototype._onKeyUp = function (e) {
-        console.log('+_onKeyUp');
-        var This = this;
-        var handled = true;
-        switch (e.keyCode) {
-            case KEYS.UP:
-                This._setItemSelected(This._selectedIndex - 1);
-                break;
-            case KEYS.DOWN:
-                This._setItemSelected(This._selectedIndex + 1);
-                break;
-            case KEYS.ENTER:
-                break;
-            case KEYS.LEFT:
-            case KEYS.RIGHT:
-                This._onFocus({});
-                break;
-            default:
-                console.log('keycode : ' + e.keyCode);
-                handled = false;
-        }
-        if (handled) {
-            e.preventDefault();
-            return;
-        }
-        var key = This.$_self.val();
-        (key.length >= This._config.minLength && This.source(key, This._onData.bind(This)));
-    };
-    return UIOptionList;
-}());
-exports.UIOptionList = UIOptionList;
-;
-var UIProgressBar = /** @class */ (function () {
-    function UIProgressBar(title, btnText) {
-        this.$_ui = null;
-        this.$_ui = "<div class=\"wt-progress-outer\" >\n                    <div class=\"wt-progress-inner\">\n                    <div class=\"wt-progress-filename\">" + title + "</div>\n                    <div class=\"wt-progress-bar\">&nbsp;0%</div></div>\n                    <div class=\"wt-progress-control\">\n                    <button class=\"ui-btn\">" + btnText + "</button>\n                    </div></div>";
-    }
-    UIProgressBar.prototype.show = function ($parent) {
-        $parent.append(this.$_ui);
-        this.$_ui.show();
-    };
-    return UIProgressBar;
-}());
-exports.UIProgressBar = UIProgressBar;
-;
+
+
+/***/ }),
+
+/***/ "../static_dirs/desktop/ts/widgets/UIFileUpload.ts":
+/*!*********************************************************!*\
+  !*** ../static_dirs/desktop/ts/widgets/UIFileUpload.ts ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "jquery"));
+var AppUtils_1 = __webpack_require__(/*! ../app/AppUtils */ "../static_dirs/desktop/ts/app/AppUtils.ts");
+var HttpService_1 = __webpack_require__(/*! ../app/HttpService */ "../static_dirs/desktop/ts/app/HttpService.ts");
 var UIFileUpload = /** @class */ (function () {
     function UIFileUpload($Inst, overrides, config) {
         this._name = 'UIFileUpload';
@@ -1728,6 +1391,433 @@ var UIFileUpload = /** @class */ (function () {
     return UIFileUpload;
 }());
 exports.UIFileUpload = UIFileUpload;
+
+
+/***/ }),
+
+/***/ "../static_dirs/desktop/ts/widgets/UIModal.ts":
+/*!****************************************************!*\
+  !*** ../static_dirs/desktop/ts/widgets/UIModal.ts ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var __1 = __webpack_require__(/*! .. */ "../static_dirs/desktop/ts/index.ts");
+/* App Modal */
+var UIModal = /** @class */ (function () {
+    function UIModal() {
+    }
+    UIModal.prototype.show = function ($html, options) {
+        __1.UIOverlay.Instance().show($html, { closeOnClickOutside: true, onClose: this.onClose });
+        return this;
+    };
+    UIModal.prototype.update = function ($html) {
+        __1.UIOverlay.Instance().update($html);
+        return this;
+    };
+    UIModal.prototype.hide = function () {
+        __1.UIOverlay.Instance().hide();
+        return this;
+    };
+    UIModal.prototype.close = function () {
+        __1.UIOverlay.Instance().close();
+        return this;
+    };
+    UIModal.prototype.onClose = function (e) {
+    };
+    return UIModal;
+}());
+exports.UIModal = UIModal;
+;
+
+
+/***/ }),
+
+/***/ "../static_dirs/desktop/ts/widgets/UINoti.ts":
+/*!***************************************************!*\
+  !*** ../static_dirs/desktop/ts/widgets/UINoti.ts ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "jquery"));
+var AppUtils_1 = __webpack_require__(/*! ../app/AppUtils */ "../static_dirs/desktop/ts/app/AppUtils.ts");
+var UINoti = /** @class */ (function () {
+    function UINoti(config) {
+        this.link = window.location.href;
+        this.title = 'Alert';
+        this.text = 'Notification';
+        this.timeout = 5000;
+        this._html = "<div class=\"wt-noti\" >\n\t\t\t\t<a class=\"wt-notilink\" style=\"display: table;\" >\n\t\t\t\t<div style=\"display: table-cell; width: 15%; padding: 1em; \">\n\t\t\t\t\t<img src=\"/static/images/svg/checkcircle_24_1.svg\" class=\"ui-icon24\"  />\n\t\t\t\t</div>\n\t\t\t\t<div style=\"display: table-cell; width: 85%; vertical-align: middle;\" >\n\t\t\t\t\t<div class=\"wt-notititle\" style=\"font-weight: bold;\" >\n\t\t\t\t\t</div>\n\t\t\t\t\t<div style=\"border-top: 1px solid #bbb; padding: 0.2em; \"></div>\n\t\t\t\t\t<div class=\"wt-notibody\">\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t</a>\n\t\t\t</div>";
+        AppUtils_1.ObjectUtil.merge(this, config);
+    }
+    UINoti.make = function (config) {
+        return new this(config);
+    };
+    UINoti.prototype.show = function () {
+        var This = this;
+        var $elm = jquery_1.default(this._html);
+        $elm.fadeIn({ duration: 1000,
+            start: function () {
+                $elm.find('.wt-notititle').html(This.title);
+                $elm.find('.wt-notibody').html(This.text);
+                $elm.find('.wt-notilink').attr('href', This.link);
+            }
+        }).delay(This.timeout).fadeOut({
+            duration: 1000,
+            always: function () { $elm.remove(); }
+        });
+        jquery_1.default('.wt-notibox').append($elm);
+    };
+    return UINoti;
+}());
+exports.UINoti = UINoti;
+
+
+/***/ }),
+
+/***/ "../static_dirs/desktop/ts/widgets/UIOptionList.ts":
+/*!*********************************************************!*\
+  !*** ../static_dirs/desktop/ts/widgets/UIOptionList.ts ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function($) {
+Object.defineProperty(exports, "__esModule", { value: true });
+var __1 = __webpack_require__(/*! .. */ "../static_dirs/desktop/ts/index.ts");
+var constants_1 = __webpack_require__(/*! ./constants */ "../static_dirs/desktop/ts/widgets/constants.ts");
+var UIOptionList = /** @class */ (function () {
+    function UIOptionList($Inst, overrides, config) {
+        this._name = 'UIOptionList';
+        this._count = 0;
+        this._selectedIndex = 0;
+        this._jsonItemsList = null;
+        this._config = { minLength: 1, delay: 0 };
+        this._overrides = { 'source': function (key, respCB) { console.log('implement source'); },
+            'itemCreate': function (item) { console.log('implement itemCreate'); },
+            'onItemSelect': function ($input, item) { console.log('implement onItemSelect'); },
+            'onEnter': function ($input, item) { console.log('implement onEnter'); },
+        };
+        this._scrollTimer = null;
+        this.$_self = null;
+        this.$_list = null;
+        this.$_selectedItem = null;
+        console.log('+UIOptionList : ' + $Inst.prop("tagName"));
+        this.$_self = $Inst;
+        $Inst.optionsList = this;
+        /* merge the options */
+        __1.ObjectUtil.merge(this._config, config);
+        __1.ObjectUtil.merge(this._overrides, overrides);
+        this._create();
+    }
+    UIOptionList.prototype.source = function (key, respCB) {
+        if (this._overrides.source)
+            this._overrides.source(key, respCB);
+    };
+    UIOptionList.prototype.itemCreate = function (item) {
+        if (this._overrides.itemCreate)
+            return this._overrides.itemCreate(item);
+        return '';
+    };
+    UIOptionList.prototype.onItemSelect = function ($input, item) {
+        if (this._overrides.onItemSelect)
+            this._overrides.onItemSelect($input, item);
+    };
+    UIOptionList.prototype.onEnter = function ($input, item) {
+        if (this._overrides.onEnter)
+            this._overrides.onEnter($input, item);
+    };
+    /* private methods */
+    UIOptionList.prototype._create = function () {
+        var This = this;
+        console.log('+_create[' + This._name + ']');
+        This.$_list = $('<ul class="wt-search-list wt-search-list-app" >');
+        This.$_list.css({ width: This.$_self.css('width') });
+        This.$_list.on('mouseenter', 'li', This._onItemHover.bind(This));
+        This.$_list.on('click', 'li', This._onItemClick.bind(This));
+        This.$_list.on('scroll', This._onListScroll.bind(This));
+        This.$_self.on("keyup", This._onKeyUp.bind(This));
+        This.$_self.on("keypress", This._onKeyPress.bind(This));
+        This.$_self.on("focus", This._onFocus.bind(This));
+        This.$_self.on("blur", This._onUnfocus.bind(This));
+        This.$_self.on('DOMNodeRemoved', This._destroy.bind(This));
+        This.$_self.after(This.$_list);
+    };
+    UIOptionList.prototype._destroy = function (e) {
+        this.$_list.remove();
+    };
+    UIOptionList.prototype._onFocus = function (e) {
+        console.log('+_onFocus');
+        this.$_list.show();
+    };
+    UIOptionList.prototype._onUnfocus = function (e) {
+        this.$_list.hide();
+    };
+    UIOptionList.prototype._onData = function (jsonItemsList) {
+        console.log('+_onData');
+        var This = this;
+        This.$_list.html('');
+        This._jsonItemsList = jsonItemsList;
+        This._count = jsonItemsList.length;
+        This._selectedIndex = 0;
+        if (This._count > 0) {
+            for (var i in jsonItemsList) {
+                This.$_list.append(This.itemCreate(jsonItemsList[i]));
+            }
+            This.$_selectedItem = This.$_list.children().eq(This._selectedIndex);
+            This.$_selectedItem.addClass('wt-search-item-a');
+        }
+        else {
+            This.$_list.html('<div class="wt-search-item">No search results</div>');
+        }
+        This.$_list.show();
+    };
+    UIOptionList.prototype._setItemSelected = function (newIndex) {
+        var This = this;
+        var oldIndex = This._selectedIndex;
+        console.log('oldIndex : ' + oldIndex + ' newIndex : ' + newIndex);
+        if (newIndex >= 0 && newIndex < This._count) {
+            if (oldIndex != newIndex) {
+                var $children = This.$_list.children();
+                $children.eq(oldIndex).removeClass('wt-search-item-a');
+                This.$_selectedItem = $children.eq(newIndex).addClass('wt-search-item-a');
+                This._selectedIndex = newIndex;
+                This._notifyItemSelected();
+            }
+            var itemTop = This.$_selectedItem.position().top;
+            var itemHeight = This.$_selectedItem.outerHeight();
+            var bodyScroll = This.$_list.scrollTop();
+            var bodyHeight = This.$_list.outerHeight();
+            console.log('itemTop : ' + itemTop + ' itemHeight : ' + itemHeight);
+            console.log('bodyScroll : ' + bodyScroll + ' bodyHeight : ' + bodyHeight);
+            if (itemTop < 0) {
+                console.log('scrollup');
+                This.$_list.scrollTop(bodyScroll + itemTop);
+            }
+            else if (itemTop + itemHeight > bodyHeight) {
+                console.log('scrolldown');
+                This.$_list.scrollTop(bodyScroll + itemHeight - (bodyHeight - itemTop));
+            }
+            This.$_list.show();
+        }
+    };
+    UIOptionList.prototype._onListScroll = function (e) {
+        var This = this;
+        This._scrollTimer = setTimeout(function () {
+            This._scrollTimer = null;
+        }, 300);
+    };
+    UIOptionList.prototype._onItemHover = function (e) {
+        var This = this;
+        console.log('+_onItemHover');
+        if (!This._scrollTimer) {
+            This._setItemSelected($(e.target).index());
+        }
+    };
+    UIOptionList.prototype._onItemClick = function (e) {
+        console.log('+_onItemClick');
+        this._setItemSelected($(e.target).index());
+    };
+    UIOptionList.prototype._notifyItemSelected = function () {
+        if (this._count > 0 && this._jsonItemsList) {
+            this.onItemSelect(this.$_self, this._jsonItemsList[this._selectedIndex]);
+        }
+    };
+    UIOptionList.prototype._onKeyPress = function (e) {
+        console.log('+_onKeyPress : ' + e.keyCode);
+        if (e.keyCode === constants_1.KEYS.ENTER) {
+            e.preventDefault();
+            var item = (this._count > 0 && this._jsonItemsList) ? this._jsonItemsList[this._selectedIndex] : null;
+            this.onEnter(this.$_self, item);
+            this._onUnfocus(e);
+        }
+    };
+    UIOptionList.prototype._onKeyUp = function (e) {
+        console.log('+_onKeyUp');
+        var This = this;
+        var handled = true;
+        switch (e.keyCode) {
+            case constants_1.KEYS.UP:
+                This._setItemSelected(This._selectedIndex - 1);
+                break;
+            case constants_1.KEYS.DOWN:
+                This._setItemSelected(This._selectedIndex + 1);
+                break;
+            case constants_1.KEYS.ENTER:
+                break;
+            case constants_1.KEYS.LEFT:
+            case constants_1.KEYS.RIGHT:
+                This._onFocus({});
+                break;
+            default:
+                console.log('keycode : ' + e.keyCode);
+                handled = false;
+        }
+        if (handled) {
+            e.preventDefault();
+            return;
+        }
+        var key = This.$_self.val();
+        (key.length >= This._config.minLength && This.source(key, This._onData.bind(This)));
+    };
+    return UIOptionList;
+}());
+exports.UIOptionList = UIOptionList;
+;
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! jquery */ "jquery")))
+
+/***/ }),
+
+/***/ "../static_dirs/desktop/ts/widgets/UIOverlay.ts":
+/*!******************************************************!*\
+  !*** ../static_dirs/desktop/ts/widgets/UIOverlay.ts ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "jquery"));
+var __1 = __webpack_require__(/*! .. */ "../static_dirs/desktop/ts/index.ts");
+var constants_1 = __webpack_require__(/*! ./constants */ "../static_dirs/desktop/ts/widgets/constants.ts");
+var UIOverlay = /** @class */ (function () {
+    function UIOverlay() {
+        this.$overlay = null;
+        this.$closebtn = null;
+        this.$body = null;
+        this.$html = null;
+        this.$html_def = null;
+        this._shown = false;
+        this._options_def = { closeBtn: true, closeOnEscape: true, closeOnClickOutside: true, onClose: function () { } };
+        this._options = null;
+        this.$overlay = jquery_1.default('#wt-overlay');
+        this.$closebtn = this.$overlay.find('.wt-closebtn');
+        this.$body = this.$overlay.find('.wt-overlay-body');
+        this.$html_def = jquery_1.default('<div style="width:80%; height:inherit; margin: 0 auto; background:#fff;" data-type="none"></div>');
+        this.$html = this.$html_def;
+        this.$closebtn.on('click', this, this._onclose);
+        this.$overlay.on('click', this, this._onclick);
+        this.$overlay.on('keyup', this, this._onKeyUp);
+        this._shown = false;
+        this._options = __1.ObjectUtil.merge(this._options_def, {});
+    }
+    UIOverlay.Instance = function () {
+        return this._instance || (this._instance = new this());
+    };
+    UIOverlay.prototype._apply_options = function (options) {
+        this._options = __1.ObjectUtil.merge(this._options_def, options);
+        if (this._options['closeBtn'] === false)
+            this.$closebtn.hide();
+        else
+            this.$closebtn.show();
+    };
+    UIOverlay.prototype.shown = function () {
+        return this._shown;
+    };
+    UIOverlay.prototype.show = function ($html, options) {
+        if ($html === void 0) { $html = this.$html_def; }
+        if (options === void 0) { options = {}; }
+        this._apply_options(options);
+        /* ordering matter for correct heights */
+        this.$overlay.show();
+        this.update($html);
+        this.$overlay.focus();
+        this._shown = true;
+        jquery_1.default('body').toggleClass('ui-noscroll', this._shown);
+        return this;
+    };
+    UIOverlay.prototype.hide = function () {
+        this.$overlay.hide();
+        this._shown = false;
+        jquery_1.default('body').toggleClass('ui-noscroll', this._shown);
+        return this;
+    };
+    UIOverlay.prototype.update = function ($html) {
+        this.$html = jquery_1.default($html);
+        this.$body.html(this.$html.show());
+        var $scroll = this.$html.find(".wt-overlay-scroll");
+        if ($scroll.exists()) {
+            var h1 = this.$body.height();
+            var h2 = this.$html.height();
+            var h3 = $scroll.height();
+            if (h1 < h2) {
+                var h4 = h3 - (h2 - h1);
+                console.log("h4 : " + h4);
+                $scroll.height(h4);
+            }
+        }
+        return this;
+    };
+    UIOverlay.prototype.clear = function () {
+        this.update(this.$html_def);
+        return this;
+    };
+    UIOverlay.prototype.close = function () {
+        console.log("CLOSE OVERLAY");
+        this.$closebtn.click();
+    };
+    UIOverlay.prototype._close = function (e) {
+        var $html = this.$html.hide();
+        if ($html.attr('data-type') == 'persist') {
+            setTimeout(function () { $html.appendTo('body'); }, 100);
+        }
+        else {
+            $html.remove();
+        }
+        this.hide();
+    };
+    UIOverlay.prototype._onclose = function (e) {
+        console.log("ONCLOSE OVERLAY");
+        e.data._close(e);
+    };
+    UIOverlay.prototype._onclick = function (e) {
+        console.log("ONCLICK OVERLAY");
+        var This = e.data;
+        if (This._options["closeOnClickOutside"] === true && jquery_1.default(e.target).parent().is(This.$overlay)) {
+            This._close(e);
+        }
+    };
+    UIOverlay.prototype._onKeyUp = function (e) {
+        console.log("ONKEYUP OVERLAY");
+        var This = e.data;
+        if (This._options["closeOnEscape"] === true && e.keyCode == constants_1.KEYS.ESCAPE) {
+            This._close(e);
+        }
+    };
+    UIOverlay._instance = null;
+    return UIOverlay;
+}());
+exports.UIOverlay = UIOverlay;
+
+
+/***/ }),
+
+/***/ "../static_dirs/desktop/ts/widgets/UITabs.ts":
+/*!***************************************************!*\
+  !*** ../static_dirs/desktop/ts/widgets/UITabs.ts ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function($) {
+Object.defineProperty(exports, "__esModule", { value: true });
 var UITabs = /** @class */ (function () {
     function UITabs($Inst, overrides) {
         this._name = 'UITabs';
@@ -1758,7 +1848,7 @@ var UITabs = /** @class */ (function () {
             var rel = This._active.prop("rel");
             This._active.removeClass("wt-switchtab-a");
             This.$_self.find(rel).hide();
-            This._active = jquery_1.default(this);
+            This._active = $(this);
             rel = This._active.prop("rel");
             This._active.prop("class", "wt-switchtab-a");
             This.$_self.find(rel).show();
@@ -1769,13 +1859,14 @@ var UITabs = /** @class */ (function () {
 exports.UITabs = UITabs;
 ;
 
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! jquery */ "jquery")))
 
 /***/ }),
 
-/***/ "../static_dirs/desktop/ts/index.ts":
-/*!******************************************!*\
-  !*** ../static_dirs/desktop/ts/index.ts ***!
-  \******************************************/
+/***/ "../static_dirs/desktop/ts/widgets/UIToast.ts":
+/*!****************************************************!*\
+  !*** ../static_dirs/desktop/ts/widgets/UIToast.ts ***!
+  \****************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1785,52 +1876,49 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-//import * as $ from '../../libs/jquery/jquery-3.3.1.min';
-//import * as $ from 'jquery'; // esModuleInterop:false in tsconfig.json
 var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "jquery"));
-var App_1 = __webpack_require__(/*! ./App/App */ "../static_dirs/desktop/ts/App/App.ts");
-var UIWidgets_1 = __webpack_require__(/*! ./App/UIWidgets */ "../static_dirs/desktop/ts/App/UIWidgets.ts");
-var UIWidgets_2 = __webpack_require__(/*! ./App/UIWidgets */ "../static_dirs/desktop/ts/App/UIWidgets.ts");
-exports.UIOverlay = UIWidgets_2.UIOverlay;
-exports.UIModal = UIWidgets_2.UIModal;
-exports.UIDialog = UIWidgets_2.UIDialog;
-var AddressPicker_1 = __webpack_require__(/*! ./App/AddressPicker */ "../static_dirs/desktop/ts/App/AddressPicker.ts");
-exports.AddressPicker = AddressPicker_1.AddressPicker;
-var AppForm_1 = __webpack_require__(/*! ./App/AppForm */ "../static_dirs/desktop/ts/App/AppForm.ts");
-exports.AjaxForm = AppForm_1.AjaxForm;
-exports.AppFormHandler = AppForm_1.AppFormHandler;
-var UINoti_1 = __webpack_require__(/*! ./App/UINoti */ "../static_dirs/desktop/ts/App/UINoti.ts");
-exports.UINoti = UINoti_1.UINoti;
-var UIToast_1 = __webpack_require__(/*! ./App/UIToast */ "../static_dirs/desktop/ts/App/UIToast.ts");
-exports.UIToast = UIToast_1.UIToast;
-var HttpService_1 = __webpack_require__(/*! ./App/HttpService */ "../static_dirs/desktop/ts/App/HttpService.ts");
-exports.HttpResponseHandler = HttpService_1.HttpResponseHandler;
-exports.HttpService = HttpService_1.HttpService;
-var GoogleMap_1 = __webpack_require__(/*! ./App/GoogleMap */ "../static_dirs/desktop/ts/App/GoogleMap.ts");
-exports.GoogleMap = GoogleMap_1.GoogleMap;
-var AppUtils_1 = __webpack_require__(/*! ./App/AppUtils */ "../static_dirs/desktop/ts/App/AppUtils.ts");
-exports.ObjectUtil = AppUtils_1.ObjectUtil;
-exports.AppUtil = AppUtils_1.AppUtil;
-exports.DomUtil = AppUtils_1.DomUtil;
-exports.FormUtil = AppUtils_1.FormUtil;
-var AppUtils_2 = __webpack_require__(/*! ./App/AppUtils */ "../static_dirs/desktop/ts/App/AppUtils.ts");
-exports.AppEvent = AppUtils_2.AppEvent;
-exports.AppGeo = AppUtils_2.AppGeo;
-exports.AppCookie = AppUtils_2.AppCookie;
-exports.AppStorage = AppUtils_2.AppStorage;
-function initPlugins() {
-    jquery_1.default.fn.extend({
-        exists: function () { return this.length > 0; },
-        OptionList: function (overrides, config) { new UIWidgets_1.UIOptionList(this, overrides, config); },
-        Tabs: function (overrides, config) { new UIWidgets_1.UITabs(this, overrides); },
-        FileUpload: function (overrides, config) { new UIWidgets_1.UIFileUpload(this, overrides, config); },
-    });
-}
-jquery_1.default(function () {
-    initPlugins();
-    var app = App_1.App.Instance();
-    app.show();
-});
+var UIToast = /** @class */ (function () {
+    function UIToast() {
+    }
+    UIToast.show = function (text, timeout) {
+        if (text === void 0) { text = 'Error'; }
+        if (timeout === void 0) { timeout = 1800; }
+        jquery_1.default('<div class="wt-toast" ></div>').fadeIn({
+            duration: 500,
+            start: function () { jquery_1.default(this).text(text); },
+        }).delay(timeout).fadeOut(500);
+    };
+    UIToast.hide = function () {
+        jquery_1.default('.wt-toast').hide();
+    };
+    return UIToast;
+}());
+exports.UIToast = UIToast;
+
+
+/***/ }),
+
+/***/ "../static_dirs/desktop/ts/widgets/constants.ts":
+/*!******************************************************!*\
+  !*** ../static_dirs/desktop/ts/widgets/constants.ts ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.KEYS = {
+    BACK: 8,
+    TAB: 9,
+    ENTER: 13,
+    ESCAPE: 27,
+    LEFT: 37,
+    UP: 38,
+    RIGHT: 39,
+    DOWN: 40,
+    DELETE: 46,
+};
 
 
 /***/ }),

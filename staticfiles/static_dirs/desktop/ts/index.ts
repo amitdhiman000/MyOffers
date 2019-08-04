@@ -1,17 +1,22 @@
 //import * as $ from '../../libs/jquery/jquery-3.3.1.min';
 //import * as $ from 'jquery'; // esModuleInterop:false in tsconfig.json
 import $ from 'jquery';
-import { App } from './App/App';
-import { UIOptionList, UITabs, UIFileUpload } from './App/UIWidgets';
-import { UIOverlay, UIModal, UIDialog } from './App/UIWidgets';
-import { AddressPicker } from './App/AddressPicker';
-import { AjaxForm, AppFormHandler } from './App/AppForm';
-import { UINoti } from './App/UINoti';
-import { UIToast } from './App/UIToast';
-import { HttpResponseHandler, HttpService } from './App/HttpService';
-import { GoogleMap } from './App/GoogleMap';
-import { ObjectUtil, AppUtil, DomUtil, FormUtil } from './App/AppUtils';
-import { AppEvent, AppGeo, AppCookie, AppStorage } from './App/AppUtils';
+import { App } from './app/App';
+import { UINoti } from './widgets/UINoti';
+import { UIToast } from './widgets/UIToast';
+import { UIOverlay } from './widgets/UIOverlay';
+import { UIModal } from './widgets/UIModal';
+import { UIDialog } from './widgets/UIDialog';
+import { UIOptionList } from './widgets/UIOptionList';
+import { UIFileUpload } from './widgets/UIFileUpload';
+import { UITabs } from './widgets/UITabs';
+
+import { AddressPicker } from './widgets/AddressPicker';
+import { AjaxForm, AppFormHandler } from './app/AppForm';
+import { HttpResponseHandler, HttpService } from './app/HttpService';
+import { GoogleMap } from './app/GoogleMap';
+import { ObjectUtil, AppUtil, DomUtil, FormUtil } from './app/AppUtils';
+import { AppEvent, AppGeo, AppCookie, AppStorage } from './app/AppUtils';
 
 /* Export for AppLib to use in html <script> tags */
 export {

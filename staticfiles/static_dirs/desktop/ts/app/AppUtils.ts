@@ -60,7 +60,7 @@ export class AppUtil {
     
 	static appName(): string {
 		if (this._name == '') {
-			var $mt = $('meta[name=app-name]');
+			let $mt = $('meta[name=app-name]');
 			this._name = $mt.attr("content") || "/m\\";
 		}
 		return this._name;
@@ -96,7 +96,7 @@ export class FormUtil {
 		let retVal = val;
 		switch($node.prop("tagName").toLowerCase()) {
 			case 'input':
-				var type = $node.prop('type').toLowerCase();
+				let type = $node.prop('type').toLowerCase();
 				switch(type) {
 					case 'text':
 					case 'hidden':
@@ -197,11 +197,11 @@ export class AppGeo {
 export class AppCookie {
 
 	static get(cname: string) {
-        var cv = null;
+        let cv = null;
         if (document.cookie != 'undefined' && document.cookie !== '') {
-            var cks = document.cookie.split(';');
-            for (var i = 0; i < cks.length; i++) {
-                var c = cks[i].trim();
+            let cks = document.cookie.split(';');
+            for (let i = 0; i < cks.length; i++) {
+                let c = cks[i].trim();
                 /* Does this cookie string begin with the name we want? */
                 if (c.substring(0, cname.length + 1) === (name + '=')) {
                     cv = decodeURIComponent(c.substring(cname.length + 1));

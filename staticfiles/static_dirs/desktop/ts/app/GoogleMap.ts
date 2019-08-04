@@ -1,5 +1,5 @@
 import {ObjectUtil, AppEvent, AppGeo} from './AppUtils';
-import {UIToast} from './UIToast';
+import {UIToast} from '../widgets/UIToast';
 
 declare var google: any;
 const url = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCMz94217XzpYaxnQRagzgCwpy4dfBM1Ho&libraries=places&callback=__onGoogleMapLoaded';
@@ -40,7 +40,7 @@ export class GoogleMap {
 	_Geocoder = null;
 	_Timeout = null;
 	_LatLong = {lat:12.964914, lng:77.596683};
-    AddressFoundEvent: AppEvent = new AppEvent();
+	AddressFoundEvent: AppEvent = new AppEvent();
 
 	static load(OnLoad: any) {
 		if (GoogleMapsLoader.loaded()) {

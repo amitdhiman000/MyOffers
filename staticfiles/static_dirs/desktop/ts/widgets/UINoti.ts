@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import {ObjectUtil} from './AppUtils';
+import {ObjectUtil} from '../app/AppUtils';
 
 export class UINoti {
 

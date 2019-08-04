@@ -1,6 +1,6 @@
 import {AjaxForm, AppFormHandler} from './AppForm';
-import {UINoti} from './UINoti';
-import {UIToast} from './UIToast';
+import {UINoti} from '../widgets/UINoti';
+import {UIToast} from '../widgets/UIToast';
 import {HttpResponseHandler, HttpService} from './HttpService';
 import {GoogleMap} from './GoogleMap';
 import {ObjectUtil, AppUtil, FormUtil} from './AppUtils';

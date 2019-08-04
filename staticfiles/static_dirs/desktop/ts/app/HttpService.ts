@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import {UIToast} from './UIToast';
+import {UIToast} from '../widgets/UIToast';
 import {ObjectUtil} from './AppUtils';
 
 

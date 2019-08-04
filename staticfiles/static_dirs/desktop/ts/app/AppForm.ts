@@ -1,6 +1,6 @@
 import { HttpService, HttpResponseHandler } from "./HttpService";
 import {FormUtil, ObjectUtil} from './AppUtils';
-import {UINoti} from './UINoti';
+import {UINoti} from '../widgets/UINoti';
 
 export class AjaxForm {
     $_form: any = null;

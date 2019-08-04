@@ -1,5 +1,5 @@
 import { AppEvent, GoogleMap, FormUtil, AppGeo, UIToast, UIOverlay } from "..";
-import { AppUtil } from "./AppLib";
+import { AppUtil } from "../app/AppLib";
 
 
 export class AddressPicker {
@@ -90,7 +90,7 @@ export class AddressPicker {
         this.CloseEvent.trigger({}, null);
         this._$html.detach();
         // reset id before closing.
-        FormUtil.setValByName(this._$form, 'A_id', -1);
+        FormUtil.setValByName(this._$form, 'A_id', '-1');
         UIOverlay.Instance().hide();
     }
 
@@ -123,10 +123,10 @@ export class AddressPicker {
 		let mapInput = this._$html.find("#gmap_search_input").get(0);
 		this._googleMap.attach(mapBox);
 		this._googleMap.initPlaceSearch(mapInput);
-		this._googleMap.AddressFoundEvent.sub(this.OnFound.bind(this));
+		this._googleMap.AddressFoundEvent.sub(this.OnFound);
 	}
 
-	OnFound(e: any, data: any) {
+	OnFound = (e: any, data: any) => {
 		console.log("+OnAddressFound");
 		if (!data.status)
 			return;
